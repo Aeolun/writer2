@@ -1,8 +1,31 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+import wdyr from "@welldone-software/why-did-you-render";
+import React from "react";
+if (process.env.NODE_ENV === "development") {
+  wdyr(React, {
+    trackAllPureComponents: true,
+  });
 }
 
-export default MyApp
+import "../styles/globals.css";
+import type { AppProps } from "next/app";
+import { store } from "../lib/store";
+import { Provider } from "react-redux";
+import "../lib/App.css";
+import { ChakraProvider } from "@chakra-ui/react";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
+
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider>
+        <Provider store={store}>
+          <Component {...pageProps} />
+        </Provider>
+      </ChakraProvider>
+    </QueryClientProvider>
+  );
+}
+
+export default MyApp;
