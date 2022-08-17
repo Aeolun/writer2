@@ -2,18 +2,18 @@ import React, { useState } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "@chakra-ui/react";
 import { CharacterModal } from "./CharacterModal";
 import { useSelector } from "react-redux";
-import { GlobalState } from "../lib/slices/global";
+import { RootState } from "../lib/store";
 
 export const CharacterPanel = () => {
   const [charModal, setCharacterModal] = useState<boolean>(false);
   const [characterId, setCharacterId] = useState<number>(0);
 
-  const characters = useSelector((state: GlobalState) => state.characters);
+  const characters = useSelector((state: RootState) => state.story.characters);
 
   return (
-    <TabPanel>
+    <>
       <table>
-        {characters.map((char) => (
+        {Object.values(characters).map((char) => (
           <tr
             key={char.id}
             onClick={() => {
@@ -40,7 +40,14 @@ export const CharacterPanel = () => {
           </tr>
         ))}
       </table>
-      <CharacterModal characterId={characterId} />
-    </TabPanel>
+      {charModal && (
+        <CharacterModal
+          characterId={characterId}
+          onClose={() => {
+            setCharacterModal(false);
+          }}
+        />
+      )}
+    </>
   );
 };

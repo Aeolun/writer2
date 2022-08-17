@@ -21,8 +21,9 @@ import { selectedChapterSelector } from "../lib/selectors/selectedChapterSelecto
 import { ScenePanel } from "./ScenePanel";
 import { storyActions } from "../lib/slices/story";
 import { PlotPointPanel } from "./PlotPointPanel";
+import { CharacterPanel } from "./CharacterPanel";
 
-export const StoryPane = (props) => {
+export const StoryPane = () => {
   const chapterObj = useSelector(selectedChapterSelector);
   const sceneObj = useSelector(selectedSceneSelector);
 
@@ -108,7 +109,7 @@ export const StoryPane = (props) => {
             <Tab>Story</Tab>
             <Tab>Scene</Tab>
             <Tab>Plot points</Tab>
-            {/*<Tab>Characters</Tab>*/}
+            <Tab>Characters</Tab>
           </TabList>
 
           <TabPanels
@@ -126,11 +127,9 @@ export const StoryPane = (props) => {
             <TabPanel flex={1} overflow={"auto"}>
               <PlotPointPanel />
             </TabPanel>
-            {/*<TabPanel>*/}
-            {/*  <Suspense fallback={"Loading master of stuff"}>*/}
-            {/*    <CharacterPanel />*/}
-            {/*  </Suspense>*/}
-            {/*</TabPanel>*/}
+            <TabPanel flex={1} overflow={"auto"}>
+              <CharacterPanel />
+            </TabPanel>
           </TabPanels>
         </Tabs>
       )}

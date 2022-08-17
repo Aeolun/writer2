@@ -1,7 +1,3 @@
-import { StoryChapter } from "./styled/StoryChapter";
-import { Link } from "./styled/Link";
-import { StoryScene } from "./styled/StoryScene";
-import { StoryNav } from "./styled/StoryNav";
 import React, { useState, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { chaptersSelector } from "../lib/selectors/chapterSelector";

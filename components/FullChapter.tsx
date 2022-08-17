@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
-import { Chapter } from "../lib/slices/global";
+import { Chapter } from "../lib/slices/story";
 
-export const FullChapter = (props: { chapter: Chapter }) => {
-  return <div>{props.chapter.text}</div>;
+export const FullChapter = (props: { chapter: number }) => {
+  return <div>{props.chapter}</div>;
 };
