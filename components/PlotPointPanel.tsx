@@ -1,85 +1,70 @@
-import TextareaAutosize from "react-textarea-autosize"
-import React from "react"
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
-import { useQuery } from "blitz"
-import getPlot_points from "../plot_points/queries/getPlot_points"
+import React from "react";
+import { Input, Button, Textarea, Box, Flex } from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { plotpointSelector } from "../lib/selectors/plotpointSelector";
+import { storyActions } from "../lib/slices/story";
 
 export const PlotPointPanel = () => {
-  const [plotPoints, plotPointContext] = useQuery(getPlot_points, {
-    where: {},
-    orderBy: {
-      id: "asc",
-    },
-    skip: 0,
-    take: 250,
-  })
+  const plotpoints = useSelector(plotpointSelector);
+  const dispatch = useDispatch();
 
   return (
-    <TabPanel>
-      {plotPoints.plot_points.map((plotPoint) => {
+    <>
+      {Object.values(plotpoints).map((plotPoint) => {
         return (
-          <div key={plotPoint.id}>
-            <div>
-              {plotPoint.id} [
-              <span
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  // db.delete("plot_point", {
-                  //   id: plotPoint.id,
-                  // })
-                }}
-              >
-                X
-              </span>
-              ]
-            </div>
-            <div>
-              <input
+          <Box mb={4} key={plotPoint.id}>
+            <Flex mb={2}>
+              <Input
                 placeholder={"title"}
-                defaultValue={plotPoint.title || undefined}
-                onBlur={(e) => {
-                  // db.update(
-                  //   "plot_point",
-                  //   {
-                  //     title: e.target.value,
-                  //   },
-                  //   {
-                  //     id: plotPoint.id,
-                  //   }
-                  // )
+                value={plotPoint.title}
+                onChange={(e) => {
+                  dispatch(
+                    storyActions.updatePlotpoint({
+                      id: plotPoint.id,
+                      title: e.currentTarget.value,
+                    })
+                  );
                 }}
               />
-            </div>
-            <TextareaAutosize
+              <Button
+                ml={2}
+                colorScheme={"red"}
+                onClick={() => {
+                  if (confirm("You sure you want to delete this one?")) {
+                    dispatch(
+                      storyActions.deletePlotPoint({
+                        plotpointId: plotPoint.id,
+                      })
+                    );
+                  }
+                }}
+              >
+                Delete
+              </Button>
+            </Flex>
+            <Textarea
               style={{ width: "100%" }}
-              minRows={2}
-              onBlur={(e) => {
-                // db.update(
-                //   "plot_point",
-                //   {
-                //     summary: e.target.value,
-                //   },
-                //   {
-                //     id: plotPoint.id,
-                //   }
-                // )
+              onChange={(e) => {
+                dispatch(
+                  storyActions.updatePlotpoint({
+                    id: plotPoint.id,
+                    summary: e.currentTarget.value,
+                  })
+                );
               }}
             >
               {plotPoint.summary}
-            </TextareaAutosize>
-          </div>
-        )
+            </Textarea>
+          </Box>
+        );
       })}
-      <button
+      <Button
         onClick={() => {
-          // db.insert("plot_point", {
-          //   title: "",
-          //   summary: "",
-          // })
+          dispatch(storyActions.createPlotPoint({}));
         }}
       >
         Add plot point
-      </button>
-    </TabPanel>
-  )
-}
+      </Button>
+    </>
+  );
+};

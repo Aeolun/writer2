@@ -20,6 +20,7 @@ import { selectedSceneSelector } from "../lib/selectors/selectedSceneSelector";
 import { selectedChapterSelector } from "../lib/selectors/selectedChapterSelector";
 import { ScenePanel } from "./ScenePanel";
 import { storyActions } from "../lib/slices/story";
+import { PlotPointPanel } from "./PlotPointPanel";
 
 export const StoryPane = (props) => {
   const chapterObj = useSelector(selectedChapterSelector);
@@ -97,26 +98,34 @@ export const StoryPane = (props) => {
           </TabPanels>
         </Tabs>
       ) : (
-        <Tabs display={"flex"} flexDirection={"column"} flex={1}>
+        <Tabs
+          display={"flex"}
+          overflow={"hidden"}
+          flexDirection={"column"}
+          flex={1}
+        >
           <TabList>
             <Tab>Story</Tab>
             <Tab>Scene</Tab>
-            {/*<Tab>Plot points</Tab>*/}
+            <Tab>Plot points</Tab>
             {/*<Tab>Characters</Tab>*/}
           </TabList>
 
-          <TabPanels flex={1} display={"flex"} flexDirection={"column"}>
+          <TabPanels
+            flex={1}
+            overflow={"hidden"}
+            display={"flex"}
+            flexDirection={"column"}
+          >
             <TabPanel flex={1}>
               <StoryPanel scene={sceneObj} />
             </TabPanel>
             <TabPanel flex={1}>
               <ScenePanel />
             </TabPanel>
-            {/*<TabPanel>*/}
-            {/*  <Suspense fallback={"Loading master of stuff"}>*/}
-            {/*    <PlotPointPanel />*/}
-            {/*  </Suspense>*/}
-            {/*</TabPanel>*/}
+            <TabPanel flex={1} overflow={"auto"}>
+              <PlotPointPanel />
+            </TabPanel>
             {/*<TabPanel>*/}
             {/*  <Suspense fallback={"Loading master of stuff"}>*/}
             {/*    <CharacterPanel />*/}

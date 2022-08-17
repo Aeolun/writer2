@@ -119,6 +119,66 @@ export const globalSlice = createSlice({
         };
       }
     },
+    deletePlotPoint: (
+      state,
+      action: PayloadAction<{
+        plotpointId: number;
+      }>
+    ) => {
+      delete state.plotPoints[action.payload.plotpointId];
+    },
+    createPlotPoint: (state, action: PayloadAction<{}>) => {
+      const newId = state.counters.plotPointSequence;
+      state.counters.plotPointSequence++;
+      state.plotPoints[newId] = {
+        id: newId,
+        summary: "",
+        title: "",
+      };
+    },
+    updatePlotpoint: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        title?: string;
+        summary?: string;
+      }>
+    ) => {
+      state.plotPoints[action.payload.id] = {
+        ...state.plotPoints[action.payload.id],
+        ...action.payload,
+      };
+    },
+    addPlotPointToScene: (
+      state,
+      action: PayloadAction<{
+        sceneId: number;
+        plotpointId: number;
+        action: string;
+      }>
+    ) => {
+      state.scenes[action.payload.sceneId].plot_point_actions.push({
+        plot_point_id: action.payload.plotpointId,
+        action: action.payload.action,
+      });
+    },
+    removePlotPointFromScene: (
+      state,
+      action: PayloadAction<{
+        sceneId: number;
+        plotpointId: number;
+        action: string;
+      }>
+    ) => {
+      state.scenes[action.payload.sceneId].plot_point_actions = state.scenes[
+        action.payload.sceneId
+      ].plot_point_actions.filter((i) => {
+        return (
+          i.plot_point_id !== action.payload.plotpointId &&
+          i.action !== action.payload.action
+        );
+      });
+    },
   },
 });
 

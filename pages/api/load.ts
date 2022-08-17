@@ -1,10 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import story from "../../story.json";
+import fs from "fs";
+import path from "path";
 
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<typeof story>
 ) {
-  res.status(200).json(story);
+  const story = fs.readFileSync(
+    path.join(process.env.DATA_PATH || "", "story.json")
+  );
+
+  res.status(200).json(JSON.parse(story.toString()));
 }
