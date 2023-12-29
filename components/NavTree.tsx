@@ -8,10 +8,14 @@ import { globalActions } from "../lib/slices/global";
 import { selectedImageChapterSelector } from "../lib/selectors/selectedImageChapter";
 import { Box, Flex } from "@chakra-ui/react";
 import { selectedImagePathSelector } from "../lib/selectors/selectedImagePath";
+import { storySettingsSelector } from "../lib/selectors/storySettings";
 
 export const NavTree = () => {
+  const storySettings = useSelector(storySettingsSelector);
   const { data, isFetched } = useQuery<TreeNode>("tree", () => {
-    return axios.get("/api/tree").then((res) => res.data);
+    return axios.post("/api/tree", {
+      path: storySettings?.mangaChapterPath
+    }).then((res) => res.data);
   });
   const selectedImageChapter = useSelector(selectedImageChapterSelector);
   const selectedImagePath = useSelector(selectedImagePathSelector);

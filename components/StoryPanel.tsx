@@ -11,9 +11,11 @@ import {
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
+import {selectedSceneSelector} from "../lib/selectors/selectedSceneSelector";
 
-export const StoryPanel = (props: { scene?: Scene }) => {
-  const [plotPoint, setPlotPoint] = useState<number>();
+export const StoryPanel = () => {
+  const scene = useSelector(selectedSceneSelector);
+  const [plotPoint, setPlotPoint] = useState<string>();
   const [action, setAction] = useState<string>("mentioned");
   const plotpoints = useSelector(plotpointSelector);
 
@@ -27,19 +29,19 @@ export const StoryPanel = (props: { scene?: Scene }) => {
         onChange={(e) => {
           dispatch(
             storyActions.updateScene({
-              id: props.scene?.id,
+              id: scene?.id,
               text: e.target.value,
             })
           );
         }}
-        value={props.scene?.text}
+        value={scene?.text}
       />
 
       <Box>
         <Heading size={"md"} mt={4}>
           Plot Points
         </Heading>
-        {props.scene?.plot_point_actions.map((link) => {
+        {scene?.plot_point_actions.map((link) => {
           const point = plotpoints[link.plot_point_id];
           return (
             <div key={link.plot_point_id}>
@@ -47,10 +49,10 @@ export const StoryPanel = (props: { scene?: Scene }) => {
               <Button
                 colorScheme={"red"}
                 onClick={() => {
-                  if (props.scene) {
+                  if (scene) {
                     dispatch(
                       storyActions.removePlotPointFromScene({
-                        sceneId: props.scene.id,
+                        sceneId: scene.id,
                         plotpointId: link.plot_point_id,
                         action: link.action,
                       })
@@ -68,10 +70,10 @@ export const StoryPanel = (props: { scene?: Scene }) => {
           <Select
             value={plotPoint}
             onChange={(e) => {
-              setPlotPoint(parseInt(e.currentTarget.value));
+              setPlotPoint(e.currentTarget.value);
             }}
           >
-            <option></option>
+            <option>-- select --</option>
             {Object.values(plotpoints).map((point) => (
               <option key={point.id} value={point.id}>
                 {point.title}
@@ -90,11 +92,10 @@ export const StoryPanel = (props: { scene?: Scene }) => {
           </Select>
           <Button
             onClick={() => {
-              console.log(plotPoint);
-              if (props.scene && plotPoint) {
+              if (scene && plotPoint) {
                 dispatch(
                   storyActions.addPlotPointToScene({
-                    sceneId: props.scene.id,
+                    sceneId: scene.id,
                     plotpointId: plotPoint,
                     action: action,
                   })

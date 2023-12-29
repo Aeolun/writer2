@@ -1,50 +1,68 @@
 import type { NextPage } from "next";
-import { Nav } from "../components/styled/Nav";
 import { NavTree } from "../components/NavTree";
 import { PageImage } from "../components/PageImage";
 import React, { Suspense, useEffect, useState } from "react";
 import { StoryNavigation } from "../components/StoryNavigation";
 import { StoryPane } from "../components/StoryPane";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { storyActions } from "../lib/slices/story";
-import { Box, Button, CircularProgress, Flex } from "@chakra-ui/react";
-import { store } from "../lib/store";
+import {Box, Button, CircularProgress, Flex, Input,} from "@chakra-ui/react";
+import {RootState, store} from "../lib/store";
+import {globalActions} from "../lib/slices/global";
+import Link from "next/link";
+import {HeaderMenu} from "../components/HeaderMenu";
+import {storySettingsSelector} from "../lib/selectors/storySettings";
+
 
 const Home: NextPage = () => {
   const dispatch = useDispatch();
+  const storySettings = useSelector(storySettingsSelector);
   const [saving, setSaving] = useState(false);
+  const storyLoaded = useSelector((store: RootState) => store.story.name);
+  const stories = useSelector((store: RootState) => store.base.stories);
+  const [storyName, setStoryName] = useState('');
 
   useEffect(() => {
-    axios.get("/api/load").then((res) => {
-      dispatch(storyActions.setStory(res.data));
+    axios.get('/api/list').then((res) => {
+      dispatch(globalActions.setStories(res.data));
     });
   }, []);
 
   return (
     <Flex flexDirection={"column"} height={"100%"}>
-      <Flex bg={"green.300"} px={2} py={1} justifyContent={"flex-end"}>
-        {saving ? (
-          <CircularProgress isIndeterminate color="green.300" />
-        ) : (
-          <Button
-            onClick={() => {
-              setSaving(true);
-              axios.post("/api/save", store.getState().story).then((result) => {
-                setSaving(false);
+      {storyLoaded ? <>
+        <HeaderMenu />
+        <Flex flex={1} overflow={"hidden"}>
+          {storySettings?.mangaChapterPath ? <>
+          <NavTree />
+          <PageImage display={"image"} />
+            </> : null }
+          <StoryNavigation />
+          <StoryPane />
+        </Flex>
+      </> : <Flex width={'80'} direction={'column'} margin={'0 auto'}>
+        What story do you want to load?
+
+        {stories?.map((story) => {
+          return <Button onClick={() => {
+              axios.get(`/api/load/${story.name}`).then((res) => {
+                dispatch(storyActions.setStory(res.data));
               });
-            }}
-          >
-            Save
-          </Button>
-        )}
-      </Flex>
-      <Flex flex={1} overflow={"hidden"}>
-        <NavTree />
-        <PageImage display={"image"} />
-        <StoryNavigation />
-        <StoryPane />
-      </Flex>
+            }
+            }>{story.name}</Button>
+
+       })}
+        <Box p={4} mt={4} border={"black.200"} borderWidth={1}>
+        <h2>Create new story</h2>
+        <Input value={storyName} onChange={(e) => {
+          setStoryName(e.currentTarget.value);
+        }} />
+        <Button mt={2} onClick={() => {
+          dispatch(storyActions.newStory(storyName));
+        }}>Create</Button>
+        </Box>
+      </Flex>}
     </Flex>
   );
 };

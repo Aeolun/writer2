@@ -1,24 +1,43 @@
 import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
+import short from 'short-uuid';
 
 export interface Character {
-  id: number;
+  id: string;
   picture: string;
   name: string;
   summary: string;
   age: string;
 }
 
-export interface Chapter {
-  id: number;
+export interface Book {
+  id: string;
   title: string;
   summary: string;
   sort_order: number;
   start_date: string;
-  scenes: number[];
+  arcs: string[];
+}
+
+export interface Arc {
+  id: string;
+  title: string;
+  summary: string;
+  sort_order: number;
+  start_date: string;
+  chapters: string[];
+}
+
+export interface Chapter {
+  id: string;
+  title: string;
+  summary: string;
+  sort_order: number;
+  start_date: string;
+  scenes: string[];
 }
 
 export interface Scene {
-  id: number;
+  id: string;
   title: string;
   summary: string;
   text: string;
@@ -30,35 +49,32 @@ export interface Scene {
 }
 
 export interface PlotPoint {
-  id: number;
+  id: string;
   summary: string;
   title: string;
 }
 
 export interface StoryState {
-  characters: Record<number, Character>;
-  chapters: Record<number, Chapter>;
-  plotPoints: Record<number, PlotPoint>;
-  scenes: Record<number, Scene>;
-  counters: {
-    characterSequence: number;
-    chapterSequence: number;
-    sceneSequence: number;
-    plotPointSequence: number;
-  };
+  name?: string;
+  settings?: {
+    mangaChapterPath?: string;
+  }
+  characters: Record<string, Character>;
+  books: Record<string, Book>;
+  arcs: Record<string, Arc>;
+  chapters: Record<string, Chapter>;
+  plotPoints: Record<string, PlotPoint>;
+  scenes: Record<string, Scene>;
 }
 
 const initialState: StoryState = {
+  name: undefined,
   chapters: {},
+  books: {},
+  arcs: {},
   characters: {},
   plotPoints: {},
   scenes: {},
-  counters: {
-    characterSequence: 0,
-    chapterSequence: 0,
-    sceneSequence: 0,
-    plotPointSequence: 0,
-  },
 };
 
 export const globalSlice = createSlice({
@@ -66,16 +82,63 @@ export const globalSlice = createSlice({
   initialState,
   reducers: {
     setStory: (state, action: PayloadAction<StoryState>) => {
-      Object.keys(action.payload).forEach((key) => {
+      for(const key in action.payload) {
         const storyKey = key as keyof StoryState;
 
         //@ts-expect-error
         state[storyKey] = action.payload[storyKey];
-      });
+      }
+
     },
-    createScene: (state, action: PayloadAction<{ chapterId: number }>) => {
-      const newId = state.counters.sceneSequence;
-      state.counters.sceneSequence++;
+    newStory: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
+    },
+    unload: (state) => {
+      return initialState;
+    },
+    setSetting(state: Draft<StoryState>, action: PayloadAction<{key: string, value: string}>) {
+      if(!state.settings) {
+        state.settings = {};
+      }
+      if (state.settings) {
+        state.settings[action.payload.key] = action.payload.value;
+      }
+    },
+    createChapter: (state, action: PayloadAction<{ arcId: string }>) => {
+      const newId = short.generate().toString();
+      state.chapters[newId] = {
+        id: newId,
+        title: "New Chapter",
+        summary: "",
+        scenes: [],
+        sort_order: 0,
+        start_date: "",
+      };
+    },
+    createBook: (state) => {
+      const newId = short.generate().toString();
+      state.books[newId] = {
+        id: newId,
+        title: "New Book",
+        summary: "",
+        arcs: [],
+        sort_order: 0,
+        start_date: "",
+      };
+    },
+    createArc: (state, action: PayloadAction<{ bookId: string }>) => {
+      const newId = short.generate().toString();
+      state.arcs[newId] = {
+        id: newId,
+        title: "New Arc",
+        summary: "",
+        chapters: [],
+        sort_order: 0,
+        start_date: "",
+      };
+    },
+    createScene: (state, action: PayloadAction<{ chapterId: string }>) => {
+      const newId = short.generate().toString();
       state.scenes[newId] = {
         id: newId,
         title: "New Scene",
@@ -89,8 +152,8 @@ export const globalSlice = createSlice({
     deleteScene: (
       state,
       action: PayloadAction<{
-        sceneId: number;
-        chapterId: number;
+        sceneId: string;
+        chapterId: string;
       }>
     ) => {
       state.chapters[action.payload.chapterId].scenes = state.chapters[
@@ -102,19 +165,35 @@ export const globalSlice = createSlice({
       const id = action.payload.id;
       if (id) {
         const keys = Object.keys(action.payload);
-        keys.forEach((key) => {
+        for(const key of keys) {
           //@ts-expect-error
-          if (state.scenes[id][key] != action.payload[key]) {
+          if (state.scenes[id][key] !== action.payload[key]) {
             //@ts-expect-error
             state.scenes[id][key] = action.payload[key];
           }
-        });
+        };
       }
     },
     updateChapter: (state, action: PayloadAction<Partial<Chapter>>) => {
       if (action.payload.id) {
         state.chapters[action.payload.id] = {
           ...state.chapters[action.payload.id],
+          ...action.payload,
+        };
+      }
+    },
+    updateArc: (state, action: PayloadAction<Partial<Arc>>) => {
+      if (action.payload.id) {
+        state.arcs[action.payload.id] = {
+          ...state.arcs[action.payload.id],
+          ...action.payload,
+        };
+      }
+    },
+    updateBook: (state, action: PayloadAction<Partial<Book>>) => {
+      if (action.payload.id) {
+        state.books[action.payload.id] = {
+          ...state.books[action.payload.id],
           ...action.payload,
         };
       }
@@ -128,8 +207,7 @@ export const globalSlice = createSlice({
       delete state.plotPoints[action.payload.plotpointId];
     },
     createPlotPoint: (state, action: PayloadAction<{}>) => {
-      const newId = state.counters.plotPointSequence;
-      state.counters.plotPointSequence++;
+      const newId = short.generate().toString();
       state.plotPoints[newId] = {
         id: newId,
         summary: "",
@@ -139,7 +217,7 @@ export const globalSlice = createSlice({
     updatePlotpoint: (
       state,
       action: PayloadAction<{
-        id: number;
+        id: string;
         title?: string;
         summary?: string;
       }>
@@ -152,7 +230,7 @@ export const globalSlice = createSlice({
     addPlotPointToScene: (
       state,
       action: PayloadAction<{
-        sceneId: number;
+        sceneId: string;
         plotpointId: number;
         action: string;
       }>
@@ -165,7 +243,7 @@ export const globalSlice = createSlice({
     removePlotPointFromScene: (
       state,
       action: PayloadAction<{
-        sceneId: number;
+        sceneId: string;
         plotpointId: number;
         action: string;
       }>

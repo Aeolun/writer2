@@ -4,7 +4,7 @@ import dirtree from "directory-tree";
 import { TreeNode } from "../../lib/types";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const path = process.env.IMAGE_PATH;
+  const path = req.body.path;
   const tree = dirtree(path || "");
 
   var collator = new Intl.Collator(undefined, {

@@ -34,6 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-story.json
+stories/neverland.json
 *.sqlite
 .idea
