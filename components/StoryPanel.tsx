@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from "react";
+import React, {useState, Suspense, useCallback} from "react";
 import { Scene, storyActions } from "../lib/slices/story";
 import {
   Box,
@@ -11,37 +11,85 @@ import {
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
-import {selectedSceneSelector} from "../lib/selectors/selectedSceneSelector";
+import {selectedObjectSelector} from "../lib/selectors/selectedObjectSelector";
+import axios from "axios";
 
 export const StoryPanel = () => {
-  const scene = useSelector(selectedSceneSelector);
+  const scene = useSelector(selectedObjectSelector);
+  const [isEditable, setIsEditable] = useState(true)
   const [plotPoint, setPlotPoint] = useState<string>();
   const [action, setAction] = useState<string>("mentioned");
   const plotpoints = useSelector(plotpointSelector);
+
+  if (scene?.type !== 'scene') {
+    return null;
+  }
+
+  const help = useCallback((helpKind: string, extra = false) => {
+    setIsEditable(false)
+    axios.post('/api/help', {
+      kind: helpKind,
+      text: scene?.data.text,
+    }).then((res) => {
+      if (extra) {
+        dispatch(storyActions.updateScene({
+          id: scene?.id,
+          extra: res.data.text
+        }));
+      } else {
+        dispatch(
+          storyActions.updateScene({
+            id: scene?.id,
+            text: `${scene?.data.text}\n\n${res.data.text}`,
+          })
+        );
+      }
+
+      setIsEditable(true)
+    })
+  }, [scene])
 
   const dispatch = useDispatch();
 
   return (
     <Flex flexDirection={"column"} height={"100%"}>
-      <Textarea
-        width={"100%"}
-        flex={1}
-        onChange={(e) => {
-          dispatch(
-            storyActions.updateScene({
-              id: scene?.id,
-              text: e.target.value,
-            })
-          );
-        }}
-        value={scene?.text}
-      />
 
+      <Flex flexDirection={"row"} flex={1} height={'100%'} justifyContent={'space-around'}>
+        <Textarea
+          maxWidth={"40em"}
+          isDisabled={!isEditable}
+          height={"100%"}
+          flex={1}
+          onChange={(e) => {
+            dispatch(
+              storyActions.updateScene({
+                id: scene?.id,
+                text: e.target.value,
+              })
+            );
+          }}
+          value={scene?.data.text}
+        />
+        {scene?.data.extra ? <Textarea maxWidth={"40em"} flex={1} height={"100%"} value={scene.data.extra} onChange={e => {
+          dispatch(storyActions.updateScene({
+            id: scene?.id,
+            extra: e.target.value
+          }))
+        }} /> : null }
+      </Flex>
+      <Box>
+        <Button colorScheme={'blue'} onClick={() => {
+          help('next_paragraph')
+        }}>[AI] Next Paragraph</Button>
+        <Button colorScheme={'blue'} onClick={() => {
+          help('critique', true)
+        }}>[AI] Critique</Button>
+      </Box>
       <Box>
         <Heading size={"md"} mt={4}>
           Plot Points
         </Heading>
-        {scene?.plot_point_actions.map((link) => {
+        {scene?.data.plot_point_actions.map((link) => {
           const point = plotpoints[link.plot_point_id];
           return (
             <div key={link.plot_point_id}>

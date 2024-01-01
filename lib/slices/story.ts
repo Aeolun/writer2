@@ -9,41 +9,38 @@ export interface Character {
   age: string;
 }
 
-export interface Book {
+export type TreeData = {
   id: string;
   title: string;
-  summary: string;
+  open: boolean;
+  parent_id?: string;
   sort_order: number;
+  extra?: string;
+}
+
+export interface Book extends TreeData {
+  summary: string;
   start_date: string;
   arcs: string[];
 }
 
-export interface Arc {
-  id: string;
-  title: string;
+export interface Arc extends TreeData {
   summary: string;
-  sort_order: number;
   start_date: string;
   chapters: string[];
 }
 
-export interface Chapter {
-  id: string;
-  title: string;
+export interface Chapter extends TreeData {
   summary: string;
-  sort_order: number;
   start_date: string;
   scenes: string[];
 }
 
-export interface Scene {
-  id: string;
-  title: string;
+export interface Scene extends TreeData {
   summary: string;
   text: string;
-  sort_order: number;
   plot_point_actions: {
-    plot_point_id: number;
+    plot_point_id: string;
     action: string;
   }[];
 }
@@ -60,21 +57,21 @@ export interface StoryState {
     mangaChapterPath?: string;
   }
   characters: Record<string, Character>;
-  books: Record<string, Book>;
-  arcs: Record<string, Arc>;
-  chapters: Record<string, Chapter>;
+  book: Record<string, Book>;
+  arc: Record<string, Arc>;
+  chapter: Record<string, Chapter>;
   plotPoints: Record<string, PlotPoint>;
-  scenes: Record<string, Scene>;
+  scene: Record<string, Scene>;
 }
 
 const initialState: StoryState = {
   name: undefined,
-  chapters: {},
-  books: {},
-  arcs: {},
+  chapter: {},
+  book: {},
+  arc: {},
   characters: {},
   plotPoints: {},
-  scenes: {},
+  scene: {},
 };
 
 export const globalSlice = createSlice({
@@ -88,7 +85,55 @@ export const globalSlice = createSlice({
         //@ts-expect-error
         state[storyKey] = action.payload[storyKey];
       }
-
+    },
+    toggleTreeItem: (state, action: PayloadAction<{id: string}>) => {
+      const id = action.payload.id;
+      if (id) {
+        const keys = ['book', 'arc', 'chapter', 'scene'];
+        for(const key of keys) {
+          const stateKey = key as 'book' | 'arc' | 'chapter' | 'scene';
+          if (state[stateKey][id]) {
+            state[stateKey][id].open = !state[stateKey][id].open;
+          }
+        };
+      }
+    },
+    deleteTreeItem: (state, action: PayloadAction<{id: string}>) => {
+      const id = action.payload.id;
+      if (id) {
+        const keys = ['book', 'arc', 'chapter', 'scene'];
+        for(const key of keys) {
+          const stateKey = key as 'book' | 'arc' | 'chapter' | 'scene';
+          // remove from parent if it exists
+          if (state[stateKey][id]) {
+            if (stateKey === 'arc') {
+              const bookId = state[stateKey][id].parent_id;
+              if (bookId) {
+                state.book[bookId].arcs = state.book[bookId].arcs.filter((arcId) => {
+                  return arcId !== id;
+                });
+              }
+            }
+            if (stateKey === 'chapter') {
+              const arcId = state[stateKey][id].parent_id;
+              if (arcId) {
+                state.arc[arcId].chapters = state.arc[arcId].chapters.filter((chapterId) => {
+                  return chapterId !== id;
+                });
+              }
+            }
+            if (stateKey === 'scene') {
+              const chapterId = state[stateKey][id].parent_id;
+              if (chapterId) {
+                state.chapter[chapterId].scenes = state.chapter[chapterId].scenes.filter((sceneId) => {
+                  return sceneId !== id;
+                });
+              }
+            }
+            delete state[stateKey][id];
+          }
+        };
+      }
     },
     newStory: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
@@ -106,60 +151,91 @@ export const globalSlice = createSlice({
     },
     createChapter: (state, action: PayloadAction<{ arcId: string }>) => {
       const newId = short.generate().toString();
-      state.chapters[newId] = {
+      state.chapter[newId] = {
         id: newId,
         title: "New Chapter",
         summary: "",
         scenes: [],
-        sort_order: 0,
+        open: false,
+        sort_order: Object.keys(state.chapter).length+1,
+        parent_id: action.payload.arcId,
         start_date: "",
       };
+      state.arc[action.payload.arcId].chapters.push(newId);
     },
     createBook: (state) => {
       const newId = short.generate().toString();
-      state.books[newId] = {
+      state.book[newId] = {
         id: newId,
         title: "New Book",
         summary: "",
         arcs: [],
-        sort_order: 0,
+        open: false,
+        sort_order: Object.keys(state.book).length+1,
+        parent_id: undefined,
         start_date: "",
       };
     },
     createArc: (state, action: PayloadAction<{ bookId: string }>) => {
       const newId = short.generate().toString();
-      state.arcs[newId] = {
+      state.arc[newId] = {
         id: newId,
         title: "New Arc",
         summary: "",
         chapters: [],
-        sort_order: 0,
+        open: false,
+        sort_order: Object.keys(state.arc).length+1,
+        parent_id: action.payload.bookId,
         start_date: "",
       };
+      state.book[action.payload.bookId].arcs.push(newId);
     },
     createScene: (state, action: PayloadAction<{ chapterId: string }>) => {
       const newId = short.generate().toString();
-      state.scenes[newId] = {
+      state.scene[newId] = {
         id: newId,
         title: "New Scene",
         summary: "",
         plot_point_actions: [],
+        open: false,
         text: "",
-        sort_order: 0,
+        sort_order: Object.keys(state.scene).length+1,
+        parent_id: action.payload.chapterId,
       };
-      state.chapters[action.payload.chapterId].scenes.push(newId);
+      state.chapter[action.payload.chapterId].scenes.push(newId);
     },
-    deleteScene: (
-      state,
-      action: PayloadAction<{
-        sceneId: string;
-        chapterId: string;
-      }>
-    ) => {
-      state.chapters[action.payload.chapterId].scenes = state.chapters[
-        action.payload.chapterId
-      ].scenes.filter((sId) => sId !== action.payload.sceneId);
-      delete state.scenes[action.payload.sceneId];
+    sortItem: (state, action: PayloadAction<{ id: string; kind: 'scene' | 'arc' | 'book' | 'chapter'; direction: 'up' | 'down' }>) => {
+      const id = action.payload.id;
+      const kind = action.payload.kind;
+      const direction = action.payload.direction;
+      if (id) {
+        if (state[kind][id]) {
+          // find sorted items and then switch
+          const sortedItems = Object.values(state[kind]).filter((item) => {
+            return item.parent_id === state[kind][id].parent_id;
+          }).sort((a, b) => {
+            return a.sort_order - b.sort_order;
+          });
+          const currentIndex = sortedItems.findIndex((item) => {
+            return item.id === id;
+          });
+          const currentSortOrder = sortedItems[currentIndex].sort_order;
+          console.log(currentIndex, currentSortOrder, sortedItems.length);
+          if (direction === 'up') {
+            if (currentIndex > 0) {
+              sortedItems[currentIndex].sort_order = sortedItems[currentIndex - 1].sort_order;
+              sortedItems[currentIndex - 1].sort_order = currentSortOrder;
+            }
+          } else {
+            if (currentIndex < sortedItems.length - 1) {
+              sortedItems[currentIndex].sort_order = sortedItems[currentIndex + 1].sort_order;
+              sortedItems[currentIndex + 1].sort_order = currentSortOrder;
+            }
+          }
+        } else {
+          throw new Error('Invalid id');
+        }
+      }
     },
     updateScene: (state, action: PayloadAction<Partial<Scene>>) => {
       const id = action.payload.id;
@@ -176,24 +252,24 @@ export const globalSlice = createSlice({
     },
     updateChapter: (state, action: PayloadAction<Partial<Chapter>>) => {
       if (action.payload.id) {
-        state.chapters[action.payload.id] = {
-          ...state.chapters[action.payload.id],
+        state.chapter[action.payload.id] = {
+          ...state.chapter[action.payload.id],
           ...action.payload,
         };
       }
     },
     updateArc: (state, action: PayloadAction<Partial<Arc>>) => {
       if (action.payload.id) {
-        state.arcs[action.payload.id] = {
-          ...state.arcs[action.payload.id],
+        state.arc[action.payload.id] = {
+          ...state.arc[action.payload.id],
           ...action.payload,
         };
       }
     },
     updateBook: (state, action: PayloadAction<Partial<Book>>) => {
       if (action.payload.id) {
-        state.books[action.payload.id] = {
-          ...state.books[action.payload.id],
+        state.book[action.payload.id] = {
+          ...state.book[action.payload.id],
           ...action.payload,
         };
       }
@@ -231,11 +307,11 @@ export const globalSlice = createSlice({
       state,
       action: PayloadAction<{
         sceneId: string;
-        plotpointId: number;
+        plotpointId: string;
         action: string;
       }>
     ) => {
-      state.scenes[action.payload.sceneId].plot_point_actions.push({
+      state.scene[action.payload.sceneId].plot_point_actions.push({
         plot_point_id: action.payload.plotpointId,
         action: action.payload.action,
       });
@@ -244,11 +320,11 @@ export const globalSlice = createSlice({
       state,
       action: PayloadAction<{
         sceneId: string;
-        plotpointId: number;
+        plotpointId: string;
         action: string;
       }>
     ) => {
-      state.scenes[action.payload.sceneId].plot_point_actions = state.scenes[
+      state.scene[action.payload.sceneId].plot_point_actions = state.scene[
         action.payload.sceneId
       ].plot_point_actions.filter((i) => {
         return (

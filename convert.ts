@@ -5,10 +5,10 @@ import * as fs from "fs";
 const lite = new sqlite("./manga.sqlite");
 
 const story: StoryState = {
-  chapters: {},
+  chapter: {},
   characters: {},
   plotPoints: {},
-  scenes: {},
+  scene: {},
   counters: {
     chapterSequence: 0,
     sceneSequence: 0,
@@ -72,11 +72,11 @@ chapters.forEach((chapter) => {
       });
     });
 
-    story.scenes[newSceneObject.id] = newSceneObject;
+    story.scene[newSceneObject.id] = newSceneObject;
     newChapterObject.scenes.push(newSceneObject.id);
   });
 
-  story.chapters[newChapterObject.id] = newChapterObject;
+  story.chapter[newChapterObject.id] = newChapterObject;
 });
 
 const characters = query("SELECT * FROM character");

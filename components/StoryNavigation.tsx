@@ -1,22 +1,15 @@
 import React, { useState, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { chaptersSelector } from "../lib/selectors/chapterSelector";
-import { selectedChapterSelector } from "../lib/selectors/selectedChapterSelector";
-import { globalActions } from "../lib/slices/global";
-import { selectedSceneSelector } from "../lib/selectors/selectedSceneSelector";
 import { storyActions } from "../lib/slices/story";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { scenesSelector } from "../lib/selectors/scenesSelector";
 import { arcSelector } from "../lib/selectors/arcSelector";
 import { bookSelector } from "../lib/selectors/bookSelector";
-import {RootState} from "../lib/store";
-import { Book, Arc3d, KeyframeAlignVertical, Keyframes, Keyframe } from 'iconoir-react';
+import { Book, Arc3d, KeyframeAlignVertical, Plus, Minus, Keyframes, Keyframe } from 'iconoir-react';
+import { NavItem } from "./NavItem";
 
 export const StoryNavigation = (props: {}) => {
-  const selectedChapter = useSelector(selectedChapterSelector);
-  const selectedScene = useSelector(selectedSceneSelector);
-  const selectedBook = useSelector((store: RootState) => store.base.currentBook);
-  const selectedArc = useSelector((store: RootState) => store.base.currentArc);
   const chapters = useSelector(chaptersSelector);
   const scenes = useSelector(scenesSelector);
   const books = useSelector(bookSelector);
@@ -25,125 +18,51 @@ export const StoryNavigation = (props: {}) => {
   const dispatch = useDispatch();
 
   return (
-    <Box width={"14%"} overflow={"auto"}>
-      {Object.values(books).map((book) => {
+    <Box width={"18%"} overflow={"auto"}>
+      {Object.values(books).sort((a, b) => { return a.sort_order > b.sort_order ? 1 : -1 }).map((book) => {
+        const bookArcs = book.arcs.map((arcId) => {
+          return arcs[arcId];
+        });
         return (
           <Fragment key={book.id}>
-            <Flex
-              gap={2}
-              alignItems={"center"}
-              bg={book.id === selectedBook ? "green.500" : "green.300"}
-              _hover={{ bg: "green.600" }}
-              cursor={"pointer"}
-              p={1}
-              onClick={() => {
-                dispatch(globalActions.setSelectedEntity('book'))
-                dispatch(globalActions.setCurrentBook(book.id));
-                dispatch(globalActions.setCurrentChapter(undefined));
-                dispatch(globalActions.setCurrentScene(undefined));
-              }}
-            >
-              <Book display={'inline-block'} /> {book.title}
-            </Flex>
-            {selectedBook === book.id ? (
+            <NavItem id={book.id} open={book.open} kind={'book'} icon={<Book />} name={`${book.title}`} />
+            {book.open ? (
               <Box
                 borderLeftColor={"green.100"}
                 borderLeftWidth={"8px"}
                 borderLeftStyle={"solid"}
               >
                 <Box>
-                {Object.values(arcs).map((arc) => {
+                {bookArcs.sort((a, b) => { return a.sort_order > b.sort_order ? 1 : -1 }).map((arc) => {
+                  const arcChapters = arc.chapters.map((chapterId) => {
+                    return chapters[chapterId];
+                  });
                   return (
                     <Fragment key={arc.id}>
-                      <Flex
-                        gap={2}
-                        alignItems={"center"}
-                        bg={arc.id === selectedArc ? "green.500" : "green.300"}
-                        _hover={{ bg: "green.600" }}
-                        cursor={"pointer"}
-                        p={1}
-                        onClick={() => {
-                          dispatch(globalActions.setSelectedEntity('arc'))
-                          dispatch(globalActions.setCurrentArc(arc.id));
-                          dispatch(globalActions.setCurrentChapter(undefined));
-                          dispatch(globalActions.setCurrentScene(undefined));
-                        }}
-                      >
-                        <Arc3d /> {arc.title}
-                      </Flex>
-                      {selectedArc === arc.id ? (
+                      <NavItem id={arc.id} open={arc.open} kind={'arc'} icon={<Arc3d />} name={`${arc.title}`} />
+                      {arc.open ? (
                         <Box
                           borderLeftColor={"green.200"}
                           borderLeftWidth={"8px"}
                           borderLeftStyle={"solid"}
                         >
                           <Box>
-                          {Object.values(chapters).map((chapter) => {
+                          {arcChapters.sort((a, b) => { return a.sort_order > b.sort_order ? 1 : -1 }).map((chapter) => {
+                            const chapterScenes = chapter.scenes.map((sceneId) => {
+                              return scenes[sceneId];
+                            });
                             return (
                               <Fragment key={chapter.id}>
-                                <Flex
-                                  gap={2}
-                                  alignItems={"center"}
-                                  bg={
-                                    chapter.id === selectedChapter?.id ? "green.500" : "green.300"
-                                  }
-                                  _hover={{ bg: "green.600" }}
-                                  cursor={"pointer"}
-                                  p={1}
-                                  onClick={() => {
-                                    dispatch(globalActions.setSelectedEntity('chapter'))
-                                    dispatch(globalActions.setCurrentChapter(chapter.id));
-                                    dispatch(globalActions.setCurrentScene(undefined));
-                                  }}
-                                >
-                                  <Keyframes /> {chapter.title}
-                                </Flex>
-                                {selectedChapter?.id === chapter.id ? (
+                                <NavItem id={chapter.id} open={chapter.open} kind={'chapter'} icon={<Keyframes />} name={`${chapter.title}`} />
+                                {chapter.open ? (
                                   <Box
                                     borderLeftColor={"green.300"}
                                     borderLeftWidth={"8px"}
                                     borderLeftStyle={"solid"}
                                   >
-                                    {chapter.scenes.map((sceneId) => {
-                                      const scene = scenes[sceneId];
+                                    {chapterScenes.sort((a, b) => { return a.sort_order > b.sort_order ? 1 : -1 }).map((scene) => {
                                       return scene ? (
-                                        <Flex
-                                          gap={2}
-                                          alignItems={"center"}
-                                          key={scene.id}
-                                          bg={
-                                            scene.id === selectedScene?.id
-                                              ? "green.500"
-                                              : "green.400"
-                                          }
-                                          p={1}
-                                          _hover={{ bg: "green.600" }}
-                                          cursor={"pointer"}
-                                          onClick={() => {
-                                            dispatch(globalActions.setSelectedEntity('scene'))
-                                            dispatch(globalActions.setCurrentScene(scene.id));
-                                          }}
-                                        >
-                                          <Keyframe />
-                                          <div>
-                                            {scene.title} ({scene.text.split(" ").length})
-                                          </div>
-                                          <Button
-                                            ml={'auto'}
-                                            colorScheme={"red"}
-                                            size={"xs"}
-                                            onClick={() => {
-                                              dispatch(
-                                                storyActions.deleteScene({
-                                                  chapterId: chapter.id,
-                                                  sceneId: scene.id,
-                                                })
-                                              );
-                                            }}
-                                          >
-                                            Delete
-                                          </Button>
-                                        </Flex>
+                                        <NavItem id={scene.id} open={scene.open} kind={'scene'} icon={<Keyframe />} name={`${scene.title} (${scene.text.split(" ").length})`} />
                                       ) : null;
                                     })}
                                     <Button

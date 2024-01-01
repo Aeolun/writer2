@@ -7,10 +7,7 @@ export type StorySummary = {
 export interface GlobalState {
   selectedImageChapter?: string;
   imagePath?: string;
-  currentBook?: string;
-  currentArc?: string;
-  currentChapter?: string;
-  currentScene?: string;
+  currentId?: string;
   selectedEntity?: 'book' | 'arc' | 'chapter' | 'scene';
   storyLoaded: boolean;
   stories?: StorySummary[];
@@ -46,30 +43,12 @@ export const globalSlice = createSlice({
     ) => {
       state.imagePath = action.payload;
     },
-    setCurrentChapter: (
+    setCurrentId: (
       state: Draft<GlobalState>,
       action: PayloadAction<string | undefined>
     ) => {
-      state.currentChapter = action.payload;
-    },
-    setCurrentBook: (
-      state: Draft<GlobalState>,
-      action: PayloadAction<string | undefined>
-    ) => {
-      state.currentBook = action.payload;
-    },
-    setCurrentArc: (
-      state: Draft<GlobalState>,
-      action: PayloadAction<string | undefined>
-    ) => {
-      state.currentArc = action.payload;
-    },
-    setCurrentScene: (
-      state: Draft<GlobalState>,
-      action: PayloadAction<string | undefined>
-    ) => {
-      state.currentScene = action.payload;
-    },
+      state.currentId = action.payload;
+    }
   },
 });
 

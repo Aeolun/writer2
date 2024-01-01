@@ -1,5 +1,5 @@
 import { RootState } from "../store";
 
 export const scenesSelector = (state: RootState) => {
-  return state.story.scenes;
+  return state.story.scene;
 };

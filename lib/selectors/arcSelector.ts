@@ -1,5 +1,5 @@
 import { RootState } from "../store";
 
 export const arcSelector = (state: RootState) => {
-  return state.story.arcs;
+  return state.story.arc;
 };

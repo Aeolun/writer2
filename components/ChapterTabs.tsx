@@ -2,18 +2,20 @@ import {FormControl, FormLabel, Input, Tab, TabList, TabPanel, TabPanels, Tabs, 
 import {storyActions} from "../lib/slices/story";
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {selectedChapterSelector} from "../lib/selectors/selectedChapterSelector";
+
+import {selectedObjectSelector} from "../lib/selectors/selectedObjectSelector";
 
 export const ChapterTabs = () => {
-  const chapterObj = useSelector(selectedChapterSelector);
+  const chapterObj = useSelector(selectedObjectSelector);
   const dispatch = useDispatch();
 
-  return chapterObj ? <Tabs>
+  return chapterObj && chapterObj.type === 'chapter' ? <Tabs>
     <TabList>
       <Tab>Overview</Tab>
     </TabList>
     <TabPanels>
       <TabPanel>
+        <div>{chapterObj?.data.sort_order}</div>
         <FormControl>
           <FormLabel>Title</FormLabel>
           <Input
@@ -26,7 +28,7 @@ export const ChapterTabs = () => {
                 })
               );
             }}
-            value={chapterObj.title}
+            value={chapterObj.data.title}
           />
         </FormControl>
         <FormControl>
@@ -43,7 +45,7 @@ export const ChapterTabs = () => {
             }}
             placeholder="summary"
             height={"300px"}
-            value={chapterObj.summary}
+            value={chapterObj.data.summary}
           />
         </FormControl>
         <FormControl>
@@ -59,7 +61,7 @@ export const ChapterTabs = () => {
               );
             }}
             placeholder={"start date"}
-            value={chapterObj.start_date}
+            value={chapterObj.data.start_date}
           />
         </FormControl>
       </TabPanel>

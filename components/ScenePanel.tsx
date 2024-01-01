@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectedSceneSelector } from "../lib/selectors/selectedSceneSelector";
 import { Input, Textarea } from "@chakra-ui/react";
 import { storyActions } from "../lib/slices/story";
+import {selectedObjectSelector} from "../lib/selectors/selectedObjectSelector";
 
 export const ScenePanel = () => {
-  const selectedScene = useSelector(selectedSceneSelector);
+  const selectedScene = useSelector(selectedObjectSelector);
   const dispatch = useDispatch();
 
-  return selectedScene ? (
+  return selectedScene && selectedScene.type === 'scene' ? (
     <>
       <div>
         <Input
@@ -21,7 +21,7 @@ export const ScenePanel = () => {
               })
             );
           }}
-          value={selectedScene.title}
+          value={selectedScene.data.title}
         />
       </div>
       <Textarea
@@ -36,7 +36,7 @@ export const ScenePanel = () => {
         }}
         placeholder="summary"
         style={{ width: "100%" }}
-        value={selectedScene.summary}
+        value={selectedScene.data.summary}
       />
     </>
   ) : null;

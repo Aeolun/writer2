@@ -1,1 +1,367 @@
-{"name":"isekai","chapters":{"aCgUoLg3P6Nue9CRpinNMY":{"id":"aCgUoLg3P6Nue9CRpinNMY","title":"New Chapter","summary":"","scenes":["8pg6d6WbEhVAp4EaSF91vb"],"sort_order":0,"start_date":""}},"books":{"jF1eYyBWvmsbGLrXuU89qs":{"id":"jF1eYyBWvmsbGLrXuU89qs","title":"Book 1: The Book of Days","summary":"","arcs":[],"sort_order":0,"start_date":""}},"arcs":{"ni1YGUsZmd32EY7atCbFik":{"id":"ni1YGUsZmd32EY7atCbFik","title":"New Arc","summary":"","chapters":[],"sort_order":0,"start_date":""}},"characters":{},"plotPoints":{"0":{"id":0,"summary":"test","title":"test"}},"scenes":{"8pg6d6WbEhVAp4EaSF91vb":{"id":"8pg6d6WbEhVAp4EaSF91vb","title":"Defeats the list of everything","summary":"","plot_point_actions":[],"text":"This story is the defeat of the dark loard.","sort_order":0}},"counters":{"characterSequence":0,"chapterSequence":0,"sceneSequence":0,"plotPointSequence":1}}
+{
+  "name": "isekai",
+  "chapter": {
+    "aCgUoLg3P6Nue9CRpinNMY": {
+      "id": "aCgUoLg3P6Nue9CRpinNMY",
+      "title": "Arrival",
+      "summary": "Emma is suddenly transported to a glade in a forest from a bookshop, and debates how she got there. She has many theories due to reading many novels where the character is reincarnated into a different world before. She theorizes on the existence of gods and magic.",
+      "scenes": [
+        "8pg6d6WbEhVAp4EaSF91vb"
+      ],
+      "sort_order": 1,
+      "start_date": "Day 1",
+      "open": false,
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "heFYmPqiBmD3Be56u7t43R": {
+      "id": "heFYmPqiBmD3Be56u7t43R",
+      "title": "Setting out",
+      "summary": "Emma leaves the spot where she arrived and travels through the forest she arrived in with literally nothing on her person, and searches for some form of civilization. She gets wounded by an unknown animal while search for water, then ultimately finds a road that she hopes will lead her to other people.",
+      "scenes": [
+        "6vMpA1oWRoM18ihHHCJ9XB",
+        "e1kszituyzbWyhoQE6xiTL",
+        "31SjfnzuLTmqRKGsTY1CFP",
+        "tH3u66c4ug9VzXD5cWMMrE",
+        "9JqBMwp43gxneR94eYmdT1",
+        "eVq4FLhXXyiALtQdp81a6D",
+        "wydTyU3F7UXTwMWjBXiEEg",
+        "oxL5rXJDrNf7KmwqiEpZPr",
+        "cHZCy2iL2jDSe5NMFDmhTU",
+        "oumhjHNqVxXYdyKyJreyp9"
+      ],
+      "sort_order": 2,
+      "start_date": "Day 1",
+      "open": false,
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "qf34AGC3LyoV5zVcqeZeKq": {
+      "id": "qf34AGC3LyoV5zVcqeZeKq",
+      "title": "The Long Road",
+      "summary": "Emma sets out on the road she has found, hoping it will lead her to civilization. Unfortunately it takes her too long, and the wound she got earlier gets infected. She eventually sinks down at the side of the road sick and exhausted, and nearly gives up on living. When a rabbit comes up to her as if she's already dead she snaps and somehow manages to kill it, which gives her the sustenance she needs to continue.",
+      "scenes": [
+        "4zPHdzqpNapEgRsP9jPyqZ",
+        "5gFUDkB5yGDV3pPcMe1pwU",
+        "hr2C3yMt3JfC9FmXUQ1VaE",
+        "hbeja2ZkKzjuQDbV6nb5rd"
+      ],
+      "sort_order": 3,
+      "start_date": "",
+      "open": false,
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "jE4iPVZAci1YvBMrEHwfvh": {
+      "id": "jE4iPVZAci1YvBMrEHwfvh",
+      "title": "Hunger",
+      "summary": "Emma tries killing/catching another animal, but though she tries multiple methods, fails repeatedly. Though she manages to find another source of water, she falls prey to hunger/starvation again.",
+      "scenes": [],
+      "sort_order": 4,
+      "start_date": "",
+      "open": false,
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "bDy25LaiwaJ6FY8eGtBrgs": {
+      "id": "bDy25LaiwaJ6FY8eGtBrgs",
+      "title": "People",
+      "summary": "Emma finally reaches a logging village at the end of the road she was following. This is so anachronistic that she quickly reaches the conclusion that she's really not in her own world any more. She's half dead at this point, and covered in blood from her ordeal, but doesn’t speak their language, and immediately gets chased away because she looks like a foreigner from a country the villagers are not quite yet at war with and frequently raid the area.",
+      "scenes": [],
+      "sort_order": 5,
+      "start_date": "",
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "ocbYrbWT7q7fLMpKqSXzWo": {
+      "id": "ocbYrbWT7q7fLMpKqSXzWo",
+      "title": "Uncertain",
+      "summary": "Emma observes the village from a distance while she debates what to do. They are preparing for an attack since they believe Emma to be part of some raiding party force. She tries to approach them again but it shot at and wounded by an arrow. Wonders how people can be so prejudiced.",
+      "scenes": [],
+      "sort_order": 6,
+      "start_date": "",
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "wadrBrtBKaBvQKo2dKwYRK": {
+      "id": "wadrBrtBKaBvQKo2dKwYRK",
+      "title": "Run",
+      "summary": "Emma flees from the village and despite some mixed feelings about the theft, she feels it's only a little bit bad. The villagers disagree and chase her though, and she eventually gets cornered and caught.\n",
+      "scenes": [],
+      "sort_order": 8,
+      "start_date": "",
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "tyqVAbPeWkTKGiqrzZaRBh": {
+      "id": "tyqVAbPeWkTKGiqrzZaRBh",
+      "title": "Justice",
+      "summary": "The villagers don't have the courage to do anything more, so Emma is brought back to the village, where she is locked in an outhouse. The village leaders debate what to do with her. People come to see/laugh at the wild woman. She resolves to escape, but has no opportunity to. One man that she recognizes as the village doctor comes to treat her infection with a poultice.\n",
+      "scenes": [],
+      "sort_order": 9,
+      "start_date": "",
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "6mQXMXzQazbLbTrvdBTrwF": {
+      "id": "6mQXMXzQazbLbTrvdBTrwF",
+      "title": "Prisoner",
+      "summary": "A caravan with guards, and a single magician transporting a load of lumber comes through and the villagers dump Emma on them. She goes along peaceably, but finds them rude and inhuman towards people that do not look similar, though they do not overly mistreat her because she needs to arrive alive to be interrogated. The usage of magic finally confirms her suspicions that she's really in a different world.",
+      "scenes": [],
+      "sort_order": 10,
+      "start_date": "",
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "ujaz9k78PNpNMWQ7H1gPy9": {
+      "id": "ujaz9k78PNpNMWQ7H1gPy9",
+      "title": "Attacked",
+      "summary": "A group of bandits attacks the caravan and kills the guards. They bring Emma for ambiguous reasons. She's distressed about this, but does not want to be killed.",
+      "scenes": [],
+      "sort_order": 11,
+      "start_date": "",
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "iFcAJZD71xAstQd7GhLeCT": {
+      "id": "iFcAJZD71xAstQd7GhLeCT",
+      "title": "Death",
+      "summary": "One bandit does not like the idea of Emma being with them due to being a foreigner, and tries to kill her without telling anyone. Emma manages to hit him with a rock to the head, then stab him with his own knife. Emma looks at the corpse and wonders what this world is doing to her. She takes most of the thief's clothes and gear, even though she has only a vague idea of how to use any of it.",
+      "scenes": [],
+      "sort_order": 12,
+      "start_date": "",
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "j6u5Ts6sBwBCbv94uMNJbK": {
+      "id": "j6u5Ts6sBwBCbv94uMNJbK",
+      "title": "First",
+      "summary": "Emma runs from the bandits. Again without food or water, she meets a traveler, and wants to ask them to help her, but he mistakes her for a bandit, and getting tired of this routine, she just gives up and goes along with it and robs him.\n",
+      "scenes": [],
+      "sort_order": 14,
+      "start_date": "",
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "essTiZr9DnWdbk7v6xUrEX": {
+      "id": "essTiZr9DnWdbk7v6xUrEX",
+      "title": "City",
+      "summary": "Following in the direction the latest traveler went, she finds a somewhat larger city. Now clothed and fed she actually gets to enter. For the first time in a while she washes, sleeps in a bed and reflects on everything that happened over the course of just two weeks.",
+      "scenes": [],
+      "sort_order": 15,
+      "start_date": "",
+      "parent_id": "ni1YGUsZmd32EY7atCbFik"
+    },
+    "fFh8VQrU3UKLUsTEtpM8o2": {
+      "id": "fFh8VQrU3UKLUsTEtpM8o2",
+      "title": "Never mind",
+      "summary": "After debating all her options, she realizes that there's nobody here that's going to help her but herself. The universe has essentially pointed a big middle finger at her, and if the villagers have condemned her as a villain without reason, there's no reason not to conform to their expectations. She realizes she's justifying an easy way out here, but she's sick, hungry, and not thinking very clearly. She sneaks into an empty house to retrieve the resources she needs, but after getting what she needs, is discovered.",
+      "scenes": [],
+      "open": false,
+      "sort_order": 7,
+      "parent_id": "ni1YGUsZmd32EY7atCbFik",
+      "start_date": ""
+    }
+  },
+  "book": {
+    "jF1eYyBWvmsbGLrXuU89qs": {
+      "id": "jF1eYyBWvmsbGLrXuU89qs",
+      "title": "Book 1: The Book of Days",
+      "summary": "",
+      "arcs": [
+        "ni1YGUsZmd32EY7atCbFik",
+        "rDzHZtPQgB93Xr81kTmt1n",
+        "kn8DnJuVVT9M2H5AwM7TGo"
+      ],
+      "sort_order": 1,
+      "start_date": "",
+      "open": true
+    }
+  },
+  "arc": {
+    "ni1YGUsZmd32EY7atCbFik": {
+      "id": "ni1YGUsZmd32EY7atCbFik",
+      "title": "Arc I",
+      "summary": "Emma, a 32 year old computer programmer, is suddenly transported to a different world, and has to somehow survive the circumstances of her arrival despite being ill suited to such a role. Her main source of knowledge is books she's read in the past, and while they certain contain some survival background knowledge, it's never been applied outside of her fantasies. She needs to survive her first days in the new world despite arriving without anything, not knowing the native language. She feels resentful against the universe for doing this to her, and over the course of this arc grows more apathetic to the effect her actions have on others or what would be acceptable in her previous world.",
+      "chapters": [
+        "aCgUoLg3P6Nue9CRpinNMY",
+        "heFYmPqiBmD3Be56u7t43R",
+        "qf34AGC3LyoV5zVcqeZeKq",
+        "jE4iPVZAci1YvBMrEHwfvh",
+        "bDy25LaiwaJ6FY8eGtBrgs",
+        "ocbYrbWT7q7fLMpKqSXzWo",
+        "wadrBrtBKaBvQKo2dKwYRK",
+        "tyqVAbPeWkTKGiqrzZaRBh",
+        "6mQXMXzQazbLbTrvdBTrwF",
+        "ujaz9k78PNpNMWQ7H1gPy9",
+        "iFcAJZD71xAstQd7GhLeCT",
+        "j6u5Ts6sBwBCbv94uMNJbK",
+        "essTiZr9DnWdbk7v6xUrEX",
+        "fFh8VQrU3UKLUsTEtpM8o2"
+      ],
+      "sort_order": 1,
+      "start_date": "",
+      "open": true,
+      "parent_id": "jF1eYyBWvmsbGLrXuU89qs",
+      "extra": "Based on the provided summaries, here are some possible concerns with the storyline:\n\n1. Adjustment to the new world: Emma, as a computer programmer, would likely struggle more with survival skills in the wilderness. Her ability to adapt tools or methods from scratch might not be sufficiently explained or it might seem implausible that she could do so quickly without prior experience or knowledge.\n\n2. Language barrier: The summary does not discuss how Emma eventually overcomes the language barrier. Is she learning the language? Does she find a magical means of communication? This could be a significant plot hole if not addressed.\n\n3. Infection and recovery: The progression and treatment of Emma's infection could be unrealistic. It's mentioned that a kind man treats her infection, but how is she treated, especially without a common language or proper medical supplies?\n\n4. Ethical development: Emma's moral compass seems to change quickly; she goes from being a victim to participating actively in thievery and violence with little reflection or ethical struggle shown in the summaries. Her development from pacifism to willingness to rob might need more exploration to appear believable.\n\n5. Magic and the different world: Emma theorizes about magic upon arrival, but her shock at seeing magic later might seem inconsistent. There could be a better build-up to her understanding and interaction with the world's magical components.\n\n6. Consistency with character skill set: Emma's ability to kill a rabbit without any training, escape proficient hunters, and effectively rob a traveler could be seen as inconsistencies unless her character has a backstory involving some form of training or inherent skill that explains these abilities.\n\n7. The villagers' response: The villagers' immediate hostility and assumption that Emma is part of an invading force may need more context or background to appear rational and not just a plot device to put her in conflict.\n\n8. Bandits' motives: The reason why the bandits would want to bring Emma along after attacking the caravan is ambiguous—is it for ransom, out of curiosity, or another reason? This may need to be clarified to avoid plot holes regarding their actions.\n\n9. Sudden shift in setting: The final summary \"Never mind\" implies Emma is now living in the forest and has adopted a thief-like lifestyle, which could be a jarring transition without proper explanation of how she got to this point and her motivations.\n\n10. Emma's ultimate goal: It's not clear what Emma's long-term objectives are. Is she trying to find a way back home, adapt to the new world, or something else? The storyline should reflect a progression toward an overarching goal for her character.\n\nIn summary, many of these concerns can be addressed with additional context, character development, and clarification of motives and abilities. Ensuring consistency in the world-building, character arcs, and narrative logic will help maintain the reader's suspension of disbelief throughout the story."
+    },
+    "rDzHZtPQgB93Xr81kTmt1n": {
+      "id": "rDzHZtPQgB93Xr81kTmt1n",
+      "title": "Arc 2",
+      "summary": "",
+      "chapters": [],
+      "sort_order": 2,
+      "start_date": "",
+      "open": true,
+      "parent_id": "jF1eYyBWvmsbGLrXuU89qs"
+    },
+    "kn8DnJuVVT9M2H5AwM7TGo": {
+      "id": "kn8DnJuVVT9M2H5AwM7TGo",
+      "title": "Arc 3",
+      "summary": "",
+      "chapters": [],
+      "sort_order": 3,
+      "start_date": "",
+      "parent_id": "jF1eYyBWvmsbGLrXuU89qs"
+    }
+  },
+  "characters": {},
+  "plotPoints": {
+    "0": {
+      "id": 0,
+      "summary": "test",
+      "title": "test"
+    }
+  },
+  "scene": {
+    "8pg6d6WbEhVAp4EaSF91vb": {
+      "id": "8pg6d6WbEhVAp4EaSF91vb",
+      "title": "Glade",
+      "summary": "Emma arrives in a new world",
+      "plot_point_actions": [],
+      "text": "I slowly look around at the slowly swaying trees all around me. There is a light breeze on my skin, which rustles the almost sickly green leaves. Sunlight shines through the sparse branches, some rays of light hitting the ground. My bare feet touch soft undergrowth.\n\nThis is most definitely _not_ the tiny hole-in-the-wall bookshop I was just recently standing in.\n\nI glance at my hand, which I vaguely remember I was just holding a book with, but it is empty now.\n\nA tiny bird jumps out of the underbrush, startling me. I take a step back, and the movement caused the animal to let out a loud caw and fly away.\n\nHow did I get here? \n\nI spin around, taking in the environment. Trees everywhere as far as the eye can see. I am standing in what can only be called a small glade. The trees reach across the sky, but don’t quite close it off. A large fallen log is just barely visible beneath a cover of moss. \n\nDefinitely not a shop, nor a city.\n\nBecause it’s the thing to do in these kinds of situations, I pinch myself. Then I realize that I have no idea if that ever helped me wake up from a dream before. This doesn’t feel like a dream though. I’ve just _instantly_ teleported somewhere else.\n\nAround this moment I notice that however I got here, nothing else with or on me made the transition. My book, my wallet, my clothes my coat. Everything is gone. At least the weather is pleasant, if it’d still been as cold as the winter wonderland I left this would have been quite unpleasant. Small favors I suppose.\n\nWhile the loss of my stuff is a mild distraction. It is much more baffling what has happened. I just can’t understand. My mind keeps spinning in circles, saying “I teleported somewhere else.” which is obviously about as helpful as saying “The sky is blue.” Immediately evident, and not of any particular note.\n\nI feel like that thought might have set a flag, so I glance up at the sky. Still blue.\n\nRight. So I am somewhere else, and I got here in an instant. Beyond the stuff I read in books and stories, I can not think of any reasonable explanation for that happening. Maybe that is wishful thinking. Maybe I have amnesia? All my other memories seem intact and consistent, but then, there is no way I would know if they aren’t.\n\nI can remember walking through the snowy street without any particular goal, trying to escape my cramped apartment and another day spent entirely inside. Deliberately taking the train to a part of town I’d never been before. \n\nI found the bookshop there. Oddly sandwiched between a bakery and a butcher. About a square meter and a half wide, about twenty deep, just one massively long line of bookcases with a counter at the end. Come to think of it, I don’t think I ever made it to the end to find out who was behind that counter.\n\nSomehow, no scenario I can think of —someone knocking me out and abducting me, me passing out and being taken to the hospital, maybe just falling asleep where I stood— would lead to this situation.\n\nWhile in some ways, this is much preferable to waking up in a hospital or a ditch, at least in those cases I could have made rough guesses as to what could have happened.\n\nRegardless, I am here. Maybe if I can determine where here is, I would have a better idea of how to proceed.\n\nThe sun is about halfway around in the sky, early afternoon.\n\nI start. That isn’t right. Just now in the bookshop it was just past noon, so not only had I been transported, I’d also skipped a few hours?\n\nI had another look at my surroundings.\n\nAll the trees and plants look familiar, even if I can’t say what species most of them are. Those trees over there are clearly oak trees, and the grass is clearly —I involuntarily shrug— grass. \n\nI realize I’m kind of excited about the idea that there is something unnatural about what happened. How cool would it be if I were finally the subject of the stories I love to read so much?\n\nIf I were to try and explain it rationally it would look like I’m suffering from some kind of amnesia. Something must explain the memory loss, and I ended up in a forest of all things. Apparently the distances involved are also at least large enough to move me across several timezones. From somewhere in the middle of the city surrounded by other people. I’m not sure if I could even reach a forest in the two hours that seem to have passed. Much less without being intercepted anywhere for acting unwell.\n\nAnother thought occurs to me. Could I be dead? I’m not sure why I’d suddenly die standing in a bookshop, but my imagination provides me with a disturbing number of ways I could have suddenly died without noticing anything.\n\nMy favorite is the exploding saucepan in the restaurant next door over. But maybe that wouldn’t have enough force, a pressure cooker then?\n\nBut if I’d died, why would I be here? If you died and got reincarnated, you generally also got some sort of explanation. And you didn’t usually re-appear as your old self. At least, I do not remember ever reading as such.\n\nWell, for good or bad, what I was always vaguely hoping would happen had actually happened to me!\n\nI reincarnated into a new world! \n\nFor some reason, as I have that thought, I am flooded with _absolute_ certainty that that is what has happened. It is extremely creepy. I’m confident I was uncertain just now, but it’s hard to even contemplate anything other than being reincarnated suddenly.\n\nI don’t remember dying, and I seem to have my own body. Same old pimples, same old… yeah. That’s actually mildly infuriating. Am I not supposed to… I dunno, get some cheat like power or something? Some god telling me that I’ve died, and that I have the choice of afterlife or reincarnation?\n\n_Where’s my stat screen anyway?_\n\nI try conjuring it up by a variety of taps, thoughts, and other methods I can remember reading or seeing about, but nothing happens.\n\nIf this is indeed a reincarnation kind of story, I is a sorely disappointing one. Who ever heard about being reincarnated and getting _nothing_ out the experience. Maybe I need to actually learn skills before I get any notifications?\n\nI step close to some white flowers that are growing here, and I try to identify them. \n\nOr I want to.\n\nI just look at them really intensely.\n\n“Identify”\n\nI call out, but nothing happens. \n\nGuess there are not going to be any convenient skills telling me what the flowers are either.\n\nI give up on the flowers, and switch to staring at some rocks lying nearby, I remember a story in which that triggered the skill evolution if you looked at them long and hard enough. To be fair, I believe that the character in question had just recently been born, and spent several weeks staring at rocks, so maybe it wouldn’t work for me. I don’t have any particular desire to spend weeks looking at rocks.\n\nWell, either no skills exist, or they are not forthcoming from my cursory investigation.\n\nI decide that I might as well get on with it. Standing around here is not going to do me any good. I look down at my spectacularly average, very naked 32 year old body and frown. I can hardly go walking around like this.\n\nPart of me always thought stuff like this would be fun for the shock value, but it’s easy to be fun when it stays in your imagination.\n\nI dismiss those thoughts. Some of my stuff must have made it’s way here with me, there is no way I’d reincarnate nude in a random forest.\n\nI spend a much longer time than I care to admit searching the glade before I accept that, yes, I have reincarnated nude in a random forest. \n\nLooking around the glade, I don’t see any particular location or direction that stands out to me as a sign I should go there either. You’d think they at least leave an obvious path.\n\nI shrug. _What’s a girl to do?_ I close my eyes, spin around, and point in a random direction. I’ll go that way. It’s not like I have any better idea of where to go.",
+      "sort_order": 1,
+      "parent_id": "aCgUoLg3P6Nue9CRpinNMY"
+    },
+    "6vMpA1oWRoM18ihHHCJ9XB": {
+      "id": "6vMpA1oWRoM18ihHHCJ9XB",
+      "title": "Attack",
+      "summary": "Emma walks through the forest and wonders whether she’s in the same world. She encounters a wild animal and gets gored through the thigh before she escapes.",
+      "plot_point_actions": [],
+      "text": "The forest is odd. It looks much like a forest back in my world, but it feels different. Ancient. Like it has been here for hundreds of years.\n\nThat feeling when walking through a forest that has just recently been planted, like, 50 to a 100 years ago, where it all just feels a little bit too perfect? The trees line up, sometimes there’s a nice embankment that just so happens to also be the end of the tree cover. Well, this felt _nothing_ like that.\n\nThe forest looks like it has been here since time immemorial, and will remain long after humanity had finally nuked themselves into oblivion.\n\nI don’t see a lot of large creatures, but then, it is still day. Now that I am under the cover of the trees, it is a bit harder to guess the time, but there is still plenty of light falling through the leaves, so I should have some time to get myself to…\n\nAnd I realize that I have no idea where I am going, or what I am going to do. I am naked, I have no food, no drink, and no idea  where anything is. It feels like a bucket of icy water poured over my head, and my good cheer from the idyllic environment evaporates.\n\nI spin around, trying to figure out where I’ve come from, but I have no idea of the exact direction I came from. The forest looks the same everywhere.\n\nWhat am I going to do? If I don’t find a safe place before the sun goes down, who knows that kind of animals I will encounter. There are no bears or wolves in the forests anywhere near my home, but I can practically guarantee that is not the case here, nothing and nobody lives here, so nobody would have exterminated them. Is there even something that could be considered a safe place? Even if I found somewhere safe from animals, I’d have to find water soon.\n\nUnless it starts raining I will have no way to hydrate myself, and while it won’t be pleasant, I can survive for quite a while without food. Suriving without water is not an option however. I wonder if there will be any dew on the plants in the morning that I can potentially tap, but honestly have no idea.\n\nI look at what is visible of the sky from here. Maybe I should try to make fire so someone can see the smoke and come rescue me? But a fire of a size that would get people to notice me would have a good chance of setting the forest ablaze. I might enjoy camping and making campfires to roast marshmallows, but this felt different.\n\nNo fire, I decide, maybe I can reconsider if nothing else works\n\nI start walking again, and am suddenly wondering if I am going around in circles. _How would I even know?_ I can make marks on trees or something, but what would I do that with? Then again, this forest is essentially untouched. I grab a random stick lying around on the ground and plant it straight up next to the nearest tree. It doesn’t feel very solid, so I hammer it in with a different and slightly flatter piece of wood. If I come past this tree again I’ll know.\n\nIt makes me feel marginally better to have some goal, even if it turns out to be pointless, so I keep hammering sticks next to all major trees I pass by. There certainly is an abundance of loose sticks and branches on the ground. Eventually I can see a trail of sticks streching quite a while back into the forest.\n\nMaybe I can make a shelter out of sticks? I don’t particularly want to sleep where all the animals can reach, but I’m not confident in not falling out of trees while asleep either.\n\nHanding that problem to future me, I keep my eyes out for anything, but mostly for some source of water. The animals may or may not not come, but I am _definitely_ going to die of thirst if I don’t find something to drink. Given how ancient this forest looks, at least I won’t have to worried about any water being polluted.\n",
+      "sort_order": 2,
+      "parent_id": "heFYmPqiBmD3Be56u7t43R"
+    },
+    "e1kszituyzbWyhoQE6xiTL": {
+      "id": "e1kszituyzbWyhoQE6xiTL",
+      "title": "Dark",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "I don’t find any water though, and neither do I find a tree that is either climbable or has a decent place to put myself to sleep. It’s like this forest is designed to frustrate me.\n\nI try to climb a few trees at first, but quickly realize that doing that without clothes on is a great way to get scrapes in all kinds of annoying places.\n\nI figure I’ll just wait until I find something that looks promising enough to risk it, but never do.\n\nThis forest is just an endless expanse of slightly rolling land brimming with trees. Most of them are decidious, though I notice a few pines here and there. I distract myself by gathering acorn shells, which this place seems to be brimming with.\n\nWhen I realize it is getting darker and darker, I go with my initial plan, and start gathering branches I can use to fashion myself a crude shelter. Since I haven’t really found any great place, I just started building right next to the largest tree I see. I figure that is at least one side that is marginally safer.\n\nIt takes me a lot longer than I expect, and by the time I finish the frame, it is nearly full dark. I know I am supposed to cover the frame with moss, which will keep me warm, but even if there is quite a lot of moss around here I can’t see how I’ll finish before it is fully dark.\n\nI at least make the attempt, and after a while I can’t see much of anything any more, but since I sort of know where the moss and my shelter are, I keep covering it mostly by feel until even that becomes impossible. I tried to suppress my shivers as I crawl into my shelter. And I realize I’ve forgotten the most important thing. To cover the floor with moss. I’m not entirely certain if it I am supposed to sit the moss on branches too, but it had something to do with not having all the heat leech out of me while asleep.\n\nSince I am dead tired by this point, and the tree I built the shelter next to is already more or less surrounded by moss, I figure it is fine, and drop my head down on the surprisingly soft moss. I grab a few nearby chunks and stack them to make an improvised cushion, then lie down to rest. \n\nI kind of expected sleeping naked on the forest floor to be more uncomfortable, and as I have that thought my eyes flutter shut.\n",
+      "sort_order": 3,
+      "parent_id": "heFYmPqiBmD3Be56u7t43R"
+    },
+    "31SjfnzuLTmqRKGsTY1CFP": {
+      "id": "31SjfnzuLTmqRKGsTY1CFP",
+      "title": "Search",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "I awake the next morning stiff and sore, but surprisingly warm. The sun has come up while I was still sleeping, and apparently the air heats up fast around here.\n\nI crawl out of the shelter, and note that aside from a few spots, that warmth has also been my enemy. I don’t see any kind of dew around, which makes finding some sort of fluid all the more important. I am hungry, thirsty, and I have neither food nor drink.\n\nAs much as I want to stay with my hastily constructed shelter, I can not. I have to go and find water. I consider whether I can follow any animals to water, and then remember that one had passed by my shelter just last night. \n\nWhatever it was does not appear to have left a whole trail, but I can find some indentations from what was probably a paw in the direction I think it went.\n\nThere are only two problems. The indentations are _much_ larger than I was hoping for, though maybe not as large as what I had imagined last night. And most of the forest floor, like the moss, isn’t very conductive to leaving any pawprints at all, so I could very easily lose the trail. I don’t believe for a moment that I can find any other signs of passage than the obvious depressions.\n\nIn the end I don’t have much choice though. Animals are my best bet for finding the local water source, and I have only one animal that I can actually follow now. I could try something at night, but I am even less confident of my chances then than now.\n\nSo I follow the prints.\n\nAs expected, I lose track of them within five minutes of starting my journey. I mark the last spot where I see the tracks with one of my sticks and continue on, assuming that they would continue in the same direction.\n\nAfter another ten minutes of walking I started to seriously wonder if that was true. But then I spotted another set of prints. I could not tell if they were from the same animal or another, but they seemed roughly the right size.\n\nI proceeded for a while, but eventually lost track again.\n\nThis time feeling more confident, I just went in the direction the lastest tracks had pointed. With no way to tell the time I couldn’t say how long I proceeded, I was really thirsty now. \n\nThe sun was near to it’s zenith when I accepted that I had completely lost track. I didn’t find any more tracks, or signs of animals, other than the birdsong all around me.\n\nI had a flash of inspiration, and suddenly wondered if I could make anything like a weapon. As focused as I’d been on water I hadn’t considered that I needed to eat as well, but my grumbling stomach was a painful reminder.\n\nWhile walking, I kept my eyes out for a sturdy straight stick to make a spear with, then when I had that, for something to work it with. Flint would have been great, but it was too much to expect to just find that lying around. Maybe if I bashed some gravel? That thought brought a smile to my face. Not that there was any gravel nearby either.\n\nI did find something like a rock with a more sharp than rounded edge.\n\nI tried sharpening my branch, but it was really slow going. After a much longer time than I care to admit, I realized I was being dumb, and just stuck the branch against a tree, and kicked the stupid thing in half, leaving a nice sharp edge at the break.\n\nAfter walking for a while more, I debated the wisdom of continuing. A day of not eating and drinking was making me weak and lightheaded. There was not much risk of stumbling and falling, then hurting myself, but at the same time I was just pointlessly wandering.\n\nIt took me a little longer to decide, but eventually I figured that a slightly better shelter and some rest would help me more. If my shelter was approached by an animal again tonight maybe I could follow them.\n\nConstructing the shelter was a lot more familiar than yesterday, but halfway through I noticed how much more tired I was feeling, and by the time I finished I couldn’t do anything more than crawl in, and pass out.",
+      "sort_order": 4,
+      "parent_id": "heFYmPqiBmD3Be56u7t43R"
+    },
+    "tH3u66c4ug9VzXD5cWMMrE": {
+      "id": "tH3u66c4ug9VzXD5cWMMrE",
+      "title": "Animals",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "I must have been more tired that I realized, because I suddenly startled awake, my heart beating in my throat. It was now pitch black, so it must be night. I involuntarily held my breath, but I couldn’t immediately hear anything. As I lay there a shiver passed through my body, the night air was distinctly colder, the insulation of my shelter must be helping though.\n\nThen I heard something rustling on the non-tree side of my shelter. With no light to see by, and my shelter mostly covered in moss anyway, I had no way to see what it was. There were more sounds in the forest, but nothing that I associated with immediate danger.\n\nThe padding of these paws sounded heavy, and they were getting closer, moving until they stopped right next to my shelter. \n\nI imagined something like a bear standing there. How it would be looking at the triangular structure and wondering where that came from, what that weird smell from inside was. It raising a huge paw and smashing the shelter and me with it.\n\nIt let out a deep snort.\n\nI blinked, and held my breath. Deathly afraid of what was standing outside. \n\nWhat seemed like 10 minutes passed. Then I heard the creature padding away, going in a different direction than it came from.\n\nI still did not dare move until what I estimated was 10 minutes after the sound had faded away. I didn’t imagine myself falling back asleep, both from fear and because now that the adrenaline was gone I was feeling quite cold. \n\nI had a small moment of panic thinking I was going to end up with hypothermia. But I wasn’t certain if getting out and jumping around for a bit in the middle of the night to heat up would be a great idea. The moss had actually gotten quite warm from me lying on top of it. My biggest issue was the triangular opening at the end of my shelter. I should have covered that somehow. ",
+      "sort_order": 5,
+      "parent_id": "heFYmPqiBmD3Be56u7t43R"
+    },
+    "9JqBMwp43gxneR94eYmdT1": {
+      "id": "9JqBMwp43gxneR94eYmdT1",
+      "title": "Reflection",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "I hugged my arms to my body, and as I lay there, contemplated how things had come to this. Did my family know where I was? I was living by myself, and we didn’t have extremely regular contact, so it would probably be some while before someone realized I was gone. Maybe my workplace would contact my parents if I didn’t show up for a few days?\n\nThey’d miss me, I was sure. It wasn’t like those stories where the outcast was thrown into a different world and nobody missed them or cared because they were an asshole that derived enjoyment in sacking people. Sure, I was introverted, maybe even a loner, but I like people in moderate doses. I certainly like my family, and I guess I’d always felt secretly guilty for thinking of the reincarnation thing as something I wanted to happen to me.\n\nThe world was pretty good to me. I wasn’t born in a war torn country. I never had to worry about food. I had what I consider to be a happy childhood. First world country and all that. Education. I could basically study what I wanted due to government subsidies. I studied computer science, though I always regretted it. Computers are great, but if I never have to write another algorithm it’ll be too soon. Still graduated though. Made for decent money, even if the job was often frustrating. Surprisingly enough, giving even a marginal shit is more than most everyone else so I was always regarded as ‘motivated’, whatever that means. Thirty-two years of life, and I’m still waiting for that magical moment when I realized I’m an adult now.\n\nAt least I’m old enough now to realize that that will probably never happen. Wonder if that’s how my grampa felt at the end of his life, like he’d never finished growing up.\n\nAnd now I’m here. I’m not quite sure if I’d done anything good or bad to deserve it. I didn’t think I was  a bad person, but certainly not a particularly good person either. My life was lived firmly for myself.\n\nWas this punishement, or reward? I could not figure it out right now, and with that idea spinning through my head I feel asleep once more.\n",
+      "sort_order": 6,
+      "parent_id": "heFYmPqiBmD3Be56u7t43R"
+    },
+    "eVq4FLhXXyiALtQdp81a6D": {
+      "id": "eVq4FLhXXyiALtQdp81a6D",
+      "title": "Wolves",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "I was getting used to passing out and waking up to darkness. I oddly enough wasn’t feeling hungry, but my parched throat was very much on my mind.\n\nThere came the noise of an animal sniffing around.\n\nI was almost happy to hear the sound.\n\nBut then I heard a low whine, that sounded almost like a dog. \n\nI froze. My eyes wide. Were these wolves?\n\nMore padding around outside my shelter. Definitely multiple animals this time.\n\nI should have closed the entrance!\n\nI held as still as I could.\n\nAt some point, I saw a shape passing in front of my shelter, but it was too dark to make out what it really was. Just a blur of slightly darker space illuminated by the weak moonshine.\n\nIt didn’t seem interested in the opening in particular though, and passed by.\n\nA little while later, I found the noises disappearing, and released a sigh of relief.\n\nI’d almost fallen asleep again, when I was brought back to awareness by a much more familiar noise. \n\nThe animal from yesterday, whatever it was, was back. It didn’t seem overly interested in the shelter again tonight though, and after what I imagined as a cursory inspection, passed by and went on it’s way.\n\nI was still tired, and maybe full of adrenaline from the earlier encounter, but this was my chance! I wasn’t sure why I felt like following this animal was safer than the shadows from before, but a even if I didn’t consider the fact there were multiple, this one seemed more benign.",
+      "sort_order": 7,
+      "parent_id": "heFYmPqiBmD3Be56u7t43R"
+    },
+    "wydTyU3F7UXTwMWjBXiEEg": {
+      "id": "wydTyU3F7UXTwMWjBXiEEg",
+      "title": "Smash",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "I slowly backed out of my shelter, and looked in the direction the sounds disappeared. Due to the moonlight reaching down here, I could just barely see the outline of trees well enough to not walk into them. \n\nWhen I listened carefully I could still hear the animal in the distance. So I kept following at whatever distance made the loudness of the moving animal stay the same. I had no idea how far it was, since I couldn’t see much by the light of the moon.\n\nI was stumbling, the dehydration was really getting to me now. With a whole day and most of a night without hydration, plus being active walking most of the day.\n\nI gripped my improvised spear tightly. Not sure if it would help or instantly snap, but deriving a lot of comfort from the idea of being armed regardless.\n\nAfter some indeterminate period of time, something changed. There was a slight slope down in the forest floor, and very soon I saw what appeared to be the reflection of the moon on water.\n\nI couldn’t restrain myself, and immediately sped up. I barrelled towards what I was now certain was a lake. I tripped and crashed to the ground once, but I picked myself up immediately, and ran on.\n\nWhen I reached the pond, a cursory glance showed no animals, and I quickly filled my cupped hands to bring a drink to my mouth. That first swallow was so sweet it might as well have been honey.\n\nThen I flinch as I hear an overpowering growl behind me.\n\nI spun back, but barely had the time to see some huge shadow the side of a house coming at me with glistening teeth. I threw myself out of the way, but a sharp pain erupted around my right thigh.\n\nI did not wait around to see what the animal was doing, and charged away as fast as I possibly could. Each step sending another jolt of agony down my leg. I was definitely bleeding. I could feel blood pouring down my leg to my foot, flung off as I swung my legs to propel myself forward.\n\nI glanced behind me, but I didn’t see the creature behind me. Maybe it was not giving chase?\n\nAs I turned my had back, the world suddenly went black.",
+      "sort_order": 8,
+      "parent_id": "heFYmPqiBmD3Be56u7t43R"
+    },
+    "oxL5rXJDrNf7KmwqiEpZPr": {
+      "id": "oxL5rXJDrNf7KmwqiEpZPr",
+      "title": "Wounded",
+      "summary": "Emma tries to treat her wound, and worries that she’s not as safe as she thought. Questions how to proceed and realizes there is no way but forward.",
+      "plot_point_actions": [],
+      "text": "I woke up with a splitting headache. The sky was a growing lighter, and I could see the source of my troubles, the tree that blocked my path, because I was lying staring striaght up between it’s roots.\n\nMy right thight was throbbing fiercely, though with the headache that was hard to notice unless I focused on it. Apparently the creature hadn’t chased me since I was still alive.\n\nI tried sitting up to figure out what had happened, but that set my head spinning even more and I turned my head to the side as bile rose up in my throat, and made it’s way out. So little food in my stomach that I was essentially dry heaving.\n\nI flopped back down as gracefully as I could without hurting myself more, and settled for slowly turning my head down towards my damaged leg. If I hadn’t thrown up before I would have done so when I saw what it looked like. Deep furrows ran down my thigh as if something had dug canals through them. \n\nI’d seen pretty bad stuff on the internet, normal stuff like grisly wounds, and more uncomfortable stuff like decapitations and bodies in many different pieces after explosions in warzones, so it wasn’t that it looked unfamiliar, or was even close to the worst that I’d ever seen. But it’d never happened to _me_.\n\nThere was a small, but visible pool of blood around my leg on the ground, though mostly it seemed like the flow had stopped now, and apparently I’d run on it yesterday, so it couldn’t be completely out of order.\n\nAnticipating the worst, I tried moving my leg and was surprised to find that it actually did, though it also make the pain worse. I tried raising my leg, worried about infection, but then barked out a weak laugh as I realized what a pointless worry that was. I’d been ravaged by who knows what animal and lay here for what must have been at least an hour. A few more minutes wouldn’t hurt.\n\nAnd I did. After my last attempt at sitting up, I just lay there breathing in and out for a bit as I figured out what to do.\n\nIt was light now, and as much as moving my leg now didn’t help I had to clean the wound. As much to see what lay underneath all the blood as to clean what I could. I couldn’t even bandage it without any materials to do so… cleaning was pretty much the best I could hope for. I also needed to get back to the pond for the simple reason that I had only that single swallow of water. My main goal hadn’t actually changed.\n\nAfter I finally judged I was feeling well enough between dehydration, heachache and leg to make another attempt, I slowly pushed myself up. The tree was now a convenient object to pull myself up by. I had to pause before I put weight on my wounded leg, but while it hurt, the headache was worse.\n\nLooking down the way I’d come, I saw that I had made it all of 50 meters away from the pond before crashing into this tree. I could see all the way around, and whatever had attacked me before, it was gone now.\n\nI slowly wobbled back to the pond. I  was extra careful to not flop forward and drown myself, because I frankly wasn’t certain I’d have the energy to save myself if I did. I eventually made it to the edge of the water though, where I immediately stuck my bloodly leg in. The water immeidately turned a dark shade of red, and I realized my mistake. I was definitely not going to drink this. \n\nThen I noticed that holding my leg in the water like this was actually quite painful. \n\nI tried shifting my leg into a more comfortable position, but there was none. \n\nI’d eventually have to rub it to truly clean it, but I didn’t dare touch it yet. I honestly wasn’t sure if immersing the wound in water would help or hurt at this point, but I’d rather not keep walking around with a leg covered in blood. Which was kind of silly really, considering I didn’t have anyone nearby to get upset about the blood anyway.\n\nEventually I felt my leg was as clean as it was going to get without a more active involvement, and I pulled it out. It had mostly washed away the big crusts of blood. Without the blood my leg looked arguably worse off. The furrows very clearly visible, and the skin around peeled away. It didn’t look very deep, but even like this practically guaranteed a bacterial infection to me.\n\nI left my leg for now, and moved around the pond until I got to a place where the water did not seem fouled by my blood. Then I finally started slaking my thirst. I probably should have slowed down, but I was so thirsty I couldn’t stop myself.",
+      "sort_order": 9,
+      "parent_id": "heFYmPqiBmD3Be56u7t43R"
+    },
+    "cHZCy2iL2jDSe5NMFDmhTU": {
+      "id": "cHZCy2iL2jDSe5NMFDmhTU",
+      "title": "Hunting",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "After I was finally sated, I debated what to do. This was water, which meant I’d extended the period I was going to survive by a whole lot, but I still needed food. The fact that there were apparently dangerous creatures here didn’t bode well either. \n\nFood was more plentiful than water though. Now that I had water I could settle down here for longer than the time it took me to sleep.\n\nI could try to hunt, maybe. I had never done that before in my life, unless you count hunting for bargains at the dollar store. But since I had even less idea which fruits and or vegetables were digestable.  I was sure you could eat some roots, but had no idea which.\n\nAnimals should come to this pond to drink though, which made it easy to find them, if not necessarily catch them. Maybe if I could catch and skin one I could turn it into some form of clothes, or a bag. I think people used bladders to keep water in? I definitely wanted some way to bring water with me.\n\nBut thinking about all that a bit more had me reconsidering it. This wasn’t Minecraft. I couldn’t just walk up to an animal, kill it, and have it magically transform into resources. Killing an animal was dubious in the first place, but I had no idea how I was going to clean or preserve it afterwards. I didn’t have a method to preserve the meat, and no idea where the bladder would even be.\n\nI didn’t like the idea of trekking on in the hope that I’d find people, but it still seemed more likely to work than staying here. Assuming there were even people in this world and anywhere close, but I just didn’t think the alternative was worth considering at this point. \n\nThe only way I could stay here was if I were willing to revert to a primal ape, which, fair, would be preferable to dying, but that was about it. There must be some form of civilization around here.\n\nHaving that decided, I figured I’d better get started.",
+      "sort_order": 10,
+      "parent_id": "heFYmPqiBmD3Be56u7t43R"
+    },
+    "oumhjHNqVxXYdyKyJreyp9": {
+      "id": "oumhjHNqVxXYdyKyJreyp9",
+      "title": "Finding the road",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "First, I tried something that I should have probably done before, but was probably too flustered to think about. I searched for a suitable tree to climb, and see my surroundings. Unfortunately, no such convenient tree was there to be found. The trees were mostly of an even height, and climbing the tallest wouldn’t help me much, never mind that I’d never make it to the top with the thin branches there and my wounded leg.\n\nHaving exhausted that possiblity for slightly better bearings, I tried going by foot.\n\nI made several trips that day in various directions from the pond, both in the hope that I would find a way out, and to scavenge for food. The wound on my leg was holding me back, but not as much as I’d feared. The difficult was mainly in trying to keep it as clean as possible.\n\nI had a hope that the forest wasn’t regularly shaped, or that I wasn’t in the middle of a massive blob of trees hundreds of kilometers wide. \n\nAll my scavenging was for naught, as the only thing I found resembling food was a blackberry bush that I recognized as safe, and immediately emptied of all that I could find. At least it was a completely different season here. If it’d still been January I’d have a hard time finding berries.\n\nHaving slaked some of the persistent hunger, I said a quick prayer of thanks to whomever was listening. I wasn’t overly religious, but it felt appropriate given the circumstances.\n\nOn my last trip before it got too dark to get back to the neighborhood of the pond, I found what I was hoping for. \n\nThe forest gave way for a little bit, and I found myself on a dirt road. It wasn’t a major highway by any means, but it would allow a car to drive down it.\n\nIt didn’t have any visible tracks, but that would have been too much to hope for. Just having an indication that other sentient beings existed, and that they built roads, caused an immediate sense of relief.\n\nNot being able to do much here, I followed my trail of upright sticks to the pond, and built myself a shelter a hundred meters away. Hopefully that was far enough that whatever ambushed me there last night wouldn’t do so again today. \n\nI lay down. My leg had stopped smarting somewhere during the day, but most likely I’d just gotten used to it. Now the pain returned with a vengeance. Of course, there was no way it could stand up to the exhaustion of spending a whole day walking. So I fell asleep almost immediately, only having some vague plans of following the road tomorrow in my head.",
+      "sort_order": 11,
+      "parent_id": "heFYmPqiBmD3Be56u7t43R"
+    },
+    "4zPHdzqpNapEgRsP9jPyqZ": {
+      "id": "4zPHdzqpNapEgRsP9jPyqZ",
+      "title": "Travel",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "The next morning, I set out early. \n\nSomehow, getting dropped in a different world with nothing but myself to distract me meant that I had finally fixed my messed up sleep schedule.\n\nI first had my fill from the pond. I couldn’t drink too much since I’d just make me sick, but I drank as much as I could justify. I’d probably pee out all the excess, but maybe something would stick.\n\nI must admit I might’ve been a little bit influenced by my growling stomach, which stopped complaining when I filled it with water. The berries from yesterday took the edge off the hunger, but it didn’t solve the slowly growing problem that I hadn’t had anything solid to eat in 3 days.\n\nI feared that I was unconciously supressing my worries about that because fixing that issue seemed to required me to hunt. I’d never in my life killed anything other than a mosquito, and even those with reluctance.\n\nUnfortunately I hadn’t seen anything more edible than the berries yesterday, and I’d spent the whole day searching. Conversely, small animals were everywhere in abundance.\n\nHow would I even cook any meat? But then I guess that wasn’t strictly necessary for sustenance. The idea of eating uncooked meat was even more disgusting to contemplate though.\n\nI discarded those thoughts for now, and got myself walking. Now that I could go straight to the road, it wasn’t more than an hours walk away.\n\nIt looked deserted in both directions. \n\nJust like yesterday. I sighed. I had held out some vague hope that I’d find people here today, but it didn’t look like this road had been used in a while.\n\nCompletely at random, I set off towards the left. \n\nApparently people like walking around a supermarket that way around. Maybe I was influenced by that?\n\nIt was nice to walk on a road for once. I had the feeling like I was going somewhere. There was definitely something at the end of this road, and I wasn’t forced to keep planting sticks just to not lose my way.\n\nThe road itself wasn’t really much to speak of. It was literally just a dirt trail that was about wide enough for a single wagon —I’m not sure why I thought of those now instead of cars— could drive down it. If two came from different directions, they’d have issues passing each other by.\n\nDespite everything, I enjoyed walking through this forest. I felt like I had slightly more of a goal, and a better chance of achieving it than before, so I could allow myself to enjoy the scenery a little bit.\n\nEvery time I got close, I saw little furry animals shooting in all directions, probably not used to seeing people about. There was a constant twittering of various birds in the trees, and one particular bird was noticable for it’s incredibly shrill call.\n\nPreviously I’d not really registered trees as anything but trees, but now I felt like this forest was comprised of mostly 4 different kinds of trees. One of which I was certain was chestnut trees, because there were chestnuts on the ground all around.\n\nAt some point I noticed a strange mound next to the path, and upon inspection, found that it was a sort of burrow. When I looked into what I supposed was the entrance, three pairs of glowing yellow eyes looked back at me. \n\nWhatever animals they were, they didn’t feel like showing themselves to me, and I eventually gave up and walked on.",
+      "sort_order": 12,
+      "parent_id": "qf34AGC3LyoV5zVcqeZeKq"
+    },
+    "5gFUDkB5yGDV3pPcMe1pwU": {
+      "id": "5gFUDkB5yGDV3pPcMe1pwU",
+      "title": "Infection",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "I had walked for more than half a day, when I started to notice my leg throbbing. Worried, I looked down at the wound on my thigh, and noticed the redness around the wound.\n\nThat wasn’t looking very good, but I didn’t have a lot of options. I’d have to keep going. \n\nI was hoping that I’d find some form of civilization by the end of the day. Some vague hope of waystations for travelers, or people living in the woods, but the road was just too minor to have anything like that.\n\nBy the end of the day, I was thoroughly exhausted. I hadn’t gone very fast, to spare both my leg and not to use too much energy, but the infection had clearly gotten worse.\n\nI hadn’t thought to prepare a shelter when I realized it was starting to get dark. Stupid, I started berated myself, but then glanced at my angrily throbbing leg, and then held my palm against my forehead. It was hard to say with certainty, but I thought that felt like a fever.\n\nI tried to construct a shelter anyway, but after gathering a few branches I realized I just wasn’t in any state to finish it, and I started looking for a naturally sheltered sleeping spot instead.\n\nNot having a great deal of energy, when I found a sort of hollow between two twisting tree branches that created some sort of wall, I decided to use that. I grabbed some moss for my head, but for the first time just lay on the undergrowth.\n\nThe moss must have made me complacent, because this was a decidedly less pleasant experience when not wearing any clothes. \n\nI sat up again and first tried to remove any tiny rocks and other obstacles that would press into my back. Then decided to get back to a patch of moss, and bring some to put my infected leg on as well.\n\nThat done, and out of power, I flopped back down again, now marginally more comfortable, and immediately closed my eyes. I was worried that my exposed position would matter but too exhausted to care.",
+      "sort_order": 13,
+      "parent_id": "qf34AGC3LyoV5zVcqeZeKq"
+    },
+    "hr2C3yMt3JfC9FmXUQ1VaE": {
+      "id": "hr2C3yMt3JfC9FmXUQ1VaE",
+      "title": "Another day",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "I wake up to pain. The morning of my 5th day in what I was coming to think of as my new world is by far the worst one so far, even when I count the morning I woke up after running headfirst into a tree.\n\nThere is a specific pain to an infected wound that goes beyond the surface. Sure, the wound hurt originally, but it was a surface pain, localizable and the source immediately obvious. The current pain is nothing like that. The skin surrounding my wound is red and swollen, and the whole leg feels like it’s on fire.\n\nNot that I have any experience with my leg being on fire, but it’s what I imagine it’d feel like. I didn’t previously have any experience with a massive wound on my leg being infected either, so bite me.\n\nI honestly am not sure what do to here. I have nothing that would make this better. I don’t think it’s a great idea to walk on my leg now, but neither can I sit still.\n\nI crawl out of the shelter, and tentatively try to put some weight on my leg. I suddenly hear an alarming noise, and my head shoots up when I realize I made that sound myself. Putting weight on the leg is really not very pleasant.\n\nI lean against the closest tree to take the weight of my leg for a bit, but then decide that I’m being silly. As much as it hurts, I can’t stop. I’m too far down the road from the pond, and I very much doubt I’d be able to find it again even if I returned. Even if I did that I’d be stuck in the middle of a forest. \n\nSurely there must be some sort of settlement nearby, otherwise why have a road?\n\nI try to put some weight on my leg again, and being prepared for the pain manage to not cry out this time.\n\nMy stomach lets out an alarming growl though, and I nearly slump down from sheer exhaustion. Will this ever let up? I’ve tried to focus on whatever would keep me alive, and sort of shut down my other thoughts, but I haven’t gotten any decent food in days, and I’m again unable to drink anything.",
+      "sort_order": 14,
+      "parent_id": "qf34AGC3LyoV5zVcqeZeKq"
+    },
+    "hbeja2ZkKzjuQDbV6nb5rd": {
+      "id": "hbeja2ZkKzjuQDbV6nb5rd",
+      "title": "Passing out",
+      "summary": "",
+      "plot_point_actions": [],
+      "text": "I slowly make my way back to the path, and then trudge my way down it. I’m not making very great speed like this compared to yesterday, but I’m moving.\n\nThe one good thing to say about all this is that at least the pain doesn’t seem to get worse when I walk on the leg. Sure, every time I put my foot down I feel like I’m being stabbed, but it’s the same stab every time.\n\nI make it about 2 hours by measure of the sun traveling across the sky when I suddenly feel myself tipping to the side.\n\nI catch myself, and look around. I can’t figure out what would make me suddenly lose my balance. The path is essentially flat.\n\nA few minutes later it happens again, and I stop.\n\nSinking down on the side of the road under a sort of comfortable looking mossy tree, I realize that I’ve been leaving a trail of blood behind me. The wounds on my leg have started bleeding again and with the pain that every step caused anyway, I didn’t even notice.\n\nI contemplate just giving up at this point. The grass here is nice. There’s trees around. The sun is shining. There’s worse places to go.\n\nA few hours later I come around. I must have passed out right as I had that thought. Like I had given myself permission. The sun is now halfway across the sky, and I’m mostly inclined to just stay here like this. I turn my head halfway, and look down the road that I was following. In stories, this is where the hero hears the hooves, or the wagon, or basically any rescuers. But the road remains stubbornly empty.\n\nI look towards the other side, and find the road there to be empty too. But a small animal sits there in the middle of the road, looking at me cautiously. I have some difficulty focusing my eyes, but I think that’s a rabbit.\n\nI keep observing the creature as it slowly approaches me. When it gets closer it becomes clear that it is indeed a rabbit. It has glossy white fur, two beady black eyes that seem to take everything in, and fluffy pointy ears. Maybe it’s curious about this human it’s never seen before? I watch it’s approach, and a little while later, I have a fluffy white rabbit sniffing all over my body.\n\nInitially I cannot bring myself to care, but as I see it sniffing around without a care in the world, suddenly I feel irrationally angry at the rabbit. It’s just sitting there as if I’m some sort of curiosity, while I’m lying here naked, slowly dying from hunger, thirst, blood loss and an infection. All because some random fluke! I don’t deserve this!\n\nSince the rabbit is sitting right there, I move my arm slightly and grab it by one of its paws. Its leg feels surprisingly fragile under my grip. It tries to get away, scrabbling its paws on the forest floor and flinging up some dirt. But before it has a chance to really struggle, I use what power I can muster, and roll my body to the side, which causes a sharp flare of pain in my leg, but I at this point I don’t care. My arm and the rabbit sail around in a shallow arc that terminates when its skull crashes into the large rock I know is waiting there. I hear a sickening crack that makes me shiver, and it goes immediately still.\n\nThe silence that follows the crack is deafening, giving way to the rush of my own heartbeat thundering in my ears. For a moment, I lie there, panting, the weight of the rabbit's body a warm, limp reality against my side. Guilt, hot and immediate, wells up inside me. It didn’t do anything against me, but I killed it out of misplaced anger.\n\nWith trembling hands, I inspect the rabbit; its fur still soft amidst the grime and blood that now stains it. I’m surprised by how it still looks more or less the same. Assuming you ignore the bloody skull. You’d think that there’d be a bigger difference between life and death.\n\nAs I look at the limp rabbit, my eyes get pulled to the plump thighs, the fatty belly, and the general size of the creature. As much as I hate what I did, this might be a boon in disguise. Relieved that I now have an excuse for what I half think of as murder, I set about the grim task at hand; I have no tools for skinning or butchery, but survival leaves no room for squeamishness or delay.\n\nI contemplate the crude methods at my disposal. I put the rabbit down, and manage to make myself sit up. I look around for the sharpened stick that I brought with me. Surprisingly enough it’s right next to me. Apparently even delirious I still had the presence of mind to keep my sole protective measure with me. Not that it helps me against any of the demons I’m actually facing.\n\nIt does help me with the rabbit though. Using the sharpened stick I manage to awkwardly pierce its skin, and with ragged breaths, I peel it back. The process is clumsy and the result is about as far from a skilled hunter as you are likely to get. Yet as I expose the flesh, I remember seeing somewhere that one must remove the entrails first because not doing so is bad for some reason. With no other choice, I use my hands to dig through the insides of the rabbit, to extricate the organs, quivering from both revulsion and necessity. I try to distance myself from the grisly reality of my actions with each shallow breath. It's a grotesque task that brings bile to my throat, but somehow I manage to keep it together.\n\nAfter I remove everything that I think qualifies as an entrail, I’ve _somehow_ accepted the necessity, and the process of trying to strip the rest of the meat of the skin through a combination of tearing, stabbing and cutting with my stick feels more tedious than anything.\n\nDespite the strong revulsion still clawing at the edges of my consciousness, hunger and some form of feeling I owe the rabbit, stifle the protests of my unsettled stomach. Raw meat carries risks—bacteria, parasites. I know this, but against the pangs of starvation, such knowledge rings hollow. With trepidation, I lift one of the smaller pieces to my lips. I bite down, and chew slowly as I try to suppress my body's urge to reject the uncooked flesh. \n\nI’m worried about what might follow: violent gastrointestinal distress or worse, but it's a gamble against the odds of nature, give the certain death that awaits me without sustenance, without providing my body with the means to fight off the infection, it’s one that I’m more than willing to make.\n\nThe skin meanwhile sits discarded, yet not without purpose. As I chew I consider its use—a crude pouch, or wrapped around sticks to kindle a fire once dried. For now, though, that fire remains a hopeful daydream without flint or tool to spark it into reality. I suppose I could even sort of wrap myself in the hide for warmth if it ever came to that—though it’s kind of small. For now I’m not in any danger of that if the weather holds though.\n\nAs the sinewy texture of raw meat passes reluctantly down my throat, a wave of introspection sweeps over me. What series of missteps had led me to this extreme? Memories of simpler days—of stocked pantries and hearty meals at well-set tables—seem  distant as my gaze meanders through the forest around me. Survival has stripped away the complexities of my past life, reducing existence to its most primal form: eat or be eaten, live or die.\n\nI’d always wondered this, given that it’s often remarked on in my books, but there truly is an odd purity to this state, in the immediacy of each decision's consequences. I look at my blood stained hands, holding strips of meat I’ve literally torn out of the rabbits’ body, and I find myself thinking that, in some abstract way, this brutal simplicity is so much truer to the essence of life than the world from which I've been stripped away.\n\nWith my leg throbbing—a cruel reminder of the consequences of failure—I face a ruthless calculation. The blood from the rabbit is still fresh, but slowly leaking out of the strips of meat stacked on top of the rabbits’ skin, a shade of scarlet that seems deeper in the fading light. I’m not exactly sure if the cure won’t be worse than the disease, but just as hunger overpowered my revulsion for raw meat, so too does my parched throat demand I consider what once would have been absurd.\n\nI grab a handful of meaty strips and tilt my head, squeezing, letting the smallest amount of blood touch my lips. The taste is immediate and overwhelming – iron, salt, life – a taste that urges my mind to reject it all. \n\nI’ve swallowed some of my own blood before, but never another's, and certainly not on purpose. \n\nI tense as I expect my gut to react violently to this foreign invader. I swallow tentatively, and am almost disappointed at the lack of reaction. There’s a mild urge to vomit, but the feeling is fleeting and I relax a bit. Maybe it’s not enough to provoke a strong reaction?\n\nAs I keep dribbling blood down my throat, the feeling grows though, and eventually I have to stop for fear I’ll throw it all back up. Most of the blood I could squeeze out is gone at this point though, so I do not consider it a large loss.\n\nNot wanting to waste anything, I keep slowly working my way through the meat until it is all gone. I’m not confident it’d be any more healthy later today or tomorrow. I won’t be going anywhere today, and I’m frankly not certain I’ll survive the day even with this.\n\nAll my immediate tasks done, I lean back against the tree I’ve spent the last few hours under. As I reflect on it, it’s bizarre that I’ve gone from nearly giving up on life to slaughtering, stripping and consuming a rabbit in the space of a few hours.\n\nI look down at my body, pretty much everywhere is now covered in some form of blood by now. My right leg which has the newly closed furrows is covered in a mix of my own and the rabbits’, but the rest of my body wasn’t spared by the process of stripping the unfortunate animal. I look like I fell in that bloody pond in the new Tomb Raider. My mind can’t help but practically note that it’s a good thing I’m not wearing any clothes, since they’d be completely ruined. At least I can wash this all off.\n\nThe absurdity of the fact that I can look at myself like this and have that be the first think that I think triggers something in me for some reason, and I can’t help but burst out in a mildly hysterical laugh. When I manage to get myself under control, I realize that I’m feeling utterly exhausted both physically and mentally.\n\nI close my eyes, and when I allow myself to relax -as has been so often the case lately- immediately pass out.",
+      "sort_order": 15,
+      "parent_id": "qf34AGC3LyoV5zVcqeZeKq"
+    }
+  },
+  "counters": {
+    "characterSequence": 0,
+    "chapterSequence": 0,
+    "sceneSequence": 0,
+    "plotPointSequence": 1
+  }
+}
