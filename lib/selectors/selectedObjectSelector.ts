@@ -15,7 +15,7 @@ export const selectedObjectSelector = createSelector(
     (state: RootState) => state.story
   ],
   (currentId, type, story): Response | undefined => {
-    return (type && currentId ? {
+    return (type && currentId && story[type][currentId] ? {
       id: currentId,
       type,
       data: story[type][currentId]

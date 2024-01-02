@@ -9,13 +9,12 @@ export const ChapterTabs = () => {
   const chapterObj = useSelector(selectedObjectSelector);
   const dispatch = useDispatch();
 
-  return chapterObj && chapterObj.type === 'chapter' ? <Tabs>
+  return chapterObj && chapterObj.data && chapterObj.type === 'chapter' ? <Tabs>
     <TabList>
       <Tab>Overview</Tab>
     </TabList>
     <TabPanels>
       <TabPanel>
-        <div>{chapterObj?.data.sort_order}</div>
         <FormControl>
           <FormLabel>Title</FormLabel>
           <Input

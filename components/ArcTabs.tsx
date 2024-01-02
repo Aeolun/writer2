@@ -19,6 +19,7 @@ import {RootState} from "../lib/store";
 
 export const ArcTabs = () => {
   const arcObj = useSelector(selectedObjectSelector);
+  const bookObjs = useSelector((store: RootState) => store.story.book);
   const chapters = useSelector((store: RootState) => store.story.chapter);
   const dispatch = useDispatch();
 
@@ -87,7 +88,7 @@ export const ArcTabs = () => {
         <Button onClick={() => {
           axios.post('/api/help', {
             kind: 'critiqueStoryline',
-            text: `Act: ${arcObj.data.summary}\n\n${arcObj.data.chapters.map(chapterId => {
+            text: `Book: ${bookObjs[arcObj.data.parent_id ?? '']?.summary}\n\n${arcObj.data.title}: ${arcObj.data.summary}\n\n${arcObj.data.chapters.map(chapterId => {
               return chapters[chapterId];
             }).sort((a, b) => {
               return a.sort_order - b.sort_order;

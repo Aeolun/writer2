@@ -151,13 +151,19 @@ export const globalSlice = createSlice({
     },
     createChapter: (state, action: PayloadAction<{ arcId: string }>) => {
       const newId = short.generate().toString();
+      const highestSortOrder = Object.values(state.chapter).reduce((acc, chapter) => {
+        if (chapter.sort_order > acc) {
+          return chapter.sort_order;
+        }
+        return acc;
+      }, 0);
       state.chapter[newId] = {
         id: newId,
         title: "New Chapter",
         summary: "",
         scenes: [],
         open: false,
-        sort_order: Object.keys(state.chapter).length+1,
+        sort_order: highestSortOrder+1,
         parent_id: action.payload.arcId,
         start_date: "",
       };
@@ -165,26 +171,38 @@ export const globalSlice = createSlice({
     },
     createBook: (state) => {
       const newId = short.generate().toString();
+      const highestSortOrder = Object.values(state.chapter).reduce((acc, chapter) => {
+        if (chapter.sort_order > acc) {
+          return chapter.sort_order;
+        }
+        return acc;
+      }, 0);
       state.book[newId] = {
         id: newId,
         title: "New Book",
         summary: "",
         arcs: [],
         open: false,
-        sort_order: Object.keys(state.book).length+1,
+        sort_order: highestSortOrder+1,
         parent_id: undefined,
         start_date: "",
       };
     },
     createArc: (state, action: PayloadAction<{ bookId: string }>) => {
       const newId = short.generate().toString();
+      const highestSortOrder = Object.values(state.chapter).reduce((acc, chapter) => {
+        if (chapter.sort_order > acc) {
+          return chapter.sort_order;
+        }
+        return acc;
+      }, 0);
       state.arc[newId] = {
         id: newId,
         title: "New Arc",
         summary: "",
         chapters: [],
         open: false,
-        sort_order: Object.keys(state.arc).length+1,
+        sort_order: highestSortOrder+1,
         parent_id: action.payload.bookId,
         start_date: "",
       };
@@ -192,6 +210,12 @@ export const globalSlice = createSlice({
     },
     createScene: (state, action: PayloadAction<{ chapterId: string }>) => {
       const newId = short.generate().toString();
+      const highestSortOrder = Object.values(state.chapter).reduce((acc, chapter) => {
+        if (chapter.sort_order > acc) {
+          return chapter.sort_order;
+        }
+        return acc;
+      }, 0);
       state.scene[newId] = {
         id: newId,
         title: "New Scene",
@@ -199,7 +223,7 @@ export const globalSlice = createSlice({
         plot_point_actions: [],
         open: false,
         text: "",
-        sort_order: Object.keys(state.scene).length+1,
+        sort_order: highestSortOrder+1,
         parent_id: action.payload.chapterId,
       };
       state.chapter[action.payload.chapterId].scenes.push(newId);
