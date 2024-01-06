@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Tab, TabList, TabPanel, Tabs } from "@chakra-ui/react";
+import {Button, Tab, TabList, TabPanel, Tabs} from "@chakra-ui/react";
 import { CharacterModal } from "./CharacterModal";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { RootState } from "../lib/store";
+import {storyActions} from "../lib/slices/story";
 
 export const CharacterPanel = () => {
+  const dispatch = useDispatch();
   const [charModal, setCharacterModal] = useState<boolean>(false);
   const [characterId, setCharacterId] = useState<number>(0);
 
@@ -40,6 +42,9 @@ export const CharacterPanel = () => {
           </tr>
         ))}
       </table>
+      <Button onClick={() => {
+        dispatch(storyActions.createCharacter({}));
+      }}>Add character</Button>
       {charModal && (
         <CharacterModal
           characterId={characterId}

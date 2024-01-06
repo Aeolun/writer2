@@ -11,15 +11,22 @@ import type { AppProps } from "next/app";
 import { store } from "../lib/store";
 import { Provider } from "react-redux";
 import "../lib/App.css";
-import { ChakraProvider } from "@chakra-ui/react";
+import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();
 
+const theme = extendTheme({
+  config: {
+    initialColorMode: "system",
+    useSystemColorMode: true,
+  }
+})
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <Provider store={store}>
           <Component {...pageProps} />
         </Provider>

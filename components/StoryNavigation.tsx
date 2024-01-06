@@ -2,7 +2,7 @@ import React, { useState, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { chaptersSelector } from "../lib/selectors/chapterSelector";
 import { storyActions } from "../lib/slices/story";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import {Box, Button, Flex, useColorModeValue} from "@chakra-ui/react";
 import { scenesSelector } from "../lib/selectors/scenesSelector";
 import { arcSelector } from "../lib/selectors/arcSelector";
 import { bookSelector } from "../lib/selectors/bookSelector";
@@ -16,9 +16,10 @@ export const StoryNavigation = (props: {}) => {
   const arcs = useSelector(arcSelector);
 
   const dispatch = useDispatch();
+  const color = useColorModeValue(100, 500)
 
   return (
-    <Box width={"18%"} overflow={"auto"}>
+    <Box width={"20%"} overflow={"auto"}>
       {Object.values(books).sort((a, b) => { return a.sort_order > b.sort_order ? 1 : -1 }).map((book) => {
         const bookArcs = book.arcs.map((arcId) => {
           return arcs[arcId];
@@ -28,7 +29,7 @@ export const StoryNavigation = (props: {}) => {
             <NavItem id={book.id} open={book.open} kind={'book'} icon={<Book />} name={`${book.title}`} />
             {book.open ? (
               <Box
-                borderLeftColor={"green.100"}
+                borderLeftColor={`green.${color}`}
                 borderLeftWidth={"8px"}
                 borderLeftStyle={"solid"}
               >
@@ -42,7 +43,7 @@ export const StoryNavigation = (props: {}) => {
                       <NavItem id={arc.id} open={arc.open} kind={'arc'} icon={<Arc3d />} name={`${arc.title}`} />
                       {arc.open ? (
                         <Box
-                          borderLeftColor={"green.200"}
+                          borderLeftColor={`green.${color+100}`}
                           borderLeftWidth={"8px"}
                           borderLeftStyle={"solid"}
                         >
@@ -56,7 +57,7 @@ export const StoryNavigation = (props: {}) => {
                                 <NavItem id={chapter.id} open={chapter.open} kind={'chapter'} icon={<Keyframes />} name={`${chapter.title}`} />
                                 {chapter.open ? (
                                   <Box
-                                    borderLeftColor={"green.300"}
+                                    borderLeftColor={`green.${color+200}`}
                                     borderLeftWidth={"8px"}
                                     borderLeftStyle={"solid"}
                                   >
@@ -90,7 +91,7 @@ export const StoryNavigation = (props: {}) => {
                             m={1}
                             size={"sm"}
                             colorScheme={"green"}
-                            bg={"green.500"}
+                            bg={`green.${color+300}`}
                             onClick={() => {
                               dispatch(storyActions.createChapter({
                                 arcId: arc.id,
@@ -110,7 +111,7 @@ export const StoryNavigation = (props: {}) => {
                   m={1}
                   size={"sm"}
                   colorScheme={"green"}
-                  bg={"green.400"}
+                  bg={`green.${color+200}`}
                   onClick={() => {
                     dispatch(storyActions.createArc({
                       bookId: book.id,
@@ -129,7 +130,7 @@ export const StoryNavigation = (props: {}) => {
         m={1}
         size={"sm"}
         colorScheme={"green"}
-        bg={"green.300"}
+        bg={`green.${color+200}`}
         onClick={() => {
           dispatch(storyActions.createBook({}));
         }}

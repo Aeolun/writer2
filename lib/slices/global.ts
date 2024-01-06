@@ -10,12 +10,14 @@ export interface GlobalState {
   currentId?: string;
   selectedEntity?: 'book' | 'arc' | 'chapter' | 'scene';
   storyLoaded: boolean;
+  saving: boolean;
   stories?: StorySummary[];
 }
 
 const initialState: GlobalState = {
   storyLoaded: false,
-  stories: []
+  stories: [],
+  saving: false,
 };
 
 export const globalSlice = createSlice({
@@ -24,6 +26,9 @@ export const globalSlice = createSlice({
   reducers: {
     setStories: (state, action: PayloadAction<StorySummary>) => {
       state.stories = action.payload
+    },
+    setSaving: (state, action: PayloadAction<boolean>) => {
+      state.saving = action.payload;
     },
     setSelectedImageChapter: (state, action: PayloadAction<string>) => {
       state.selectedImageChapter = action.payload;

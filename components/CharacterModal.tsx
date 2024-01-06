@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Box,
+  Box, Checkbox,
   FormControl,
   FormLabel,
   Input,
@@ -11,14 +11,16 @@ import {
   ModalOverlay,
   Textarea,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { RootState } from "../lib/store";
+import {storyActions} from "../lib/slices/story";
 
 export const CharacterModal = (props: {
-  characterId: number;
+  characterId: string;
   onClose: () => void;
 }) => {
   const { characterId } = props;
+  const dispatch = useDispatch();
 
   const character = useSelector(
     (state: RootState) => state.story.characters[characterId]
@@ -39,16 +41,21 @@ export const CharacterModal = (props: {
               type={"text"}
               value={character?.name || undefined}
               onChange={(e) => {
-                // setCharacter({
-                //   ...character,
-                //   name: e.currentTarget.value,
-                // })
+                dispatch(storyActions.updateCharacter({
+                  id: characterId,
+                  name: e.currentTarget.value,
+                }))
               }}
             />
           </FormControl>
           <FormControl>
             <FormLabel>Summary</FormLabel>
-            <Textarea value={character?.summary} />
+            <Textarea value={character?.summary} onChange={(e) => {
+              dispatch(storyActions.updateCharacter({
+                id: characterId,
+                summary: e.currentTarget.value,
+              }))
+            }} />
           </FormControl>
           <FormControl>
             <FormLabel>Age</FormLabel>
@@ -56,10 +63,22 @@ export const CharacterModal = (props: {
               type={"number"}
               value={character?.age || undefined}
               onChange={(e) => {
-                // setCharacter({
-                //   ...character,
-                //   age: e.currentTarget.value,
-                // })
+                dispatch(storyActions.updateCharacter({
+                  id: characterId,
+                  age: e.currentTarget.value,
+                }))
+              }}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Protagonist</FormLabel>
+            <Checkbox
+              isChecked={character?.isProtagonist}
+              onChange={(e) => {
+                dispatch(storyActions.updateCharacter({
+                  id: characterId,
+                  isProtagonist: !character?.isProtagonist,
+                }))
               }}
             />
           </FormControl>

@@ -1,14 +1,15 @@
 import {Button, CircularProgress, Flex} from "@chakra-ui/react";
 import Link from "next/link";
 import axios from "axios";
-import {store} from "../lib/store";
+import {RootState, store} from "../lib/store";
 import React, {useState} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {storyActions} from "../lib/slices/story";
 import {globalActions} from "../lib/slices/global";
+import {save} from "../lib/actions/save";
 
 export const HeaderMenu = () => {
-  const [saving, setSaving] = useState(false);
+  const saving = useSelector((store: RootState) => store.base.saving);
   const dispatch = useDispatch();
 
   return <Flex bg={"green.300"} justifyContent={'space-between'}>
@@ -26,20 +27,18 @@ export const HeaderMenu = () => {
           dispatch(globalActions.setStories(res.data));
         });
       }}>Switch</Button>
-      {saving ? (
-        <CircularProgress isIndeterminate color="green.300" />
-      ) : (
-        <Button
-          onClick={() => {
-            setSaving(true);
-            axios.post("/api/save/"+store.getState().story.name, store.getState().story).then((result) => {
-              setSaving(false);
-            });
-          }}
-        >
-          Save
-        </Button>
-      )}
+
+      <Button
+        rightIcon={saving ? <CircularProgress isIndeterminate color="green.300" /> : undefined}
+        onClick={() => {
+          save().catch(e => {
+            console.error(e);
+          });
+        }}
+      >
+        Save
+      </Button>
+
     </Flex>
   </Flex>
 }

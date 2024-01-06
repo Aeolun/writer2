@@ -3,6 +3,7 @@ import short from 'short-uuid';
 
 export interface Character {
   id: string;
+  isProtagonist: boolean;
   picture: string;
   name: string;
   summary: string;
@@ -262,14 +263,15 @@ export const globalSlice = createSlice({
       }
     },
     updateScene: (state, action: PayloadAction<Partial<Scene>>) => {
-      const id = action.payload.id;
+      const id = action.payload.id as keyof typeof state.scene;
       if (id) {
         const keys = Object.keys(action.payload);
         for(const key of keys) {
-          //@ts-expect-error
-          if (state.scenes[id][key] !== action.payload[key]) {
-            //@ts-expect-error
-            state.scenes[id][key] = action.payload[key];
+          const writableKey = key as keyof Scene;
+          const obj = state.scene[id]
+          if (obj[writableKey] !== action.payload[writableKey]) {
+            // @ts-ignore
+            obj[writableKey] = action.payload[writableKey];
           }
         };
       }
@@ -294,6 +296,28 @@ export const globalSlice = createSlice({
       if (action.payload.id) {
         state.book[action.payload.id] = {
           ...state.book[action.payload.id],
+          ...action.payload,
+        };
+      }
+    },
+    createCharacter: (state, action: PayloadAction<{}>) => {
+      const newId = short.generate().toString();
+      state.characters[newId] = {
+        id: newId,
+        name: "New character",
+        summary: "",
+        picture: "",
+        age: "",
+        isProtagonist: false,
+      };
+    },
+    updateCharacter: (
+      state,
+      action: PayloadAction<Partial<Character>>
+    ) => {
+      if (action.payload.id) {
+        state.characters[action.payload.id] = {
+          ...state.characters[action.payload.id],
           ...action.payload,
         };
       }

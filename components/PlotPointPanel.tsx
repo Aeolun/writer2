@@ -9,10 +9,10 @@ export const PlotPointPanel = () => {
   const dispatch = useDispatch();
 
   return (
-    <>
+    <Flex flexWrap={'wrap'} alignItems={'flex-start'} justifyContent={'start'}>
       {Object.values(plotpoints).map((plotPoint) => {
         return (
-          <Box mb={4} key={plotPoint.id}>
+          <Flex mb={4} width={"20%"} direction={'column'} key={plotPoint.id}>
             <Flex mb={2}>
               <Input
                 placeholder={"title"}
@@ -55,7 +55,7 @@ export const PlotPointPanel = () => {
             >
               {plotPoint.summary}
             </Textarea>
-          </Box>
+          </Flex>
         );
       })}
       <Button
@@ -65,6 +65,6 @@ export const PlotPointPanel = () => {
       >
         Add plot point
       </Button>
-    </>
+    </Flex>
   );
 };

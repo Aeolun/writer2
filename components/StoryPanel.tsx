@@ -13,9 +13,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
 import {selectedObjectSelector} from "../lib/selectors/selectedObjectSelector";
 import axios from "axios";
+import {treeSelector} from "../lib/selectors/treeSelector";
+import {RootState} from "../lib/store";
 
 export const StoryPanel = () => {
   const scene = useSelector(selectedObjectSelector);
+  const protagonist = useSelector((store: RootState) => Object.values(store.story.characters).find(char => char.isProtagonist));
+  const allScenes = useSelector((store: RootState) => store.story.scene);
+  const tree = useSelector(treeSelector)
   const [isEditable, setIsEditable] = useState(true)
   const [plotPoint, setPlotPoint] = useState<string>();
   const [action, setAction] = useState<string>("mentioned");
@@ -29,7 +34,7 @@ export const StoryPanel = () => {
     setIsEditable(false)
     axios.post('/api/help', {
       kind: helpKind,
-      text: scene?.data.text,
+      text: 'Book summary: '+tree.book?.summary+'\n\nProtagonist: '+protagonist?.summary+'\n\nArc summary: '+tree.arc?.summary+'\n\nChapter summary: '+tree.chapter?.summary + '\n\nScenes in chapter:\n\n'+tree.chapter?.scenes.map(sceneId => sceneId === scene.id ? '- (current scene)' : ('- '+allScenes[sceneId].summary)).join('\n')+'\n\nCurrent scene text:\n\n'+ scene?.data.text,
     }).then((res) => {
       if (extra) {
         dispatch(storyActions.updateScene({

@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { NavTree } from "../components/NavTree";
 import { PageImage } from "../components/PageImage";
-import React, { Suspense, useEffect, useState } from "react";
+import React, {Suspense, useEffect, useMemo, useState} from "react";
 import { StoryNavigation } from "../components/StoryNavigation";
 import { StoryPane } from "../components/StoryPane";
 import axios from "axios";
@@ -13,6 +13,7 @@ import {globalActions} from "../lib/slices/global";
 import Link from "next/link";
 import {HeaderMenu} from "../components/HeaderMenu";
 import {storySettingsSelector} from "../lib/selectors/storySettings";
+import {save} from "../lib/actions/save";
 
 
 const Home: NextPage = () => {
@@ -22,6 +23,20 @@ const Home: NextPage = () => {
   const storyLoaded = useSelector((store: RootState) => store.story.name);
   const stories = useSelector((store: RootState) => store.base.stories);
   const [storyName, setStoryName] = useState('');
+
+  useEffect(() => {
+    if (storyLoaded) {
+      const saveInterval = setInterval(() => {
+        save().catch(e => {
+          console.error(e);
+        });
+      }, 10000)
+
+      return () => {
+        clearInterval(saveInterval)
+      }
+    }
+  }, [storyLoaded])
 
   useEffect(() => {
     axios.get('/api/list').then((res) => {

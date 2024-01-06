@@ -1,6 +1,6 @@
 import {globalActions} from "../lib/slices/global";
 import {Keyframe, Minus, Plus, ArrowUp, ArrowDown} from "iconoir-react";
-import {Button, Flex} from "@chakra-ui/react";
+import {Button, Flex, useColorModeValue} from "@chakra-ui/react";
 import {storyActions} from "../lib/slices/story";
 import React, {ReactElement} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -15,6 +15,7 @@ export const NavItem = (props: {
 }) => {
   const currentSelectedId = useSelector((store: RootState) => store.base.currentId);
   const dispatch = useDispatch();
+  const color = useColorModeValue(100, 500)
 
   return <Flex
     gap={2}
@@ -22,11 +23,11 @@ export const NavItem = (props: {
     key={props.id}
     bg={
       props.id === currentSelectedId
-        ? "green.500"
-        : "green.400"
+        ? `green.${color+200}`
+        : `green.${color+300}`
     }
     p={1}
-    _hover={{bg: "green.600"}}
+    _hover={{bg: `green.${color+200}`}}
     cursor={"pointer"}
     onClick={() => {
       dispatch(globalActions.setSelectedEntity(props.kind))
