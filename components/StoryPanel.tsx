@@ -94,13 +94,16 @@ export const StoryPanel = () => {
         <Heading size={"md"} mt={4}>
           Plot Points
         </Heading>
+        <Flex flexDirection={'row'}>
         {scene?.data.plot_point_actions.map((link) => {
           const point = plotpoints[link.plot_point_id];
           return (
-            <div key={link.plot_point_id}>
+            <Box key={link.plot_point_id} p={2}>
               {point?.title} {link.action}
               <Button
                 colorScheme={"red"}
+                size={'xs'}
+                ml={2}
                 onClick={() => {
                   if (scene) {
                     dispatch(
@@ -115,9 +118,10 @@ export const StoryPanel = () => {
               >
                 Delete
               </Button>
-            </div>
+            </Box>
           );
         })}
+        </Flex>
 
         <div style={{ marginTop: "8px", display: "flex" }}>
           <Select

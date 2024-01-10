@@ -5,7 +5,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
-import { useDispatch, useSelector } from "react-redux";
+import {shallowEqual, useDispatch, useSelector} from "react-redux";
 import {RootState} from "../lib/store";
 import {ChapterTabs} from "../components/ChapterTabs";
 import {SceneTabs} from "../components/SceneTabs";
