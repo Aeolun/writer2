@@ -10,7 +10,7 @@
     "convert": "ts-node convert.ts"
   },
   "dependencies": {
-    "@babel/core": "^7.23.6",
+    "@babel/core": "^7.23.7",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
@@ -21,9 +21,9 @@
     "directory-tree": "^3.5.1",
     "framer-motion": "^6.5.1",
     "glob": "^10.3.10",
-    "iconoir-react": "^7.2.0",
+    "iconoir-react": "^7.3.0",
     "next": "^14.0.4",
-    "openai": "^4.24.1",
+    "openai": "^4.24.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-query": "^3.39.3",
@@ -32,7 +32,7 @@
     "short-uuid": "^4.2.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.4.1",
+    "@biomejs/biome": "^1.5.0",
     "@types/better-sqlite3": "^7.6.8",
     "@types/node": "17.0.41",
     "@types/react": "18.0.12",
