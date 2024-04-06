@@ -1,22 +1,36 @@
-import fs from "fs";
+import fs from "fs/promises";
+import path from 'path'
 import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const path = req.query.path as string;
+  console.log("loading image", req.query)
+  let imagePath = req.query.path as string;
+  let storyPath = req.query.story as string;
+  if (!imagePath) {
+    res.statusCode = 404;
+    res.end();
+    return;
+  }
 
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, (err, data) => {
-      if (err) {
-        res.statusCode = 500;
-        res.end();
-        resolve(true);
-      } else {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "image/jpeg");
-        res.end(data);
-        resolve(true);
-      }
-    });
-  });
+  try {
+    await fs.stat(path.join(process.env.DATA_PATH ?? "", storyPath, imagePath))
+
+    imagePath = path.join(process.env.DATA_PATH ?? "", storyPath, imagePath)
+
+  } catch(error) {
+    console.log('cant find', path.join(process.env.DATA_PATH ?? "", storyPath, imagePath))
+  }
+  console.log("loading", imagePath)
+  try {
+    const image = await fs.readFile(imagePath)
+
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "image/png");
+    res.end(image);
+
+    } catch(error) {
+    res.statusCode = 500;
+    res.end();
+  }
 };
 export default handler;

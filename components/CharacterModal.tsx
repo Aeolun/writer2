@@ -32,9 +32,19 @@ export const CharacterModal = (props: {
       <ModalContent>
         <ModalHeader>Character {character?.id}</ModalHeader>
         <ModalBody>
-          <div>
-            <img src={character?.picture || undefined} />
-          </div>
+          <FormControl>
+            <FormLabel>Picture</FormLabel>
+            <Input
+              type={"text"}
+              value={character?.picture || undefined}
+              onChange={(e) => {
+                dispatch(storyActions.updateCharacter({
+                  id: characterId,
+                  picture: e.currentTarget.value,
+                }))
+              }}
+            />
+          </FormControl>
           <FormControl>
             <FormLabel>Name</FormLabel>
             <Input

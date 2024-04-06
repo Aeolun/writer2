@@ -1,73 +1,11 @@
 import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
 import short from 'short-uuid';
+import {Arc, Book, Chapter, Character, PlotPoint, Scene, Story} from "../persistence";
 
-export interface Character {
-  id: string;
-  isProtagonist: boolean;
-  picture: string;
-  name: string;
-  summary: string;
-  age: string;
-}
-
-export type TreeData = {
-  id: string;
-  title: string;
-  open: boolean;
-  parent_id?: string;
-  sort_order: number;
-  extra?: string;
-}
-
-export interface Book extends TreeData {
-  summary: string;
-  start_date: string;
-  arcs: string[];
-}
-
-export interface Arc extends TreeData {
-  summary: string;
-  start_date: string;
-  chapters: string[];
-}
-
-export interface Chapter extends TreeData {
-  summary: string;
-  start_date: string;
-  scenes: string[];
-}
-
-export interface Scene extends TreeData {
-  summary: string;
-  text: string;
-  plot_point_actions: {
-    plot_point_id: string;
-    action: string;
-  }[];
-}
-
-export interface PlotPoint {
-  id: string;
-  summary: string;
-  title: string;
-}
-
-export interface StoryState {
-  name?: string;
-  settings?: {
-    mangaChapterPath?: string;
-  }
-  characters: Record<string, Character>;
-  book: Record<string, Book>;
-  arc: Record<string, Arc>;
-  chapter: Record<string, Chapter>;
-  plotPoints: Record<string, PlotPoint>;
-  scene: Record<string, Scene>;
-}
-
-const initialState: StoryState = {
+const initialState: Story = {
   name: undefined,
   chapter: {},
+  structure: [],
   book: {},
   arc: {},
   characters: {},
@@ -79,9 +17,81 @@ export const globalSlice = createSlice({
   name: "base",
   initialState,
   reducers: {
-    setStory: (state, action: PayloadAction<StoryState>) => {
+    setStory: (state, action: PayloadAction<Story>) => {
+
+      action.payload.structure = [];
+
       for(const key in action.payload) {
-        const storyKey = key as keyof StoryState;
+        const storyKey = key as keyof Story;
+        if (storyKey === 'structure') {
+          continue;
+        }
+
+        if (storyKey === 'scene') {
+          for(const scene of Object.values(action.payload[storyKey])) {
+            scene.paragraphs = scene.text.split('\n\n').map((text: string) => {
+              return {
+                id: short.generate().toString(),
+                text,
+                state: 'draft',
+                modifiedAt: new Date().toISOString(),
+                comments: [],
+                plot_point_actions: [],
+              };
+            })
+          }
+        }
+        if (storyKey === 'book') {
+          for(const book of Object.values(action.payload[storyKey])) {
+            const arcsChildren = book.arcs.map((arcId) => {
+                return action.payload.arc[arcId];
+            }).sort((a, b) => {
+                return a.sort_order - b.sort_order;
+            }).map((arc) => {
+
+                const chapters = arc.chapters.map((chapterId) => {
+                    return action.payload.chapter[chapterId];
+                }).sort((a, b) => {
+                    return a.sort_order - b.sort_order;
+                }).map((chapter) => {
+                    const scenes = chapter.scenes.map((sceneId) => {
+                        return action.payload.scene[sceneId];
+                    }).sort((a, b) => {
+                    return a.sort_order - b.sort_order;
+                    }).map((scene) => {
+                        return {
+                            id: scene.id,
+                            name: scene.title,
+                            type: 'scene',
+                            isOpen: false,
+                        };
+                    });
+
+                    return {
+                        id: chapter.id,
+                        name: chapter.title,
+                        type: 'chapter',
+                        isOpen: false,
+                        children: scenes,
+                    };
+                });
+                return {
+                  id: arc.id,
+                  name: arc.title,
+                  type: 'arc',
+                  isOpen: false,
+                  children: chapters,
+                };
+            });
+            state.structure.push({
+                id: book.id,
+                name: book.title,
+                type: 'book',
+                isOpen: false,
+                children: arcsChildren,
+            })
+          }
+        }
 
         //@ts-expect-error
         state[storyKey] = action.payload[storyKey];
@@ -142,7 +152,7 @@ export const globalSlice = createSlice({
     unload: (state) => {
       return initialState;
     },
-    setSetting(state: Draft<StoryState>, action: PayloadAction<{key: string, value: string}>) {
+    setSetting(state: Draft<StoryState>, action: PayloadAction<{key:  keyof StoryState['settings'], value: string}>) {
       if(!state.settings) {
         state.settings = {};
       }
@@ -172,9 +182,9 @@ export const globalSlice = createSlice({
     },
     createBook: (state) => {
       const newId = short.generate().toString();
-      const highestSortOrder = Object.values(state.chapter).reduce((acc, chapter) => {
-        if (chapter.sort_order > acc) {
-          return chapter.sort_order;
+      const highestSortOrder = Object.values(state.book).reduce((acc, book) => {
+        if (book.sort_order > acc) {
+          return book.sort_order;
         }
         return acc;
       }, 0);
@@ -191,9 +201,9 @@ export const globalSlice = createSlice({
     },
     createArc: (state, action: PayloadAction<{ bookId: string }>) => {
       const newId = short.generate().toString();
-      const highestSortOrder = Object.values(state.chapter).reduce((acc, chapter) => {
-        if (chapter.sort_order > acc) {
-          return chapter.sort_order;
+      const highestSortOrder = Object.values(state.arc).reduce((acc, arc) => {
+        if (arc.sort_order > acc) {
+          return arc.sort_order;
         }
         return acc;
       }, 0);
@@ -211,17 +221,20 @@ export const globalSlice = createSlice({
     },
     createScene: (state, action: PayloadAction<{ chapterId: string }>) => {
       const newId = short.generate().toString();
-      const highestSortOrder = Object.values(state.chapter).reduce((acc, chapter) => {
-        if (chapter.sort_order > acc) {
-          return chapter.sort_order;
+      const highestSortOrder = Object.values(state.scene).reduce((acc, scene) => {
+        if (scene.sort_order > acc) {
+          return scene.sort_order;
         }
         return acc;
       }, 0);
+      console.log('highestSortOrder', highestSortOrder)
       state.scene[newId] = {
         id: newId,
         title: "New Scene",
         summary: "",
         plot_point_actions: [],
+        paragraphs: [],
+        cursor: 0,
         open: false,
         text: "",
         sort_order: highestSortOrder+1,
@@ -245,22 +258,43 @@ export const globalSlice = createSlice({
             return item.id === id;
           });
           const currentSortOrder = sortedItems[currentIndex].sort_order;
-          console.log(currentIndex, currentSortOrder, sortedItems.length);
+
+          let newSortOrder = currentSortOrder;
+          let otherItemId = '';
+
           if (direction === 'up') {
             if (currentIndex > 0) {
-              sortedItems[currentIndex].sort_order = sortedItems[currentIndex - 1].sort_order;
-              sortedItems[currentIndex - 1].sort_order = currentSortOrder;
+              newSortOrder = sortedItems[currentIndex - 1].sort_order;
+              otherItemId = sortedItems[currentIndex - 1].id;
             }
           } else {
             if (currentIndex < sortedItems.length - 1) {
-              sortedItems[currentIndex].sort_order = sortedItems[currentIndex + 1].sort_order;
-              sortedItems[currentIndex + 1].sort_order = currentSortOrder;
+              newSortOrder = sortedItems[currentIndex + 1].sort_order;
+              otherItemId = sortedItems[currentIndex + 1].id;
             }
           }
+          console.log({id, otherItemId, currentIndex, currentSortOrder, newSortOrder, sortedItems: sortedItems.map(i => i.id+' '+i.sort_order)});
+          state[kind][id].sort_order = newSortOrder;
+          state[kind][otherItemId].sort_order = currentSortOrder;
         } else {
           throw new Error('Invalid id');
         }
       }
+    },
+    updateSceneParagraph: (state, action: PayloadAction<{
+        sceneId: string;
+        paragraphId: string;
+        text: string;
+        }>) => {
+        const scene = state.scene[action.payload.sceneId];
+        if (scene) {
+            const paragraph = scene.paragraphs?.find((p) => {
+            return p.id === action.payload.paragraphId;
+            });
+            if (paragraph) {
+            paragraph.text = action.payload.text;
+            }
+        }
     },
     updateScene: (state, action: PayloadAction<Partial<Scene>>) => {
       const id = action.payload.id as keyof typeof state.scene;

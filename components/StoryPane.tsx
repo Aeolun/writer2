@@ -1,8 +1,8 @@
 import React from "react";
 
 import {
-  Box,
-  Flex,
+    Box,
+    Flex, useColorModeValue,
 } from "@chakra-ui/react";
 
 import {shallowEqual, useDispatch, useSelector} from "react-redux";
@@ -18,10 +18,11 @@ export const StoryPane = () => {
   const selectedEntity = useSelector((store: RootState) => store.base.selectedEntity);
 
   const dispatch = useDispatch();
+    const color = useColorModeValue('green.200', 'gray.600')
 
   return (
     <Flex flex={1} flexDirection={"column"} height={"100%"} width={"37%"}>
-      <Box p={2} bg={"green.200"}>
+      <Box p={2} bg={color}>
         {selectedEntity === 'book' ? `${selectedObject?.data?.title} (${selectedObject?.id})` : ''}
         {selectedEntity === 'arc' ? `${selectedObject?.data?.title} (${selectedObject?.data?.id})` : ''}
         {selectedEntity === 'chapter' || selectedEntity === 'scene' ? <>{selectedObject?.data?.title}</> : null }

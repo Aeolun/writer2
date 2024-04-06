@@ -1,36 +1,106 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from "next";
+import type {NextApiRequest, NextApiResponse} from "next";
 import OpenAI from 'openai'
+import {GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} from "@google/generative-ai";
+import {HelpKind, instructions} from "../../lib/ai-instructions";
+import axios from "axios";
 
-const instructions = {
-  next_paragraph: 'You are a writing assistant. When prompted with a set of paragraphs, you will output a suggestion for the next paragraph of the story. There is no need to leave the paragraph open ended or make it needlessly positive in an otherwise grim situation. This is for a novel, do not rush the story along. There is time to describe things and reflect for the characters.',
-  critique: "You are a writing assistant, try to give constructive advice. When prompted with a set of paragraphs, you will output a concerns you might have about the writing. This could be anything from grammar to plot holes to character inconsistencies.",
-  synopsis: "You are a writing assistant, try to give constructive advice. When prompted with a set of paragraphs, you will output a summary of the given paragraphs.",
-  critiqueStoryline: "You are a writing assistant, try to give constructive advice. When prompted with a book summary, arc summary, and a set of chapter summaries, you will output a list of possible concerns with the storyline. If they exist, focus specifically on inconsistencies and or plot holes. Try to provide ways the issues could be resolved or mitigated.",
+function claude(instructions: string, text: string) {
+  return axios.post('https://api.anthropic.com/v1/messages', {
+    "model": "claude-3-haiku-20240307",
+    "max_tokens": 1024,
+    "system": instructions,
+    "messages": [
+      {"role": "user", "content": text},
+    ]
+  }, {
+    headers: {
+      'x-api-key': process.env.CLAUDE_API_KEY,
+      'anthropic-version': '2023-06-01'
+    }
+  }).then(result => {
+    return result.data
+  }).catch(error => {
+    console.error(error.toString(), error.response.data)
+  })
 }
 
+async function image() {
+  const openai = new OpenAI(process.env.OPENAI_API_KEY);
+  const response = await openai.images.generate({
+    model: "dall-e-3",
+    prompt: "a white siamese cat",
+    n: 1,
+    size: "1024x1024",
+  });
+  return response.data[0].url
+}
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const text = req.body.text;
-  const kind = req.body.kind as keyof typeof instructions
+  const method = req.body.method ?? 'openai'
+  const kind = req.body.kind as HelpKind
 
-  const openai = new OpenAI(process.env.OPENAI_API_KEY);
+  if (method == 'claude') {
+    const result = await claude(instructions[kind], text)
+    if (!result.content) {
+      res.status(200).json({
+        text: "No result returned from Claude."
+      })
+    }
+    res.status(200).json({
+      text: result.content[0].text
+    });
+  } else if (method == 'openai') {
+    const openai = new OpenAI(process.env.OPENAI_API_KEY);
 
-  const result = await openai.chat.completions.create({
-    messages: [
-      {
-        role: 'system',
-        content: instructions[kind]
-      },
-      {
-        role: 'user',
-        content: text
-      }
-    ],
-    model: 'gpt-4-1106-preview'
-  })
+    const result = await openai.chat.completions.create({
+      messages: [
+        {
+          role: 'system',
+          content: instructions[kind]
+        },
+        {
+          role: 'user',
+          content: text
+        }
+      ],
+      model: 'gpt-4-turbo-preview'
+    })
 
-  console.log(JSON.stringify(result, null, 2))
-  res.status(200).json({
-    text: result.choices[0].message.content
-  });
+    console.log(JSON.stringify(result, null, 2))
+    res.status(200).json({
+      text: result.choices[0].message.content
+    });
+  } else {
+    // Access your API key as an environment variable (see "Set up your API key" above)
+    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY);
+
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent({
+      contents: [{ role:'user', parts: [{  text: instructions[kind]+"\n\nParagraphs:\n\n"+text }] }],
+      safetySettings: [
+        {
+          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+          threshold: HarmBlockThreshold.BLOCK_NONE
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+          threshold: HarmBlockThreshold.BLOCK_NONE
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+          threshold: HarmBlockThreshold.BLOCK_NONE
+        }
+      ]
+    })
+    const response = await result.response;
+    const responseText = response.text();
+    res.status(200).json({
+      text: responseText
+    });
+  }
 }

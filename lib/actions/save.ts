@@ -4,7 +4,8 @@ import {globalActions} from "../slices/global";
 
 export const save = async () => {
   store.dispatch(globalActions.setSaving(true));
-  axios.post("/api/save/"+store.getState().story.name, store.getState().story).then((result) => {
+  const { base, ...rest } = store.getState();
+  axios.post("/api/save/"+rest.story.name, rest).then((result) => {
     store.dispatch(globalActions.setSaving(false));
   });
 }

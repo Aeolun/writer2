@@ -8,7 +8,7 @@ export default function handler(
   res: NextApiResponse<typeof story>
 ) {
   const story = fs.readFileSync(
-    path.join(process.env.DATA_PATH ?? "", req.query.story as string)
+    path.join(process.env.DATA_PATH ?? "", req.query.story as string, 'index.json')
   );
 
   res.status(200).json(JSON.parse(story.toString()));

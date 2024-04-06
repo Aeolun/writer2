@@ -1,4 +1,4 @@
-import React, {useState, Suspense, useCallback} from "react";
+import React, {useState, Suspense, useCallback, useRef, useEffect} from "react";
 import { Scene, storyActions } from "../lib/slices/story";
 import {
   Box,
@@ -12,30 +12,28 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
 import {selectedObjectSelector} from "../lib/selectors/selectedObjectSelector";
-import axios from "axios";
 import {treeSelector} from "../lib/selectors/treeSelector";
 import {RootState} from "../lib/store";
+import {aiHelp} from "../lib/actions/aiHelp";
+import {HelpKind} from "../lib/ai-instructions";
+import {LanguageForm} from "./LanguageForm";
+import {AutoResizeTextarea} from "./AutoResizeTextarea";
 
 export const StoryPanel = () => {
   const scene = useSelector(selectedObjectSelector);
-  const protagonist = useSelector((store: RootState) => Object.values(store.story.characters).find(char => char.isProtagonist));
+  const aiInstructions = useSelector((store: RootState) => store.story.settings?.aiInstructions);
   const allScenes = useSelector((store: RootState) => store.story.scene);
   const tree = useSelector(treeSelector)
   const [isEditable, setIsEditable] = useState(true)
   const [plotPoint, setPlotPoint] = useState<string>();
   const [action, setAction] = useState<string>("mentioned");
   const plotpoints = useSelector(plotpointSelector);
+  const languages = useSelector((store: RootState) => Object.values(store.language.languages));
+  const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(undefined);
 
-  if (scene?.type !== 'scene') {
-    return null;
-  }
-
-  const help = useCallback((helpKind: string, extra = false) => {
+  const help = useCallback((helpKind: HelpKind, extra = false) => {
     setIsEditable(false)
-    axios.post('/api/help', {
-      kind: helpKind,
-      text: 'Book summary: '+tree.book?.summary+'\n\nProtagonist: '+protagonist?.summary+'\n\nArc summary: '+tree.arc?.summary+'\n\nChapter summary: '+tree.chapter?.summary + '\n\nScenes in chapter:\n\n'+tree.chapter?.scenes.map(sceneId => sceneId === scene.id ? '- (current scene)' : ('- '+allScenes[sceneId].summary)).join('\n')+'\n\nCurrent scene text:\n\n'+ scene?.data.text,
-    }).then((res) => {
+    aiHelp(helpKind, aiInstructions+'Chapter summary:\n\n'+tree.chapter?.summary+'\n\nCurrent scene text:\n\n'+ scene?.data.text).then((res) => {
       if (extra) {
         dispatch(storyActions.updateScene({
           id: scene?.id,
@@ -55,40 +53,64 @@ export const StoryPanel = () => {
   }, [scene])
 
   const dispatch = useDispatch();
+  const textRef = useRef<HTMLTextAreaElement>();
+  useEffect(() => {
+    if(textRef.current && scene?.type === 'scene') {
+      console.log('focus', scene.data.cursor)
+      textRef.current.focus()
+      textRef.current.selectionStart = scene.data.cursor;
+      textRef.current.selectionEnd = scene.data.cursor;
+    }
+  }, [scene.data.id]);
+
+  if (scene?.type !== 'scene') {
+    return null;
+  }
 
   return (
-    <Flex flexDirection={"column"} height={"100%"}>
-
-      <Flex flexDirection={"row"} flex={1} height={'100%'} justifyContent={'space-around'}>
-        <Textarea
-          maxWidth={"40em"}
-          isDisabled={!isEditable}
-          height={"100%"}
-          flex={1}
-          onChange={(e) => {
-            dispatch(
-              storyActions.updateScene({
-                id: scene?.id,
-                text: e.target.value,
-              })
-            );
-          }}
-          value={scene?.data.text}
-        />
+    <Flex flexDirection={"column"} height={"100%"} overflow={"hidden"}>
+      <Flex flexDirection={"row"} flex={1} gap={4} height={'100%'} overflow={"hidden"} justifyContent={'space-around'}>
+        <Box flex={1} overflow={'auto'} maxW={'50%'}>
+        {scene.data.paragraphs.map((p) => {
+            return <AutoResizeTextarea key={p.id} value={p.text} onChange={(e) => {
+              dispatch(storyActions.updateSceneParagraph({
+                sceneId: scene.id,
+                paragraphId: p.id,
+                text: e.target.value
+              }))
+            }} />
+          })}
+        </Box>
         {scene?.data.extra ? <Textarea maxWidth={"40em"} flex={1} height={"100%"} value={scene.data.extra} onChange={e => {
           dispatch(storyActions.updateScene({
             id: scene?.id,
             extra: e.target.value
           }))
         }} /> : null }
+        {selectedLanguage ? <Flex flex={1} overflow={'auto'} height={"100%"}><LanguageForm languageId={selectedLanguage} /></Flex> : null}
       </Flex>
       <Box>
         <Button colorScheme={'blue'} onClick={() => {
           help('next_paragraph')
         }}>[AI] Next Paragraph</Button>
         <Button colorScheme={'blue'} onClick={() => {
+          help('write')
+        }}>[AI] Write</Button>
+        <Button colorScheme={'blue'} onClick={() => {
           help('critique', true)
         }}>[AI] Critique</Button>
+        <Button colorScheme={'blue'} onClick={() => {
+          help('rewrite', true)
+        }}>[AI] Rewrite</Button>
+        {languages.map(lang => {
+          return <Button onClick={() => {
+            if (selectedLanguage) {
+              setSelectedLanguage(undefined)
+            } else {
+              setSelectedLanguage(lang.id)
+            }
+          }}>{lang.title}</Button>
+        })}
       </Box>
       <Box>
         <Heading size={"md"} mt={4}>

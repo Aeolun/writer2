@@ -21,7 +21,7 @@ export const SceneTabs = () => {
       display={"flex"}
       flexDirection={"column"}
     >
-      <TabPanel flex={1}>
+      <TabPanel flex={1} overflow={'hidden'}>
         <StoryPanel />
       </TabPanel>
       <TabPanel flex={1}>

@@ -8,14 +8,14 @@ export default async function handler(
   res: NextApiResponse<{name: string}[]>
 ) {
   const story = await glob(
-    join('*.json'),
+    join('*/index.json'),
   {
     cwd: process.env.DATA_PATH ?? '.'
   });
 
   res.status(200).json(story.map((i) => {
     return {
-      name: i
+      name: i.replace('/index.json', '')
     }
   }));
 }

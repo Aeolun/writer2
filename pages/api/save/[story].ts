@@ -5,7 +5,7 @@ import path from "path";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   fs.writeFileSync(
-    path.join(process.env.DATA_PATH || "", `${req.body.name}.json`),
+    path.join(process.env.DATA_PATH || "", `${req.query.story as string}`, 'index.json'),
     JSON.stringify(req.body, null, 2)
   );
 

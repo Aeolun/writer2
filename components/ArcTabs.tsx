@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectedObjectSelector} from "../lib/selectors/selectedObjectSelector";
 import axios from "axios";
 import {RootState} from "../lib/store";
+import {aiHelp} from "../lib/actions/aiHelp";
 
 export const ArcTabs = () => {
   const arcObj = useSelector(selectedObjectSelector);
@@ -86,21 +87,19 @@ export const ArcTabs = () => {
           );
         }} /> : null}
         <Button onClick={() => {
-          axios.post('/api/help', {
-            kind: 'critiqueStoryline',
-            text: `Book: ${bookObjs[arcObj.data.parent_id ?? '']?.summary}\n\n${arcObj.data.title}: ${arcObj.data.summary}\n\n${arcObj.data.chapters.map(chapterId => {
-              return chapters[chapterId];
-            }).sort((a, b) => {
-              return a.sort_order - b.sort_order;
-            }).map(chapter => {
-              return `${chapter.title}: ${chapter.summary}`
-            }).join('\n')}`
-          }).then((res) => {
+          const text = `Book: ${bookObjs[arcObj.data.parent_id ?? '']?.summary}\n\n${arcObj.data.title}: ${arcObj.data.summary}\n\n${arcObj.data.chapters.map(chapterId => {
+            return chapters[chapterId];
+          }).sort((a, b) => {
+            return a.sort_order - b.sort_order;
+          }).map(chapter => {
+            return `${chapter.title}: ${chapter.summary}`
+          }).join('\n')}`
+          aiHelp('critiqueStoryline', text).then((res) => {
             dispatch(storyActions.updateArc({
               id: arcObj.id,
               extra: `${res.data.text}`
             }));
-          });
+          })
         }}>[AI] Critique storyline</Button>
 
       </TabPanel>

@@ -8,6 +8,10 @@ import { bookSelector } from "../lib/selectors/bookSelector";
 import { Book as BookIcon, Arc3d, KeyframeAlignVertical, Plus, Minus, Keyframes, Keyframe } from 'iconoir-react';
 import { NavItem } from "./NavItem";
 import {chapterScenesSelector} from "../lib/selectors/chapterScenesSelector";
+import {NodeRendererProps, Tree} from "react-arborist";
+import {RootState} from "../lib/store";
+import useResizeObserver from "use-resize-observer";
+import {globalActions} from "../lib/slices/global";
 
 
 const ChapterNavigation = (props: { chapter: Chapter }) => {
@@ -27,7 +31,7 @@ const ChapterNavigation = (props: { chapter: Chapter }) => {
         >
           {scenes.sort((a, b) => { return a.sort_order > b.sort_order ? 1 : -1 }).map((scene) => {
             return scene ? (
-              <NavItem id={scene.id} open={scene.open} kind={'scene'} icon={<Keyframe />} name={`${scene.title} (${scene.text.split(" ").length})`} />
+              <NavItem key={scene.id} id={scene.id} open={scene.open} kind={'scene'} icon={<Keyframe />} name={`${scene.title} (${scene.text.split(" ").length})`} />
             ) : null;
           })}
           <Button
@@ -70,7 +74,7 @@ const ArcNavigation = (props: { arc: Arc }) => {
         >
           <Box>
             {arcChapters.sort((a, b) => { return a.sort_order > b.sort_order ? 1 : -1 }).map((chapter) => {
-              return <ChapterNavigation chapter={chapter} />
+              return <ChapterNavigation key={chapter.id} chapter={chapter} />
             })}
           </Box>
           <Button
@@ -113,7 +117,7 @@ const BookNavigation = (props: { book: Book }) => {
         >
           <Box>
             {bookArcs.sort((a, b) => { return a.sort_order > b.sort_order ? 1 : -1 }).map((arc) => {
-                return <ArcNavigation arc={arc} />
+                return <ArcNavigation key={arc.id} arc={arc} />
               }
             )}
           </Box>
@@ -136,31 +140,53 @@ const BookNavigation = (props: { book: Book }) => {
   );
 }
 
-export const StoryNavigation = (props: {}) => {
-  const books = useSelector(bookSelector);
-
+function Node({ node, style, dragHandle }: NodeRendererProps<any>) {
   const dispatch = useDispatch();
-  const color = useColorModeValue(100, 500)
+  /* This node instance can do many things. See the API reference. */
+  return (
+      <Flex className={node.isSelected ? 'bg-red-500' : ''} style={style} ref={dragHandle} onClick={() => {
+        dispatch(globalActions.setSelectedEntity(node.data.type))
+        dispatch(globalActions.setCurrentId(node.data.id));
+      }}>
+        {node.data.type !== 'scene' ? <div onClick={e => {
+          e.stopPropagation();
+          node.toggle();
+          dispatch(storyActions.toggleTreeItem({id: node.data.id}));
+        }}>{node.isOpen ? <Minus/> : <Plus/>}</div> : null }
+        {node.isLeaf ? "🍁" : "🌲"}
+        {node.data.name}
+      </Flex>
+  );
+}
+
+const nodeParentTypes = {
+    book: undefined,
+    arc: 'book',
+    chapter: 'arc',
+    scene: 'chapter',
+}
+
+export const StoryNavigation = (props: {}) => {
+  const books = useSelector((state: RootState) => state.story.structure);
+  const selected = useSelector((state: RootState) => state.base.currentId);
+  const { ref, width, height } = useResizeObserver();
 
   return (
-    <Box width={"20%"} overflow={"auto"}>
-      {Object.values(books).sort((a, b) => { return a.sort_order > b.sort_order ? 1 : -1 }).map((book) => {
-        return <BookNavigation book={book} />
-      })}
-      <Button
-        m={1}
-        size={"sm"}
-        colorScheme={"green"}
-        bg={`green.${color+200}`}
-        onClick={() => {
-          dispatch(storyActions.createBook());
+    <Box width={"20%"} overflow={"auto"} ref={ref}>
+      <Tree
+        data={books}
+        height={height}
+        selection={selected}
+        disableDrop={({parentNode, dragNodes, index}) => {
+          if (parentNode?.data?.type === nodeParentTypes[dragNodes[0].data.type]) {
+            return false
+          }
+          return true
         }}
-      >
-        Add book
-      </Button>
-
-
-
+        width={width}
+        >
+        {Node}
+      </Tree>
     </Box>
   );
 };

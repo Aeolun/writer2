@@ -1,4 +1,4 @@
-import {Button, CircularProgress, Flex} from "@chakra-ui/react";
+import {Button, CircularProgress, Flex, useColorModeValue} from "@chakra-ui/react";
 import Link from "next/link";
 import axios from "axios";
 import {RootState, store} from "../lib/store";
@@ -10,17 +10,23 @@ import {save} from "../lib/actions/save";
 
 export const HeaderMenu = () => {
   const saving = useSelector((store: RootState) => store.base.saving);
+  const aiBackend = useSelector((store: RootState) => store.base.aiBackend);
   const dispatch = useDispatch();
+  const color = useColorModeValue('green.300', 'gray.700')
 
-  return <Flex bg={"green.300"} justifyContent={'space-between'}>
+  return <Flex bg={color} justifyContent={'space-between'}>
     <Flex px={2} py={1} gap={1}>
       <Link href={'/'}><Button>Story</Button></Link>
       <Link href={'/characters'}><Button>Characters</Button></Link>
       <Link href={'/locations'}><Button>Locations</Button></Link>
       <Link href={'/plot-points'}><Button>Plot Points</Button></Link>
       <Link href={'/settings'}><Button>Settings</Button></Link>
+      <Link href={'/language'}><Button>Language</Button></Link>
     </Flex>
     <Flex px={2} py={1} justifyContent={"flex-end"}>
+      <Button onClick={() => {
+        dispatch(globalActions.setAiBackend(aiBackend === 'google' ? 'openai' : aiBackend === 'claude' ? 'google' : 'claude'));
+      }}>AI {aiBackend}</Button>
       <Button onClick={() => {
         dispatch(storyActions.unload());
         axios.get('/api/list').then((res) => {

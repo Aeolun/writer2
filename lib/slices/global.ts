@@ -10,6 +10,7 @@ export interface GlobalState {
   currentId?: string;
   selectedEntity?: 'book' | 'arc' | 'chapter' | 'scene';
   storyLoaded: boolean;
+  aiBackend: 'google' | 'openai' | 'claude';
   saving: boolean;
   stories?: StorySummary[];
 }
@@ -17,6 +18,7 @@ export interface GlobalState {
 const initialState: GlobalState = {
   storyLoaded: false,
   stories: [],
+  aiBackend: 'google',
   saving: false,
 };
 
@@ -24,7 +26,7 @@ export const globalSlice = createSlice({
   name: "base",
   initialState,
   reducers: {
-    setStories: (state, action: PayloadAction<StorySummary>) => {
+    setStories: (state, action: PayloadAction<StorySummary[]>) => {
       state.stories = action.payload
     },
     setSaving: (state, action: PayloadAction<boolean>) => {
@@ -47,6 +49,12 @@ export const globalSlice = createSlice({
       action: PayloadAction<string>
     ) => {
       state.imagePath = action.payload;
+    },
+    setAiBackend: (
+      state: Draft<GlobalState>,
+      action: PayloadAction<'google' | 'openai' | 'claude'>
+    ) => {
+      state.aiBackend = action.payload;
     },
     setCurrentId: (
       state: Draft<GlobalState>,

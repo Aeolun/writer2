@@ -8,11 +8,12 @@ if (process.env.NODE_ENV === "development") {
 
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { store } from "../lib/store";
-import { Provider } from "react-redux";
+import {RootState, store} from "../lib/store";
+import {Provider, useSelector} from "react-redux";
 import "../lib/App.css";
 import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import Head from "next/head";
 
 const queryClient = new QueryClient();
 

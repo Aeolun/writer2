@@ -1,18 +1,44 @@
-import {FormControl, FormLabel, Input, Tab, TabList, TabPanel, TabPanels, Tabs, Textarea} from "@chakra-ui/react";
+import {
+    Button,
+    FormControl,
+    FormLabel,
+    Input,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
+    Textarea
+} from "@chakra-ui/react";
 import {storyActions} from "../lib/slices/story";
-import React from "react";
+import React, {useCallback} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {selectedObjectSelector} from "../lib/selectors/selectedObjectSelector";
+import axios from "axios";
+import {sortedBookScenes} from "../lib/selectors/sortedBookScenes";
+import {aiHelp} from "../lib/actions/aiHelp";
 
 export const BookTabs = () => {
   const bookObj = useSelector(selectedObjectSelector);
+  const orderedChapters = useSelector(sortedBookScenes)
   const dispatch = useDispatch();
 
-  return bookObj && bookObj.type === 'book' ? <Tabs>
+    const help = useCallback((helpKind: string, extra = false) => {
+        if (bookObj?.type === 'book' && orderedChapters) {
+            aiHelp('critiqueStoryline', orderedChapters.join('\n\n')).then((res) => {
+                dispatch(storyActions.updateBook({
+                    id: bookObj.id,
+                    critique: res.data.text,
+                }));
+            })
+        }
+    }, [bookObj])
+
+  return bookObj && bookObj.type === 'book' ? <Tabs display={"flex"} flexDirection={'column'} overflow={'hidden'}>
     <TabList>
       <Tab>Overview</Tab>
     </TabList>
-    <TabPanels>
+    <TabPanels overflow={'auto'}>
       <TabPanel>
         <FormControl>
           <FormLabel>Title</FormLabel>
@@ -62,6 +88,26 @@ export const BookTabs = () => {
             value={bookObj.data.start_date}
           />
         </FormControl>
+          <FormControl>
+              <FormLabel>AI Response</FormLabel>
+              <Textarea
+                  mt={2}
+                  onChange={(e) => {
+                      dispatch(
+                          storyActions.updateBook({
+                              id: bookObj.id,
+                              critique: e.target.value,
+                          })
+                      );
+                  }}
+                  placeholder="critique"
+                  height={"300px"}
+                  value={bookObj.data.critique}
+              />
+          </FormControl>
+          <Button colorScheme={'blue'} onClick={() => {
+              help('critiqueStoryline')
+          }}>[AI] Critique</Button>
       </TabPanel>
     </TabPanels>
   </Tabs> : null

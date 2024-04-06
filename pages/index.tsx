@@ -14,6 +14,9 @@ import Link from "next/link";
 import {HeaderMenu} from "../components/HeaderMenu";
 import {storySettingsSelector} from "../lib/selectors/storySettings";
 import {save} from "../lib/actions/save";
+import language from "./language";
+import {languageActions} from "../lib/slices/language";
+import Head from "next/head";
 
 
 const Home: NextPage = () => {
@@ -47,6 +50,9 @@ const Home: NextPage = () => {
   return (
     <Flex flexDirection={"column"} height={"100%"}>
       {storyLoaded ? <>
+        <Head>
+          <title>{storyLoaded}</title>
+        </Head>
         <HeaderMenu />
         <Flex flex={1} overflow={"hidden"}>
           {storySettings?.mangaChapterPath ? <>
@@ -57,12 +63,18 @@ const Home: NextPage = () => {
           <StoryPane />
         </Flex>
       </> : <Flex width={'80'} direction={'column'} margin={'0 auto'}>
+        <Head>
+          <title>Writer</title>
+        </Head>
         What story do you want to load?
 
         {stories?.map((story) => {
           return <Button onClick={() => {
               axios.get(`/api/load/${story.name}`).then((res) => {
-                dispatch(storyActions.setStory(res.data));
+                dispatch(storyActions.setStory(res.data.story));
+                if (res.data.language) {
+                  dispatch(languageActions.setLanguages(res.data.language));
+                }
               });
             }
             }>{story.name}</Button>
