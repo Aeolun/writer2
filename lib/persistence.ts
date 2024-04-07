@@ -22,9 +22,6 @@ export type Character = z.infer<typeof characterSchema>
 const treeDataSchema = z.object({
     id: z.string(),
     title: z.string(),
-    open: z.boolean(),
-    parent_id: z.string().optional(),
-    sort_order: z.number(),
     extra: z.string().optional(),
 })
 
@@ -34,7 +31,6 @@ const bookSchema = treeDataSchema.extend({
     summary: z.string(),
     critique: z.string().optional(),
     start_date: z.string(),
-    arcs: z.array(z.string()),
 })
 
 export type Book = z.infer<typeof bookSchema>
@@ -42,7 +38,6 @@ export type Book = z.infer<typeof bookSchema>
 const arcSchema = treeDataSchema.extend({
     summary: z.string(),
     start_date: z.string(),
-    chapters: z.array(z.string()),
 })
 
 export type Arc = z.infer<typeof arcSchema>
@@ -50,7 +45,6 @@ export type Arc = z.infer<typeof arcSchema>
 const chapterSchema = treeDataSchema.extend({
     summary: z.string(),
     start_date: z.string().optional(),
-    scenes: z.array(z.string()),
 })
 
 export type Chapter = z.infer<typeof chapterSchema>
@@ -58,7 +52,8 @@ export type Chapter = z.infer<typeof chapterSchema>
 const sceneParagraphSchema = z.object({
     id: z.string(),
     text: z.string(),
-    state: z.enum(['ai', 'draft', 'final']),
+    extra: z.string().optional(),
+    state: z.enum(['ai', 'draft', 'revise', 'final']),
     modifiedAt: z.string(),
     comments: z.array(z.object({
         text: z.string(),
@@ -75,8 +70,9 @@ export type SceneParagraph = z.infer<typeof sceneParagraphSchema>
 
 const sceneSchema = treeDataSchema.extend({
     summary: z.string(),
-    paragraphs: z.array(sceneParagraphSchema).optional(),
+    paragraphs: z.array(sceneParagraphSchema),
     text: z.string(),
+    selectedParagraph: z.string(),
     cursor: z.number(),
     plot_point_actions: z.array(z.object({
         plot_point_id: z.string(),

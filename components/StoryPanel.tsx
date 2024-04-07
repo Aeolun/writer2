@@ -33,19 +33,25 @@ export const StoryPanel = () => {
 
   const help = useCallback((helpKind: HelpKind, extra = false) => {
     setIsEditable(false)
-    aiHelp(helpKind, aiInstructions+'Chapter summary:\n\n'+tree.chapter?.summary+'\n\nCurrent scene text:\n\n'+ scene?.data.text).then((res) => {
+    const currentParagraph = scene?.data.paragraphs.find(p => p.id === scene.data.selectedParagraph)
+
+    if (!scene) return;
+    if (!currentParagraph) {
+      return;
+    };
+    aiHelp(helpKind, `${currentParagraph.text}`).then((res) => {
       if (extra) {
-        dispatch(storyActions.updateScene({
-          id: scene?.id,
+        dispatch(storyActions.updateSceneParagraph({
+          sceneId: scene.id,
+          paragraphId: currentParagraph?.id,
           extra: res.data.text
         }));
       } else {
-        dispatch(
-          storyActions.updateScene({
-            id: scene?.id,
-            text: `${scene?.data.text}\n\n${res.data.text}`,
-          })
-        );
+        dispatch(storyActions.updateSceneParagraph({
+          sceneId: scene.id,
+          paragraphId: currentParagraph?.id,
+          extra: res.data.text
+        }));
       }
 
       setIsEditable(true)
@@ -53,13 +59,13 @@ export const StoryPanel = () => {
   }, [scene])
 
   const dispatch = useDispatch();
-  const textRef = useRef<HTMLTextAreaElement>();
   useEffect(() => {
-    if(textRef.current && scene?.type === 'scene') {
+    const paragraph = document.getElementById(`p_${scene?.data.selectedParagraph}`) as HTMLTextAreaElement | null;
+    if(paragraph && scene?.type === 'scene') {
       console.log('focus', scene.data.cursor)
-      textRef.current.focus()
-      textRef.current.selectionStart = scene.data.cursor;
-      textRef.current.selectionEnd = scene.data.cursor;
+      paragraph.focus()
+      paragraph.selectionStart = scene.data.cursor;
+      paragraph.selectionEnd = scene.data.cursor;
     }
   }, [scene.data.id]);
 
@@ -70,17 +76,42 @@ export const StoryPanel = () => {
   return (
     <Flex flexDirection={"column"} height={"100%"} overflow={"hidden"}>
       <Flex flexDirection={"row"} flex={1} gap={4} height={'100%'} overflow={"hidden"} justifyContent={'space-around'}>
-        <Box flex={1} overflow={'auto'} maxW={'50%'}>
+        <Flex flex={1} overflow={'auto'} flexDirection={'column'} alignItems={'center'}>
         {scene.data.paragraphs.map((p) => {
-            return <AutoResizeTextarea key={p.id} value={p.text} onChange={(e) => {
+            return <Flex gap={2} justifyContent={'center'} width={'100%'}><Box borderLeft={1} flex={1} maxW={'50%'} borderLeftStyle={'solid'} borderLeftColor={p.state === 'revise' ? 'red.500' : undefined}><AutoResizeTextarea key={p.id} id={`p_${p.id}`} value={p.text} onChange={(e) => {
               dispatch(storyActions.updateSceneParagraph({
                 sceneId: scene.id,
                 paragraphId: p.id,
                 text: e.target.value
               }))
-            }} />
+            }} onFocus={(e) => {
+                dispatch(storyActions.updateScene({
+                    id: scene.id,
+                    selectedParagraph: p.id,
+                  cursor: e.currentTarget.selectionStart
+                }))
+
+            }} onKeyDown={(e) => {
+              if(e.key === 'Enter' && e.shiftKey) {
+                dispatch(storyActions.createSceneParagraph({
+                  sceneId: scene.id,
+                  afterParagraphId: p.id
+                }))
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }} /></Box>
+          {p.extra ? <Box flex={1} maxW={'50%'}><AutoResizeTextarea onChange={(e) => {
+            dispatch(storyActions.updateSceneParagraph({
+              sceneId: scene.id,
+              paragraphId: p.id,
+              extra: e.currentTarget.value
+            }))
+
+          }} value={p.extra} /></Box> : null}
+            </Flex>
           })}
-        </Box>
+        </Flex>
         {scene?.data.extra ? <Textarea maxWidth={"40em"} flex={1} height={"100%"} value={scene.data.extra} onChange={e => {
           dispatch(storyActions.updateScene({
             id: scene?.id,

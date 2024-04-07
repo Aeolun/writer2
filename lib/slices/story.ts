@@ -1,6 +1,6 @@
 import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
 import short from 'short-uuid';
-import {Arc, Book, Chapter, Character, PlotPoint, Scene, Story} from "../persistence";
+import {Arc, Book, Chapter, Character, PlotPoint, Scene, SceneParagraph, Story} from "../persistence";
 
 const initialState: Story = {
   name: undefined,
@@ -13,138 +13,130 @@ const initialState: Story = {
   scene: {},
 };
 
+function addItemToStructure(structure: Array<any>, parentId: string | undefined, item: any, index?: number, depth = 0) {
+  if (depth > 4) {
+      return;
+  }
+    const parent = structure.find((i) => {
+    return i.id === parentId;
+  })
+  if (parent) {
+    if (index !== undefined) {
+      parent.children.splice(index, 0, item);
+    }
+    else {
+      parent.children.push(item);
+    }
+    return;
+  }
+
+  for(const i in structure) {
+        const node = structure[i];
+        if (node.children) {
+          addItemToStructure(node.children, parentId, item, index, depth + 1);
+        }
+    }
+
+}
+
+function removeItemFromStructure(structure: Array<any>, id: string, depth = 0) {
+  if (depth > 4) {
+    return;
+  }
+  for(let i = 0; i < structure.length; i++) {
+    const node = structure[i];
+    if (node.id === id) {
+      const item = structure[i]
+      structure.splice(i, 1);
+      return item;
+    }
+    if (node.children) {
+      const item = removeItemFromStructure(node.children, id, depth + 1);
+      if (item) {
+        return item;
+      }
+    }
+  }
+}
+
 export const globalSlice = createSlice({
   name: "base",
   initialState,
   reducers: {
     setStory: (state, action: PayloadAction<Story>) => {
 
-      action.payload.structure = [];
-
       for(const key in action.payload) {
         const storyKey = key as keyof Story;
-        if (storyKey === 'structure') {
-          continue;
-        }
+        // if (storyKey === 'structure') {
+        //   continue;
+        // }
 
-        if (storyKey === 'scene') {
-          for(const scene of Object.values(action.payload[storyKey])) {
-            scene.paragraphs = scene.text.split('\n\n').map((text: string) => {
-              return {
-                id: short.generate().toString(),
-                text,
-                state: 'draft',
-                modifiedAt: new Date().toISOString(),
-                comments: [],
-                plot_point_actions: [],
-              };
-            })
-          }
-        }
-        if (storyKey === 'book') {
-          for(const book of Object.values(action.payload[storyKey])) {
-            const arcsChildren = book.arcs.map((arcId) => {
-                return action.payload.arc[arcId];
-            }).sort((a, b) => {
-                return a.sort_order - b.sort_order;
-            }).map((arc) => {
-
-                const chapters = arc.chapters.map((chapterId) => {
-                    return action.payload.chapter[chapterId];
-                }).sort((a, b) => {
-                    return a.sort_order - b.sort_order;
-                }).map((chapter) => {
-                    const scenes = chapter.scenes.map((sceneId) => {
-                        return action.payload.scene[sceneId];
-                    }).sort((a, b) => {
-                    return a.sort_order - b.sort_order;
-                    }).map((scene) => {
-                        return {
-                            id: scene.id,
-                            name: scene.title,
-                            type: 'scene',
-                            isOpen: false,
-                        };
-                    });
-
-                    return {
-                        id: chapter.id,
-                        name: chapter.title,
-                        type: 'chapter',
-                        isOpen: false,
-                        children: scenes,
-                    };
-                });
-                return {
-                  id: arc.id,
-                  name: arc.title,
-                  type: 'arc',
-                  isOpen: false,
-                  children: chapters,
-                };
-            });
-            state.structure.push({
-                id: book.id,
-                name: book.title,
-                type: 'book',
-                isOpen: false,
-                children: arcsChildren,
-            })
-          }
-        }
+        // if (storyKey === 'scene') {
+        //   for(const scene of Object.values(action.payload[storyKey])) {
+        //     scene.paragraphs = scene.paragraphs || [];
+        //   }
+        // }
+        // if (storyKey === 'book') {
+        //   for(const book of Object.values(action.payload[storyKey])) {
+        //     const arcsChildren = book.arcs.map((arcId) => {
+        //         return action.payload.arc[arcId];
+        //     }).sort((a, b) => {
+        //         return a.sort_order - b.sort_order;
+        //     }).map((arc) => {
+        //
+        //         const chapters = arc.chapters.map((chapterId) => {
+        //             return action.payload.chapter[chapterId];
+        //         }).sort((a, b) => {
+        //             return a.sort_order - b.sort_order;
+        //         }).map((chapter) => {
+        //             const scenes = chapter.scenes.map((sceneId) => {
+        //                 return action.payload.scene[sceneId];
+        //             }).sort((a, b) => {
+        //             return a.sort_order - b.sort_order;
+        //             }).map((scene) => {
+        //                 return {
+        //                     id: scene.id,
+        //                     name: scene.title,
+        //                     type: 'scene',
+        //                     isOpen: false,
+        //                 };
+        //             });
+        //
+        //             return {
+        //                 id: chapter.id,
+        //                 name: chapter.title,
+        //                 type: 'chapter',
+        //                 isOpen: false,
+        //                 children: scenes,
+        //             };
+        //         });
+        //         return {
+        //           id: arc.id,
+        //           name: arc.title,
+        //           type: 'arc',
+        //           isOpen: false,
+        //           children: chapters,
+        //         };
+        //     });
+        //     state.structure.push({
+        //         id: book.id,
+        //         name: book.title,
+        //         type: 'book',
+        //         isOpen: false,
+        //         children: arcsChildren,
+        //     })
+        //   }
+        // }
 
         //@ts-expect-error
         state[storyKey] = action.payload[storyKey];
       }
     },
     toggleTreeItem: (state, action: PayloadAction<{id: string}>) => {
-      const id = action.payload.id;
-      if (id) {
-        const keys = ['book', 'arc', 'chapter', 'scene'];
-        for(const key of keys) {
-          const stateKey = key as 'book' | 'arc' | 'chapter' | 'scene';
-          if (state[stateKey][id]) {
-            state[stateKey][id].open = !state[stateKey][id].open;
-          }
-        };
-      }
+
     },
     deleteTreeItem: (state, action: PayloadAction<{id: string}>) => {
-      const id = action.payload.id;
-      if (id) {
-        const keys = ['book', 'arc', 'chapter', 'scene'];
-        for(const key of keys) {
-          const stateKey = key as 'book' | 'arc' | 'chapter' | 'scene';
-          // remove from parent if it exists
-          if (state[stateKey][id]) {
-            if (stateKey === 'arc') {
-              const bookId = state[stateKey][id].parent_id;
-              if (bookId) {
-                state.book[bookId].arcs = state.book[bookId].arcs.filter((arcId) => {
-                  return arcId !== id;
-                });
-              }
-            }
-            if (stateKey === 'chapter') {
-              const arcId = state[stateKey][id].parent_id;
-              if (arcId) {
-                state.arc[arcId].chapters = state.arc[arcId].chapters.filter((chapterId) => {
-                  return chapterId !== id;
-                });
-              }
-            }
-            if (stateKey === 'scene') {
-              const chapterId = state[stateKey][id].parent_id;
-              if (chapterId) {
-                state.chapter[chapterId].scenes = state.chapter[chapterId].scenes.filter((sceneId) => {
-                  return sceneId !== id;
-                });
-              }
-            }
-            delete state[stateKey][id];
-          }
-        };
-      }
+
     },
     newStory: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
@@ -152,7 +144,7 @@ export const globalSlice = createSlice({
     unload: (state) => {
       return initialState;
     },
-    setSetting(state: Draft<StoryState>, action: PayloadAction<{key:  keyof StoryState['settings'], value: string}>) {
+    setSetting(state: Draft<Story>, action: PayloadAction<{key:  keyof Story['settings'], value: string}>) {
       if(!state.settings) {
         state.settings = {};
       }
@@ -162,137 +154,122 @@ export const globalSlice = createSlice({
     },
     createChapter: (state, action: PayloadAction<{ arcId: string }>) => {
       const newId = short.generate().toString();
-      const highestSortOrder = Object.values(state.chapter).reduce((acc, chapter) => {
-        if (chapter.sort_order > acc) {
-          return chapter.sort_order;
-        }
-        return acc;
-      }, 0);
       state.chapter[newId] = {
         id: newId,
         title: "New Chapter",
         summary: "",
-        scenes: [],
-        open: false,
-        sort_order: highestSortOrder+1,
-        parent_id: action.payload.arcId,
         start_date: "",
       };
-      state.arc[action.payload.arcId].chapters.push(newId);
+      addItemToStructure(state.structure, action.payload.arcId, {
+        id: newId,
+        name: "New Chapter",
+        type: 'chapter',
+        isOpen: false,
+        children: [],
+      })
     },
     createBook: (state) => {
       const newId = short.generate().toString();
-      const highestSortOrder = Object.values(state.book).reduce((acc, book) => {
-        if (book.sort_order > acc) {
-          return book.sort_order;
-        }
-        return acc;
-      }, 0);
       state.book[newId] = {
         id: newId,
         title: "New Book",
         summary: "",
-        arcs: [],
-        open: false,
-        sort_order: highestSortOrder+1,
-        parent_id: undefined,
         start_date: "",
       };
+      addItemToStructure(state.structure, undefined, {
+        id: newId,
+        name: "New Book",
+        type: 'book',
+        isOpen: false,
+        children: [],
+      })
     },
     createArc: (state, action: PayloadAction<{ bookId: string }>) => {
       const newId = short.generate().toString();
-      const highestSortOrder = Object.values(state.arc).reduce((acc, arc) => {
-        if (arc.sort_order > acc) {
-          return arc.sort_order;
-        }
-        return acc;
-      }, 0);
       state.arc[newId] = {
         id: newId,
         title: "New Arc",
         summary: "",
-        chapters: [],
-        open: false,
-        sort_order: highestSortOrder+1,
-        parent_id: action.payload.bookId,
         start_date: "",
       };
-      state.book[action.payload.bookId].arcs.push(newId);
+      addItemToStructure(state.structure, action.payload.bookId, {
+          id: newId,
+          name: "New Arc",
+          type: 'arc',
+          isOpen: false,
+          children: [],
+      })
     },
     createScene: (state, action: PayloadAction<{ chapterId: string }>) => {
       const newId = short.generate().toString();
-      const highestSortOrder = Object.values(state.scene).reduce((acc, scene) => {
-        if (scene.sort_order > acc) {
-          return scene.sort_order;
-        }
-        return acc;
-      }, 0);
-      console.log('highestSortOrder', highestSortOrder)
+
       state.scene[newId] = {
         id: newId,
         title: "New Scene",
         summary: "",
         plot_point_actions: [],
-        paragraphs: [],
         cursor: 0,
-        open: false,
+      paragraphs: [],
         text: "",
-        sort_order: highestSortOrder+1,
-        parent_id: action.payload.chapterId,
       };
-      state.chapter[action.payload.chapterId].scenes.push(newId);
+
+        addItemToStructure(state.structure, action.payload.chapterId, {
+            id: newId,
+            name: "New Scene",
+            type: 'scene',
+            isOpen: false,
+        })
     },
-    sortItem: (state, action: PayloadAction<{ id: string; kind: 'scene' | 'arc' | 'book' | 'chapter'; direction: 'up' | 'down' }>) => {
-      const id = action.payload.id;
-      const kind = action.payload.kind;
-      const direction = action.payload.direction;
-      if (id) {
-        if (state[kind][id]) {
-          // find sorted items and then switch
-          const sortedItems = Object.values(state[kind]).filter((item) => {
-            return item.parent_id === state[kind][id].parent_id;
-          }).sort((a, b) => {
-            return a.sort_order - b.sort_order;
-          });
-          const currentIndex = sortedItems.findIndex((item) => {
-            return item.id === id;
-          });
-          const currentSortOrder = sortedItems[currentIndex].sort_order;
-
-          let newSortOrder = currentSortOrder;
-          let otherItemId = '';
-
-          if (direction === 'up') {
-            if (currentIndex > 0) {
-              newSortOrder = sortedItems[currentIndex - 1].sort_order;
-              otherItemId = sortedItems[currentIndex - 1].id;
-            }
-          } else {
-            if (currentIndex < sortedItems.length - 1) {
-              newSortOrder = sortedItems[currentIndex + 1].sort_order;
-              otherItemId = sortedItems[currentIndex + 1].id;
-            }
-          }
-          console.log({id, otherItemId, currentIndex, currentSortOrder, newSortOrder, sortedItems: sortedItems.map(i => i.id+' '+i.sort_order)});
-          state[kind][id].sort_order = newSortOrder;
-          state[kind][otherItemId].sort_order = currentSortOrder;
-        } else {
-          throw new Error('Invalid id');
-        }
+    createSceneParagraph: (state, action: PayloadAction<{ sceneId: string, afterParagraphId: string }>) => {
+        const newId = short.generate().toString();
+        const afterParagraph = state.scene[action.payload.sceneId].paragraphs.findIndex((p) => {
+            return p.id === action.payload.afterParagraphId;
+        })
+        state.scene[action.payload.sceneId].paragraphs.splice(afterParagraph + 1, 0, {
+            id: newId,
+            text: "",
+            state: 'draft',
+            modifiedAt: new Date().toISOString(),
+            comments: [],
+            plot_point_actions: [],
+        });
+        // set selected paragraph to new one
+        state.scene[action.payload.sceneId].selectedParagraph = newId;
+        state.scene[action.payload.sceneId].cursor = 0;
+    },
+    moveItem: (state, action: PayloadAction<{ id: string, parentId: string, index: number }>) => {
+      const item = removeItemFromStructure(state.structure, action.payload.id);
+      if (item) {
+        addItemToStructure(state.structure, action.payload.parentId, item, action.payload.index);
       }
     },
     updateSceneParagraph: (state, action: PayloadAction<{
         sceneId: string;
         paragraphId: string;
-        text: string;
+        text?: string;
+        state?: SceneParagraph['state'];
+        extra?: string;
         }>) => {
         const scene = state.scene[action.payload.sceneId];
         if (scene) {
             const paragraph = scene.paragraphs?.find((p) => {
             return p.id === action.payload.paragraphId;
             });
+            console.log(action.payload, paragraph)
             if (paragraph) {
-            paragraph.text = action.payload.text;
+              if (action.payload.text !== undefined) {
+                paragraph.text = action.payload.text;
+              }
+              if (action.payload.state) {
+                paragraph.state = action.payload.state;
+              } else if (action.payload.text && paragraph.state === 'revise') {
+                paragraph.state = 'draft';
+              }
+                if (action.payload.extra !== undefined) {
+                  console.log('setting extra')
+                    paragraph.extra = action.payload.extra;
+                }
+              paragraph.modifiedAt = new Date().toISOString();
             }
         }
     },

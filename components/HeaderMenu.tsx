@@ -22,6 +22,7 @@ export const HeaderMenu = () => {
       <Link href={'/plot-points'}><Button>Plot Points</Button></Link>
       <Link href={'/settings'}><Button>Settings</Button></Link>
       <Link href={'/language'}><Button>Language</Button></Link>
+      <Link href={'/preview'}><Button>Preview</Button></Link>
     </Flex>
     <Flex px={2} py={1} justifyContent={"flex-end"}>
       <Button onClick={() => {
