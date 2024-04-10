@@ -37,9 +37,11 @@ const Home: NextPage = () => {
               Words: {scene.words}, Books: {scene.books}, Chapters: {scene.chapters}, Scenes: {scene.scenes}, Reading time: {Math.round(scene.words / 14280*100)/100} hours
             </Box>
           } else if (scene.type === 'chapter_header') {
-            return <Heading textAlign={'center'} my={6} fontFamily={'big caslon'}>
+            return <Box position={'relative'} bg={'content-box radial-gradient(white, rgba(0, 0, 0, 0))'} backgroundSize={'contain'}>
+              <Box my={12} w={'70%'} mx={'auto'}><img src={'/chapter.svg'} /></Box>
+              <Heading position={'absolute'} ml={'-30%'} mt={'-1.0em'} w={'60%'} color={'gray.900'} boxShadow={'sm'} textShadow={'2px 2px 7px #fff'} h={'2.2em'} py={4} top={'50%'} left={'50%'} textAlign={'center'} fontFamily={'big caslon'}>
               {scene.text}
-            </Heading>
+            </Heading></Box>
           } else if (scene.type === 'break') {
             return <Box my={12} w={'70%'} mx={'auto'}><img src={'/divider.svg'} /></Box>
           } else if (scene.type === 'paragraph') {

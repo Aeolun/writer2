@@ -7,7 +7,7 @@ import {
   Textarea,
   Select,
   Input,
-  Heading,
+  Heading, VStack, Menu, MenuButton, IconButton, MenuList, MenuItem,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
@@ -18,12 +18,20 @@ import {aiHelp} from "../lib/actions/aiHelp";
 import {HelpKind} from "../lib/ai-instructions";
 import {LanguageForm} from "./LanguageForm";
 import {AutoResizeTextarea} from "./AutoResizeTextarea";
+import {Check, Crop, Crown, Plus, PlusCircle, Wrench} from "iconoir-react";
+import {SceneParagraph} from "../lib/persistence";
+import Preview from "../pages/preview";
+
+const statusColor: Record<SceneParagraph['state'], string> = {
+    draft: 'yellow.500',
+    revise: 'red.500',
+    final: 'green.500',
+    ai: 'blue.500'
+}
+
 
 export const StoryPanel = () => {
   const scene = useSelector(selectedObjectSelector);
-  const aiInstructions = useSelector((store: RootState) => store.story.settings?.aiInstructions);
-  const allScenes = useSelector((store: RootState) => store.story.scene);
-  const tree = useSelector(treeSelector)
   const [isEditable, setIsEditable] = useState(true)
   const [plotPoint, setPlotPoint] = useState<string>();
   const [action, setAction] = useState<string>("mentioned");
@@ -78,7 +86,7 @@ export const StoryPanel = () => {
       <Flex flexDirection={"row"} flex={1} gap={4} height={'100%'} overflow={"hidden"} justifyContent={'space-around'}>
         <Flex flex={1} overflow={'auto'} flexDirection={'column'} alignItems={'center'}>
         {scene.data.paragraphs.map((p) => {
-            return <Flex gap={2} justifyContent={'center'} width={'100%'}><Box borderLeft={1} flex={1} maxW={'50%'} borderLeftStyle={'solid'} borderLeftColor={p.state === 'revise' ? 'red.500' : undefined}><AutoResizeTextarea key={p.id} id={`p_${p.id}`} value={p.text} onChange={(e) => {
+            return <Flex position={'relative'} gap={2} justifyContent={'center'} width={'100%'}><Box borderLeft={2} px={1} flex={1} maxW={'47%'} borderLeftStyle={'solid'} borderLeftColor={statusColor[p.state as SceneParagraph['state']] ?? undefined}><AutoResizeTextarea key={p.id} id={`p_${p.id}`} value={p.text} onChange={(e) => {
               dispatch(storyActions.updateSceneParagraph({
                 sceneId: scene.id,
                 paragraphId: p.id,
@@ -99,9 +107,16 @@ export const StoryPanel = () => {
                 }))
                 e.preventDefault();
                 e.stopPropagation();
+              } else if (e.key === 'Backspace' && e.shiftKey) {
+                dispatch(storyActions.deleteSceneParagraph({
+                  sceneId: scene.id,
+                  paragraphId: p.id
+                }))
+                e.preventDefault();
+                e.stopPropagation();
               }
             }} /></Box>
-          {p.extra ? <Box flex={1} maxW={'50%'}><AutoResizeTextarea onChange={(e) => {
+          {p.extra ? <Box flex={1} maxW={'47%'}><AutoResizeTextarea onChange={(e) => {
             dispatch(storyActions.updateSceneParagraph({
               sceneId: scene.id,
               paragraphId: p.id,
@@ -109,6 +124,59 @@ export const StoryPanel = () => {
             }))
 
           }} value={p.extra} /></Box> : null}
+              {p.id === scene.data.selectedParagraph ? <VStack spacing={1} position={'absolute'} right={'100%'}>
+                <IconButton aria-label={"critique"} icon={<Plus />} size={'xs'} onClick={() => {
+                  help('critique')
+                }}>Critique</IconButton>
+                <IconButton aria-label={'rewrite'} icon={<Wrench />} size={'xs'} onClick={() => {
+                  help('rewrite')
+                }}>Rewrite</IconButton>
+                <IconButton aria-label={'write'} icon={<Plus />} size={'xs'} onClick={() => {
+                  help('write')
+                }}>Write</IconButton>
+                <Menu>
+                  <MenuButton
+                      as={IconButton}
+                      size={'xs'}
+                      aria-label='Options'
+                      icon={<PlusCircle />}
+                      variant='outline'
+                  />
+                  <MenuList>
+                    <MenuItem icon={<Crown />} onClick={() => {
+                      dispatch(storyActions.updateSceneParagraph({
+                        sceneId: scene.id,
+                        paragraphId: p.id,
+                        state: 'draft'
+                      }))
+                    }} command='⌘T'>
+                      Draft
+                    </MenuItem>
+                    <MenuItem icon={<Crop />} onClick={() => {
+                        dispatch(storyActions.updateSceneParagraph({
+                            sceneId: scene.id,
+                            paragraphId: p.id,
+                            state: 'revise'
+                        }))
+                    }} command='⌘N'>
+                      Revise
+                    </MenuItem>
+                    <MenuItem icon={<Check />} onClick={() => {
+                        dispatch(storyActions.updateSceneParagraph({
+                            sceneId: scene.id,
+                            paragraphId: p.id,
+                            state: 'final'
+                        }))
+
+                    }} command='⌘⇧N'>
+                      Finalized
+                    </MenuItem>
+                    <MenuItem icon={<PlusCircle />} command='⌘O'>
+                      More
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              </VStack> : null}
             </Flex>
           })}
         </Flex>

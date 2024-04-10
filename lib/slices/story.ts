@@ -243,6 +243,14 @@ export const globalSlice = createSlice({
         addItemToStructure(state.structure, action.payload.parentId, item, action.payload.index);
       }
     },
+    deleteSceneParagraph: (state, action: PayloadAction<{ sceneId: string, paragraphId: string }>) => {
+        const paragraphIndex = state.scene[action.payload.sceneId].paragraphs.findIndex((p) => {
+            return p.id === action.payload.paragraphId;
+        });
+        if (state.scene[action.payload.sceneId].paragraphs[paragraphIndex].text === '') {
+          state.scene[action.payload.sceneId].paragraphs.splice(paragraphIndex, 1);
+        }
+    },
     updateSceneParagraph: (state, action: PayloadAction<{
         sceneId: string;
         paragraphId: string;
