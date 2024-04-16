@@ -38,14 +38,14 @@ const Home: NextPage = () => {
             </Box>
           } else if (scene.type === 'chapter_header') {
             return <Box position={'relative'} bg={'content-box radial-gradient(white, rgba(0, 0, 0, 0))'} backgroundSize={'contain'}>
-              <Box my={12} w={'70%'} mx={'auto'}><img src={'/chapter.svg'} /></Box>
-              <Heading position={'absolute'} ml={'-30%'} mt={'-1.0em'} w={'60%'} color={'gray.900'} boxShadow={'sm'} textShadow={'2px 2px 7px #fff'} h={'2.2em'} py={4} top={'50%'} left={'50%'} textAlign={'center'} fontFamily={'big caslon'}>
+              <Box my={12} w={'70%'} mx={'auto'} color={'gray.800'}><img style={{filter: 'invert(1)'}} src={'/chapter.svg'} /></Box>
+              <Heading position={'absolute'} ml={'-30%'} mt={'-1.0em'} w={'60%'} color={'gray.900'} boxShadow={'sm'} textShadow={'0px 0px 7px #fff, 0px 0px 27px #fff, 0px 0px 37px #fff, 0px 0px 47px #fff'} h={'2.2em'} py={4} top={'50%'} left={'50%'} textAlign={'center'} fontFamily={'big caslon'}>
               {scene.text}
             </Heading></Box>
           } else if (scene.type === 'break') {
-            return <Box my={12} w={'70%'} mx={'auto'}><img src={'/divider.svg'} /></Box>
+            return <Box my={12} w={'70%'} mx={'auto'}><img style={{filter: 'invert(1)'}} src={'/divider.svg'} /></Box>
           } else if (scene.type === 'paragraph') {
-            return <Box textIndent={'2em'} color={scene.state === 'revise' ? 'red.500' : undefined} my={'1em'} fontFamily={'georgia, garamond, serif'} fontWeight={'500'} onClick={() => {
+            return <Box as={'p'} textIndent={'2em'} color={scene.state === 'revise' ? 'red.500' : undefined} my={'1em'} fontFamily={'georgia, garamond, serif'} fontWeight={'500'} onClick={() => {
               dispatch(storyActions.updateSceneParagraph({
                 sceneId: scene.sceneId,
                 paragraphId: scene.paragraphId,

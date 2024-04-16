@@ -12,7 +12,7 @@ export const HeaderMenu = () => {
   const saving = useSelector((store: RootState) => store.base.saving);
   const aiBackend = useSelector((store: RootState) => store.base.aiBackend);
   const dispatch = useDispatch();
-  const color = useColorModeValue('green.300', 'gray.700')
+  const color = useColorModeValue('blue.300', 'gray.700')
 
   return <Flex bg={color} justifyContent={'space-between'}>
     <Flex px={2} py={1} gap={1}>

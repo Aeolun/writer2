@@ -135,9 +135,6 @@ export const globalSlice = createSlice({
     toggleTreeItem: (state, action: PayloadAction<{id: string}>) => {
 
     },
-    deleteTreeItem: (state, action: PayloadAction<{id: string}>) => {
-
-    },
     newStory: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
     },
@@ -219,6 +216,10 @@ export const globalSlice = createSlice({
             type: 'scene',
             isOpen: false,
         })
+    },
+    deleteScene: (state, action: PayloadAction<{ sceneId: string }>) => {
+        delete state.scene[action.payload.sceneId];
+        removeItemFromStructure(state.structure, action.payload.sceneId);
     },
     createSceneParagraph: (state, action: PayloadAction<{ sceneId: string, afterParagraphId: string }>) => {
         const newId = short.generate().toString();

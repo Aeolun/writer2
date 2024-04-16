@@ -18,10 +18,11 @@ export const StoryPane = () => {
   const selectedEntity = useSelector((store: RootState) => store.base.selectedEntity);
 
   const dispatch = useDispatch();
-    const color = useColorModeValue('green.200', 'gray.600')
+    const color = useColorModeValue('blue.200', 'gray.600')
+    const backgroundColor = useColorModeValue('blue.400', 'black')
 
   return (
-    <Flex flex={1} flexDirection={"column"} height={"100%"} width={"37%"}>
+    <Flex flex={1} flexDirection={"column"} height={"100%"} width={"37%"} backgroundColor={backgroundColor} backgroundImage={'url(/rice-paper.png)'}>
       <Box p={2} bg={color}>
         {selectedEntity === 'book' ? `${selectedObject?.data?.title} (${selectedObject?.id})` : ''}
         {selectedEntity === 'arc' ? `${selectedObject?.data?.title} (${selectedObject?.data?.id})` : ''}

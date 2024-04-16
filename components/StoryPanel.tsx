@@ -75,7 +75,7 @@ export const StoryPanel = () => {
       paragraph.selectionStart = scene.data.cursor;
       paragraph.selectionEnd = scene.data.cursor;
     }
-  }, [scene.data.id]);
+  }, [scene?.data.id]);
 
   if (scene?.type !== 'scene') {
     return null;
@@ -84,7 +84,7 @@ export const StoryPanel = () => {
   return (
     <Flex flexDirection={"column"} height={"100%"} overflow={"hidden"}>
       <Flex flexDirection={"row"} flex={1} gap={4} height={'100%'} overflow={"hidden"} justifyContent={'space-around'}>
-        <Flex flex={1} overflow={'auto'} flexDirection={'column'} alignItems={'center'}>
+        <Flex flex={1} overflow={'auto'} gap={2} flexDirection={'column'} alignItems={'center'}>
         {scene.data.paragraphs.map((p) => {
             return <Flex position={'relative'} gap={2} justifyContent={'center'} width={'100%'}><Box borderLeft={2} px={1} flex={1} maxW={'47%'} borderLeftStyle={'solid'} borderLeftColor={statusColor[p.state as SceneParagraph['state']] ?? undefined}><AutoResizeTextarea key={p.id} id={`p_${p.id}`} value={p.text} onChange={(e) => {
               dispatch(storyActions.updateSceneParagraph({

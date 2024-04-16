@@ -72,6 +72,9 @@ export const ScenePanel = () => {
       <Button colorScheme={'blue'} onClick={() => {
         help('summarize')
       }}>[AI] Summarize</Button>
+        <Button colorScheme={'red'} onClick={() => {
+            dispatch(storyActions.deleteScene({sceneId: selectedScene.id}));
+        }}>Delete</Button>
     </>
   ) : null;
 };

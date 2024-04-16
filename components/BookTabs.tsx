@@ -20,19 +20,7 @@ import {aiHelp} from "../lib/actions/aiHelp";
 
 export const BookTabs = () => {
   const bookObj = useSelector(selectedObjectSelector);
-  const orderedChapters = useSelector(sortedBookScenes)
   const dispatch = useDispatch();
-
-    const help = useCallback((helpKind: string, extra = false) => {
-        if (bookObj?.type === 'book' && orderedChapters) {
-            aiHelp('critiqueStoryline', orderedChapters.join('\n\n')).then((res) => {
-                dispatch(storyActions.updateBook({
-                    id: bookObj.id,
-                    critique: res.data.text,
-                }));
-            })
-        }
-    }, [bookObj])
 
   return bookObj && bookObj.type === 'book' ? <Tabs display={"flex"} flexDirection={'column'} overflow={'hidden'}>
     <TabList>
@@ -105,9 +93,6 @@ export const BookTabs = () => {
                   value={bookObj.data.critique}
               />
           </FormControl>
-          <Button colorScheme={'blue'} onClick={() => {
-              help('critiqueStoryline')
-          }}>[AI] Critique</Button>
       </TabPanel>
     </TabPanels>
   </Tabs> : null
