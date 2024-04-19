@@ -1,15 +1,14 @@
 import { type Draft, type PayloadAction, createSlice } from "@reduxjs/toolkit";
 import short from "short-uuid";
-import {
-  type Arc,
-  type Book,
-  type Chapter,
-  type Character,
-  type Node,
-  PlotPoint,
-  type Scene,
-  type SceneParagraph,
-  type Story,
+import type {
+  Arc,
+  Book,
+  Chapter,
+  Character,
+  Node,
+  Scene,
+  SceneParagraph,
+  Story,
 } from "../persistence";
 
 const initialState: Story = {
@@ -225,6 +224,9 @@ export const globalSlice = createSlice({
         id: newId,
         title: "New Scene",
         summary: "",
+        words: 0,
+        hasAI: false,
+        posted: false,
         plot_point_actions: [],
         cursor: 0,
         paragraphs: [],
@@ -316,14 +318,14 @@ export const globalSlice = createSlice({
         const paragraph = scene.paragraphs?.find((p) => {
           return p.id === action.payload.paragraphId;
         });
-          if (action.payload.state === "ai") {
-              scene.hasAI = true;
-          } else {
-              scene.hasAI = scene.paragraphs.some((p) => p.state === "ai");
-          }
-          scene.words = scene.paragraphs.reduce((acc, p) => {
-              return acc + p.text.split(" ").length;
-          }, 0);
+        if (action.payload.state === "ai") {
+          scene.hasAI = true;
+        } else {
+          scene.hasAI = scene.paragraphs.some((p) => p.state === "ai");
+        }
+        scene.words = scene.paragraphs.reduce((acc, p) => {
+          return acc + p.text.split(" ").length;
+        }, 0);
         if (paragraph) {
           if (action.payload.text !== undefined) {
             paragraph.text = action.payload.text;

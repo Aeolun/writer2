@@ -9,7 +9,7 @@ export const NoStory = () => {
       <Button
         colorScheme={"blue"}
         onClick={() => {
-          window.location = "/";
+          window.location.href = "/";
         }}
       >
         Load a story

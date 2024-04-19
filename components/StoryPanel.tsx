@@ -1,49 +1,31 @@
-import React, {
-  useState,
-  Suspense,
-  useCallback,
-  useRef,
-  useEffect,
-} from "react";
-import { Scene, storyActions } from "../lib/slices/story";
 import {
   Box,
   Button,
   Flex,
-  Textarea,
-  Select,
-  Input,
+  HStack,
   Heading,
-  VStack,
+  IconButton,
   Menu,
   MenuButton,
-  IconButton,
-  MenuList,
   MenuItem,
-  HStack,
+  MenuList,
+  Select,
+  Textarea,
+  VStack,
 } from "@chakra-ui/react";
+import { Check, Crop, Crown, Pacman, PlusCircle, Wrench } from "iconoir-react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { aiHelp } from "../lib/actions/aiHelp";
+import type { HelpKind } from "../lib/ai-instructions";
+import type { SceneParagraph } from "../lib/persistence";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
 import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
-import { treeSelector } from "../lib/selectors/treeSelector";
-import { RootState } from "../lib/store";
-import { aiHelp } from "../lib/actions/aiHelp";
-import { HelpKind } from "../lib/ai-instructions";
-import { LanguageForm } from "./LanguageForm";
+
+import { storyActions } from "../lib/slices/story";
+import type { RootState } from "../lib/store";
 import { AutoResizeTextarea } from "./AutoResizeTextarea";
-import {
-  Check,
-  Crop,
-  Crown,
-  Plus,
-  PlusCircle,
-  Wrench,
-  Pacman,
-  DesignPencil,
-  SubmitDocument,
-} from "iconoir-react";
-import { SceneParagraph } from "../lib/persistence";
-import Preview from "../pages/preview";
+import { LanguageForm } from "./LanguageForm";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "yellow.500",
@@ -59,17 +41,18 @@ export const StoryPanel = () => {
   const [action, setAction] = useState<string>("mentioned");
   const plotpoints = useSelector(plotpointSelector);
   const languages = useSelector((store: RootState) =>
-    Object.values(store.language.languages)
+    Object.values(store.language.languages),
   );
   const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(
-    undefined
+    undefined,
   );
 
   const help = useCallback(
     (helpKind: HelpKind, extra = false) => {
+      if (scene?.type !== "scene") return;
       setIsEditable(false);
       const currentParagraph = scene?.data.paragraphs.find(
-        (p) => p.id === scene.data.selectedParagraph
+        (p) => p.id === scene.data.selectedParagraph,
       );
 
       if (!scene) return;
@@ -83,7 +66,7 @@ export const StoryPanel = () => {
               sceneId: scene.id,
               paragraphId: currentParagraph?.id,
               extra: res.data.text,
-            })
+            }),
           );
         } else {
           dispatch(
@@ -91,20 +74,22 @@ export const StoryPanel = () => {
               sceneId: scene.id,
               paragraphId: currentParagraph?.id,
               extra: res.data.text,
-            })
+            }),
           );
         }
 
         setIsEditable(true);
       });
     },
-    [scene]
+    [scene],
   );
 
   const dispatch = useDispatch();
   useEffect(() => {
+    if (scene?.type !== "scene") return;
+
     const paragraph = document.getElementById(
-      `p_${scene?.data.selectedParagraph}`
+      `p_${scene?.data.selectedParagraph}`,
     ) as HTMLTextAreaElement | null;
     if (paragraph && scene?.type === "scene") {
       console.log("focus", scene.data.cursor);
@@ -112,7 +97,7 @@ export const StoryPanel = () => {
       paragraph.selectionStart = scene.data.cursor;
       paragraph.selectionEnd = scene.data.cursor;
     }
-  }, [scene?.data.id]);
+  }, [scene]);
 
   if (scene?.type !== "scene") {
     return null;
@@ -167,7 +152,7 @@ export const StoryPanel = () => {
                           sceneId: scene.id,
                           paragraphId: p.id,
                           text: e.target.value,
-                        })
+                        }),
                       );
                     }}
                     onFocus={(e) => {
@@ -176,7 +161,7 @@ export const StoryPanel = () => {
                           id: scene.id,
                           selectedParagraph: p.id,
                           cursor: e.currentTarget.selectionStart,
-                        })
+                        }),
                       );
                     }}
                     onKeyDown={(e) => {
@@ -185,7 +170,7 @@ export const StoryPanel = () => {
                           storyActions.createSceneParagraph({
                             sceneId: scene.id,
                             afterParagraphId: p.id,
-                          })
+                          }),
                         );
                         e.preventDefault();
                         e.stopPropagation();
@@ -194,7 +179,7 @@ export const StoryPanel = () => {
                           storyActions.deleteSceneParagraph({
                             sceneId: scene.id,
                             paragraphId: p.id,
-                          })
+                          }),
                         );
                         e.preventDefault();
                         e.stopPropagation();
@@ -229,7 +214,7 @@ export const StoryPanel = () => {
                                   sceneId: scene.id,
                                   paragraphId: p.id,
                                   state: "draft",
-                                })
+                                }),
                               );
                             }}
                             command="⌘T"
@@ -244,7 +229,7 @@ export const StoryPanel = () => {
                                   sceneId: scene.id,
                                   paragraphId: p.id,
                                   state: "revise",
-                                })
+                                }),
                               );
                             }}
                             command="⌘N"
@@ -259,7 +244,7 @@ export const StoryPanel = () => {
                                   sceneId: scene.id,
                                   paragraphId: p.id,
                                   state: "ai",
-                                })
+                                }),
                               );
                             }}
                             command="⌘⇧N"
@@ -274,7 +259,7 @@ export const StoryPanel = () => {
                                   sceneId: scene.id,
                                   paragraphId: p.id,
                                   state: "final",
-                                })
+                                }),
                               );
                             }}
                             command="⌘⇧N"
@@ -288,12 +273,7 @@ export const StoryPanel = () => {
                       </Menu>
                     </HStack>
                   ) : (
-                    <HStack
-                      spacing={2}
-                      bg={"blue.500"}
-                      p={2}
-                      w={"11%"}
-                    ></HStack>
+                    <HStack spacing={2} bg={"blue.500"} p={2} w={"11%"} />
                   )}
                 </Flex>
                 {p.extra ? (
@@ -305,7 +285,7 @@ export const StoryPanel = () => {
                             sceneId: scene.id,
                             paragraphId: p.id,
                             extra: e.currentTarget.value,
-                          })
+                          }),
                         );
                       }}
                       value={p.extra}
@@ -327,7 +307,7 @@ export const StoryPanel = () => {
                 storyActions.updateScene({
                   id: scene?.id,
                   extra: e.target.value,
-                })
+                }),
               );
             }}
           />
@@ -380,7 +360,7 @@ export const StoryPanel = () => {
                   sceneId: scene.id,
                   paragraphId: p.id,
                   state: "ai",
-                })
+                }),
               );
             });
           }}
@@ -396,7 +376,7 @@ export const StoryPanel = () => {
                   sceneId: scene.id,
                   paragraphId: p.id,
                   state: "draft",
-                })
+                }),
               );
             });
           }}
@@ -440,7 +420,7 @@ export const StoryPanel = () => {
                           sceneId: scene.id,
                           plotpointId: link.plot_point_id,
                           action: link.action,
-                        })
+                        }),
                       );
                     }
                   }}
@@ -484,7 +464,7 @@ export const StoryPanel = () => {
                     sceneId: scene.id,
                     plotpointId: plotPoint,
                     action: action,
-                  })
+                  }),
                 );
               }
             }}
