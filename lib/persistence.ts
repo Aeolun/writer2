@@ -76,15 +76,15 @@ const sceneSchema = treeDataSchema.extend({
   paragraphs: z.array(sceneParagraphSchema),
   text: z.string(),
   selectedParagraph: z.string().optional(),
-  words: z.number(),
-  hasAI: z.boolean(),
-  posted: z.boolean(),
-  cursor: z.number(),
+  words: z.number().optional(),
+  hasAI: z.boolean().optional(),
+  posted: z.boolean().optional(),
+  cursor: z.number().optional(),
   plot_point_actions: z.array(
     z.object({
       plot_point_id: z.string(),
       action: z.string(),
-    })
+    }),
   ),
 });
 
@@ -105,7 +105,45 @@ const treeSchema: z.ZodType<Node> = baseNodeSchema.extend({
   children: z.lazy(() => treeSchema.array().optional()),
 });
 
-const storySchema = z.object({
+export const languageSchema = z.object({
+  languages: z.record(
+    z.object({
+      id: z.string(),
+      summary: z.string(),
+      title: z.string(),
+      phonemes: z.array(
+        z.object({
+          id: z.string(),
+          identifier: z.string(),
+          options: z.string(),
+        }),
+      ),
+      wordOptions: z.array(
+        z.object({
+          id: z.string(),
+          identifier: z.string(),
+          option: z.string(),
+        }),
+      ),
+      vocabulary: z.array(
+        z.object({
+          id: z.string(),
+          native: z.string(),
+          meaning: z.string(),
+        }),
+      ),
+      pronouns: z.array(
+        z.object({
+          id: z.string(),
+          native: z.string(),
+          meaning: z.string(),
+        }),
+      ),
+    }),
+  ),
+});
+
+export const storySchema = z.object({
   name: z.string().optional(),
   settings: z
     .object({
@@ -122,3 +160,8 @@ const storySchema = z.object({
   scene: z.record(sceneSchema),
 });
 export type Story = z.infer<typeof storySchema>;
+
+export const saveSchema = z.object({
+  story: storySchema,
+  language: languageSchema,
+});
