@@ -309,6 +309,7 @@ export const globalSlice = createSlice({
         sceneId: string;
         paragraphId: string;
         text?: string;
+        extraLoading?: boolean;
         state?: SceneParagraph["state"];
         extra?: string;
       }>,
@@ -329,6 +330,9 @@ export const globalSlice = createSlice({
         if (paragraph) {
           if (action.payload.text !== undefined) {
             paragraph.text = action.payload.text;
+          }
+          if (action.payload.extraLoading !== undefined) {
+            paragraph.extraLoading = action.payload.extraLoading;
           }
           if (action.payload.state) {
             paragraph.state = action.payload.state;

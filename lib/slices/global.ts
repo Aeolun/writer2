@@ -20,7 +20,7 @@ export interface GlobalState {
 const initialState: GlobalState = {
   storyLoaded: false,
   stories: [],
-  aiBackend: "google",
+  aiBackend: "openai",
   saving: false,
   syncing: false,
   isDirty: false,

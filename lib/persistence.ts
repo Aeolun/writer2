@@ -52,6 +52,7 @@ const sceneParagraphSchema = z.object({
   id: z.string(),
   text: z.string(),
   extra: z.string().optional(),
+  extraLoading: z.boolean().optional(),
   state: z.enum(["ai", "draft", "revise", "final"]),
   modifiedAt: z.string(),
   comments: z.array(

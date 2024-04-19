@@ -12,7 +12,9 @@ import {
   MenuItem,
   MenuList,
   Select,
+  Spinner,
   Tag,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import {
   Check,
@@ -52,17 +54,24 @@ export const Row = (props: {
   selected?: boolean;
   borderColor?: string;
 }) => {
+  const selectedColor = useColorModeValue("gray.100", "gray.700");
+  const color = useColorModeValue("white", "gray.800");
+
+  const altSelectedColor = useColorModeValue("blue.100", "blue.700");
+  const altColor = useColorModeValue("white", "blue.800");
+
   return (
     <Grid
       position={"relative"}
       templateColumns={props.extra ? "1fr 100px 1fr" : "1fr 90px"}
       justifyContent={"center"}
       width={"70%"}
+      maxWidth={"1164px"}
     >
       <GridItem
         borderLeft={"0.5rem"}
         px={1}
-        background={props.selected ? "gray.100" : "white"}
+        background={props.selected ? selectedColor : color}
         gap={2}
         flex={1}
         position={"relative"}
@@ -73,13 +82,16 @@ export const Row = (props: {
       </GridItem>
       <GridItem
         gap={2}
-        background={props.selected ? "gray.100" : "white"}
+        background={props.selected ? selectedColor : color}
         p={props.buttons ? 2 : 0}
       >
         {props.buttons}
       </GridItem>
       {props.extra ? (
-        <GridItem flex={1} background={props.selected ? "blue.100" : "blue.50"}>
+        <GridItem
+          flex={1}
+          background={props.selected ? altSelectedColor : altColor}
+        >
           {props.extra}
         </GridItem>
       ) : null}
@@ -110,7 +122,7 @@ export const StoryPanel = () => {
       if (!currentParagraph) {
         return;
       }
-      aiHelp(helpKind, `${currentParagraph.text}`).then((res) => {
+      return aiHelp(helpKind, `${currentParagraph.text}`).then((res) => {
         if (extra) {
           dispatch(
             storyActions.updateSceneParagraph({
@@ -277,7 +289,22 @@ export const StoryPanel = () => {
                           icon={<RefreshDouble />}
                           size={"sm"}
                           onClick={() => {
-                            help("rewrite");
+                            dispatch(
+                              storyActions.updateSceneParagraph({
+                                sceneId: scene.id,
+                                paragraphId: p.id,
+                                extraLoading: true,
+                              }),
+                            );
+                            help("rewrite")?.then(() => {
+                              dispatch(
+                                storyActions.updateSceneParagraph({
+                                  sceneId: scene.id,
+                                  paragraphId: p.id,
+                                  extraLoading: false,
+                                }),
+                              );
+                            });
                           }}
                         >
                           Rewrite
@@ -356,7 +383,21 @@ export const StoryPanel = () => {
                     ) : null
                   }
                   extra={
-                    p.extra ? (
+                    p.extraLoading ? (
+                      <Flex
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                        height={"100%"}
+                      >
+                        <Spinner
+                          thickness="4px"
+                          speed="0.65s"
+                          emptyColor="gray.200"
+                          color="blue.500"
+                          size="xl"
+                        />
+                      </Flex>
+                    ) : p.extra ? (
                       <>
                         <Button
                           position={"absolute"}
