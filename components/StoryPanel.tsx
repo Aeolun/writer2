@@ -21,6 +21,7 @@ import {
   Menu as MenuIcon,
   Pacman,
   RefreshDouble,
+  Trash,
   TrashSolid,
 } from "iconoir-react";
 import type React from "react";
@@ -54,7 +55,7 @@ export const Row = (props: {
   return (
     <Grid
       position={"relative"}
-      templateColumns={props.extra ? "1fr 90px 1fr" : "1fr 90px"}
+      templateColumns={props.extra ? "1fr 100px 1fr" : "1fr 90px"}
       justifyContent={"center"}
       width={"70%"}
     >
@@ -74,12 +75,11 @@ export const Row = (props: {
         gap={2}
         background={props.selected ? "gray.100" : "white"}
         p={props.buttons ? 2 : 0}
-        w={"90px"}
       >
         {props.buttons}
       </GridItem>
       {props.extra ? (
-        <GridItem flex={1} background={props.selected ? "gray.100" : "white"}>
+        <GridItem flex={1} background={props.selected ? "blue.100" : "blue.50"}>
           {props.extra}
         </GridItem>
       ) : null}
@@ -357,18 +357,39 @@ export const StoryPanel = () => {
                   }
                   extra={
                     p.extra ? (
-                      <AutoResizeTextarea
-                        onChange={(e) => {
-                          dispatch(
-                            storyActions.updateSceneParagraph({
-                              sceneId: scene.id,
-                              paragraphId: p.id,
-                              extra: e.currentTarget.value,
-                            }),
-                          );
-                        }}
-                        value={p.extra}
-                      />
+                      <>
+                        <Button
+                          position={"absolute"}
+                          top={4}
+                          _hover={{ color: "red.500" }}
+                          right={2}
+                          variant={"link"}
+                          onClick={() => {
+                            dispatch(
+                              storyActions.updateSceneParagraph({
+                                sceneId: scene.id,
+                                paragraphId: p.id,
+                                extra: "",
+                              }),
+                            );
+                          }}
+                        >
+                          <Trash />
+                        </Button>
+                        <AutoResizeTextarea
+                          outline={"1px solid transparent"}
+                          onChange={(e) => {
+                            dispatch(
+                              storyActions.updateSceneParagraph({
+                                sceneId: scene.id,
+                                paragraphId: p.id,
+                                extra: e.currentTarget.value,
+                              }),
+                            );
+                          }}
+                          value={p.extra}
+                        />
+                      </>
                     ) : null
                   }
                 />
