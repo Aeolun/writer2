@@ -1,4 +1,3 @@
-import { Button, Input, Textarea } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { aiHelp } from "../lib/actions/aiHelp";
@@ -6,6 +5,7 @@ import type { HelpKind } from "../lib/ai-instructions";
 import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
+import { Box, Button, Checkbox, Input, Textarea } from "@chakra-ui/react";
 
 export const ScenePanel = () => {
   const selectedScene = useSelector(selectedObjectSelector);
@@ -67,6 +67,21 @@ export const ScenePanel = () => {
         style={{ width: "100%" }}
         value={selectedScene.data.summary}
       />
+        <Box>
+            <Checkbox
+                isChecked={selectedScene.data.posted}
+                onChange={() => {
+                    dispatch(
+                        storyActions.updateScene({
+                            id: selectedScene.id,
+                            posted: !selectedScene.data.posted,
+                        })
+                    );
+                }}
+            >
+                Uploaded
+            </Checkbox>
+        </Box>
       <Button
         colorScheme={"blue"}
         onClick={() => {

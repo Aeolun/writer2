@@ -1,35 +1,55 @@
+import React, {
+  useState,
+  Suspense,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
+import { Scene, storyActions } from "../lib/slices/story";
 import {
   Box,
   Button,
   Flex,
+  Textarea,
+  Select,
+  Input,
   Heading,
-  IconButton,
+  VStack,
   Menu,
   MenuButton,
-  MenuItem,
+  IconButton,
   MenuList,
-  Select,
-  Textarea,
-  VStack,
+  MenuItem,
+  HStack,
 } from "@chakra-ui/react";
-import { Check, Crop, Crown, Plus, PlusCircle, Wrench } from "iconoir-react";
-import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { aiHelp } from "../lib/actions/aiHelp";
-import type { HelpKind } from "../lib/ai-instructions";
-import type { SceneParagraph } from "../lib/persistence";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
 import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
-import { storyActions } from "../lib/slices/story";
-import type { RootState } from "../lib/store";
-import { AutoResizeTextarea } from "./AutoResizeTextarea";
+import { treeSelector } from "../lib/selectors/treeSelector";
+import { RootState } from "../lib/store";
+import { aiHelp } from "../lib/actions/aiHelp";
+import { HelpKind } from "../lib/ai-instructions";
 import { LanguageForm } from "./LanguageForm";
+import { AutoResizeTextarea } from "./AutoResizeTextarea";
+import {
+  Check,
+  Crop,
+  Crown,
+  Plus,
+  PlusCircle,
+  Wrench,
+  Pacman,
+  DesignPencil,
+  SubmitDocument,
+} from "iconoir-react";
+import { SceneParagraph } from "../lib/persistence";
+import Preview from "../pages/preview";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "yellow.500",
   revise: "red.500",
   final: "green.500",
-  ai: "blue.500",
+  ai: "purple.500",
 };
 
 export const StoryPanel = () => {
@@ -39,20 +59,20 @@ export const StoryPanel = () => {
   const [action, setAction] = useState<string>("mentioned");
   const plotpoints = useSelector(plotpointSelector);
   const languages = useSelector((store: RootState) =>
-    Object.values(store.language.languages),
+    Object.values(store.language.languages)
   );
   const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(
-    undefined,
+    undefined
   );
 
   const help = useCallback(
     (helpKind: HelpKind, extra = false) => {
       setIsEditable(false);
-      if (scene?.type !== "scene") return;
-
       const currentParagraph = scene?.data.paragraphs.find(
-        (p) => p.id === scene.data.selectedParagraph,
+        (p) => p.id === scene.data.selectedParagraph
       );
+
+      if (!scene) return;
       if (!currentParagraph) {
         return;
       }
@@ -63,7 +83,7 @@ export const StoryPanel = () => {
               sceneId: scene.id,
               paragraphId: currentParagraph?.id,
               extra: res.data.text,
-            }),
+            })
           );
         } else {
           dispatch(
@@ -71,28 +91,26 @@ export const StoryPanel = () => {
               sceneId: scene.id,
               paragraphId: currentParagraph?.id,
               extra: res.data.text,
-            }),
+            })
           );
         }
 
         setIsEditable(true);
       });
     },
-    [scene],
+    [scene]
   );
 
   const dispatch = useDispatch();
   useEffect(() => {
-    if (scene?.type === "scene") {
-      const paragraph = document.getElementById(
-        `p_${scene?.data.selectedParagraph}`,
-      ) as HTMLTextAreaElement | null;
-      if (paragraph) {
-        console.log("focus", scene.data.cursor);
-        paragraph.focus();
-        paragraph.selectionStart = scene.data.cursor;
-        paragraph.selectionEnd = scene.data.cursor;
-      }
+    const paragraph = document.getElementById(
+      `p_${scene?.data.selectedParagraph}`
+    ) as HTMLTextAreaElement | null;
+    if (paragraph && scene?.type === "scene") {
+      console.log("focus", scene.data.cursor);
+      paragraph.focus();
+      paragraph.selectionStart = scene.data.cursor;
+      paragraph.selectionEnd = scene.data.cursor;
     }
   }, [scene?.data.id]);
 
@@ -125,11 +143,13 @@ export const StoryPanel = () => {
                 justifyContent={"center"}
                 width={"100%"}
               >
-                <Box
-                  borderLeft={2}
+                <Flex
+                  borderLeft={"0.5rem"}
                   px={1}
+                  gap={2}
                   flex={1}
                   maxW={"47%"}
+                  position={"relative"}
                   borderLeftStyle={"solid"}
                   borderLeftColor={
                     statusColor[p.state as SceneParagraph["state"]] ?? undefined
@@ -138,6 +158,8 @@ export const StoryPanel = () => {
                   <AutoResizeTextarea
                     key={p.id}
                     id={`p_${p.id}`}
+                    flex={1}
+                    outline={"1px solid transparent"}
                     value={p.text}
                     onChange={(e) => {
                       dispatch(
@@ -145,7 +167,7 @@ export const StoryPanel = () => {
                           sceneId: scene.id,
                           paragraphId: p.id,
                           text: e.target.value,
-                        }),
+                        })
                       );
                     }}
                     onFocus={(e) => {
@@ -154,7 +176,7 @@ export const StoryPanel = () => {
                           id: scene.id,
                           selectedParagraph: p.id,
                           cursor: e.currentTarget.selectionStart,
-                        }),
+                        })
                       );
                     }}
                     onKeyDown={(e) => {
@@ -163,7 +185,7 @@ export const StoryPanel = () => {
                           storyActions.createSceneParagraph({
                             sceneId: scene.id,
                             afterParagraphId: p.id,
-                          }),
+                          })
                         );
                         e.preventDefault();
                         e.stopPropagation();
@@ -172,14 +194,108 @@ export const StoryPanel = () => {
                           storyActions.deleteSceneParagraph({
                             sceneId: scene.id,
                             paragraphId: p.id,
-                          }),
+                          })
                         );
                         e.preventDefault();
                         e.stopPropagation();
                       }
                     }}
                   />
-                </Box>
+                  {p.id === scene.data.selectedParagraph ? (
+                    <HStack spacing={2} bg={"blue.500"} p={2} w={"11%"}>
+                      <IconButton
+                        aria-label={"rewrite"}
+                        icon={<Wrench />}
+                        size={"xs"}
+                        onClick={() => {
+                          help("rewrite");
+                        }}
+                      >
+                        Rewrite
+                      </IconButton>
+                      <Menu>
+                        <MenuButton
+                          as={IconButton}
+                          size={"xs"}
+                          aria-label="Options"
+                          icon={<PlusCircle />}
+                        />
+                        <MenuList>
+                          <MenuItem
+                            icon={<Crown />}
+                            onClick={() => {
+                              dispatch(
+                                storyActions.updateSceneParagraph({
+                                  sceneId: scene.id,
+                                  paragraphId: p.id,
+                                  state: "draft",
+                                })
+                              );
+                            }}
+                            command="⌘T"
+                          >
+                            Draft
+                          </MenuItem>
+                          <MenuItem
+                            icon={<Crop />}
+                            onClick={() => {
+                              dispatch(
+                                storyActions.updateSceneParagraph({
+                                  sceneId: scene.id,
+                                  paragraphId: p.id,
+                                  state: "revise",
+                                })
+                              );
+                            }}
+                            command="⌘N"
+                          >
+                            Revise
+                          </MenuItem>
+                          <MenuItem
+                            icon={<Pacman />}
+                            onClick={() => {
+                              dispatch(
+                                storyActions.updateSceneParagraph({
+                                  sceneId: scene.id,
+                                  paragraphId: p.id,
+                                  state: "ai",
+                                })
+                              );
+                            }}
+                            command="⌘⇧N"
+                          >
+                            AI
+                          </MenuItem>
+                          <MenuItem
+                            icon={<Check />}
+                            onClick={() => {
+                              dispatch(
+                                storyActions.updateSceneParagraph({
+                                  sceneId: scene.id,
+                                  paragraphId: p.id,
+                                  state: "final",
+                                })
+                              );
+                            }}
+                            command="⌘⇧N"
+                          >
+                            Finalized
+                          </MenuItem>
+                          <MenuItem icon={<PlusCircle />} command="⌘O">
+                            More
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
+                    </HStack>
+                  ) : (
+                    <HStack
+                      spacing={2}
+                      bg={"blue.500"}
+                      p={2}
+                      w={"11%"}
+                    ></HStack>
+                  )}
+                </Flex>
                 {p.extra ? (
                   <Box flex={1} maxW={"47%"}>
                     <AutoResizeTextarea
@@ -189,105 +305,12 @@ export const StoryPanel = () => {
                             sceneId: scene.id,
                             paragraphId: p.id,
                             extra: e.currentTarget.value,
-                          }),
+                          })
                         );
                       }}
                       value={p.extra}
                     />
                   </Box>
-                ) : null}
-                {p.id === scene.data.selectedParagraph ? (
-                  <VStack spacing={1} position={"absolute"} right={"100%"}>
-                    <IconButton
-                      aria-label={"critique"}
-                      icon={<Plus />}
-                      size={"xs"}
-                      onClick={() => {
-                        help("critique");
-                      }}
-                    >
-                      Critique
-                    </IconButton>
-                    <IconButton
-                      aria-label={"rewrite"}
-                      icon={<Wrench />}
-                      size={"xs"}
-                      onClick={() => {
-                        help("rewrite");
-                      }}
-                    >
-                      Rewrite
-                    </IconButton>
-                    <IconButton
-                      aria-label={"write"}
-                      icon={<Plus />}
-                      size={"xs"}
-                      onClick={() => {
-                        help("write");
-                      }}
-                    >
-                      Write
-                    </IconButton>
-                    <Menu>
-                      <MenuButton
-                        as={IconButton}
-                        size={"xs"}
-                        aria-label="Options"
-                        icon={<PlusCircle />}
-                        variant="outline"
-                      />
-                      <MenuList>
-                        <MenuItem
-                          icon={<Crown />}
-                          onClick={() => {
-                            dispatch(
-                              storyActions.updateSceneParagraph({
-                                sceneId: scene.id,
-                                paragraphId: p.id,
-                                state: "draft",
-                              }),
-                            );
-                          }}
-                          command="⌘T"
-                        >
-                          Draft
-                        </MenuItem>
-                        <MenuItem
-                          icon={<Crop />}
-                          onClick={() => {
-                            dispatch(
-                              storyActions.updateSceneParagraph({
-                                sceneId: scene.id,
-                                paragraphId: p.id,
-                                state: "revise",
-                              }),
-                            );
-                          }}
-                          command="⌘N"
-                        >
-                          Revise
-                        </MenuItem>
-                        <MenuItem
-                          icon={<Check />}
-                          onClick={() => {
-                            dispatch(
-                              storyActions.updateSceneParagraph({
-                                sceneId: scene.id,
-                                paragraphId: p.id,
-                                state: "final",
-                              }),
-                            );
-                          }}
-                          command="⌘⇧N"
-                        >
-                          Finalized
-                        </MenuItem>
-                        <MenuItem icon={<PlusCircle />} command="⌘O">
-                          More
-                        </MenuItem>
-                      </MenuList>
-                    </Menu>
-                  </VStack>
                 ) : null}
               </Flex>
             );
@@ -304,7 +327,7 @@ export const StoryPanel = () => {
                 storyActions.updateScene({
                   id: scene?.id,
                   extra: e.target.value,
-                }),
+                })
               );
             }}
           />
@@ -348,6 +371,38 @@ export const StoryPanel = () => {
         >
           [AI] Rewrite
         </Button>
+        <Button
+          colorScheme={"orange"}
+          onClick={() => {
+            scene.data.paragraphs.forEach((p) => {
+              dispatch(
+                storyActions.updateSceneParagraph({
+                  sceneId: scene.id,
+                  paragraphId: p.id,
+                  state: "ai",
+                })
+              );
+            });
+          }}
+        >
+          All AI
+        </Button>
+        <Button
+          colorScheme={"orange"}
+          onClick={() => {
+            scene.data.paragraphs.forEach((p) => {
+              dispatch(
+                storyActions.updateSceneParagraph({
+                  sceneId: scene.id,
+                  paragraphId: p.id,
+                  state: "draft",
+                })
+              );
+            });
+          }}
+        >
+          All Draft
+        </Button>
         {languages.map((lang) => {
           return (
             <Button
@@ -385,7 +440,7 @@ export const StoryPanel = () => {
                           sceneId: scene.id,
                           plotpointId: link.plot_point_id,
                           action: link.action,
-                        }),
+                        })
                       );
                     }
                   }}
@@ -429,7 +484,7 @@ export const StoryPanel = () => {
                     sceneId: scene.id,
                     plotpointId: plotPoint,
                     action: action,
-                  }),
+                  })
                 );
               }
             }}

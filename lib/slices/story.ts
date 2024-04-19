@@ -316,7 +316,14 @@ export const globalSlice = createSlice({
         const paragraph = scene.paragraphs?.find((p) => {
           return p.id === action.payload.paragraphId;
         });
-        console.log(action.payload, paragraph);
+          if (action.payload.state === "ai") {
+              scene.hasAI = true;
+          } else {
+              scene.hasAI = scene.paragraphs.some((p) => p.state === "ai");
+          }
+          scene.words = scene.paragraphs.reduce((acc, p) => {
+              return acc + p.text.split(" ").length;
+          }, 0);
         if (paragraph) {
           if (action.payload.text !== undefined) {
             paragraph.text = action.payload.text;

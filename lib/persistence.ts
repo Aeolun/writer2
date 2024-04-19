@@ -76,12 +76,15 @@ const sceneSchema = treeDataSchema.extend({
   paragraphs: z.array(sceneParagraphSchema),
   text: z.string(),
   selectedParagraph: z.string().optional(),
+  words: z.number(),
+  hasAI: z.boolean(),
+  posted: z.boolean(),
   cursor: z.number(),
   plot_point_actions: z.array(
     z.object({
       plot_point_id: z.string(),
       action: z.string(),
-    }),
+    })
   ),
 });
 

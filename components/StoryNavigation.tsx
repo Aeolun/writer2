@@ -1,5 +1,5 @@
 import { Box, Flex, useColorModeValue } from "@chakra-ui/react";
-import { Minus, Plus } from "iconoir-react";
+import { Minus, Plus, Upload } from "iconoir-react";
 import React, { Fragment } from "react";
 import { type NodeRendererProps, Tree } from "react-arborist";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import type { RootState } from "../lib/store";
 function Node({ node, tree, style, dragHandle }: NodeRendererProps<any>) {
   const dispatch = useDispatch();
   const selectedColor = useColorModeValue("red.500", "red.700");
+    const scenes = useSelector((state: RootState) => state.story.scene);
   /* This node instance can do many things. See the API reference. */
   return (
     <>
@@ -35,10 +36,19 @@ function Node({ node, tree, style, dragHandle }: NodeRendererProps<any>) {
             {node.isOpen ? <Minus /> : <Plus />}
           </div>
         ) : null}
-        <div style={{ flex: 1 }}>
-          {node.isLeaf ? "🍁" : "🌲"}
-          {node.data.name}
-        </div>
+          <Flex gap={2} style={{ flex: 1 }}>
+              <span>{node.isLeaf ? "🍁" : "🌲"}</span>
+              <span>{node.data.name}</span>
+              {node.data.type === "scene" ? (
+                  <>
+              <span>
+                ({scenes[node.data.id].hasAI ? "AI" : "H"},{" "}
+                  {scenes[node.data.id].words}w)
+              </span>
+                      {scenes[node.data.id].posted ? <Upload /> : null}
+                  </>
+              ) : null}
+          </Flex>
         {node.data.type !== "scene" ? (
           <div
             className={"self-end"}

@@ -1,16 +1,27 @@
-import { Box, Flex, Heading } from "@chakra-ui/react";
-import Markdown from "markdown-to-jsx";
 import type { NextPage } from "next";
-import Link from "next/link";
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sortedBookObjects } from "../lib/selectors/sortedBookObjects";
+import React, { useEffect, useState } from "react";
+import { RootState } from "../lib/store";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import Link from "next/link";
 import { storyActions } from "../lib/slices/story";
-import type { RootState } from "../lib/store";
+import { sortedBookObjects } from "../lib/selectors/sortedBookObjects";
+import Markdown from "markdown-to-jsx";
+import { NoStory } from "../components/NoStory";
 
 const Home: NextPage = () => {
   const storyLoaded = useSelector((store: RootState) => store.story.name);
   const scenes = useSelector(sortedBookObjects);
+  const imageStyle = useColorModeValue(
+    { width: "500px", margin: "2em auto" },
+    { filter: "invert(1)", width: "500px", margin: "2em auto" }
+  );
   const dispatch = useDispatch();
 
   return (
@@ -22,9 +33,12 @@ const Home: NextPage = () => {
               if (scene.type === "summary") {
                 return (
                   <Box p={4} my={2} bg={"gray.600"}>
-                    Words: {scene.words}, Books: {scene.books}, Chapters:{" "}
-                    {scene.chapters}, Scenes: {scene.scenes}, Reading time:{" "}
-                    {Math.round((scene.words / 14280) * 100) / 100} hours
+                    Words: {scene.words}, AI Words: {scene.aiWords}, Books:{" "}
+                    {scene.books}, Chapters: {scene.chapters}, Scenes:{" "}
+                    {scene.scenes}, Reading time:{" "}
+                    {Math.round(((scene.words + scene.aiWords) / 14280) * 100) /
+                      100}{" "}
+                    hours
                   </Box>
                 );
               } else if (scene.type === "chapter_header") {
@@ -36,8 +50,10 @@ const Home: NextPage = () => {
                   >
                     <Box my={12} w={"70%"} mx={"auto"} color={"gray.800"}>
                       <img
-                        style={{ filter: "invert(1)" }}
-                        src={"/chapter.svg"}
+                        style={imageStyle}
+                        src={
+                          "https://pub-43e7e0f137a34d1ca1ce3be7325ba046.r2.dev/Chapter.png"
+                        }
                       />
                     </Box>
                     <Heading
@@ -64,7 +80,12 @@ const Home: NextPage = () => {
               } else if (scene.type === "break") {
                 return (
                   <Box my={12} w={"70%"} mx={"auto"}>
-                    <img style={{ filter: "invert(1)" }} src={"/divider.svg"} />
+                    <img
+                      style={imageStyle}
+                      src={
+                        "https://pub-43e7e0f137a34d1ca1ce3be7325ba046.r2.dev/Group.png"
+                      }
+                    />
                   </Box>
                 );
               } else if (scene.type === "paragraph") {
@@ -81,8 +102,8 @@ const Home: NextPage = () => {
                         storyActions.updateSceneParagraph({
                           sceneId: scene.sceneId,
                           paragraphId: scene.paragraphId,
-                          state: "revise",
-                        }),
+                          state: scene.state === "revise" ? "draft" : "revise",
+                        })
                       );
                     }}
                   >
@@ -98,9 +119,7 @@ const Home: NextPage = () => {
           </Box>
         </>
       ) : (
-        <Flex width={"80"} direction={"column"} margin={"0 auto"}>
-          No story loaded. <Link href={"/"}>Load a story</Link>
-        </Flex>
+        <NoStory />
       )}
     </Flex>
   );
