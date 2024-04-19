@@ -1,10 +1,13 @@
 import { signIn, useSession } from "next-auth/react";
-import type { PropsWithChildren } from "react";
+import type { ReactElement } from "react";
 
-export default function Authenticated(props: PropsWithChildren) {
+export const Authenticated = (props: {
+  children: ReactElement;
+}): ReactElement | null => {
   const { data: session } = useSession();
+
   if (session) {
-    return props.children;
+    return props.children ? props.children : null;
   }
   return (
     <>
@@ -12,4 +15,4 @@ export default function Authenticated(props: PropsWithChildren) {
       <button onClick={() => signIn()}>Sign in</button>
     </>
   );
-}
+};

@@ -36,6 +36,7 @@
     "react-textarea-autosize": "^8.5.3",
     "reselect": "^4.1.8",
     "short-uuid": "^4.2.2",
+    "simple-git": "^3.24.0",
     "use-resize-observer": "^9.1.0",
     "zod": "^3.22.5"
   },

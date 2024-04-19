@@ -1,10 +1,8 @@
-import * as fs from "fs";
-import path from "path";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import path from "path";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { simpleGit } from "simple-git";
-import { saveSchema } from "../../../lib/persistence";
 import { type WriterSession, authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(
@@ -16,24 +14,12 @@ export default async function handler(
     res,
     authOptions,
   );
-  if (!session?.owner) {
+  if (!session?.owner || !session?.github_access_token) {
     res.status(401).send("Unauthorized");
     return;
   }
 
   try {
-    const validatedBody = saveSchema.parse(req.body);
-
-    fs.writeFileSync(
-      path.join(
-        process.env.DATA_PATH || "",
-        session.owner,
-        `${req.query.story as string}`,
-        "index.json",
-      ),
-      JSON.stringify(validatedBody, null, 2),
-    );
-
     const storyPath = path.join(
       process.env.DATA_PATH || "",
       session.owner,
@@ -41,12 +27,20 @@ export default async function handler(
     );
     const remotes = await simpleGit({
       baseDir: storyPath,
-    }).status();
+    })
+      .add("*")
+      .commit("feat: story updated")
+      .remote([
+        "set-url",
+        "origin",
+        `https://${session.owner}:${session.github_access_token}@github.com/${session.owner}/${req.query.story}.git`,
+      ])
+      .push();
+    console.log(remotes);
 
-    res.status(200).json({
-      isClean: remotes.isClean(),
-    });
+    res.status(200).json({});
   } catch (error) {
+    console.error(error);
     res.status(500).json(error);
   }
 }

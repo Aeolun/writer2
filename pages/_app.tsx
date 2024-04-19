@@ -5,7 +5,7 @@ import type { AppProps } from "next/app";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider } from "react-redux";
-import Authenticated from "../components/Authenticated";
+import { Authenticated } from "../components/Authenticated";
 import "../lib/App.css";
 import { store } from "../lib/store";
 import "../styles/globals.css";
@@ -30,11 +30,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     <SessionProvider session={pageProps.session}>
       <QueryClientProvider client={queryClient}>
         <ChakraProvider theme={theme}>
-          <Provider store={store}>
-            <Authenticated>
+          <Authenticated>
+            <Provider store={store}>
               <Component {...pageProps} />
-            </Authenticated>
-          </Provider>
+            </Provider>
+          </Authenticated>
         </ChakraProvider>
       </QueryClientProvider>
     </SessionProvider>

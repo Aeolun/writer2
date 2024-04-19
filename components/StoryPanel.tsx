@@ -2,6 +2,8 @@ import {
   Box,
   Button,
   Flex,
+  Grid,
+  GridItem,
   HStack,
   Heading,
   IconButton,
@@ -10,18 +12,26 @@ import {
   MenuItem,
   MenuList,
   Select,
-  Textarea,
-  VStack,
+  Tag,
 } from "@chakra-ui/react";
-import { Check, Crop, Crown, Pacman, PlusCircle, Wrench } from "iconoir-react";
-import React, { useState, useCallback, useEffect } from "react";
+import {
+  Check,
+  Crop,
+  Crown,
+  Menu as MenuIcon,
+  Pacman,
+  RefreshDouble,
+  TrashSolid,
+} from "iconoir-react";
+import type React from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { aiHelp } from "../lib/actions/aiHelp";
 import type { HelpKind } from "../lib/ai-instructions";
 import type { SceneParagraph } from "../lib/persistence";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
-import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
 
+import { selectedSceneSelector } from "../lib/selectors/selectedSceneSelector";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
 import { AutoResizeTextarea } from "./AutoResizeTextarea";
@@ -34,9 +44,52 @@ const statusColor: Record<SceneParagraph["state"], string> = {
   ai: "purple.500",
 };
 
+export const Row = (props: {
+  main: React.ReactNode;
+  buttons?: React.ReactNode;
+  extra?: React.ReactNode;
+  selected?: boolean;
+  borderColor?: string;
+}) => {
+  return (
+    <Grid
+      position={"relative"}
+      templateColumns={props.extra ? "1fr 90px 1fr" : "1fr 90px"}
+      justifyContent={"center"}
+      width={"70%"}
+    >
+      <GridItem
+        borderLeft={"0.5rem"}
+        px={1}
+        background={props.selected ? "gray.100" : "white"}
+        gap={2}
+        flex={1}
+        position={"relative"}
+        borderLeftStyle={"solid"}
+        borderLeftColor={props.borderColor}
+      >
+        {props.main}
+      </GridItem>
+      <GridItem
+        gap={2}
+        background={props.selected ? "gray.100" : "white"}
+        p={props.buttons ? 2 : 0}
+        w={"90px"}
+      >
+        {props.buttons}
+      </GridItem>
+      {props.extra ? (
+        <GridItem flex={1} background={props.selected ? "gray.100" : "white"}>
+          {props.extra}
+        </GridItem>
+      ) : null}
+    </Grid>
+  );
+};
+
 export const StoryPanel = () => {
-  const scene = useSelector(selectedObjectSelector);
-  const [isEditable, setIsEditable] = useState(true);
+  const scene = useSelector(selectedSceneSelector);
+  const [selectedScene, setSelectedScene] = useState<string>("");
   const [plotPoint, setPlotPoint] = useState<string>();
   const [action, setAction] = useState<string>("mentioned");
   const plotpoints = useSelector(plotpointSelector);
@@ -49,10 +102,8 @@ export const StoryPanel = () => {
 
   const help = useCallback(
     (helpKind: HelpKind, extra = false) => {
-      if (scene?.type !== "scene") return;
-      setIsEditable(false);
-      const currentParagraph = scene?.data.paragraphs.find(
-        (p) => p.id === scene.data.selectedParagraph,
+      const currentParagraph = scene?.paragraphs.find(
+        (p) => p.id === scene.selectedParagraph,
       );
 
       if (!scene) return;
@@ -77,8 +128,6 @@ export const StoryPanel = () => {
             }),
           );
         }
-
-        setIsEditable(true);
       });
     },
     [scene],
@@ -86,20 +135,22 @@ export const StoryPanel = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    if (scene?.type !== "scene") return;
-
-    const paragraph = document.getElementById(
-      `p_${scene?.data.selectedParagraph}`,
-    ) as HTMLTextAreaElement | null;
-    if (paragraph && scene?.type === "scene") {
-      console.log("focus", scene.data.cursor);
-      paragraph.focus();
-      paragraph.selectionStart = scene.data.cursor;
-      paragraph.selectionEnd = scene.data.cursor;
+    if (scene?.id === selectedScene) {
+      return;
     }
-  }, [scene]);
+    setSelectedScene(scene?.id ?? "");
+    const paragraph = document.getElementById(
+      `p_${scene?.selectedParagraph}`,
+    ) as HTMLTextAreaElement | null;
+    if (paragraph && scene?.cursor) {
+      console.log("focus", scene.cursor);
+      paragraph.focus();
+      paragraph.selectionStart = scene.cursor;
+      paragraph.selectionEnd = scene.cursor;
+    }
+  }, [scene, selectedScene]);
 
-  if (scene?.type !== "scene") {
+  if (!scene) {
     return null;
   }
 
@@ -116,245 +167,298 @@ export const StoryPanel = () => {
         <Flex
           flex={1}
           overflow={"auto"}
-          gap={2}
           flexDirection={"column"}
           alignItems={"center"}
         >
-          {scene.data.paragraphs.map((p) => {
+          {scene.paragraphs.map((p) => {
             return (
-              <Flex
-                position={"relative"}
-                gap={2}
-                justifyContent={"center"}
-                width={"100%"}
-              >
-                <Flex
-                  borderLeft={"0.5rem"}
-                  px={1}
-                  gap={2}
-                  flex={1}
-                  maxW={"47%"}
-                  position={"relative"}
-                  borderLeftStyle={"solid"}
-                  borderLeftColor={
+              <>
+                <Row
+                  selected={scene.selectedParagraph === p.id}
+                  borderColor={
                     statusColor[p.state as SceneParagraph["state"]] ?? undefined
                   }
-                >
-                  <AutoResizeTextarea
-                    key={p.id}
-                    id={`p_${p.id}`}
-                    flex={1}
-                    outline={"1px solid transparent"}
-                    value={p.text}
-                    onChange={(e) => {
-                      dispatch(
-                        storyActions.updateSceneParagraph({
-                          sceneId: scene.id,
-                          paragraphId: p.id,
-                          text: e.target.value,
-                        }),
-                      );
-                    }}
-                    onFocus={(e) => {
-                      dispatch(
-                        storyActions.updateScene({
-                          id: scene.id,
-                          selectedParagraph: p.id,
-                          cursor: e.currentTarget.selectionStart,
-                        }),
-                      );
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && e.shiftKey) {
-                        dispatch(
-                          storyActions.createSceneParagraph({
-                            sceneId: scene.id,
-                            afterParagraphId: p.id,
-                          }),
-                        );
-                        e.preventDefault();
-                        e.stopPropagation();
-                      } else if (e.key === "Backspace" && e.shiftKey) {
-                        dispatch(
-                          storyActions.deleteSceneParagraph({
-                            sceneId: scene.id,
-                            paragraphId: p.id,
-                          }),
-                        );
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }
-                    }}
-                  />
-                  {p.id === scene.data.selectedParagraph ? (
-                    <HStack spacing={2} bg={"blue.500"} p={2} w={"11%"}>
-                      <IconButton
-                        aria-label={"rewrite"}
-                        icon={<Wrench />}
-                        size={"xs"}
-                        onClick={() => {
-                          help("rewrite");
-                        }}
-                      >
-                        Rewrite
-                      </IconButton>
-                      <Menu>
-                        <MenuButton
-                          as={IconButton}
-                          size={"xs"}
-                          aria-label="Options"
-                          icon={<PlusCircle />}
-                        />
-                        <MenuList>
-                          <MenuItem
-                            icon={<Crown />}
-                            onClick={() => {
-                              dispatch(
-                                storyActions.updateSceneParagraph({
-                                  sceneId: scene.id,
-                                  paragraphId: p.id,
-                                  state: "draft",
-                                }),
-                              );
-                            }}
-                            command="⌘T"
-                          >
-                            Draft
-                          </MenuItem>
-                          <MenuItem
-                            icon={<Crop />}
-                            onClick={() => {
-                              dispatch(
-                                storyActions.updateSceneParagraph({
-                                  sceneId: scene.id,
-                                  paragraphId: p.id,
-                                  state: "revise",
-                                }),
-                              );
-                            }}
-                            command="⌘N"
-                          >
-                            Revise
-                          </MenuItem>
-                          <MenuItem
-                            icon={<Pacman />}
-                            onClick={() => {
-                              dispatch(
-                                storyActions.updateSceneParagraph({
-                                  sceneId: scene.id,
-                                  paragraphId: p.id,
-                                  state: "ai",
-                                }),
-                              );
-                            }}
-                            command="⌘⇧N"
-                          >
-                            AI
-                          </MenuItem>
-                          <MenuItem
-                            icon={<Check />}
-                            onClick={() => {
-                              dispatch(
-                                storyActions.updateSceneParagraph({
-                                  sceneId: scene.id,
-                                  paragraphId: p.id,
-                                  state: "final",
-                                }),
-                              );
-                            }}
-                            command="⌘⇧N"
-                          >
-                            Finalized
-                          </MenuItem>
-                          <MenuItem icon={<PlusCircle />} command="⌘O">
-                            More
-                          </MenuItem>
-                        </MenuList>
-                      </Menu>
-                    </HStack>
-                  ) : (
-                    <HStack spacing={2} bg={"blue.500"} p={2} w={"11%"} />
-                  )}
-                </Flex>
-                {p.extra ? (
-                  <Box flex={1} maxW={"47%"}>
+                  main={
                     <AutoResizeTextarea
+                      key={p.id}
+                      id={`p_${p.id}`}
+                      flex={1}
+                      outline={"1px solid transparent"}
+                      value={p.text}
                       onChange={(e) => {
                         dispatch(
                           storyActions.updateSceneParagraph({
                             sceneId: scene.id,
                             paragraphId: p.id,
-                            extra: e.currentTarget.value,
+                            text: e.target.value,
                           }),
                         );
                       }}
-                      value={p.extra}
+                      onFocus={(e) => {
+                        dispatch(
+                          storyActions.updateScene({
+                            id: scene.id,
+                            selectedParagraph: p.id,
+                            cursor: e.currentTarget.selectionStart,
+                          }),
+                        );
+                      }}
+                      onKeyDown={(e) => {
+                        const pe = document.getElementById(
+                          `p_${p.id}`,
+                        ) as HTMLTextAreaElement;
+                        if (e.key === "Enter" && e.shiftKey) {
+                          dispatch(
+                            storyActions.createSceneParagraph({
+                              sceneId: scene.id,
+                              afterParagraphId: p.id,
+                            }),
+                          );
+                          e.preventDefault();
+                          e.stopPropagation();
+                        } else if (e.key === "Backspace" && e.shiftKey) {
+                          dispatch(
+                            storyActions.deleteSceneParagraph({
+                              sceneId: scene.id,
+                              paragraphId: p.id,
+                            }),
+                          );
+                          e.preventDefault();
+                          e.stopPropagation();
+                        } else if (
+                          e.key === "ArrowDown" &&
+                          pe.selectionStart === pe.value.length
+                        ) {
+                          scene?.paragraphs.forEach((p, i) => {
+                            if (
+                              p.id === scene.selectedParagraph &&
+                              scene.paragraphs[i + 1]
+                            ) {
+                              const nextEl = document.getElementById(
+                                `p_${scene.paragraphs[i + 1].id}`,
+                              ) as HTMLTextAreaElement;
+                              nextEl.focus();
+                              setTimeout(() => {
+                                nextEl.selectionStart = 0;
+                                nextEl.selectionEnd = 0;
+                              }, 1);
+                            }
+                          });
+                        } else if (
+                          e.key === "ArrowUp" &&
+                          pe.selectionStart === 0
+                        ) {
+                          scene?.paragraphs.forEach((p, i) => {
+                            if (
+                              p.id === scene.selectedParagraph &&
+                              scene.paragraphs[i - 1]
+                            ) {
+                              const nextEl = document.getElementById(
+                                `p_${scene.paragraphs[i - 1].id}`,
+                              ) as HTMLTextAreaElement;
+                              nextEl.focus();
+                              setTimeout(() => {
+                                nextEl.selectionStart = nextEl.value.length;
+                                nextEl.selectionEnd = nextEl.value.length;
+                              }, 1);
+                            }
+                          });
+                        } else {
+                          console.log(e.key);
+                        }
+                      }}
                     />
-                  </Box>
-                ) : null}
-              </Flex>
+                  }
+                  buttons={
+                    p.id === scene.selectedParagraph ? (
+                      <HStack spacing={2} p={2} w={"90px"}>
+                        <IconButton
+                          aria-label={"rewrite"}
+                          icon={<RefreshDouble />}
+                          size={"sm"}
+                          onClick={() => {
+                            help("rewrite");
+                          }}
+                        >
+                          Rewrite
+                        </IconButton>
+                        <Menu>
+                          <MenuButton
+                            as={IconButton}
+                            size={"sm"}
+                            aria-label="Options"
+                            icon={<MenuIcon />}
+                          />
+                          <MenuList>
+                            <MenuItem
+                              icon={<Crown />}
+                              onClick={() => {
+                                dispatch(
+                                  storyActions.updateSceneParagraph({
+                                    sceneId: scene.id,
+                                    paragraphId: p.id,
+                                    state: "draft",
+                                  }),
+                                );
+                              }}
+                              command="⌘T"
+                            >
+                              Draft
+                            </MenuItem>
+                            <MenuItem
+                              icon={<Crop />}
+                              onClick={() => {
+                                dispatch(
+                                  storyActions.updateSceneParagraph({
+                                    sceneId: scene.id,
+                                    paragraphId: p.id,
+                                    state: "revise",
+                                  }),
+                                );
+                              }}
+                              command="⌘N"
+                            >
+                              Revise
+                            </MenuItem>
+                            <MenuItem
+                              icon={<Pacman />}
+                              onClick={() => {
+                                dispatch(
+                                  storyActions.updateSceneParagraph({
+                                    sceneId: scene.id,
+                                    paragraphId: p.id,
+                                    state: "ai",
+                                  }),
+                                );
+                              }}
+                              command="⌘⇧N"
+                            >
+                              AI
+                            </MenuItem>
+                            <MenuItem
+                              icon={<Check />}
+                              onClick={() => {
+                                dispatch(
+                                  storyActions.updateSceneParagraph({
+                                    sceneId: scene.id,
+                                    paragraphId: p.id,
+                                    state: "final",
+                                  }),
+                                );
+                              }}
+                              command="⌘⇧N"
+                            >
+                              Finalized
+                            </MenuItem>
+                          </MenuList>
+                        </Menu>
+                      </HStack>
+                    ) : null
+                  }
+                  extra={
+                    p.extra ? (
+                      <AutoResizeTextarea
+                        onChange={(e) => {
+                          dispatch(
+                            storyActions.updateSceneParagraph({
+                              sceneId: scene.id,
+                              paragraphId: p.id,
+                              extra: e.currentTarget.value,
+                            }),
+                          );
+                        }}
+                        value={p.extra}
+                      />
+                    ) : null
+                  }
+                />
+                <Row
+                  borderColor={
+                    statusColor[p.state as SceneParagraph["state"]] ?? undefined
+                  }
+                  selected={scene.selectedParagraph === p.id}
+                  main={
+                    p?.plot_point_actions &&
+                    p?.plot_point_actions.length > 0 ? (
+                      <Flex
+                        flexDirection={"row"}
+                        px={8}
+                        pb={4}
+                        gap={1}
+                        flexWrap={"wrap"}
+                      >
+                        {p?.plot_point_actions.map((link) => {
+                          const point = plotpoints[link.plot_point_id];
+                          return (
+                            <Tag
+                              key={link.plot_point_id}
+                              p={2}
+                              colorScheme={"blue"}
+                            >
+                              {point?.title} {link.action}
+                              <Button
+                                variant={"link"}
+                                size={"xs"}
+                                ml={2}
+                                onClick={() => {
+                                  if (p && scene) {
+                                    dispatch(
+                                      storyActions.removePlotPointFromSceneParagraph(
+                                        {
+                                          sceneId: scene.id,
+                                          paragraphId: p.id,
+                                          plotpointId: link.plot_point_id,
+                                          action: link.action,
+                                        },
+                                      ),
+                                    );
+                                  } else {
+                                    console.error("no scene or paragraph");
+                                  }
+                                }}
+                              >
+                                <TrashSolid />
+                              </Button>
+                            </Tag>
+                          );
+                        })}
+                      </Flex>
+                    ) : (
+                      <Box pb={4} />
+                    )
+                  }
+                />
+              </>
             );
           })}
         </Flex>
-        {scene?.data.extra ? (
-          <Textarea
-            maxWidth={"40em"}
-            flex={1}
-            height={"100%"}
-            value={scene.data.extra}
-            onChange={(e) => {
-              dispatch(
-                storyActions.updateScene({
-                  id: scene?.id,
-                  extra: e.target.value,
-                }),
-              );
-            }}
-          />
-        ) : null}
         {selectedLanguage ? (
           <Flex flex={1} overflow={"auto"} height={"100%"}>
             <LanguageForm languageId={selectedLanguage} />
           </Flex>
         ) : null}
       </Flex>
-      <Box>
+      <HStack gap={1}>
         <Button
-          colorScheme={"blue"}
           onClick={() => {
-            help("next_paragraph");
+            scene.paragraphs.forEach((p) => {
+              dispatch(
+                storyActions.updateSceneParagraph({
+                  sceneId: scene.id,
+                  paragraphId: p.id,
+                  extra: p.text,
+                  text: "",
+                }),
+              );
+            });
           }}
         >
-          [AI] Next Paragraph
-        </Button>
-        <Button
-          colorScheme={"blue"}
-          onClick={() => {
-            help("write");
-          }}
-        >
-          [AI] Write
-        </Button>
-        <Button
-          colorScheme={"blue"}
-          onClick={() => {
-            help("critique", true);
-          }}
-        >
-          [AI] Critique
-        </Button>
-        <Button
-          colorScheme={"blue"}
-          onClick={() => {
-            help("rewrite", true);
-          }}
-        >
-          [AI] Rewrite
+          Shift to extra
         </Button>
         <Button
           colorScheme={"orange"}
           onClick={() => {
-            scene.data.paragraphs.forEach((p) => {
+            scene.paragraphs.forEach((p) => {
               dispatch(
                 storyActions.updateSceneParagraph({
                   sceneId: scene.id,
@@ -370,7 +474,7 @@ export const StoryPanel = () => {
         <Button
           colorScheme={"orange"}
           onClick={() => {
-            scene.data.paragraphs.forEach((p) => {
+            scene.paragraphs.forEach((p) => {
               dispatch(
                 storyActions.updateSceneParagraph({
                   sceneId: scene.id,
@@ -398,39 +502,11 @@ export const StoryPanel = () => {
             </Button>
           );
         })}
-      </Box>
+      </HStack>
       <Box>
         <Heading size={"md"} mt={4}>
           Plot Points
         </Heading>
-        <Flex flexDirection={"row"}>
-          {scene?.data.plot_point_actions.map((link) => {
-            const point = plotpoints[link.plot_point_id];
-            return (
-              <Box key={link.plot_point_id} p={2}>
-                {point?.title} {link.action}
-                <Button
-                  colorScheme={"red"}
-                  size={"xs"}
-                  ml={2}
-                  onClick={() => {
-                    if (scene) {
-                      dispatch(
-                        storyActions.removePlotPointFromScene({
-                          sceneId: scene.id,
-                          plotpointId: link.plot_point_id,
-                          action: link.action,
-                        }),
-                      );
-                    }
-                  }}
-                >
-                  Delete
-                </Button>
-              </Box>
-            );
-          })}
-        </Flex>
 
         <div style={{ marginTop: "8px", display: "flex" }}>
           <Select
@@ -458,10 +534,11 @@ export const StoryPanel = () => {
           </Select>
           <Button
             onClick={() => {
-              if (scene && plotPoint) {
+              if (scene && plotPoint && scene.selectedParagraph) {
                 dispatch(
-                  storyActions.addPlotPointToScene({
+                  storyActions.addPlotPointToSceneParagraph({
                     sceneId: scene.id,
+                    paragraphId: scene.selectedParagraph,
                     plotpointId: plotPoint,
                     action: action,
                   }),

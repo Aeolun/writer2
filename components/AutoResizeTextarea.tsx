@@ -1,24 +1,20 @@
-import {
-  Box,
-  Textarea,
-  TextareaProps,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import ResizeTextarea from "react-textarea-autosize";
+import { Box, type TextareaProps } from "@chakra-ui/react";
 import React from "react";
+import ResizeTextarea from "react-textarea-autosize";
 
 export const AutoResizeTextarea = React.forwardRef<
   HTMLTextAreaElement,
   TextareaProps
 >((props, ref) => {
-  const color = useColorModeValue("gray.100", "black");
   return (
     <Box
-      backgroundColor={color}
-      backgroundOpacity={0.5}
-      p={2}
+      px={8}
+      py={4}
+      pb={0}
       minH="unset"
+      textIndent={"1em"}
       overflow="hidden"
+      background={"transparent"}
       w="100%"
       fontSize={"1.6rem"}
       resize="none"

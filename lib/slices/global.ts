@@ -1,25 +1,29 @@
-import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
+import { type Draft, type PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export type StorySummary = {
-  name: string
-}
+  name: string;
+};
 
 export interface GlobalState {
   selectedImageChapter?: string;
   imagePath?: string;
   currentId?: string;
-  selectedEntity?: 'book' | 'arc' | 'chapter' | 'scene';
+  selectedEntity?: "book" | "arc" | "chapter" | "scene";
   storyLoaded: boolean;
-  aiBackend: 'google' | 'openai' | 'claude';
+  aiBackend: "google" | "openai" | "claude";
   saving: boolean;
   stories?: StorySummary[];
+  syncing: boolean;
+  isDirty: boolean;
 }
 
 const initialState: GlobalState = {
   storyLoaded: false,
   stories: [],
-  aiBackend: 'google',
+  aiBackend: "google",
   saving: false,
+  syncing: false,
+  isDirty: false,
 };
 
 export const globalSlice = createSlice({
@@ -27,10 +31,16 @@ export const globalSlice = createSlice({
   initialState,
   reducers: {
     setStories: (state, action: PayloadAction<StorySummary[]>) => {
-      state.stories = action.payload
+      state.stories = action.payload;
     },
     setSaving: (state, action: PayloadAction<boolean>) => {
       state.saving = action.payload;
+    },
+    setDirty: (state, action: PayloadAction<boolean>) => {
+      state.isDirty = action.payload;
+    },
+    setSyncing: (state, action: PayloadAction<boolean>) => {
+      state.syncing = action.payload;
     },
     setSelectedImageChapter: (state, action: PayloadAction<string>) => {
       state.selectedImageChapter = action.payload;
@@ -40,28 +50,28 @@ export const globalSlice = createSlice({
     },
     setSelectedEntity: (
       state: Draft<GlobalState>,
-      action: PayloadAction<'book' | 'arc' | 'chapter' | 'scene'>
+      action: PayloadAction<"book" | "arc" | "chapter" | "scene">,
     ) => {
       state.selectedEntity = action.payload;
     },
     setImagePath: (
       state: Draft<GlobalState>,
-      action: PayloadAction<string>
+      action: PayloadAction<string>,
     ) => {
       state.imagePath = action.payload;
     },
     setAiBackend: (
       state: Draft<GlobalState>,
-      action: PayloadAction<'google' | 'openai' | 'claude'>
+      action: PayloadAction<"google" | "openai" | "claude">,
     ) => {
       state.aiBackend = action.payload;
     },
     setCurrentId: (
       state: Draft<GlobalState>,
-      action: PayloadAction<string | undefined>
+      action: PayloadAction<string | undefined>,
     ) => {
       state.currentId = action.payload;
-    }
+    },
   },
 });
 

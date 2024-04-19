@@ -332,7 +332,10 @@ export const globalSlice = createSlice({
           }
           if (action.payload.state) {
             paragraph.state = action.payload.state;
-          } else if (action.payload.text && paragraph.state === "revise") {
+          } else if (
+            action.payload.text &&
+            ["revise", "ai"].includes(paragraph.state)
+          ) {
             paragraph.state = "draft";
           }
           if (action.payload.extra !== undefined) {
@@ -429,6 +432,31 @@ export const globalSlice = createSlice({
         ...action.payload,
       };
     },
+    addPlotPointToSceneParagraph: (
+      state,
+      action: PayloadAction<{
+        sceneId: string;
+        paragraphId: string;
+        plotpointId: string;
+        action: string;
+      }>,
+    ) => {
+      const p = state.scene[action.payload.sceneId].paragraphs.find((p) => {
+        return p.id === action.payload.paragraphId;
+      });
+
+      if (
+        p &&
+        !p.plot_point_actions.some((i) => {
+          return i.plot_point_id === action.payload.plotpointId;
+        })
+      ) {
+        p.plot_point_actions.push({
+          plot_point_id: action.payload.plotpointId,
+          action: action.payload.action,
+        });
+      }
+    },
     addPlotPointToScene: (
       state,
       action: PayloadAction<{
@@ -441,6 +469,27 @@ export const globalSlice = createSlice({
         plot_point_id: action.payload.plotpointId,
         action: action.payload.action,
       });
+    },
+    removePlotPointFromSceneParagraph: (
+      state,
+      action: PayloadAction<{
+        sceneId: string;
+        paragraphId: string;
+        plotpointId: string;
+        action: string;
+      }>,
+    ) => {
+      const p = state.scene[action.payload.sceneId].paragraphs.find((p) => {
+        return p.id === action.payload.paragraphId;
+      });
+      if (p) {
+        p.plot_point_actions = p?.plot_point_actions.filter((i) => {
+          return (
+            i.plot_point_id !== action.payload.plotpointId &&
+            i.action !== action.payload.action
+          );
+        });
+      }
     },
     removePlotPointFromScene: (
       state,
