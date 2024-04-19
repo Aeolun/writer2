@@ -1,16 +1,14 @@
+import { Button } from "@chakra-ui/react";
 import React, { useState } from "react";
-import {Button, Tab, TabList, TabPanel, Tabs} from "@chakra-ui/react";
-import { CharacterModal } from "./CharacterModal";
-import {useDispatch, useSelector} from "react-redux";
-import { RootState } from "../lib/store";
-import {storyActions} from "../lib/slices/story";
-import {languageActions} from "../lib/slices/language";
-import {LanguageModal} from "./LanguageModal";
+import { useDispatch, useSelector } from "react-redux";
+import { languageActions } from "../lib/slices/language";
+import type { RootState } from "../lib/store";
+import { LanguageModal } from "./LanguageModal";
 
 export const LanguagePanel = () => {
   const dispatch = useDispatch();
   const [langModal, setLanguageModal] = useState<boolean>(false);
-  const [languageId, setLanguageId] = useState<string>(0);
+  const [languageId, setLanguageId] = useState<string>("");
 
   const languages = useSelector((state: RootState) => state.language.languages);
 
@@ -41,11 +39,17 @@ export const LanguagePanel = () => {
           </tr>
         ))}
       </table>
-      <Button onClick={() => {
-        dispatch(languageActions.addLanguage({
-          title: "New language"
-        }));
-      }}>Add language</Button>
+      <Button
+        onClick={() => {
+          dispatch(
+            languageActions.addLanguage({
+              title: "New language",
+            }),
+          );
+        }}
+      >
+        Add language
+      </Button>
       {langModal && (
         <LanguageModal
           languageId={languageId}

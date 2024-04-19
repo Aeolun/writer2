@@ -1,21 +1,21 @@
+import { Box, Button, Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
-import {Box, Button, Flex, Tab, TabList, TabPanel, Tabs} from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { storyActions } from "../lib/slices/story";
+import type { RootState } from "../lib/store";
 import { CharacterModal } from "./CharacterModal";
-import {useDispatch, useSelector} from "react-redux";
-import { RootState } from "../lib/store";
-import {storyActions} from "../lib/slices/story";
 
 export const CharacterPanel = () => {
   const dispatch = useDispatch();
   const [charModal, setCharacterModal] = useState<boolean>(false);
-  const [characterId, setCharacterId] = useState<number>(0);
+  const [characterId, setCharacterId] = useState<string>("");
   const storyName = useSelector((state: RootState) => state.story.name);
 
   const characters = useSelector((state: RootState) => state.story.characters);
 
   return (
     <>
-      <Flex wrap={'wrap'} gap={2} mt={2}>
+      <Flex wrap={"wrap"} gap={2} mt={2}>
         {Object.values(characters).map((char) => (
           <Box
             key={char.id}
@@ -27,28 +27,42 @@ export const CharacterPanel = () => {
             h={300}
             w={300}
             border={"1px solid black"}
-            backgroundColor={'gray.500'}
-            backgroundImage={`url(/api/image?story=${storyName}&path=` + char.picture + ")"} backgroundSize={"cover"} backgroundPosition={"center"}
+            backgroundColor={"gray.500"}
+            backgroundImage={
+              `url(/api/image?story=${storyName}&path=` + char.picture + ")"
+            }
+            backgroundSize={"cover"}
+            backgroundPosition={"center"}
           >
-
-            <Box color={"white"} textShadow={'2px 2px 3px black'} fontSize={'lg'} fontWeight={'bold'}>{char.name} ({char.age})</Box>
-              <Button
-                cursor={"pointer"}
-                colorScheme={'red'}
-                size={'xs'}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                }}
-              >
-                X
-              </Button>
+            <Box
+              color={"white"}
+              textShadow={"2px 2px 3px black"}
+              fontSize={"lg"}
+              fontWeight={"bold"}
+            >
+              {char.name} ({char.age})
+            </Box>
+            <Button
+              cursor={"pointer"}
+              colorScheme={"red"}
+              size={"xs"}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+            >
+              X
+            </Button>
           </Box>
         ))}
       </Flex>
-      <Button onClick={() => {
-        dispatch(storyActions.createCharacter({}));
-      }}>Add character</Button>
+      <Button
+        onClick={() => {
+          dispatch(storyActions.createCharacter({}));
+        }}
+      >
+        Add character
+      </Button>
       {charModal && (
         <CharacterModal
           characterId={characterId}

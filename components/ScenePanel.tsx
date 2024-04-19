@@ -1,30 +1,42 @@
-import React, {useCallback, useEffect, useState} from "react";
+import { Button, Input, Textarea } from "@chakra-ui/react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {Button, Input, Textarea} from "@chakra-ui/react";
+import { aiHelp } from "../lib/actions/aiHelp";
+import type { HelpKind } from "../lib/ai-instructions";
+import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
 import { storyActions } from "../lib/slices/story";
-import {selectedObjectSelector} from "../lib/selectors/selectedObjectSelector";
-import {RootState} from "../lib/store";
-import {aiHelp} from "../lib/actions/aiHelp";
-import {HelpKind} from "../lib/ai-instructions";
+import type { RootState } from "../lib/store";
 
 export const ScenePanel = () => {
   const selectedScene = useSelector(selectedObjectSelector);
-  const protagonist = useSelector((store: RootState) => Object.values(store.story.characters).find(char => char.isProtagonist));
+  const protagonist = useSelector((store: RootState) =>
+    Object.values(store.story.characters).find((char) => char.isProtagonist),
+  );
   const dispatch = useDispatch();
 
-  const help = useCallback((helpKind: HelpKind, extra = false) => {
-    if (selectedScene?.type === 'scene') {
-      const text = 'Protagonist: '+protagonist?.name+'\n\nScene text:\n\n'+selectedScene.data.text+'\n\nOutput only the summary.';
-      aiHelp(helpKind, text).then((res) => {
-        dispatch(storyActions.updateScene({
-          id: selectedScene?.id,
-          summary: res.data.text
-        }));
-      })
-    }
-  }, [selectedScene])
+  const help = useCallback(
+    (helpKind: HelpKind, extra = false) => {
+      if (selectedScene?.type === "scene") {
+        const text =
+          "Protagonist: " +
+          protagonist?.name +
+          "\n\nScene text:\n\n" +
+          selectedScene.data.text +
+          "\n\nOutput only the summary.";
+        aiHelp(helpKind, text).then((res) => {
+          dispatch(
+            storyActions.updateScene({
+              id: selectedScene?.id,
+              summary: res.data.text,
+            }),
+          );
+        });
+      }
+    },
+    [selectedScene],
+  );
 
-  return selectedScene && selectedScene.type === 'scene' ? (
+  return selectedScene && selectedScene.type === "scene" ? (
     <>
       <div>
         <Input
@@ -34,24 +46,10 @@ export const ScenePanel = () => {
               storyActions.updateScene({
                 id: selectedScene.id,
                 title: e.target.value,
-              })
+              }),
             );
           }}
           value={selectedScene.data.title}
-        />
-      </div>
-      <div>
-        <Input
-          placeholder={"sort order"}
-          onChange={(e) => {
-            dispatch(
-              storyActions.updateScene({
-                id: selectedScene.id,
-                sort_order: parseInt(e.target.value),
-              })
-            );
-          }}
-          value={selectedScene.data.sort_order}
         />
       </div>
       <Textarea
@@ -61,7 +59,7 @@ export const ScenePanel = () => {
             storyActions.updateScene({
               id: selectedScene.id,
               summary: e.target.value,
-            })
+            }),
           );
         }}
         rows={6}
@@ -69,12 +67,22 @@ export const ScenePanel = () => {
         style={{ width: "100%" }}
         value={selectedScene.data.summary}
       />
-      <Button colorScheme={'blue'} onClick={() => {
-        help('summarize')
-      }}>[AI] Summarize</Button>
-        <Button colorScheme={'red'} onClick={() => {
-            dispatch(storyActions.deleteScene({sceneId: selectedScene.id}));
-        }}>Delete</Button>
+      <Button
+        colorScheme={"blue"}
+        onClick={() => {
+          help("summarize");
+        }}
+      >
+        [AI] Summarize
+      </Button>
+      <Button
+        colorScheme={"red"}
+        onClick={() => {
+          dispatch(storyActions.deleteScene({ sceneId: selectedScene.id }));
+        }}
+      >
+        Delete
+      </Button>
     </>
   ) : null;
 };

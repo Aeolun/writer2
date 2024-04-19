@@ -1,6 +1,16 @@
-import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
-import short from 'short-uuid';
-import {Arc, Book, Chapter, Character, PlotPoint, Scene, SceneParagraph, Story} from "../persistence";
+import { type Draft, type PayloadAction, createSlice } from "@reduxjs/toolkit";
+import short from "short-uuid";
+import {
+  type Arc,
+  type Book,
+  type Chapter,
+  type Character,
+  type Node,
+  PlotPoint,
+  type Scene,
+  type SceneParagraph,
+  type Story,
+} from "../persistence";
 
 const initialState: Story = {
   name: undefined,
@@ -13,40 +23,48 @@ const initialState: Story = {
   scene: {},
 };
 
-function addItemToStructure(structure: Array<any>, parentId: string | undefined, item: any, index?: number, depth = 0) {
+function addItemToStructure(
+  structure: Array<any>,
+  parentId: string | undefined,
+  item: Node,
+  index?: number,
+  depth = 0,
+) {
   if (depth > 4) {
-      return;
+    return;
   }
-    const parent = structure.find((i) => {
+  const parent = structure.find((i) => {
     return i.id === parentId;
-  })
+  });
   if (parent) {
     if (index !== undefined) {
       parent.children.splice(index, 0, item);
-    }
-    else {
+    } else {
       parent.children.push(item);
     }
     return;
   }
 
-  for(const i in structure) {
-        const node = structure[i];
-        if (node.children) {
-          addItemToStructure(node.children, parentId, item, index, depth + 1);
-        }
+  for (const i in structure) {
+    const node = structure[i];
+    if (node.children) {
+      addItemToStructure(node.children, parentId, item, index, depth + 1);
     }
-
+  }
 }
 
-function removeItemFromStructure(structure: Array<any>, id: string, depth = 0) {
+function removeItemFromStructure(
+  structure: Array<any>,
+  id: string,
+  depth = 0,
+): Node | undefined {
   if (depth > 4) {
     return;
   }
-  for(let i = 0; i < structure.length; i++) {
+  for (let i = 0; i < structure.length; i++) {
     const node = structure[i];
     if (node.id === id) {
-      const item = structure[i]
+      const item = structure[i];
       structure.splice(i, 1);
       return item;
     }
@@ -64,8 +82,7 @@ export const globalSlice = createSlice({
   initialState,
   reducers: {
     setStory: (state, action: PayloadAction<Story>) => {
-
-      for(const key in action.payload) {
+      for (const key in action.payload) {
         const storyKey = key as keyof Story;
         // if (storyKey === 'structure') {
         //   continue;
@@ -132,17 +149,21 @@ export const globalSlice = createSlice({
         state[storyKey] = action.payload[storyKey];
       }
     },
-    toggleTreeItem: (state, action: PayloadAction<{id: string}>) => {
-
-    },
+    toggleTreeItem: (state, action: PayloadAction<{ id: string }>) => {},
     newStory: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
     },
     unload: (state) => {
       return initialState;
     },
-    setSetting(state: Draft<Story>, action: PayloadAction<{key:  keyof Story['settings'], value: string}>) {
-      if(!state.settings) {
+    setSetting(
+      state: Draft<Story>,
+      action: PayloadAction<{
+        key: "mangaChapterPath" | "aiInstructions";
+        value: string;
+      }>,
+    ) {
+      if (!state.settings) {
         state.settings = {};
       }
       if (state.settings) {
@@ -160,10 +181,10 @@ export const globalSlice = createSlice({
       addItemToStructure(state.structure, action.payload.arcId, {
         id: newId,
         name: "New Chapter",
-        type: 'chapter',
+        type: "chapter",
         isOpen: false,
         children: [],
-      })
+      });
     },
     createBook: (state) => {
       const newId = short.generate().toString();
@@ -176,10 +197,10 @@ export const globalSlice = createSlice({
       addItemToStructure(state.structure, undefined, {
         id: newId,
         name: "New Book",
-        type: 'book',
+        type: "book",
         isOpen: false,
         children: [],
-      })
+      });
     },
     createArc: (state, action: PayloadAction<{ bookId: string }>) => {
       const newId = short.generate().toString();
@@ -190,12 +211,12 @@ export const globalSlice = createSlice({
         start_date: "",
       };
       addItemToStructure(state.structure, action.payload.bookId, {
-          id: newId,
-          name: "New Arc",
-          type: 'arc',
-          isOpen: false,
-          children: [],
-      })
+        id: newId,
+        name: "New Arc",
+        type: "arc",
+        isOpen: false,
+        children: [],
+      });
     },
     createScene: (state, action: PayloadAction<{ chapterId: string }>) => {
       const newId = short.generate().toString();
@@ -206,94 +227,125 @@ export const globalSlice = createSlice({
         summary: "",
         plot_point_actions: [],
         cursor: 0,
-      paragraphs: [],
+        paragraphs: [],
         text: "",
       };
 
-        addItemToStructure(state.structure, action.payload.chapterId, {
-            id: newId,
-            name: "New Scene",
-            type: 'scene',
-            isOpen: false,
-        })
+      addItemToStructure(state.structure, action.payload.chapterId, {
+        id: newId,
+        name: "New Scene",
+        type: "scene",
+        isOpen: false,
+      });
     },
     deleteScene: (state, action: PayloadAction<{ sceneId: string }>) => {
-        delete state.scene[action.payload.sceneId];
-        removeItemFromStructure(state.structure, action.payload.sceneId);
+      delete state.scene[action.payload.sceneId];
+      removeItemFromStructure(state.structure, action.payload.sceneId);
     },
-    createSceneParagraph: (state, action: PayloadAction<{ sceneId: string, afterParagraphId: string }>) => {
-        const newId = short.generate().toString();
-        const afterParagraph = state.scene[action.payload.sceneId].paragraphs.findIndex((p) => {
-            return p.id === action.payload.afterParagraphId;
-        })
-        state.scene[action.payload.sceneId].paragraphs.splice(afterParagraph + 1, 0, {
-            id: newId,
-            text: "",
-            state: 'draft',
-            modifiedAt: new Date().toISOString(),
-            comments: [],
-            plot_point_actions: [],
-        });
-        // set selected paragraph to new one
-        state.scene[action.payload.sceneId].selectedParagraph = newId;
-        state.scene[action.payload.sceneId].cursor = 0;
+    createSceneParagraph: (
+      state,
+      action: PayloadAction<{ sceneId: string; afterParagraphId: string }>,
+    ) => {
+      const newId = short.generate().toString();
+      const afterParagraph = state.scene[
+        action.payload.sceneId
+      ].paragraphs.findIndex((p) => {
+        return p.id === action.payload.afterParagraphId;
+      });
+      state.scene[action.payload.sceneId].paragraphs.splice(
+        afterParagraph + 1,
+        0,
+        {
+          id: newId,
+          text: "",
+          state: "draft",
+          modifiedAt: new Date().toISOString(),
+          comments: [],
+          plot_point_actions: [],
+        },
+      );
+      // set selected paragraph to new one
+      state.scene[action.payload.sceneId].selectedParagraph = newId;
+      state.scene[action.payload.sceneId].cursor = 0;
     },
-    moveItem: (state, action: PayloadAction<{ id: string, parentId: string, index: number }>) => {
+    moveItem: (
+      state,
+      action: PayloadAction<{ id: string; parentId: string; index: number }>,
+    ) => {
       const item = removeItemFromStructure(state.structure, action.payload.id);
       if (item) {
-        addItemToStructure(state.structure, action.payload.parentId, item, action.payload.index);
+        addItemToStructure(
+          state.structure,
+          action.payload.parentId,
+          item,
+          action.payload.index,
+        );
       }
     },
-    deleteSceneParagraph: (state, action: PayloadAction<{ sceneId: string, paragraphId: string }>) => {
-        const paragraphIndex = state.scene[action.payload.sceneId].paragraphs.findIndex((p) => {
-            return p.id === action.payload.paragraphId;
-        });
-        if (state.scene[action.payload.sceneId].paragraphs[paragraphIndex].text === '') {
-          state.scene[action.payload.sceneId].paragraphs.splice(paragraphIndex, 1);
-        }
+    deleteSceneParagraph: (
+      state,
+      action: PayloadAction<{ sceneId: string; paragraphId: string }>,
+    ) => {
+      const paragraphIndex = state.scene[
+        action.payload.sceneId
+      ].paragraphs.findIndex((p) => {
+        return p.id === action.payload.paragraphId;
+      });
+      if (
+        state.scene[action.payload.sceneId].paragraphs[paragraphIndex].text ===
+        ""
+      ) {
+        state.scene[action.payload.sceneId].paragraphs.splice(
+          paragraphIndex,
+          1,
+        );
+      }
     },
-    updateSceneParagraph: (state, action: PayloadAction<{
+    updateSceneParagraph: (
+      state,
+      action: PayloadAction<{
         sceneId: string;
         paragraphId: string;
         text?: string;
-        state?: SceneParagraph['state'];
+        state?: SceneParagraph["state"];
         extra?: string;
-        }>) => {
-        const scene = state.scene[action.payload.sceneId];
-        if (scene) {
-            const paragraph = scene.paragraphs?.find((p) => {
-            return p.id === action.payload.paragraphId;
-            });
-            console.log(action.payload, paragraph)
-            if (paragraph) {
-              if (action.payload.text !== undefined) {
-                paragraph.text = action.payload.text;
-              }
-              if (action.payload.state) {
-                paragraph.state = action.payload.state;
-              } else if (action.payload.text && paragraph.state === 'revise') {
-                paragraph.state = 'draft';
-              }
-                if (action.payload.extra !== undefined) {
-                  console.log('setting extra')
-                    paragraph.extra = action.payload.extra;
-                }
-              paragraph.modifiedAt = new Date().toISOString();
-            }
+      }>,
+    ) => {
+      const scene = state.scene[action.payload.sceneId];
+      if (scene) {
+        const paragraph = scene.paragraphs?.find((p) => {
+          return p.id === action.payload.paragraphId;
+        });
+        console.log(action.payload, paragraph);
+        if (paragraph) {
+          if (action.payload.text !== undefined) {
+            paragraph.text = action.payload.text;
+          }
+          if (action.payload.state) {
+            paragraph.state = action.payload.state;
+          } else if (action.payload.text && paragraph.state === "revise") {
+            paragraph.state = "draft";
+          }
+          if (action.payload.extra !== undefined) {
+            console.log("setting extra");
+            paragraph.extra = action.payload.extra;
+          }
+          paragraph.modifiedAt = new Date().toISOString();
         }
+      }
     },
     updateScene: (state, action: PayloadAction<Partial<Scene>>) => {
       const id = action.payload.id as keyof typeof state.scene;
       if (id) {
         const keys = Object.keys(action.payload);
-        for(const key of keys) {
+        for (const key of keys) {
           const writableKey = key as keyof Scene;
-          const obj = state.scene[id]
+          const obj = state.scene[id];
           if (obj[writableKey] !== action.payload[writableKey]) {
             // @ts-ignore
             obj[writableKey] = action.payload[writableKey];
           }
-        };
+        }
       }
     },
     updateChapter: (state, action: PayloadAction<Partial<Chapter>>) => {
@@ -331,10 +383,7 @@ export const globalSlice = createSlice({
         isProtagonist: false,
       };
     },
-    updateCharacter: (
-      state,
-      action: PayloadAction<Partial<Character>>
-    ) => {
+    updateCharacter: (state, action: PayloadAction<Partial<Character>>) => {
       if (action.payload.id) {
         state.characters[action.payload.id] = {
           ...state.characters[action.payload.id],
@@ -345,8 +394,8 @@ export const globalSlice = createSlice({
     deletePlotPoint: (
       state,
       action: PayloadAction<{
-        plotpointId: number;
-      }>
+        plotpointId: string;
+      }>,
     ) => {
       delete state.plotPoints[action.payload.plotpointId];
     },
@@ -364,7 +413,7 @@ export const globalSlice = createSlice({
         id: string;
         title?: string;
         summary?: string;
-      }>
+      }>,
     ) => {
       state.plotPoints[action.payload.id] = {
         ...state.plotPoints[action.payload.id],
@@ -377,7 +426,7 @@ export const globalSlice = createSlice({
         sceneId: string;
         plotpointId: string;
         action: string;
-      }>
+      }>,
     ) => {
       state.scene[action.payload.sceneId].plot_point_actions.push({
         plot_point_id: action.payload.plotpointId,
@@ -390,7 +439,7 @@ export const globalSlice = createSlice({
         sceneId: string;
         plotpointId: string;
         action: string;
-      }>
+      }>,
     ) => {
       state.scene[action.payload.sceneId].plot_point_actions = state.scene[
         action.payload.sceneId
