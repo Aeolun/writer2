@@ -49,6 +49,7 @@ export const CharacterPanel = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
+                dispatch(storyActions.removeCharacter(char.id));
               }}
             >
               X

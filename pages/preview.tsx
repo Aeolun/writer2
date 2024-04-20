@@ -1,28 +1,23 @@
-import type { NextPage } from "next";
-import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useState } from "react";
-import { RootState } from "../lib/store";
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import Link from "next/link";
-import { storyActions } from "../lib/slices/story";
-import { sortedBookObjects } from "../lib/selectors/sortedBookObjects";
+import { Box, Flex, Heading, useColorModeValue } from "@chakra-ui/react";
 import Markdown from "markdown-to-jsx";
+import type { NextPage } from "next";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { NoStory } from "../components/NoStory";
+import { useAutosave } from "../lib/hooks/use-autosave";
+import { sortedBookObjects } from "../lib/selectors/sortedBookObjects";
+import { storyActions } from "../lib/slices/story";
+import type { RootState } from "../lib/store";
 
 const Home: NextPage = () => {
   const storyLoaded = useSelector((store: RootState) => store.story.name);
   const scenes = useSelector(sortedBookObjects);
   const imageStyle = useColorModeValue(
     { width: "500px", margin: "2em auto" },
-    { filter: "invert(1)", width: "500px", margin: "2em auto" }
+    { filter: "invert(1)", width: "500px", margin: "2em auto" },
   );
   const dispatch = useDispatch();
+  useAutosave(!!storyLoaded);
 
   return (
     <Flex flexDirection={"column"} height={"100%"}>
@@ -103,7 +98,7 @@ const Home: NextPage = () => {
                           sceneId: scene.sceneId,
                           paragraphId: scene.paragraphId,
                           state: scene.state === "revise" ? "draft" : "revise",
-                        })
+                        }),
                       );
                     }}
                   >

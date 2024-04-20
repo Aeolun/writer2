@@ -423,6 +423,10 @@ export const globalSlice = createSlice({
         state.modifiedTime = Date.now();
       }
     },
+    removeCharacter: (state, action: PayloadAction<string>) => {
+      delete state.characters[action.payload];
+      state.modifiedTime = Date.now();
+    },
     deletePlotPoint: (
       state,
       action: PayloadAction<{

@@ -4,7 +4,11 @@ import * as fs from "fs/promises";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { simpleGit } from "simple-git";
-import { entities, saveSchema } from "../../../lib/persistence";
+import {
+  entities,
+  languageEntities,
+  saveSchema,
+} from "../../../lib/persistence";
 import { type WriterSession, authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(
@@ -56,7 +60,33 @@ export default async function handler(
           JSON.stringify(sceneData, null, 2),
         );
       }
+      // remove entities that do not exist any more
+      const allFiles = await fs.readdir(path.join(savePath, entity));
+      const allKeys = Object.keys(validatedBody.story[entity]).map(
+        (key) => key + ".json",
+      );
+      for (const file of allFiles) {
+        if (!allKeys.includes(file)) {
+          await fs.unlink(path.join(savePath, entity, file));
+        }
+      }
       delete validatedBody.story[entity];
+    }
+
+    for (const languageEntity of languageEntities) {
+      await fs.mkdir(path.join(savePath, languageEntity), { recursive: true });
+      for (const languageEntityId of Object.keys(
+        validatedBody.language[languageEntity],
+      )) {
+        const languageData =
+          validatedBody.language[languageEntity][languageEntityId];
+        await fs.writeFile(
+          savePath + "/" + languageEntity + "/" + languageEntityId + ".json",
+          JSON.stringify(languageData, null, 2),
+        );
+      }
+      // @ts-expect-error: not sure why complain here
+      delete validatedBody.language[languageEntity];
     }
 
     await fs.writeFile(indexPath, JSON.stringify(validatedBody, null, 2));

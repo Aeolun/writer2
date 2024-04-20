@@ -4,7 +4,11 @@ import fs from "fs/promises";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { simpleGit } from "simple-git";
-import { type Story, entities } from "../../../lib/persistence";
+import {
+  type Story,
+  entities,
+  languageEntities,
+} from "../../../lib/persistence";
 import { type WriterSession, authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(
@@ -56,9 +60,9 @@ export default async function handler(
   const storyData = JSON.parse(story.toString());
 
   for (const entity of entities) {
-    delete storyData[entity];
+    delete storyData.story[entity];
 
-    storyData[entity] = {};
+    storyData.story[entity] = {};
     const entityPath = path.join(storyPath, entity);
     const entityFiles = await fs.readdir(entityPath);
     for (const entityId of entityFiles.map((file) =>
@@ -67,7 +71,24 @@ export default async function handler(
       const entityData = await fs.readFile(
         path.join(entityPath, entityId + ".json"),
       );
-      storyData[entity][entityId] = JSON.parse(entityData.toString());
+      storyData.story[entity][entityId] = JSON.parse(entityData.toString());
+    }
+  }
+
+  for (const languageEntity of languageEntities) {
+    delete storyData.language[languageEntity];
+    storyData.language[languageEntity] = {};
+    const languageEntityPath = path.join(storyPath, languageEntity);
+    const languageEntityFiles = await fs.readdir(languageEntityPath);
+    for (const languageEntityId of languageEntityFiles.map((name) =>
+      name.replace(".json", ""),
+    )) {
+      const languageEntityData = await fs.readFile(
+        path.join(languageEntityPath, languageEntityId + ".json"),
+      );
+      storyData.language[languageEntity][languageEntityId] = JSON.parse(
+        languageEntityData.toString(),
+      );
     }
   }
 

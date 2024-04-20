@@ -177,3 +177,5 @@ export const entities = [
   "characters",
   "plotPoints",
 ] as const;
+
+export const languageEntities = ["languages"] as const;
