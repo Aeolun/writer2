@@ -89,6 +89,8 @@ export default async function handler(
       delete validatedBody.language[languageEntity];
     }
 
+    // @ts-expect-error: needs to be required everywhere except save
+    delete validatedBody.expectedLastModified;
     await fs.writeFile(indexPath, JSON.stringify(validatedBody, null, 2));
 
     const storyPath = path.join(
