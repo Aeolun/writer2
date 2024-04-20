@@ -146,6 +146,7 @@ export const languageSchema = z.object({
 
 export const storySchema = z.object({
   name: z.string().optional(),
+  modifiedTime: z.number().optional(),
   settings: z
     .object({
       mangaChapterPath: z.string().optional(),
@@ -165,4 +166,14 @@ export type Story = z.infer<typeof storySchema>;
 export const saveSchema = z.object({
   story: storySchema,
   language: languageSchema,
+  expectedLastModified: z.number(),
 });
+
+export const entities = [
+  "scene",
+  "book",
+  "arc",
+  "chapter",
+  "characters",
+  "plotPoints",
+] as const;

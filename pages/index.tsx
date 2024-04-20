@@ -1,21 +1,20 @@
+import { Box, Button, Flex, Input } from "@chakra-ui/react";
+import axios from "axios";
 import type { NextPage } from "next";
+import Head from "next/head";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { HeaderMenu } from "../components/HeaderMenu";
 import { NavTree } from "../components/NavTree";
 import { PageImage } from "../components/PageImage";
-import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { StoryNavigation } from "../components/StoryNavigation";
 import { StoryPane } from "../components/StoryPane";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { storyActions } from "../lib/slices/story";
-import { Box, Button, CircularProgress, Flex, Input } from "@chakra-ui/react";
-import { RootState, store } from "../lib/store";
-import { globalActions } from "../lib/slices/global";
-import { HeaderMenu } from "../components/HeaderMenu";
+import { useAutosave } from "../lib/hooks/use-autosave";
 import { storySettingsSelector } from "../lib/selectors/storySettings";
-import { save } from "../lib/actions/save";
-import language from "./language";
+import { globalActions } from "../lib/slices/global";
 import { languageActions } from "../lib/slices/language";
-import Head from "next/head";
+import { storyActions } from "../lib/slices/story";
+import type { RootState } from "../lib/store";
 
 const Home: NextPage = () => {
   const dispatch = useDispatch();
@@ -26,24 +25,12 @@ const Home: NextPage = () => {
   const [storyName, setStoryName] = useState("");
 
   useEffect(() => {
-    if (storyLoaded) {
-      const saveInterval = setInterval(() => {
-        save().catch((e) => {
-          console.error(e);
-        });
-      }, 10000);
-
-      return () => {
-        clearInterval(saveInterval);
-      };
-    }
-  }, [storyLoaded]);
-
-  useEffect(() => {
     axios.get("/api/list").then((res) => {
       dispatch(globalActions.setStories(res.data));
     });
   }, []);
+
+  useAutosave(!!storyLoaded);
 
   return (
     <Flex flexDirection={"column"} height={"100%"}>
@@ -76,6 +63,11 @@ const Home: NextPage = () => {
                 onClick={() => {
                   axios.get(`/api/load/${story.name}`).then((res) => {
                     dispatch(storyActions.setStory(res.data.story));
+                    dispatch(
+                      globalActions.setExpectedLastModified(
+                        res.data.lastModified,
+                      ),
+                    );
                     if (res.data.language) {
                       dispatch(languageActions.setLanguages(res.data.language));
                     }

@@ -13,6 +13,7 @@ import type {
 
 const initialState: Story = {
   name: undefined,
+  modifiedTime: Date.now(),
   chapter: {},
   structure: [],
   book: {},
@@ -166,6 +167,7 @@ export const globalSlice = createSlice({
         state.settings = {};
       }
       if (state.settings) {
+        state.modifiedTime = Date.now();
         state.settings[action.payload.key] = action.payload.value;
       }
     },
@@ -177,6 +179,7 @@ export const globalSlice = createSlice({
         summary: "",
         start_date: "",
       };
+      state.modifiedTime = Date.now();
       addItemToStructure(state.structure, action.payload.arcId, {
         id: newId,
         name: "New Chapter",
@@ -193,6 +196,7 @@ export const globalSlice = createSlice({
         summary: "",
         start_date: "",
       };
+      state.modifiedTime = Date.now();
       addItemToStructure(state.structure, undefined, {
         id: newId,
         name: "New Book",
@@ -209,6 +213,7 @@ export const globalSlice = createSlice({
         summary: "",
         start_date: "",
       };
+      state.modifiedTime = Date.now();
       addItemToStructure(state.structure, action.payload.bookId, {
         id: newId,
         name: "New Arc",
@@ -232,7 +237,7 @@ export const globalSlice = createSlice({
         paragraphs: [],
         text: "",
       };
-
+      state.modifiedTime = Date.now();
       addItemToStructure(state.structure, action.payload.chapterId, {
         id: newId,
         name: "New Scene",
@@ -242,6 +247,7 @@ export const globalSlice = createSlice({
     },
     deleteScene: (state, action: PayloadAction<{ sceneId: string }>) => {
       delete state.scene[action.payload.sceneId];
+      state.modifiedTime = Date.now();
       removeItemFromStructure(state.structure, action.payload.sceneId);
     },
     createSceneParagraph: (
@@ -254,6 +260,7 @@ export const globalSlice = createSlice({
       ].paragraphs.findIndex((p) => {
         return p.id === action.payload.afterParagraphId;
       });
+      state.modifiedTime = Date.now();
       state.scene[action.payload.sceneId].paragraphs.splice(
         afterParagraph + 1,
         0,
@@ -283,6 +290,7 @@ export const globalSlice = createSlice({
           action.payload.index,
         );
       }
+      state.modifiedTime = Date.now();
     },
     deleteSceneParagraph: (
       state,
@@ -302,6 +310,7 @@ export const globalSlice = createSlice({
           1,
         );
       }
+      state.modifiedTime = Date.now();
     },
     updateSceneParagraph: (
       state,
@@ -347,6 +356,7 @@ export const globalSlice = createSlice({
             paragraph.extra = action.payload.extra;
           }
           paragraph.modifiedAt = new Date().toISOString();
+          state.modifiedTime = Date.now();
         }
       }
     },
@@ -362,6 +372,7 @@ export const globalSlice = createSlice({
             obj[writableKey] = action.payload[writableKey];
           }
         }
+        state.modifiedTime = Date.now();
       }
     },
     updateChapter: (state, action: PayloadAction<Partial<Chapter>>) => {
@@ -370,6 +381,7 @@ export const globalSlice = createSlice({
           ...state.chapter[action.payload.id],
           ...action.payload,
         };
+        state.modifiedTime = Date.now();
       }
     },
     updateArc: (state, action: PayloadAction<Partial<Arc>>) => {
@@ -378,6 +390,7 @@ export const globalSlice = createSlice({
           ...state.arc[action.payload.id],
           ...action.payload,
         };
+        state.modifiedTime = Date.now();
       }
     },
     updateBook: (state, action: PayloadAction<Partial<Book>>) => {
@@ -386,6 +399,7 @@ export const globalSlice = createSlice({
           ...state.book[action.payload.id],
           ...action.payload,
         };
+        state.modifiedTime = Date.now();
       }
     },
     createCharacter: (state, action: PayloadAction<{}>) => {
@@ -398,6 +412,7 @@ export const globalSlice = createSlice({
         age: "",
         isProtagonist: false,
       };
+      state.modifiedTime = Date.now();
     },
     updateCharacter: (state, action: PayloadAction<Partial<Character>>) => {
       if (action.payload.id) {
@@ -405,6 +420,7 @@ export const globalSlice = createSlice({
           ...state.characters[action.payload.id],
           ...action.payload,
         };
+        state.modifiedTime = Date.now();
       }
     },
     deletePlotPoint: (
@@ -414,6 +430,7 @@ export const globalSlice = createSlice({
       }>,
     ) => {
       delete state.plotPoints[action.payload.plotpointId];
+      state.modifiedTime = Date.now();
     },
     createPlotPoint: (state, action: PayloadAction<{}>) => {
       const newId = short.generate().toString();
@@ -422,6 +439,7 @@ export const globalSlice = createSlice({
         summary: "",
         title: "",
       };
+      state.modifiedTime = Date.now();
     },
     updatePlotpoint: (
       state,
@@ -435,6 +453,7 @@ export const globalSlice = createSlice({
         ...state.plotPoints[action.payload.id],
         ...action.payload,
       };
+      state.modifiedTime = Date.now();
     },
     addPlotPointToSceneParagraph: (
       state,
@@ -459,6 +478,7 @@ export const globalSlice = createSlice({
           plot_point_id: action.payload.plotpointId,
           action: action.payload.action,
         });
+        state.modifiedTime = Date.now();
       }
     },
     addPlotPointToScene: (
@@ -473,6 +493,7 @@ export const globalSlice = createSlice({
         plot_point_id: action.payload.plotpointId,
         action: action.payload.action,
       });
+      state.modifiedTime = Date.now();
     },
     removePlotPointFromSceneParagraph: (
       state,
@@ -493,6 +514,7 @@ export const globalSlice = createSlice({
             i.action !== action.payload.action
           );
         });
+        state.modifiedTime = Date.now();
       }
     },
     removePlotPointFromScene: (
@@ -511,6 +533,7 @@ export const globalSlice = createSlice({
           i.action !== action.payload.action
         );
       });
+      state.modifiedTime = Date.now();
     },
   },
 });

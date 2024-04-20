@@ -1,10 +1,10 @@
-import fs from "fs";
 import path from "path";
+import fs from "fs/promises";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { simpleGit } from "simple-git";
-import type { Story } from "../../../lib/persistence";
+import { type Story, entities } from "../../../lib/persistence";
 import { type WriterSession, authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(
@@ -34,7 +34,7 @@ export default async function handler(
   let stashed = false;
   if (!status.isClean()) {
     stashed = true;
-    git.stash();
+    await git.stash();
   }
   const remotes = await git
     .remote([
@@ -42,16 +42,37 @@ export default async function handler(
       "origin",
       `https://${session.owner}:${session.github_access_token}@github.com/${session.owner}/${req.query.story}.git`,
     ])
-
     .pull();
 
   if (stashed) {
-    git.stash(["pop"]);
+    await git.stash(["pop"]);
   }
 
   console.log(remotes);
 
-  const story = fs.readFileSync(path.join(storyPath, "index.json"));
+  const story = await fs.readFile(path.join(storyPath, "index.json"));
+  const storyInfo = await fs.stat(path.join(storyPath, "index.json"));
 
-  res.status(200).json(JSON.parse(story.toString()));
+  const storyData = JSON.parse(story.toString());
+
+  for (const entity of entities) {
+    delete storyData[entity];
+
+    storyData[entity] = {};
+    const entityPath = path.join(storyPath, entity);
+    const entityFiles = await fs.readdir(entityPath);
+    for (const entityId of entityFiles.map((file) =>
+      file.replace(".json", ""),
+    )) {
+      const entityData = await fs.readFile(
+        path.join(entityPath, entityId + ".json"),
+      );
+      storyData[entity][entityId] = JSON.parse(entityData.toString());
+    }
+  }
+
+  res.status(200).json({
+    ...storyData,
+    lastModified: storyInfo.mtime.getTime(),
+  });
 }

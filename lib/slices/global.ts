@@ -8,6 +8,7 @@ export interface GlobalState {
   selectedImageChapter?: string;
   imagePath?: string;
   currentId?: string;
+  expectedLastModified?: number;
   selectedEntity?: "book" | "arc" | "chapter" | "scene";
   storyLoaded: boolean;
   aiBackend: "google" | "openai" | "claude";
@@ -32,6 +33,12 @@ export const globalSlice = createSlice({
   reducers: {
     setStories: (state, action: PayloadAction<StorySummary[]>) => {
       state.stories = action.payload;
+    },
+    setExpectedLastModified: (
+      state: Draft<GlobalState>,
+      action: PayloadAction<number>,
+    ) => {
+      state.expectedLastModified = action.payload;
     },
     setSaving: (state, action: PayloadAction<boolean>) => {
       state.saving = action.payload;
