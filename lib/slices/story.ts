@@ -53,6 +53,31 @@ function addItemToStructure(
   }
 }
 
+function updateItemInStructure(
+  structure: Array<Node>,
+  id: string,
+  item: Partial<Node>,
+  depth = 0,
+) {
+  if (depth > 4) {
+    return;
+  }
+  for (let i = 0; i < structure.length; i++) {
+    const node = structure[i];
+    if (node.id === id) {
+      for (const key of Object.keys(item)) {
+        const writableKey = key as keyof Node;
+        // @ts-expect-error: too broad
+        node[writableKey] = item[writableKey];
+      }
+      return;
+    }
+    if (node.children) {
+      updateItemInStructure(node.children, id, item, depth + 1);
+    }
+  }
+}
+
 function removeItemFromStructure(
   structure: Array<any>,
   id: string,
@@ -372,6 +397,10 @@ export const globalSlice = createSlice({
             obj[writableKey] = action.payload[writableKey];
           }
         }
+        // update title in structure
+        updateItemInStructure(state.structure, id, {
+          name: action.payload.title,
+        });
         state.modifiedTime = Date.now();
       }
     },
@@ -381,6 +410,10 @@ export const globalSlice = createSlice({
           ...state.chapter[action.payload.id],
           ...action.payload,
         };
+        // update title in structure
+        updateItemInStructure(state.structure, action.payload.id, {
+          name: action.payload.title,
+        });
         state.modifiedTime = Date.now();
       }
     },
@@ -390,6 +423,10 @@ export const globalSlice = createSlice({
           ...state.arc[action.payload.id],
           ...action.payload,
         };
+        // update title in structure
+        updateItemInStructure(state.structure, action.payload.id, {
+          name: action.payload.title,
+        });
         state.modifiedTime = Date.now();
       }
     },
@@ -399,6 +436,10 @@ export const globalSlice = createSlice({
           ...state.book[action.payload.id],
           ...action.payload,
         };
+        // update title in structure
+        updateItemInStructure(state.structure, action.payload.id, {
+          name: action.payload.title,
+        });
         state.modifiedTime = Date.now();
       }
     },

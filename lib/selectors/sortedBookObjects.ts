@@ -1,9 +1,9 @@
 import { createSelector } from "reselect";
-import { bookSelector } from "./bookSelector";
-import { selectedObjectSelector } from "./selectedObjectSelector";
 import { arcSelector } from "./arcSelector";
+import { bookSelector } from "./bookSelector";
 import { chaptersSelector } from "./chapterSelector";
 import { scenesSelector } from "./scenesSelector";
+import { selectedObjectSelector } from "./selectedObjectSelector";
 import { structureSelector } from "./structureSelector";
 
 export const sortedBookObjects = createSelector(
@@ -33,6 +33,7 @@ export const sortedBookObjects = createSelector(
           type: "paragraph";
           text: string;
           sceneId: string;
+          posted: boolean;
           state: string;
           paragraphId: string;
         }
@@ -74,6 +75,7 @@ export const sortedBookObjects = createSelector(
                 text: paragraph.text,
                 sceneId: scene.id,
                 state: paragraph.state,
+                posted: scenes[scene.id].posted ?? false,
                 paragraphId: paragraph.id,
               });
             }
@@ -93,5 +95,5 @@ export const sortedBookObjects = createSelector(
     });
 
     return objects;
-  }
+  },
 );

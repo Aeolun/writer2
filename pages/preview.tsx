@@ -88,7 +88,13 @@ const Home: NextPage = () => {
                   <Box
                     as={"p"}
                     textIndent={"2em"}
-                    color={scene.state === "revise" ? "red.500" : undefined}
+                    color={
+                      scene.state === "revise"
+                        ? "red.500"
+                        : scene.posted
+                          ? "gray.400"
+                          : undefined
+                    }
                     my={"1em"}
                     fontFamily={"georgia, garamond, serif"}
                     fontWeight={"500"}
