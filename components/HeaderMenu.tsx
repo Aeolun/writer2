@@ -51,6 +51,13 @@ export const HeaderMenu = () => {
       <Flex px={2} gap={1} py={1} justifyContent={"flex-end"}>
         <Button
           onClick={() => {
+            dispatch(globalActions.setAiPopupOpen(true));
+          }}
+        >
+          AI Question
+        </Button>
+        <Button
+          onClick={() => {
             dispatch(
               globalActions.setAiBackend(
                 aiBackend === "google"

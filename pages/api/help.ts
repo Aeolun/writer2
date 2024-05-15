@@ -54,7 +54,7 @@ export default async function handler(
   const method = req.body.method ?? "openai";
   const kind = req.body.kind as HelpKind;
 
-  if (method == "claude") {
+  if (method === "claude") {
     const result = await claude(instructions[kind], text);
     if (!result.content) {
       res.status(200).json({
@@ -64,7 +64,7 @@ export default async function handler(
     res.status(200).json({
       text: result.content[0].text,
     });
-  } else if (method == "openai") {
+  } else if (method === "openai") {
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY ?? "",
     });
@@ -80,7 +80,7 @@ export default async function handler(
           content: text,
         },
       ],
-      model: "gpt-4-turbo-preview",
+      model: "gpt-4o-2024-05-13",
     });
 
     console.log(JSON.stringify(result, null, 2));

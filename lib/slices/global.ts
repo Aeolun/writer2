@@ -11,6 +11,7 @@ export interface GlobalState {
   expectedLastModified?: number;
   selectedEntity?: "book" | "arc" | "chapter" | "scene";
   storyLoaded: boolean;
+  aiPopupOpen: boolean;
   aiBackend: "google" | "openai" | "claude";
   saving: boolean;
   stories?: StorySummary[];
@@ -22,6 +23,7 @@ const initialState: GlobalState = {
   storyLoaded: false,
   stories: [],
   aiBackend: "openai",
+  aiPopupOpen: false,
   saving: false,
   syncing: false,
   isDirty: false,
@@ -33,6 +35,9 @@ export const globalSlice = createSlice({
   reducers: {
     setStories: (state, action: PayloadAction<StorySummary[]>) => {
       state.stories = action.payload;
+    },
+    setAiPopupOpen: (state, action: PayloadAction<boolean>) => {
+      state.aiPopupOpen = action.payload;
     },
     setExpectedLastModified: (
       state: Draft<GlobalState>,

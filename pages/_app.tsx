@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider } from "react-redux";
+import { AiPopup } from "../components/AiPopup";
 import { Authenticated } from "../components/Authenticated";
 import "../lib/App.css";
 import { store } from "../lib/store";
@@ -32,6 +33,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ChakraProvider theme={theme}>
           <Authenticated>
             <Provider store={store}>
+              <AiPopup />
               <Component {...pageProps} />
             </Provider>
           </Authenticated>

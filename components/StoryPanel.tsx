@@ -20,6 +20,7 @@ import {
   Check,
   Crop,
   Crown,
+  DroneRefresh,
   Menu as MenuIcon,
   Pacman,
   RefreshDouble,
@@ -27,7 +28,7 @@ import {
   TrashSolid,
 } from "iconoir-react";
 import type React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { aiHelp } from "../lib/actions/aiHelp";
 import type { HelpKind } from "../lib/ai-instructions";
@@ -63,7 +64,7 @@ export const Row = (props: {
   return (
     <Grid
       position={"relative"}
-      templateColumns={props.extra ? "1fr 100px 1fr" : "1fr 90px"}
+      templateColumns={props.extra ? "1fr 100px 1fr" : "1fr 100px"}
       justifyContent={"center"}
       width={"70%"}
       maxWidth={"1164px"}
@@ -102,6 +103,7 @@ export const Row = (props: {
 export const StoryPanel = () => {
   const scene = useSelector(selectedSceneSelector);
   const [selectedScene, setSelectedScene] = useState<string>("");
+  const [cursor, setCursor] = useState<number>(0);
   const [plotPoint, setPlotPoint] = useState<string>();
   const [action, setAction] = useState<string>("mentioned");
   const plotpoints = useSelector(plotpointSelector);
@@ -113,7 +115,7 @@ export const StoryPanel = () => {
   );
 
   const help = useCallback(
-    (helpKind: HelpKind, extra = false) => {
+    (helpKind: HelpKind, extra = false, addInstructions = true) => {
       const currentParagraph = scene?.paragraphs.find(
         (p) => p.id === scene.selectedParagraph,
       );
@@ -122,45 +124,48 @@ export const StoryPanel = () => {
       if (!currentParagraph) {
         return;
       }
-      return aiHelp(helpKind, `${currentParagraph.text}`).then((res) => {
-        if (extra) {
-          dispatch(
-            storyActions.updateSceneParagraph({
-              sceneId: scene.id,
-              paragraphId: currentParagraph?.id,
-              extra: res.data.text,
-            }),
-          );
-        } else {
-          dispatch(
-            storyActions.updateSceneParagraph({
-              sceneId: scene.id,
-              paragraphId: currentParagraph?.id,
-              extra: res.data.text,
-            }),
-          );
-        }
-      });
+      return aiHelp(helpKind, `${currentParagraph.text}`, addInstructions).then(
+        (res) => {
+          if (extra) {
+            dispatch(
+              storyActions.updateSceneParagraph({
+                sceneId: scene.id,
+                paragraphId: currentParagraph?.id,
+                extra: res.data.text,
+              }),
+            );
+          } else {
+            dispatch(
+              storyActions.updateSceneParagraph({
+                sceneId: scene.id,
+                paragraphId: currentParagraph?.id,
+                extra: res.data.text,
+              }),
+            );
+          }
+        },
+      );
     },
     [scene],
   );
 
   const dispatch = useDispatch();
   useEffect(() => {
-    if (scene?.id === selectedScene) {
+    if (scene?.id === selectedScene && scene.cursor === cursor) {
       return;
     }
     setSelectedScene(scene?.id ?? "");
     const paragraph = document.getElementById(
       `p_${scene?.selectedParagraph}`,
     ) as HTMLTextAreaElement | null;
-    if (paragraph && scene?.cursor) {
+    console.log("paragraph", paragraph, scene?.cursor, cursor);
+    if (paragraph && scene?.cursor !== undefined) {
       console.log("focus", scene.cursor);
-      paragraph.focus();
       paragraph.selectionStart = scene.cursor;
       paragraph.selectionEnd = scene.cursor;
+      paragraph.focus();
     }
-  }, [scene, selectedScene]);
+  }, [scene, selectedScene, cursor]);
 
   if (!scene) {
     return null;
@@ -182,9 +187,22 @@ export const StoryPanel = () => {
           flexDirection={"column"}
           alignItems={"center"}
         >
+          {scene.paragraphs.length === 0 ? (
+            <Button
+              onClick={() => {
+                dispatch(
+                  storyActions.createSceneParagraph({
+                    sceneId: scene.id,
+                  }),
+                );
+              }}
+            >
+              Create paragraph
+            </Button>
+          ) : null}
           {scene.paragraphs.map((p) => {
             return (
-              <>
+              <Fragment key={p.id}>
                 <Row
                   selected={scene.selectedParagraph === p.id}
                   borderColor={
@@ -207,6 +225,10 @@ export const StoryPanel = () => {
                         );
                       }}
                       onFocus={(e) => {
+                        console.log(
+                          "selectionstart on focus",
+                          e.target.selectionStart,
+                        );
                         dispatch(
                           storyActions.updateScene({
                             id: scene.id,
@@ -233,6 +255,34 @@ export const StoryPanel = () => {
                             storyActions.deleteSceneParagraph({
                               sceneId: scene.id,
                               paragraphId: p.id,
+                            }),
+                          );
+                          e.preventDefault();
+                          e.stopPropagation();
+                        } else if (
+                          e.key === "ArrowUp" &&
+                          e.shiftKey &&
+                          e.ctrlKey
+                        ) {
+                          dispatch(
+                            storyActions.moveSceneParagraph({
+                              sceneId: scene.id,
+                              paragraphId: p.id,
+                              direction: "up",
+                            }),
+                          );
+                          e.preventDefault();
+                          e.stopPropagation();
+                        } else if (
+                          e.key === "ArrowDown" &&
+                          e.shiftKey &&
+                          e.ctrlKey
+                        ) {
+                          dispatch(
+                            storyActions.moveSceneParagraph({
+                              sceneId: scene.id,
+                              paragraphId: p.id,
+                              direction: "down",
                             }),
                           );
                           e.preventDefault();
@@ -276,6 +326,13 @@ export const StoryPanel = () => {
                             }
                           });
                         } else {
+                          setCursor(e.currentTarget.selectionStart);
+                          dispatch(
+                            storyActions.updateScene({
+                              id: scene.id,
+                              cursor: e.currentTarget.selectionStart,
+                            }),
+                          );
                           console.log(e.key);
                         }
                       }}
@@ -283,7 +340,12 @@ export const StoryPanel = () => {
                   }
                   buttons={
                     p.id === scene.selectedParagraph ? (
-                      <HStack spacing={2} p={2} w={"90px"}>
+                      <HStack
+                        spacing={2}
+                        justifyContent={"flex-end"}
+                        flexWrap={"wrap"}
+                        w={"100%"}
+                      >
                         <IconButton
                           aria-label={"rewrite"}
                           icon={<RefreshDouble />}
@@ -309,6 +371,31 @@ export const StoryPanel = () => {
                         >
                           Rewrite
                         </IconButton>
+                        <IconButton
+                          aria-label={"rewrite"}
+                          icon={<DroneRefresh />}
+                          size={"sm"}
+                          onClick={() => {
+                            dispatch(
+                              storyActions.updateSceneParagraph({
+                                sceneId: scene.id,
+                                paragraphId: p.id,
+                                extraLoading: true,
+                              }),
+                            );
+                            help("rewrite_similar", true, false)?.then(() => {
+                              dispatch(
+                                storyActions.updateSceneParagraph({
+                                  sceneId: scene.id,
+                                  paragraphId: p.id,
+                                  extraLoading: false,
+                                }),
+                              );
+                            });
+                          }}
+                        >
+                          Rewrite Similar
+                        </IconButton>
                         <Menu>
                           <MenuButton
                             as={IconButton}
@@ -317,6 +404,20 @@ export const StoryPanel = () => {
                             icon={<MenuIcon />}
                           />
                           <MenuList>
+                            <MenuItem
+                              icon={<Crown />}
+                              onClick={() => {
+                                dispatch(
+                                  storyActions.splitSceneFromParagraph({
+                                    sceneId: scene.id,
+                                    paragraphId: p.id,
+                                  }),
+                                );
+                              }}
+                              command="⌘T"
+                            >
+                              Split into new scene from here
+                            </MenuItem>
                             <MenuItem
                               icon={<Crown />}
                               onClick={() => {
@@ -399,24 +500,39 @@ export const StoryPanel = () => {
                       </Flex>
                     ) : p.extra ? (
                       <>
-                        <Button
-                          position={"absolute"}
-                          top={4}
-                          _hover={{ color: "red.500" }}
-                          right={2}
-                          variant={"link"}
-                          onClick={() => {
-                            dispatch(
-                              storyActions.updateSceneParagraph({
-                                sceneId: scene.id,
-                                paragraphId: p.id,
-                                extra: "",
-                              }),
-                            );
-                          }}
-                        >
-                          <Trash />
-                        </Button>
+                        <HStack gap={0} position={"absolute"} top={4} right={2}>
+                          <Button
+                            _hover={{ color: "green.500" }}
+                            variant={"link"}
+                            onClick={() => {
+                              dispatch(
+                                storyActions.updateSceneParagraph({
+                                  sceneId: scene.id,
+                                  paragraphId: p.id,
+                                  text: p.extra,
+                                  extra: "",
+                                }),
+                              );
+                            }}
+                          >
+                            <Check />
+                          </Button>
+                          <Button
+                            _hover={{ color: "red.500" }}
+                            variant={"link"}
+                            onClick={() => {
+                              dispatch(
+                                storyActions.updateSceneParagraph({
+                                  sceneId: scene.id,
+                                  paragraphId: p.id,
+                                  extra: "",
+                                }),
+                              );
+                            }}
+                          >
+                            <Trash />
+                          </Button>
+                        </HStack>
                         <AutoResizeTextarea
                           outline={"1px solid transparent"}
                           onChange={(e) => {
@@ -490,7 +606,7 @@ export const StoryPanel = () => {
                     )
                   }
                 />
-              </>
+              </Fragment>
             );
           })}
         </Flex>

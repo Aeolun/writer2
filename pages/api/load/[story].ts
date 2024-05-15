@@ -35,10 +35,10 @@ export default async function handler(
   });
 
   const status = await git.status();
-  let stashed = false;
+  const stashed = false;
   if (!status.isClean()) {
-    stashed = true;
-    await git.stash();
+    await git.add("*");
+    await git.commit("chore: auto commit before pull");
   }
   const remotes = await git
     .remote([
@@ -47,10 +47,6 @@ export default async function handler(
       `https://${session.owner}:${session.github_access_token}@github.com/${session.owner}/${req.query.story}.git`,
     ])
     .pull();
-
-  if (stashed) {
-    await git.stash(["pop"]);
-  }
 
   console.log(remotes);
 

@@ -22,6 +22,7 @@ export const authOptions: AuthOptions = {
   secret: process.env.AUTH_SECRET,
   session: {
     strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 1 day
   },
   // Configure one or more authentication providers
   providers: [

@@ -53,6 +53,34 @@ function addItemToStructure(
   }
 }
 
+function findParentIdForNode(
+  structure: Array<Node>,
+  id: string,
+  parentId: string | undefined,
+  depth = 0,
+): string | undefined {
+  if (depth > 4) {
+    return;
+  }
+  for (let i = 0; i < structure.length; i++) {
+    const node = structure[i];
+    if (node.id === id) {
+      return parentId;
+    }
+    if (node.children) {
+      const parentId = findParentIdForNode(
+        node.children,
+        id,
+        node.id,
+        depth + 1,
+      );
+      if (parentId) {
+        return parentId;
+      }
+    }
+  }
+}
+
 function updateItemInStructure(
   structure: Array<Node>,
   id: string,
@@ -277,21 +305,32 @@ export const globalSlice = createSlice({
     },
     createSceneParagraph: (
       state,
-      action: PayloadAction<{ sceneId: string; afterParagraphId: string }>,
+      action: PayloadAction<{ sceneId: string; afterParagraphId?: string }>,
     ) => {
       const newId = short.generate().toString();
-      const afterParagraph = state.scene[
+      const afterParagraphIndex = state.scene[
         action.payload.sceneId
       ].paragraphs.findIndex((p) => {
         return p.id === action.payload.afterParagraphId;
       });
+      const currentScene = state.scene[action.payload.sceneId];
+      const currentParagraph = currentScene.paragraphs[afterParagraphIndex];
+      const cursorPosition = currentScene.cursor;
+      const newParagraphText = cursorPosition
+        ? currentParagraph.text.substring(cursorPosition)
+        : "";
+      currentParagraph.text = currentParagraph.text.substring(
+        0,
+        cursorPosition,
+      );
+
       state.modifiedTime = Date.now();
       state.scene[action.payload.sceneId].paragraphs.splice(
-        afterParagraph + 1,
+        afterParagraphIndex + 1,
         0,
         {
           id: newId,
-          text: "",
+          text: newParagraphText,
           state: "draft",
           modifiedAt: new Date().toISOString(),
           comments: [],
@@ -317,6 +356,30 @@ export const globalSlice = createSlice({
       }
       state.modifiedTime = Date.now();
     },
+    moveSceneParagraph(
+      state,
+      action: PayloadAction<{
+        sceneId: string;
+        paragraphId: string;
+        direction?: "up" | "down";
+      }>,
+    ) {
+      const scene = state.scene[action.payload.sceneId];
+      const paragraphIndex = scene.paragraphs.findIndex((p) => {
+        return p.id === action.payload.paragraphId;
+      });
+      const paragraph = scene.paragraphs[paragraphIndex];
+      if (action.payload.direction === "up" && paragraphIndex > 0) {
+        scene.paragraphs[paragraphIndex] = scene.paragraphs[paragraphIndex - 1];
+        scene.paragraphs[paragraphIndex - 1] = paragraph;
+      } else if (
+        action.payload.direction === "down" &&
+        paragraphIndex < scene.paragraphs.length - 1
+      ) {
+        scene.paragraphs[paragraphIndex] = scene.paragraphs[paragraphIndex + 1];
+        scene.paragraphs[paragraphIndex + 1] = paragraph;
+      }
+    },
     deleteSceneParagraph: (
       state,
       action: PayloadAction<{ sceneId: string; paragraphId: string }>,
@@ -327,14 +390,26 @@ export const globalSlice = createSlice({
         return p.id === action.payload.paragraphId;
       });
       if (
-        state.scene[action.payload.sceneId].paragraphs[paragraphIndex].text ===
-        ""
+        state.scene[action.payload.sceneId].paragraphs[paragraphIndex].text !==
+          "" &&
+        paragraphIndex > 0
       ) {
-        state.scene[action.payload.sceneId].paragraphs.splice(
-          paragraphIndex,
-          1,
-        );
+        const deletableParagraph =
+          state.scene[action.payload.sceneId].paragraphs[paragraphIndex];
+        const previousParagraph =
+          state.scene[action.payload.sceneId].paragraphs[paragraphIndex - 1];
+        state.scene[action.payload.sceneId].selectedParagraph =
+          previousParagraph.id;
+        state.scene[action.payload.sceneId].cursor =
+          previousParagraph.text.length + 0;
+        console.log("setting cursor", previousParagraph.text.length + 0);
+        previousParagraph.text = `${previousParagraph.text}${
+          previousParagraph.text.endsWith(" ") ? "" : " "
+        }${deletableParagraph.text}`;
+        console.log("lenght after", previousParagraph.text.length);
       }
+      state.scene[action.payload.sceneId].paragraphs.splice(paragraphIndex, 1);
+
       state.modifiedTime = Date.now();
     },
     updateSceneParagraph: (
@@ -385,6 +460,54 @@ export const globalSlice = createSlice({
         }
       }
     },
+    splitSceneFromParagraph: (
+      state,
+      action: PayloadAction<{
+        sceneId: string;
+        paragraphId: string;
+      }>,
+    ) => {
+      const scene = state.scene[action.payload.sceneId];
+      const paragraph = scene.paragraphs.find((p) => {
+        return p.id === action.payload.paragraphId;
+      });
+      const chapterId = findParentIdForNode(
+        state.structure,
+        scene.id,
+        undefined,
+      );
+
+      if (paragraph && chapterId) {
+        // get all paragraphs after the current one
+        const paragraphs = scene.paragraphs.splice(
+          scene.paragraphs.indexOf(paragraph),
+        );
+        // create new scene
+        const newSceneId = short.generate().toString();
+        state.scene[newSceneId] = {
+          id: newSceneId,
+          title: "New Scene",
+          summary: "",
+          words: paragraphs.reduce((acc, p) => {
+            return acc + p.text.split(" ").length;
+          }, 0),
+          // do new paragraphs have AI
+          hasAI: paragraphs.some((p) => p.state === "ai"),
+          posted: false,
+          plot_point_actions: [],
+          cursor: 0,
+          paragraphs,
+          text: "",
+        };
+        // add new scene to structure
+        addItemToStructure(state.structure, chapterId, {
+          id: newSceneId,
+          name: "New Scene",
+          type: "scene",
+          isOpen: false,
+        });
+      }
+    },
     updateScene: (state, action: PayloadAction<Partial<Scene>>) => {
       const id = action.payload.id as keyof typeof state.scene;
       if (id) {
@@ -395,12 +518,14 @@ export const globalSlice = createSlice({
           if (obj[writableKey] !== action.payload[writableKey]) {
             // @ts-ignore
             obj[writableKey] = action.payload[writableKey];
+            if (writableKey === "title") {
+              updateItemInStructure(state.structure, id, {
+                name: action.payload.title,
+              });
+            }
           }
         }
         // update title in structure
-        updateItemInStructure(state.structure, id, {
-          name: action.payload.title,
-        });
         state.modifiedTime = Date.now();
       }
     },

@@ -36,11 +36,12 @@ export default async function handler(
         `https://${session.owner}:${session.github_access_token}@github.com/${session.owner}/${req.query.story}.git`,
       ])
       .push();
-    console.log(remotes);
 
     res.status(200).json({});
   } catch (error) {
     console.error(error);
-    res.status(500).json(error);
+    res.status(500).json({
+      error,
+    });
   }
 }
