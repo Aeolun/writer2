@@ -10,6 +10,7 @@ export interface GlobalState {
   currentId?: string;
   expectedLastModified?: number;
   selectedEntity?: "book" | "arc" | "chapter" | "scene";
+  selectedLanguage?: string;
   storyLoaded: boolean;
   aiPopupOpen: boolean;
   aiBackend: "google" | "openai" | "claude";
@@ -44,6 +45,12 @@ export const globalSlice = createSlice({
       action: PayloadAction<number>,
     ) => {
       state.expectedLastModified = action.payload;
+    },
+    setSelectedLanguage: (
+      state: Draft<GlobalState>,
+      action: PayloadAction<string>,
+    ) => {
+      state.selectedLanguage = action.payload;
     },
     setSaving: (state, action: PayloadAction<boolean>) => {
       state.saving = action.payload;

@@ -53,6 +53,28 @@ function addItemToStructure(
   }
 }
 
+function findNodeInStructure(
+  structure: Array<Node>,
+  id: string,
+  depth = 0,
+): Node | undefined {
+  if (depth > 4) {
+    return;
+  }
+  for (let i = 0; i < structure.length; i++) {
+    const node = structure[i];
+    if (node.id === id) {
+      return node;
+    }
+    if (node.children) {
+      const found = findNodeInStructure(node.children, id, depth + 1);
+      if (found) {
+        return found;
+      }
+    }
+  }
+}
+
 function findParentIdForNode(
   structure: Array<Node>,
   id: string,
@@ -297,6 +319,23 @@ export const globalSlice = createSlice({
         type: "scene",
         isOpen: false,
       });
+    },
+    deleteChapter: (state, action: PayloadAction<{ chapterId: string }>) => {
+      // check if contains scenes
+      const treeObject = findNodeInStructure(
+        state.structure,
+        action.payload.chapterId,
+      );
+      if (
+        treeObject &&
+        (treeObject.children === undefined || treeObject.children.length === 0)
+      ) {
+        delete state.chapter[action.payload.chapterId];
+        state.modifiedTime = Date.now();
+        removeItemFromStructure(state.structure, action.payload.chapterId);
+      } else {
+        alert(`Remove children ${treeObject.children.length} first`);
+      }
     },
     deleteScene: (state, action: PayloadAction<{ sceneId: string }>) => {
       delete state.scene[action.payload.sceneId];
