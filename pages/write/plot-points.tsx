@@ -1,12 +1,11 @@
+import { Flex } from "@chakra-ui/react";
 import type { NextPage } from "next";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useState } from "react";
-import { RootState } from "../lib/store";
-import { Box, Button, Flex, Input } from "@chakra-ui/react";
-import { HeaderMenu } from "../components/HeaderMenu";
-import { PlotPointPanel } from "../components/PlotPointPanel";
-import Link from "next/link";
-import { NoStory } from "../components/NoStory";
+import { HeaderMenu } from "../../components/HeaderMenu";
+import { NoStory } from "../../components/NoStory";
+import { PlotPointPanel } from "../../components/PlotPointPanel";
+import type { RootState } from "../../lib/store";
 
 const Home: NextPage = () => {
   const dispatch = useDispatch();

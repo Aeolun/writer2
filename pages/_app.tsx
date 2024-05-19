@@ -10,6 +10,7 @@ import { Authenticated } from "../components/Authenticated";
 import "../lib/App.css";
 import { store } from "../lib/store";
 import "../styles/globals.css";
+import { trpc } from "../lib/trpc";
 
 if (process.env.NODE_ENV === "development") {
   wdyr(React, {
@@ -43,4 +44,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default trpc.withTRPC(MyApp);

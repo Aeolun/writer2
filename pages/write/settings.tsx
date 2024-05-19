@@ -1,7 +1,3 @@
-import type { NextPage } from "next";
-import { useDispatch, useSelector } from "react-redux";
-import React from "react";
-import { RootState } from "../lib/store";
 import {
   Flex,
   FormControl,
@@ -10,10 +6,14 @@ import {
   Input,
   Textarea,
 } from "@chakra-ui/react";
-import { HeaderMenu } from "../components/HeaderMenu";
-import { storySettingsSelector } from "../lib/selectors/storySettings";
-import { storyActions } from "../lib/slices/story";
-import { NoStory } from "../components/NoStory";
+import type { NextPage } from "next";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { HeaderMenu } from "../../components/HeaderMenu";
+import { NoStory } from "../../components/NoStory";
+import { storySettingsSelector } from "../../lib/selectors/storySettings";
+import { storyActions } from "../../lib/slices/story";
+import type { RootState } from "../../lib/store";
 
 const Home: NextPage = () => {
   const storyLoaded = useSelector((store: RootState) => store.story.name);
@@ -36,7 +36,7 @@ const Home: NextPage = () => {
                     storyActions.setSetting({
                       key: "mangaChapterPath",
                       value: e.currentTarget.value,
-                    })
+                    }),
                   );
                 }}
               />
@@ -56,7 +56,7 @@ const Home: NextPage = () => {
                     storyActions.setSetting({
                       key: "aiInstructions",
                       value: e.currentTarget.value,
-                    })
+                    }),
                   );
                 }}
               />

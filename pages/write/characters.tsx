@@ -1,13 +1,11 @@
+import { Flex } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useState } from "react";
-import { RootState } from "../lib/store";
-import axios from "axios";
-import { Box, Button, Flex, Input } from "@chakra-ui/react";
-import { HeaderMenu } from "../components/HeaderMenu";
-import { CharacterPanel } from "../components/CharacterPanel";
-import Link from "next/link";
-import { NoStory } from "../components/NoStory";
+import React from "react";
+import { useSelector } from "react-redux";
+import { CharacterPanel } from "../../components/CharacterPanel";
+import { HeaderMenu } from "../../components/HeaderMenu";
+import { NoStory } from "../../components/NoStory";
+import type { RootState } from "../../lib/store";
 
 const Home: NextPage = () => {
   const storyLoaded = useSelector((store: RootState) => store.story.name);
