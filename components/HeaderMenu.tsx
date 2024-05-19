@@ -17,7 +17,6 @@ import type { RootState } from "../lib/store";
 
 export const HeaderMenu = () => {
   const saving = useSelector((store: RootState) => store.base.saving);
-  const isDirty = useSelector((store: RootState) => store.base.isDirty);
   const syncing = useSelector((store: RootState) => store.base.syncing);
   const aiBackend = useSelector((store: RootState) => store.base.aiBackend);
   const dispatch = useDispatch();
@@ -112,7 +111,6 @@ export const HeaderMenu = () => {
                 dispatch(globalActions.setDirty(false));
               });
           }}
-          isDisabled={!isDirty}
         >
           Git push
         </Button>

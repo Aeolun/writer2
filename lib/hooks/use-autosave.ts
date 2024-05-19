@@ -2,16 +2,19 @@ import { useEffect } from "react";
 import { save } from "../actions/save";
 
 export const useAutosave = (storyLoaded: boolean) => {
+  let saveCount = 0;
+  const autosavePercentage = 30;
   useEffect(() => {
     if (storyLoaded) {
       const saveInterval = setInterval(() => {
-        save().catch((e) => {
+        saveCount++;
+        save(saveCount % autosavePercentage === 0).catch((e) => {
           console.error(e);
         });
       }, 10000);
 
       const handleVisibilityChange = () => {
-        save().catch((e) => {
+        save(saveCount % autosavePercentage === 0).catch((e) => {
           console.error(e);
         });
       };

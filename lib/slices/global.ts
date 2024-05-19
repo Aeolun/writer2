@@ -48,7 +48,7 @@ export const globalSlice = createSlice({
     },
     setSelectedLanguage: (
       state: Draft<GlobalState>,
-      action: PayloadAction<string>,
+      action: PayloadAction<string | undefined>,
     ) => {
       state.selectedLanguage = action.payload;
     },

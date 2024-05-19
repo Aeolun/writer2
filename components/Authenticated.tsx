@@ -11,7 +11,9 @@ export const Authenticated = (props: {
   const writerSession = session as WriterSession;
   console.log(writerSession);
   if (writerSession) {
-    const expireDate = new Date(writerSession.expires);
+    const expireDate = new Date(
+      writerSession.github_access_token_expiry * 1000,
+    );
     if (session && expireDate.getTime() > Date.now()) {
       return props.children ? props.children : null;
     }

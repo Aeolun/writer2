@@ -334,7 +334,7 @@ export const globalSlice = createSlice({
         state.modifiedTime = Date.now();
         removeItemFromStructure(state.structure, action.payload.chapterId);
       } else {
-        alert(`Remove children ${treeObject.children.length} first`);
+        alert(`Remove children ${treeObject?.children?.length} first`);
       }
     },
     deleteScene: (state, action: PayloadAction<{ sceneId: string }>) => {
@@ -457,6 +457,7 @@ export const globalSlice = createSlice({
         sceneId: string;
         paragraphId: string;
         text?: string;
+        translation?: string;
         extraLoading?: boolean;
         state?: SceneParagraph["state"];
         extra?: string;
@@ -478,6 +479,9 @@ export const globalSlice = createSlice({
         if (paragraph) {
           if (action.payload.text !== undefined) {
             paragraph.text = action.payload.text;
+          }
+          if (action.payload.translation !== undefined) {
+            paragraph.translation = action.payload.translation;
           }
           if (action.payload.extraLoading !== undefined) {
             paragraph.extraLoading = action.payload.extraLoading;

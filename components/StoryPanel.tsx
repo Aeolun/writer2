@@ -75,6 +75,7 @@ export const Row = (props: {
 export const StoryPanel = () => {
   const scene = useSelector(selectedSceneSelector);
   const [selectedScene, setSelectedScene] = useState<string>("");
+  const [selectedParagraph, setSelectedParagraph] = useState<string>("");
   const [plotPoint, setPlotPoint] = useState<string>();
   const [action, setAction] = useState<string>("mentioned");
   const plotpoints = useSelector(plotpointSelector);
@@ -84,13 +85,19 @@ export const StoryPanel = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    if (scene?.id === selectedScene) {
-      return;
-    }
-    setSelectedScene(scene?.id ?? "");
     const paragraph = document.getElementById(
       `p_${scene?.selectedParagraph}`,
     ) as HTMLTextAreaElement | null;
+
+    if (
+      scene?.id === selectedScene &&
+      scene.selectedParagraph === selectedParagraph
+    ) {
+      return;
+    }
+    setSelectedScene(scene?.id ?? "");
+    setSelectedParagraph(scene?.selectedParagraph ?? "");
+
     console.log("paragraph", paragraph, scene?.cursor);
     if (paragraph && scene?.cursor !== undefined) {
       console.log("focus", scene.cursor);

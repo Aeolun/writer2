@@ -16,6 +16,7 @@ if (!process.env.AUTH_SECRET) {
 export type WriterSession = {
   owner: string;
   github_access_token: string;
+  github_access_token_expiry: number;
 } & NextAuthSession;
 
 export const authOptions: AuthOptions = {
@@ -34,9 +35,11 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     jwt({ token, account, profile }) {
+      console.log({ account, profile });
       if (profile) {
         token.owner = (profile as GithubProfile).login;
         token.access_token = account?.access_token;
+        token.access_token_expiry = account?.expires_at;
       }
       return token;
     },
@@ -45,6 +48,7 @@ export const authOptions: AuthOptions = {
         ...params.session,
         owner: params.token.owner as string,
         github_access_token: params.token.access_token as string,
+        github_access_token_expiry: params.token.access_token_expiry as number,
       };
     },
   },

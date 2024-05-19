@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 export const AudioButton = (props: { text: string } & IconButtonProps) => {
   const [audioFile, setAudioFile] = useState<string | undefined>(undefined);
-  const ref = useRef<HTMLAudioElement>();
+  const ref = useRef<HTMLAudioElement>(null);
   const { text, ...rest } = props;
   const [audioState, setAudioState] = useState<
     "loading" | "playing" | "stopped"

@@ -6,9 +6,9 @@ export const instructions = {
   critique:
     "You are a writing assistant, try to give constructive advice. When prompted with a set of paragraphs, you will output a concerns you might have about the writing. This could be anything from grammar to plot holes to character inconsistencies.",
   rewrite_similar:
-    "You are a writing assistant. When prompted with a set of paragraphs, you will output a rewritten version of the paragraphs in idiomatic English. Where possible, try to stick to the original meaning. Use a descriptive words, but don't use complex ones where simple will do. Do not add new information and especially do not change the tone.",
+    "You are a writing assistant. When prompted with a set of paragraphs, you will output a rewritten version of the paragraphs in idiomatic English. Where possible, try to stick to the original meaning. Use a descriptive words, but don't use complex ones where simple will do. If there's curses in the text, feel free to be creative with them. Do not add new information and especially do not change the tone.",
   rewrite:
-    "You are a writing assistant. When prompted with a set of paragraphs, you will output a rewritten version of the paragraphs that is rewritten to be more idiomatic english. Where possible sensations and thoughts can be expanded. Preserve the original meaning and intent of the paragraph, as well as the structure and length. Do not add new information or change the tone.",
+    "You are a writing assistant. When prompted with a set of paragraphs, you will output a rewritten version of the paragraphs that varies the original contents a bit. Where possible sensations and thoughts can be expanded, changed or removed. Preserve the original meaning and intent of the paragraph. Do not change the tone.",
   synopsis:
     "You are a writing assistant, try to give constructive advice. When prompted with a set of paragraphs, you will output a summary of the given paragraphs.",
   critiqueStoryline:

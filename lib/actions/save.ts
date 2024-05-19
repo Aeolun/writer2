@@ -1,19 +1,21 @@
 import axios from "axios";
+import type z from "zod";
+import type { saveSchema } from "../persistence";
 import { globalActions } from "../slices/global";
 import { storyActions } from "../slices/story";
 import { store } from "../store";
 
-export const save = async () => {
+export const save = async (newAutoSave: boolean) => {
   store.dispatch(globalActions.setSaving(true));
   const { base, ...rest } = store.getState();
   axios
-    .post("/api/save/" + rest.story.name, {
+    .post(`/api/save/${rest.story.name}`, {
       ...rest,
-      expectedLastModified: base.expectedLastModified,
-    })
+      newAutosave: newAutoSave,
+      expectedLastModified: base.expectedLastModified ?? 0,
+    } satisfies z.infer<typeof saveSchema>)
     .then((result) => {
       store.dispatch(globalActions.setSaving(false));
-      store.dispatch(globalActions.setDirty(!result.data.isClean));
       console.log("new modified time", result.data.lastModified);
       store.dispatch(
         globalActions.setExpectedLastModified(result.data.lastModified),

@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import path from "path";
+import path from "node:path";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { simpleGit } from "simple-git";
+import { simpleGit as simpleGitFactory } from "simple-git";
 import { type WriterSession, authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(
@@ -25,17 +25,23 @@ export default async function handler(
       session.owner,
       `${req.query.story as string}`,
     );
-    const remotes = await simpleGit({
+    const simpleGit = simpleGitFactory({
       baseDir: storyPath,
-    })
-      .add("*")
-      .commit("feat: story updated")
+    });
+
+    // pull whatever is in git, and then overwrite it with the local state
+    await simpleGit
       .remote([
         "set-url",
         "origin",
         `https://${session.owner}:${session.github_access_token}@github.com/${session.owner}/${req.query.story}.git`,
       ])
-      .push();
+      .stash()
+      .pull()
+      .checkout("stash", ["--", "."]);
+
+    // add current state and push it as a new commit
+    await simpleGit.add("*").commit("feat: story updated").push();
 
     res.status(200).json({});
   } catch (error) {

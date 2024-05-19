@@ -3,7 +3,6 @@ import * as fs from "fs/promises";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { simpleGit } from "simple-git";
 import {
   entities,
   languageEntities,
@@ -27,12 +26,65 @@ export default async function handler(
 
   try {
     const validatedBody = saveSchema.parse(req.body);
+    const newAutosave = validatedBody.newAutosave;
 
     const savePath = path.join(
       process.env.DATA_PATH || "",
       session.owner,
       `${req.query.story as string}`,
     );
+
+    const currentDateTime = new Date().toISOString();
+    const storyAutoSavePath = path.join(
+      process.env.DATA_PATH || "",
+      session.owner,
+      "autosave",
+      `${req.query.story as string}`,
+    );
+    const autoSavePath = path.join(storyAutoSavePath, currentDateTime);
+
+    if (newAutosave) {
+      await fs.mkdir(autoSavePath, { recursive: true });
+      await fs.cp(savePath, autoSavePath, {
+        recursive: true,
+        filter: (source: string, destination: string) => {
+          return (
+            !source.includes(`${req.query.story as string}/data`) &&
+            !source.includes(`${req.query.story as string}/.git`)
+          );
+        },
+      });
+
+      // delete the oldest autosaves in storyAutoSavePath
+      const allAutoSaveFiles = await fs.readdir(storyAutoSavePath);
+      const allAutoSavePaths = allAutoSaveFiles.map((file) =>
+        path.join(storyAutoSavePath, file),
+      );
+      const allAutoSaveStats = await Promise.all(
+        allAutoSavePaths.map((file) => fs.stat(file)),
+      );
+      const allAutoSaveStatsMap = allAutoSaveStats.map((stat, index) => ({
+        stat,
+        index,
+      }));
+      allAutoSaveStatsMap.sort(
+        (a, b) => a.stat.mtime.getTime() - b.stat.mtime.getTime(),
+      );
+      const allAutoSaveStatsMapPaths = allAutoSaveStatsMap.map(
+        (file) => allAutoSavePaths[file.index],
+      );
+
+      const allAutoSaveStatsMapPathsToDelete = allAutoSaveStatsMapPaths.slice(
+        0,
+        -8,
+      );
+      await Promise.all(
+        allAutoSaveStatsMapPathsToDelete.map((file) =>
+          fs.rm(file, { recursive: true }),
+        ),
+      );
+    }
+
     const indexPath = path.join(savePath, "index.json");
     const currentFileStat = await fs.stat(indexPath);
     console.log(
@@ -98,13 +150,10 @@ export default async function handler(
       session.owner,
       `${req.query.story as string}`,
     );
-    const remotes = await simpleGit({
-      baseDir: storyPath,
-    }).status();
+
     const newFileStat = await fs.stat(indexPath);
     console.log("new last modified", newFileStat.mtime.getTime());
     res.status(200).json({
-      isClean: remotes.isClean(),
       lastModified: newFileStat.mtime.getTime(),
     });
   } catch (error) {

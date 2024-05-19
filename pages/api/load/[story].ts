@@ -3,7 +3,6 @@ import fs from "fs/promises";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { simpleGit } from "simple-git";
 import {
   type Story,
   entities,
@@ -30,25 +29,6 @@ export default async function handler(
     session.owner,
     `${req.query.story as string}`,
   );
-  const git = simpleGit({
-    baseDir: storyPath,
-  });
-
-  const status = await git.status();
-  const stashed = false;
-  if (!status.isClean()) {
-    await git.add("*");
-    await git.commit("chore: auto commit before pull");
-  }
-  const remotes = await git
-    .remote([
-      "set-url",
-      "origin",
-      `https://${session.owner}:${session.github_access_token}@github.com/${session.owner}/${req.query.story}.git`,
-    ])
-    .pull();
-
-  console.log(remotes);
 
   const story = await fs.readFile(path.join(storyPath, "index.json"));
   const storyInfo = await fs.stat(path.join(storyPath, "index.json"));

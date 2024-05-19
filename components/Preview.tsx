@@ -4,7 +4,6 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import type { SortedBookObject } from "../lib/selectors/sortedBookObjects";
 import { storyActions } from "../lib/slices/story";
-import { AudioButton } from "./AudioButton";
 
 export const Preview = (props: { objects: SortedBookObject[] }) => {
   const dispatch = useDispatch();
@@ -87,14 +86,6 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
                   );
                 }}
               >
-                <AudioButton
-                  size={"xs"}
-                  position={"absolute"}
-                  top={"0"}
-                  right={"-2em"}
-                  text={scene.text}
-                  aria-label={"read paragraph out loud"}
-                />
                 {scene.text ? (
                   <Markdown options={{ wrapper: "div" }}>
                     {scene.text.replaceAll("--", "—")}

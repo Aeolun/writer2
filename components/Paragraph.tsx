@@ -32,119 +32,130 @@ export const Paragraph = (props: {
           undefined
         }
         main={
-          <AutoResizeTextarea
-            key={props.paragraph.id}
-            id={`p_${props.paragraph.id}`}
-            flex={1}
-            outline={"1px solid transparent"}
-            value={props.paragraph.text}
-            onChange={(e) => {
-              dispatch(
-                storyActions.updateSceneParagraph({
-                  sceneId: props.scene.id,
-                  paragraphId: props.paragraph.id,
-                  text: e.target.value,
-                }),
-              );
-            }}
-            onFocus={(e) => {
-              console.log("selectionstart on focus", e.target.selectionStart);
-              dispatch(
-                storyActions.updateScene({
-                  id: props.scene.id,
-                  selectedParagraph: props.paragraph.id,
-                  cursor: e.currentTarget.selectionStart,
-                }),
-              );
-            }}
-            onKeyDown={(e) => {
-              const pe = document.getElementById(
-                `p_${props.paragraph.id}`,
-              ) as HTMLTextAreaElement;
-              if (e.key === "Enter" && e.shiftKey) {
+          <>
+            <AutoResizeTextarea
+              key={props.paragraph.id}
+              id={`p_${props.paragraph.id}`}
+              flex={1}
+              outline={"1px solid transparent"}
+              value={props.paragraph.text}
+              onChange={(e) => {
                 dispatch(
-                  storyActions.createSceneParagraph({
-                    sceneId: props.scene.id,
-                    afterParagraphId: props.paragraph.id,
-                  }),
-                );
-                e.preventDefault();
-                e.stopPropagation();
-              } else if (e.key === "Backspace" && e.shiftKey) {
-                dispatch(
-                  storyActions.deleteSceneParagraph({
+                  storyActions.updateSceneParagraph({
                     sceneId: props.scene.id,
                     paragraphId: props.paragraph.id,
+                    text: e.target.value,
                   }),
                 );
-                e.preventDefault();
-                e.stopPropagation();
-              } else if (e.key === "ArrowUp" && e.shiftKey && e.ctrlKey) {
-                dispatch(
-                  storyActions.moveSceneParagraph({
-                    sceneId: props.scene.id,
-                    paragraphId: props.paragraph.id,
-                    direction: "up",
-                  }),
-                );
-                e.preventDefault();
-                e.stopPropagation();
-              } else if (e.key === "ArrowDown" && e.shiftKey && e.ctrlKey) {
-                dispatch(
-                  storyActions.moveSceneParagraph({
-                    sceneId: props.scene.id,
-                    paragraphId: props.paragraph.id,
-                    direction: "down",
-                  }),
-                );
-                e.preventDefault();
-                e.stopPropagation();
-              } else if (
-                e.key === "ArrowDown" &&
-                pe.selectionStart === pe.value.length
-              ) {
-                props.scene?.paragraphs.forEach((p, i) => {
-                  if (
-                    props.paragraph.id === props.scene.selectedParagraph &&
-                    props.scene.paragraphs[i + 1]
-                  ) {
-                    const nextEl = document.getElementById(
-                      `p_${props.scene.paragraphs[i + 1].id}`,
-                    ) as HTMLTextAreaElement;
-                    nextEl.focus();
-                    setTimeout(() => {
-                      nextEl.selectionStart = 0;
-                      nextEl.selectionEnd = 0;
-                    }, 1);
-                  }
-                });
-              } else if (e.key === "ArrowUp" && pe.selectionStart === 0) {
-                props.scene?.paragraphs.forEach((p, i) => {
-                  if (
-                    props.paragraph.id === props.scene.selectedParagraph &&
-                    props.scene.paragraphs[i - 1]
-                  ) {
-                    const nextEl = document.getElementById(
-                      `p_${props.scene.paragraphs[i - 1].id}`,
-                    ) as HTMLTextAreaElement;
-                    nextEl.focus();
-                    setTimeout(() => {
-                      nextEl.selectionStart = nextEl.value.length;
-                      nextEl.selectionEnd = nextEl.value.length;
-                    }, 1);
-                  }
-                });
-              } else {
+              }}
+              onFocus={(e) => {
+                console.log("selectionstart on focus", e.target.selectionStart);
                 dispatch(
                   storyActions.updateScene({
                     id: props.scene.id,
+                    selectedParagraph: props.paragraph.id,
                     cursor: e.currentTarget.selectionStart,
                   }),
                 );
-                console.log(e.key);
-              }
-            }}
-          />
+              }}
+              onKeyDown={(e) => {
+                const pe = document.getElementById(
+                  `p_${props.paragraph.id}`,
+                ) as HTMLTextAreaElement;
+                if (e.key === "Enter" && e.shiftKey) {
+                  dispatch(
+                    storyActions.createSceneParagraph({
+                      sceneId: props.scene.id,
+                      afterParagraphId: props.paragraph.id,
+                    }),
+                  );
+                  e.preventDefault();
+                  e.stopPropagation();
+                } else if (e.key === "Backspace" && e.shiftKey) {
+                  dispatch(
+                    storyActions.deleteSceneParagraph({
+                      sceneId: props.scene.id,
+                      paragraphId: props.paragraph.id,
+                    }),
+                  );
+                  e.preventDefault();
+                  e.stopPropagation();
+                } else if (e.key === "ArrowUp" && e.shiftKey && e.ctrlKey) {
+                  dispatch(
+                    storyActions.moveSceneParagraph({
+                      sceneId: props.scene.id,
+                      paragraphId: props.paragraph.id,
+                      direction: "up",
+                    }),
+                  );
+                  e.preventDefault();
+                  e.stopPropagation();
+                } else if (e.key === "ArrowDown" && e.shiftKey && e.ctrlKey) {
+                  dispatch(
+                    storyActions.moveSceneParagraph({
+                      sceneId: props.scene.id,
+                      paragraphId: props.paragraph.id,
+                      direction: "down",
+                    }),
+                  );
+                  e.preventDefault();
+                  e.stopPropagation();
+                } else if (
+                  e.key === "ArrowDown" &&
+                  pe.selectionStart === pe.value.length
+                ) {
+                  props.scene?.paragraphs.forEach((p, i) => {
+                    if (
+                      props.paragraph.id === props.scene.selectedParagraph &&
+                      props.scene.paragraphs[i + 1]
+                    ) {
+                      const nextEl = document.getElementById(
+                        `p_${props.scene.paragraphs[i + 1].id}`,
+                      ) as HTMLTextAreaElement;
+                      nextEl.focus();
+                      setTimeout(() => {
+                        nextEl.selectionStart = 0;
+                        nextEl.selectionEnd = 0;
+                      }, 1);
+                    }
+                  });
+                } else if (e.key === "ArrowUp" && pe.selectionStart === 0) {
+                  props.scene?.paragraphs.forEach((p, i) => {
+                    if (
+                      props.paragraph.id === props.scene.selectedParagraph &&
+                      props.scene.paragraphs[i - 1]
+                    ) {
+                      const nextEl = document.getElementById(
+                        `p_${props.scene.paragraphs[i - 1].id}`,
+                      ) as HTMLTextAreaElement;
+                      nextEl.focus();
+                      setTimeout(() => {
+                        nextEl.selectionStart = nextEl.value.length;
+                        nextEl.selectionEnd = nextEl.value.length;
+                      }, 1);
+                    }
+                  });
+                } else {
+                  dispatch(
+                    storyActions.updateScene({
+                      id: props.scene.id,
+                      cursor: e.currentTarget.selectionStart,
+                    }),
+                  );
+                  console.log(e.key);
+                }
+              }}
+            />
+            {props.paragraph.translation ? (
+              <Box
+                px={8}
+                textIndent={"1em"}
+                fontFamily={"Noteworthy, Comic Sans MS, sans-serif"}
+              >
+                {props.paragraph.translation}
+              </Box>
+            ) : null}
+          </>
         }
         buttons={
           props.paragraph.id === props.scene.selectedParagraph ? (

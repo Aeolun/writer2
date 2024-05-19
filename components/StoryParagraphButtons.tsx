@@ -14,6 +14,7 @@ import {
   Menu as MenuIcon,
   Pacman,
   RefreshDouble,
+  Translate,
 } from "iconoir-react";
 import type React from "react";
 import { useCallback } from "react";
@@ -100,7 +101,8 @@ export const StoryParagraphButtons = (props: {
       </IconButton>
       <AudioButton
         size={"sm"}
-        text={currentParagraph?.text}
+        text={currentParagraph?.text ?? ""}
+        isDisabled={!currentParagraph?.text}
         aria-label={"read paragraph out loud"}
       />
       <IconButton
@@ -209,6 +211,22 @@ export const StoryParagraphButtons = (props: {
             command="⌘⇧N"
           >
             Finalized
+          </MenuItem>
+          <MenuItem
+            icon={<Translate />}
+            onClick={() => {
+              const text = prompt("Enter translation");
+              dispatch(
+                storyActions.updateSceneParagraph({
+                  sceneId: props.scene.id,
+                  paragraphId: props.paragraphId,
+                  translation: text,
+                }),
+              );
+            }}
+            command="⌘⇧N"
+          >
+            Translation
           </MenuItem>
         </MenuList>
       </Menu>

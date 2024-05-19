@@ -52,6 +52,7 @@ const sceneParagraphSchema = z.object({
   id: z.string(),
   text: z.string(),
   extra: z.string().optional(),
+  translation: z.string().optional(),
   extraLoading: z.boolean().optional(),
   state: z.enum(["ai", "draft", "revise", "final"]),
   modifiedAt: z.string(),
@@ -166,6 +167,7 @@ export type Story = z.infer<typeof storySchema>;
 export const saveSchema = z.object({
   story: storySchema,
   language: languageSchema,
+  newAutosave: z.boolean(),
   expectedLastModified: z.number(),
 });
 
