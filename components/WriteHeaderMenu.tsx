@@ -15,7 +15,7 @@ import { globalActions } from "../lib/slices/global";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
 
-export const HeaderMenu = () => {
+export const WriteHeaderMenu = () => {
   const saving = useSelector((store: RootState) => store.base.saving);
   const syncing = useSelector((store: RootState) => store.base.syncing);
   const aiBackend = useSelector((store: RootState) => store.base.aiBackend);
@@ -23,7 +23,12 @@ export const HeaderMenu = () => {
   const color = useColorModeValue("blue.300", "gray.700");
 
   return (
-    <Flex bg={color} justifyContent={"space-between"}>
+    <Flex
+      bg={color}
+      justifyContent={"space-between"}
+      boxShadow={"0px 0px 4px 4px rgba(0, 0, 0, 0.3)"}
+      zIndex={5}
+    >
       <Flex px={2} py={1} gap={1}>
         <Link href={"/"}>
           <Button>Story</Button>
@@ -88,7 +93,7 @@ export const HeaderMenu = () => {
             ) : undefined
           }
           onClick={() => {
-            save().catch((e) => {
+            save(false).catch((e) => {
               console.error(e);
             });
           }}

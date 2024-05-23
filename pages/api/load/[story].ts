@@ -1,8 +1,12 @@
 import path from "path";
+import { eq } from "drizzle-orm";
 import fs from "fs/promises";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
+import short from "short-uuid";
+import { db } from "../../../lib/drizzle";
+import { storyTable } from "../../../lib/drizzle/schema";
 import {
   type Story,
   entities,
@@ -34,6 +38,17 @@ export default async function handler(
   const storyInfo = await fs.stat(path.join(storyPath, "index.json"));
 
   const storyData = JSON.parse(story.toString());
+
+  const storyObject = await db.query.storyTable.findFirst({
+    where: eq(storyTable.name, req.query.story as string),
+  });
+  if (!storyObject) {
+    await db.insert(storyTable).values({
+      id: short.generate().toString(),
+      name: req.query.story as string,
+      authorId: session.user_id,
+    });
+  }
 
   for (const entity of entities) {
     delete storyData.story[entity];

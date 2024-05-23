@@ -2,9 +2,9 @@ import { Flex } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { HeaderMenu } from "../../components/HeaderMenu";
 import { NoStory } from "../../components/NoStory";
 import { PlotPointPanel } from "../../components/PlotPointPanel";
+import { WriteHeaderMenu } from "../../components/WriteHeaderMenu";
 import type { RootState } from "../../lib/store";
 
 const Home: NextPage = () => {
@@ -17,7 +17,7 @@ const Home: NextPage = () => {
     <Flex flexDirection={"column"} height={"100%"}>
       {storyLoaded ? (
         <>
-          <HeaderMenu />
+          <WriteHeaderMenu />
           <Flex flex={1} overflow={"hidden"}>
             <PlotPointPanel />
           </Flex>

@@ -4,7 +4,7 @@ import NextAuth, {
   type Session as NextAuthSession,
 } from "next-auth";
 import GithubProvider, { type GithubProfile } from "next-auth/providers/github";
-import { uuidv7 } from "uuidv7";
+import short from "short-uuid";
 import { db } from "../../../lib/drizzle";
 import { user } from "../../../lib/drizzle/schema";
 
@@ -18,6 +18,7 @@ if (!process.env.AUTH_SECRET) {
 }
 
 export type WriterSession = {
+  user_id: string;
   owner: string;
   github_access_token: string;
   github_access_token_expiry: number;
@@ -39,7 +40,7 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async jwt({ token, account, profile, trigger }) {
-      console.log(trigger);
+      const githubProfile = profile as GithubProfile;
       if (["signIn", "signUp"].includes(trigger ?? "")) {
         if (!account || !account.provider || !account.providerAccountId) {
           console.error("Cannot create token");
@@ -51,22 +52,25 @@ export const authOptions: AuthOptions = {
           let currentUser = await db.query.user.findFirst({
             where: eq(user.providerId, providerId),
           });
-          if (!currentUser) {
-            const insertResult = await db
-              .insert(user)
-              .values({
-                id: uuidv7(),
-                providerId: providerId,
-                nickname: account?.username,
-                fullName: account?.name,
-                email: account?.email,
-              })
-              .onConflictDoNothing()
-              .returning();
 
-            if (insertResult[0]) {
-              currentUser = insertResult[0];
-            }
+          console.log({
+            account,
+            profile,
+          });
+          const insertResult = await db
+            .insert(user)
+            .values({
+              id: short.generate().toString(),
+              providerId: providerId,
+              nickname: githubProfile?.login,
+              fullName: githubProfile?.name,
+              email: githubProfile?.email,
+            })
+            .onConflictDoNothing()
+            .returning();
+
+          if (insertResult[0]) {
+            currentUser = insertResult[0];
           }
 
           if (!currentUser) {
@@ -90,6 +94,7 @@ export const authOptions: AuthOptions = {
     session: (params): WriterSession => {
       return {
         ...params.session,
+        user_id: params.token.user_id as string,
         owner: params.token.owner as string,
         github_access_token: params.token.access_token as string,
         github_access_token_expiry: params.token.access_token_expiry as number,

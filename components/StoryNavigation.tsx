@@ -11,7 +11,7 @@ import type { RootState } from "../lib/store";
 function Node({ node, tree, style, dragHandle }: NodeRendererProps<any>) {
   const dispatch = useDispatch();
   const selectedColor = useColorModeValue("red.500", "red.700");
-    const scenes = useSelector((state: RootState) => state.story.scene);
+  const scenes = useSelector((state: RootState) => state.story.scene);
   /* This node instance can do many things. See the API reference. */
   return (
     <>
@@ -36,19 +36,19 @@ function Node({ node, tree, style, dragHandle }: NodeRendererProps<any>) {
             {node.isOpen ? <Minus /> : <Plus />}
           </div>
         ) : null}
-          <Flex gap={2} style={{ flex: 1 }}>
-              <span>{node.isLeaf ? "🍁" : "🌲"}</span>
-              <span>{node.data.name}</span>
-              {node.data.type === "scene" ? (
-                  <>
+        <Flex gap={2} style={{ flex: 1 }}>
+          <span>{node.isLeaf ? "🍁" : "🌲"}</span>
+          <span>{node.data.name}</span>
+          {node.data.type === "scene" ? (
+            <>
               <span>
                 ({scenes[node.data.id].hasAI ? "AI" : "H"},{" "}
-                  {scenes[node.data.id].words}w)
+                {scenes[node.data.id].words}w)
               </span>
-                      {scenes[node.data.id].posted ? <Upload /> : null}
-                  </>
-              ) : null}
-          </Flex>
+              {scenes[node.data.id].posted ? <Upload /> : null}
+            </>
+          ) : null}
+        </Flex>
         {node.data.type !== "scene" ? (
           <div
             className={"self-end"}
@@ -97,7 +97,14 @@ export const StoryNavigation = (props: {}) => {
   const dispatch = useDispatch();
 
   return (
-    <Box width={"20%"} overflow={"auto"} ref={ref}>
+    <Box
+      width={"20%"}
+      overflow={"auto"}
+      ref={ref}
+      paddingTop={2}
+      boxShadow={"0px 0px 4px 4px rgba(0, 0, 0, 0.3)"}
+      zIndex={4}
+    >
       <Tree
         data={books}
         height={height}

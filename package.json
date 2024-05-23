@@ -16,15 +16,16 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@google/generative-ai": "^0.2.1",
+    "@next/env": "^14.2.3",
     "@reduxjs/toolkit": "^1.9.7",
     "@trpc/client": "^10.45.2",
     "@trpc/next": "^10.45.2",
     "@trpc/server": "^10.45.2",
-    "axios": "^1.6.8",
+    "axios": "^1.7.2",
     "directory-tree": "^3.5.1",
     "drizzle-orm": "^0.30.10",
     "framer-motion": "^6.5.1",
-    "glob": "^10.3.15",
+    "glob": "^10.3.16",
     "iconoir-react": "^7.7.0",
     "jsonwebtoken": "^9.0.2",
     "markdown-to-jsx": "^7.4.7",
@@ -53,7 +54,8 @@
     "@types/react-dom": "18.0.5",
     "@welldone-software/why-did-you-render": "^7.0.1",
     "dotenv": "^16.4.5",
-    "drizzle-kit": "^0.21.2",
+    "drizzle-kit": "^0.21.4",
+    "prisma": "^5.14.0",
     "typescript": "^5.4.5"
   }
 }

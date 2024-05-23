@@ -1,3 +1,5 @@
+import { Layout } from "../components/Layout";
+
 export default () => {
-  return <div>hello</div>;
+  return <Layout>Hello</Layout>;
 };

@@ -4,11 +4,11 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { HeaderMenu } from "../../components/HeaderMenu";
 import { NavTree } from "../../components/NavTree";
 import { PageImage } from "../../components/PageImage";
 import { StoryNavigation } from "../../components/StoryNavigation";
 import { StoryPane } from "../../components/StoryPane";
+import { WriteHeaderMenu } from "../../components/WriteHeaderMenu";
 import { useAutosave } from "../../lib/hooks/use-autosave";
 import { storySettingsSelector } from "../../lib/selectors/storySettings";
 import { globalActions } from "../../lib/slices/global";
@@ -39,7 +39,7 @@ const Home: NextPage = () => {
           <Head>
             <title>{storyLoaded}</title>
           </Head>
-          <HeaderMenu />
+          <WriteHeaderMenu />
           <Flex flex={1} overflow={"hidden"}>
             {storySettings?.mangaChapterPath ? (
               <>

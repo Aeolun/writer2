@@ -163,7 +163,9 @@ export const Paragraph = (props: {
               paragraphId={props.paragraph.id}
               scene={props.scene}
             />
-          ) : null
+          ) : (
+            <Box minHeight={"72px"}></Box>
+          )
         }
         extra={
           props.paragraph.extraLoading ? (

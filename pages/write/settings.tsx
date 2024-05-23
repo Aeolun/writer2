@@ -9,8 +9,8 @@ import {
 import type { NextPage } from "next";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { HeaderMenu } from "../../components/HeaderMenu";
 import { NoStory } from "../../components/NoStory";
+import { WriteHeaderMenu } from "../../components/WriteHeaderMenu";
 import { storySettingsSelector } from "../../lib/selectors/storySettings";
 import { storyActions } from "../../lib/slices/story";
 import type { RootState } from "../../lib/store";
@@ -24,7 +24,7 @@ const Home: NextPage = () => {
     <Flex flexDirection={"column"} height={"100%"}>
       {storyLoaded ? (
         <>
-          <HeaderMenu />
+          <WriteHeaderMenu />
           <Flex flex={1} direction={"column"} p={4} gap={2} overflow={"hidden"}>
             <FormControl>
               <FormLabel>Image path</FormLabel>
