@@ -1,0 +1,79 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "build": {
+    "beforeBuildCommand": "pnpm run build",
+    "beforeDevCommand": "pnpm run dev",
+    "devUrl": "http://localhost:3000",
+    "frontendDist": "../out"
+  },
+  "identifier": "com.tauri.dev",
+  "productName": "writer2",
+  "version": "0.1.0",
+  "bundle": {
+    "active": true,
+    "category": "DeveloperTool",
+    "copyright": "",
+    "externalBin": [],
+    "resources": ["migrations/*"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "longDescription": "",
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    },
+    "shortDescription": "",
+    "targets": "all",
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    }
+  },
+  "app": {
+    "security": {
+      "csp": null,
+      "capabilities": [
+        {
+          "identifier": "my-capability",
+          "description": "My application capability used for all windows",
+          "windows": ["*"],
+          "permissions": [
+            "fs:allow-app-write-recursive",
+            "fs:allow-app-read-recursive",
+            "fs:allow-home-write-recursive",
+            "fs:allow-home-read-recursive",
+            "dialog:allow-open",
+            "dialog:allow-save",
+            "dialog:allow-message",
+            "sql:allow-load",
+            "sql:allow-select",
+            "sql:allow-execute",
+            "sql:allow-close",
+            "path:default",
+            "window:default",
+            "window:allow-set-title"
+          ]
+        }
+      ]
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "height": 600,
+        "resizable": true,
+        "title": "Writer",
+        "width": 800,
+        "dragDropEnabled": false
+      }
+    ]
+  }
+}
