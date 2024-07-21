@@ -20,9 +20,9 @@ dependencies:
   '@google/generative-ai':
     specifier: ^0.2.1
     version: 0.2.1
-  '@grammarly/editor-sdk-react':
-    specifier: ^1.11.0
-    version: 1.11.0(react-dom@18.3.1)(react@18.3.1)
+  '@myriaddreamin/highlighter-typst':
+    specifier: 0.4.1-rc1
+    version: 0.4.1-rc1(@myriaddreamin/typst-ts-parser@0.5.0-rc6)(@myriaddreamin/typst.ts@0.5.0-rc6)
   '@reduxjs/toolkit':
     specifier: ^1.9.7
     version: 1.9.7(react-redux@8.1.3)(react@18.3.1)
@@ -41,6 +41,9 @@ dependencies:
   glob:
     specifier: ^10.3.15
     version: 10.3.15
+  highlight.js:
+    specifier: ^11.10.0
+    version: 11.10.0
   iconoir-react:
     specifier: ^7.7.0
     version: 7.7.0(react@18.3.1)
@@ -74,6 +77,9 @@ dependencies:
   react-redux:
     specifier: ^8.1.3
     version: 8.1.3(@types/react-dom@18.0.5)(@types/react@18.0.12)(react-dom@18.3.1)(react@18.3.1)(redux@4.2.1)
+  react-simple-code-editor:
+    specifier: ^0.14.1
+    version: 0.14.1(react-dom@18.3.1)(react@18.3.1)
   react-textarea-autosize:
     specifier: ^8.5.3
     version: 8.5.3(@types/react@18.0.12)(react@18.3.1)
@@ -1641,23 +1647,6 @@ packages:
     engines: {node: '>=18.0.0'}
     dev: false
 
-  /@grammarly/editor-sdk-react@1.11.0(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-VTHB3wHRkaVfjiLDvWWk9mMYOH4gayV3Tj1ArZqGVpM3em6HoRcivDhJIOJ6lY6+p8aZWDol5we1zVpCy/dUsQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: '>=16.13.1'
-      react-dom: '>=16.13.1'
-    dependencies:
-      '@grammarly/editor-sdk': 1.11.0
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-    dev: false
-
-  /@grammarly/editor-sdk@1.11.0:
-    resolution: {integrity: sha512-2IvTH7GivsunHuNx9IJvJmivNhBi/bZR3DuCFRgkmwFKMI5M/sqk1bNDmAWMSlM4bi8ZMcBRIiz0eXVuqtXLcA==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    dev: false
-
   /@isaacs/cliui@8.0.2:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -1761,6 +1750,35 @@ packages:
       '@motionone/types': 10.17.0
       hey-listen: 1.0.8
       tslib: 2.6.2
+    dev: false
+
+  /@myriaddreamin/highlighter-typst@0.4.1-rc1(@myriaddreamin/typst-ts-parser@0.5.0-rc6)(@myriaddreamin/typst.ts@0.5.0-rc6):
+    resolution: {integrity: sha512-vLPreSle4XdCCZziqbIV9HhruHpu+5UVufGgbXmjMqZGXDb+nDuN1YeCJc7LyRmjHD49muiqbXUvVdXVKzlBgQ==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      '@myriaddreamin/typst-ts-parser': '*'
+      '@myriaddreamin/typst.ts': '*'
+    dependencies:
+      '@myriaddreamin/typst-ts-parser': 0.5.0-rc6
+      '@myriaddreamin/typst.ts': 0.5.0-rc6
+    dev: false
+
+  /@myriaddreamin/typst-ts-parser@0.5.0-rc6:
+    resolution: {integrity: sha512-8obzX1cil+GcuJ8UxpzMbWA2dA6YO5v7G6XhNKZWft2n0YyxhRZj7aBTGIlxkXWPN//YZtt/+DyzIMQ1xGlneg==}
+    dev: false
+
+  /@myriaddreamin/typst.ts@0.5.0-rc6:
+    resolution: {integrity: sha512-3sMH0lt4cVtx9wczaoNKW+MWHfPjc+J+r5no/upZhHn2kf1QVUKY0ovy8O6Y3PMRUzq4GSwp+l33uNg9lC2Bjg==}
+    peerDependencies:
+      '@myriaddreamin/typst-ts-renderer': ^0.5.0-rc6
+      '@myriaddreamin/typst-ts-web-compiler': ^0.5.0-rc6
+    peerDependenciesMeta:
+      '@myriaddreamin/typst-ts-renderer':
+        optional: true
+      '@myriaddreamin/typst-ts-web-compiler':
+        optional: true
+    dependencies:
+      idb: 7.1.1
     dev: false
 
   /@next/env@14.2.3:
@@ -2596,6 +2614,11 @@ packages:
     resolution: {integrity: sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==}
     dev: false
 
+  /highlight.js@11.10.0:
+    resolution: {integrity: sha512-SYVnVFswQER+zu1laSya563s+F8VDGt7o35d4utbamowvUNLLMovFqwCLSocpZTz3MgaSRA1IbqRWZv97dtErQ==}
+    engines: {node: '>=12.0.0'}
+    dev: false
+
   /hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
     dependencies:
@@ -2614,6 +2637,10 @@ packages:
       react: ^16.8.6 || ^17 || ^18
     dependencies:
       react: 18.3.1
+    dev: false
+
+  /idb@7.1.1:
+    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
     dev: false
 
   /ieee754@1.2.1:
@@ -3366,6 +3393,16 @@ packages:
       tslib: 2.6.2
       use-callback-ref: 1.3.2(@types/react@18.0.12)(react@18.3.1)
       use-sidecar: 1.1.2(@types/react@18.0.12)(react@18.3.1)
+    dev: false
+
+  /react-simple-code-editor@0.14.1(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-BR5DtNRy+AswWJECyA17qhUDvrrCZ6zXOCfkQY5zSmb96BVUbpVAv03WpcjcwtCwiLbIANx3gebHOcXYn1EHow==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
     dev: false
 
   /react-style-singleton@2.2.1(@types/react@18.0.12)(react@18.3.1):
