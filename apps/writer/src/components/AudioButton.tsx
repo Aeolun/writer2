@@ -2,6 +2,7 @@ import { IconButton, type IconButtonProps } from "@chakra-ui/react";
 import axios from "axios";
 import { Pause, Play } from "iconoir-react";
 import React, { useEffect, useRef, useState } from "react";
+import { aiSpeech } from "../lib/ai-speech.ts";
 
 export const AudioButton = (props: { text: string } & IconButtonProps) => {
   const [audioFile, setAudioFile] = useState<string | undefined>(undefined);
@@ -39,15 +40,11 @@ export const AudioButton = (props: { text: string } & IconButtonProps) => {
             setAudioFile(undefined);
           } else {
             setAudioState("loading");
-            axios
-              .post("/api/speech", {
-                text: props.text,
-              })
-              .then((res) => {
-                setAudioState("playing");
-                console.log(res);
-                setAudioFile(res.data.url);
-              });
+            aiSpeech(props.text).then((res) => {
+              setAudioState("playing");
+              console.log(res);
+              setAudioFile(res);
+            });
           }
         }}
         icon={audioState === "stopped" ? <Play /> : <Pause />}

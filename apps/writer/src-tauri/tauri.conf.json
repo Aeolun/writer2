@@ -60,7 +60,11 @@
             "sql:allow-close",
             "path:default",
             "window:default",
-            "window:allow-set-title"
+            "window:allow-set-title",
+            "store:allow-get",
+            "store:allow-set",
+            "store:allow-save",
+            "store:allow-load"
           ]
         }
       ]

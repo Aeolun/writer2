@@ -6,6 +6,7 @@ import { AiPopup } from "./components/AiPopup";
 import "./lib/App.css";
 import { Route, Router, Switch } from "wouter";
 import { migrate } from "./db/migrate";
+import GlobalSettings from "./global-settings.tsx";
 import { store } from "./lib/store";
 import Home from "./write";
 import Characters from "./write/characters.tsx";
@@ -43,6 +44,7 @@ function MyApp() {
           <Route path={"/plot-points"} component={PlotPoints} />
           <Route path={"/preview"} component={Preview} />
           <Route path={"/settings"} component={Settings} />
+          <Route path={"/global-settings"} component={GlobalSettings} />
         </Switch>
       </Provider>
     </ChakraProvider>

@@ -10,11 +10,11 @@ import {
   ModalOverlay,
   Textarea,
 } from "@chakra-ui/react";
-import axios from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { globalActions } from "../lib/slices/global";
 import type { RootState } from "../lib/store";
+import { useAi } from "../lib/use-ai.ts";
 
 export const AiPopup = () => {
   const [loading, setLoading] = React.useState(false);
@@ -22,7 +22,6 @@ export const AiPopup = () => {
   const [Response, setResponse] = React.useState("");
   const dispatch = useDispatch();
 
-  const aiMethod = useSelector((state: RootState) => state.base.aiBackend);
   const isOpen = useSelector((state: RootState) => state.base.aiPopupOpen);
 
   return (
@@ -50,14 +49,11 @@ export const AiPopup = () => {
               isLoading={loading}
               onClick={() => {
                 setLoading(true);
-                axios
-                  .post("/api/help", {
-                    kind: "free",
-                    method: aiMethod,
-                    text: prompt,
-                  })
+                useAi("free", prompt)
                   .then((res) => {
-                    setResponse(res.data.text);
+                    if (res) {
+                      setResponse(res);
+                    }
                   })
                   .finally(() => {
                     setLoading(false);

@@ -1,10 +1,18 @@
 import {
+  Button,
   HStack,
   IconButton,
+  Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from "@chakra-ui/react";
 import {
   Check,
@@ -16,13 +24,13 @@ import {
   RefreshDouble,
   Translate,
 } from "iconoir-react";
-import type React from "react";
+import React, { useState } from "react";
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { aiHelp } from "../lib/actions/aiHelp";
 import type { HelpKind } from "../lib/ai-instructions";
 import type { Scene } from "../lib/persistence";
 import { storyActions } from "../lib/slices/story";
+import { useAi } from "../lib/use-ai.ts";
 import { AudioButton } from "./AudioButton";
 
 export const StoryParagraphButtons = (props: {
@@ -42,29 +50,31 @@ export const StoryParagraphButtons = (props: {
       if (!currentParagraph) {
         return;
       }
-      return aiHelp(helpKind, `${currentParagraph.text}`, addInstructions).then(
-        (res) => {
-          if (extra) {
-            dispatch(
-              storyActions.updateSceneParagraph({
-                sceneId: scene.id,
-                paragraphId: currentParagraph?.id,
-                extra: res.data.text,
-              }),
-            );
-          } else {
-            dispatch(
-              storyActions.updateSceneParagraph({
-                sceneId: scene.id,
-                paragraphId: currentParagraph?.id,
-                extra: res.data.text,
-              }),
-            );
-          }
-        },
-      );
+      return useAi(helpKind, `${currentParagraph.text}`).then((res) => {
+        if (extra) {
+          dispatch(
+            storyActions.updateSceneParagraph({
+              sceneId: scene.id,
+              paragraphId: currentParagraph?.id,
+              extra: res ?? undefined,
+            }),
+          );
+        } else {
+          dispatch(
+            storyActions.updateSceneParagraph({
+              sceneId: scene.id,
+              paragraphId: currentParagraph?.id,
+              extra: res ?? undefined,
+            }),
+          );
+        }
+      });
     },
     [scene, dispatch],
+  );
+  const [translationModalOpen, setTranslationModalOpen] = useState(false);
+  const [translationText, setTranslationText] = useState(
+    currentParagraph?.translation ?? "",
   );
 
   return (
@@ -212,17 +222,46 @@ export const StoryParagraphButtons = (props: {
           >
             Finalized
           </MenuItem>
+          <Modal
+            isOpen={translationModalOpen}
+            onClose={() => setTranslationModalOpen(false)}
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Translation</ModalHeader>
+              <ModalBody>
+                <Input
+                  type={"text"}
+                  value={translationText}
+                  onChange={(e) => setTranslationText(e.currentTarget.value)}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  colorScheme={"green"}
+                  onClick={() => {
+                    dispatch(
+                      storyActions.updateSceneParagraph({
+                        sceneId: props.scene.id,
+                        paragraphId: props.paragraphId,
+                        translation: translationText,
+                      }),
+                    );
+                    setTranslationModalOpen(false);
+                  }}
+                >
+                  Save
+                </Button>
+                <Button onClick={() => setTranslationModalOpen(false)}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
           <MenuItem
             icon={<Translate />}
             onClick={() => {
-              const text = prompt("Enter translation");
-              dispatch(
-                storyActions.updateSceneParagraph({
-                  sceneId: props.scene.id,
-                  paragraphId: props.paragraphId,
-                  translation: text,
-                }),
-              );
+              setTranslationModalOpen(true);
             }}
             command="⌘⇧N"
           >

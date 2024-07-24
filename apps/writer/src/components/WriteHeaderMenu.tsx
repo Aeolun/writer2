@@ -59,21 +59,9 @@ export const WriteHeaderMenu = () => {
         >
           AI Question
         </Button>
-        <Button
-          onClick={() => {
-            dispatch(
-              globalActions.setAiBackend(
-                aiBackend === "google"
-                  ? "openai"
-                  : aiBackend === "claude"
-                    ? "google"
-                    : "claude",
-              ),
-            );
-          }}
-        >
-          AI {aiBackend}
-        </Button>
+        <Link href={"/global-settings"}>
+          <Button>Settings</Button>
+        </Link>
         <Button
           onClick={() => {
             dispatch(storyActions.unload());
