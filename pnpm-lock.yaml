@@ -38,6 +38,9 @@ importers:
       '@tauri-apps/plugin-sql':
         specifier: 2.0.0-beta.5
         version: 2.0.0-beta.5
+      '@tauri-apps/plugin-store':
+        specifier: 2.0.0-beta.7
+        version: 2.0.0-beta.7
       axios:
         specifier: ^1.7.2
         version: 1.7.2
@@ -66,8 +69,8 @@ importers:
         specifier: ^7.4.7
         version: 7.4.7(react@18.3.1)
       openai:
-        specifier: ^4.50.0
-        version: 4.50.0
+        specifier: ^4.53.0
+        version: 4.53.0
       postgres:
         specifier: ^3.4.4
         version: 3.4.4
@@ -1434,6 +1437,10 @@ packages:
     resolution: {integrity: sha512-Np1opKANzRMF3lgJ9gDquBCB9SxlE2lRmNpVx1+L6RyzAmigkuh0ZulT5jMnDA3JLsuSDU135r/s4t/Pmx4atg==}
     engines: {node: '>= 18', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
 
+  '@tauri-apps/api@2.0.0-beta.15':
+    resolution: {integrity: sha512-H9w6iISmR+NvH4XuyCZB4zDN10tf9RFt6i/9JHEjaRhAowdAaJ+oiXq/3kedizNClHMtbTQ5j0oqDVPkZDAI8g==}
+    engines: {node: '>= 18.18', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
+
   '@tauri-apps/cli-darwin-arm64@2.0.0-beta.20':
     resolution: {integrity: sha512-oCJOCib7GuYkwkBXx+ekamR8NZZU+2i3MLP+DHpDxK5gS2uhCE+CBkamJkNt6y1x6xdVnwyqZOm5RvN4SRtyIA==}
     engines: {node: '>= 10'}
@@ -1507,6 +1514,9 @@ packages:
 
   '@tauri-apps/plugin-sql@2.0.0-beta.5':
     resolution: {integrity: sha512-EuhrMeIGmIQmGYuzxk6i+PPqIMMgT+nApNsjYbpuVwYuav60RiI0pIC76B77BfmO5J7Sj9ueJyhiugwUevsYmQ==}
+
+  '@tauri-apps/plugin-store@2.0.0-beta.7':
+    resolution: {integrity: sha512-OgeicsLfN7/u/vfxhzJfsZsNfVJWrhmwhEn2oK4OJ1kvkrGbkfK0/ZORSkmqbpByI6hXWYZrbeyXDuVIefVWAQ==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -2367,8 +2377,8 @@ packages:
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
 
-  openai@4.50.0:
-    resolution: {integrity: sha512-2ADkNIU6Q589oYHr5pn9k7SbUcrBTK9X0rIXrYqwMVSoqOj1yK9/1OO0ExaWsqOOpD7o58UmRjeKlx9gKAcuKQ==}
+  openai@4.53.0:
+    resolution: {integrity: sha512-XoMaJsSLuedW5eoMEMmZbdNoXgML3ujcU5KfwRnC6rnbmZkHE2Q4J/SArwhqCxQRqJwHnQUj1LpiROmKPExZJA==}
     hasBin: true
 
   parent-module@1.0.1:
@@ -4274,6 +4284,8 @@ snapshots:
 
   '@tauri-apps/api@2.0.0-beta.13': {}
 
+  '@tauri-apps/api@2.0.0-beta.15': {}
+
   '@tauri-apps/cli-darwin-arm64@2.0.0-beta.20':
     optional: true
 
@@ -4328,6 +4340,10 @@ snapshots:
   '@tauri-apps/plugin-sql@2.0.0-beta.5':
     dependencies:
       '@tauri-apps/api': 2.0.0-beta.13
+
+  '@tauri-apps/plugin-store@2.0.0-beta.7':
+    dependencies:
+      '@tauri-apps/api': 2.0.0-beta.15
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -5195,7 +5211,7 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  openai@4.50.0:
+  openai@4.53.0:
     dependencies:
       '@types/node': 18.19.34
       '@types/node-fetch': 2.6.11

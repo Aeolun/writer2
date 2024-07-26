@@ -355,13 +355,16 @@ export const globalSlice = createSlice({
       const currentScene = state.scene[action.payload.sceneId];
       const currentParagraph = currentScene.paragraphs[afterParagraphIndex];
       const cursorPosition = currentScene.cursor;
-      const newParagraphText = currentParagraph.text.substring(
+
+      const newParagraphText = currentParagraph ? currentParagraph.text.substring(
         cursorPosition ?? 0,
-      );
-      currentParagraph.text = currentParagraph.text.substring(
-        0,
-        cursorPosition,
-      );
+      ) : '';
+      if (currentParagraph) {
+        currentParagraph.text = currentParagraph.text.substring(
+          0,
+          cursorPosition,
+        );
+      }
 
       state.modifiedTime = Date.now();
       state.scene[action.payload.sceneId].paragraphs.splice(
