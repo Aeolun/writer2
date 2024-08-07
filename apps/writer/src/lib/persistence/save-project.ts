@@ -102,135 +102,135 @@ export const saveProject = async (projectPath: string, data: SavePayload) => {
     }
 
     // get story from db based on name
-    let storyObject: StoryTable | undefined;
-    try {
-      storyObject = await db.query.storyTable.findFirst({
-        where: eq(storyTable.name, validatedBody.story.name),
-      });
-    } catch (error) {
-      console.error("Error finding story", error);
-    }
+    // let storyObject: StoryTable | undefined;
+    // try {
+    //   storyObject = await db.query.storyTable.findFirst({
+    //     where: eq(storyTable.name, validatedBody.story.name),
+    //   });
+    // } catch (error) {
+    //   console.error("Error finding story", error);
+    // }
 
-    if (!storyObject) {
-      throw new Error("Story not found");
-    }
+    // if (!storyObject) {
+    //   throw new Error("Story not found");
+    // }
 
     // save the tree
-    const saveTree = async (
-      entity: Node,
-      parentId: string | undefined,
-      sortOrder: number | undefined,
-    ) => {
-      await db
-        .insert(treeEntity)
-        .values({
-          id: entity.id,
-          storyId: storyObject.id,
-          parentId: parentId,
-          sortOrder: sortOrder,
-          title: entity.name,
-          kind: entity.type,
-          summary: validatedBody.story[entity.type][entity.id].summary,
-        })
-        .onConflictDoUpdate({
-          target: treeEntity.id,
-          set: {
-            parentId: parentId,
-            title: entity.name,
-            sortOrder: sortOrder,
-            summary: validatedBody.story[entity.type][entity.id].summary,
-          },
-        });
-      if (entity.type === "scene") {
-        await db
-          .insert(scene)
-          .values([
-            {
-              treeEntityId: entity.id,
-              sceneJson: JSON.stringify(
-                validatedBody.story[entity.type][entity.id],
-              ),
-            },
-          ])
-          .onConflictDoUpdate({
-            target: scene.treeEntityId,
-            set: {
-              sceneJson: JSON.stringify(
-                validatedBody.story[entity.type][entity.id],
-              ),
-            },
-          });
-      }
-      let childIndex = 0;
-      for (const child of entity.children ?? []) {
-        await saveTree(child, entity.id, childIndex);
-        childIndex++;
-      }
-    };
-    try {
-      await Promise.all(
-        validatedBody.story.structure.map((node) => {
-          return saveTree(node, undefined, undefined);
-        }),
-      );
-    } catch (error) {
-      console.error("Error saving tree", error);
-    }
+    // const saveTree = async (
+    //   entity: Node,
+    //   parentId: string | undefined,
+    //   sortOrder: number | undefined,
+    // ) => {
+    //   await db
+    //     .insert(treeEntity)
+    //     .values({
+    //       id: entity.id,
+    //       storyId: storyObject.id,
+    //       parentId: parentId,
+    //       sortOrder: sortOrder,
+    //       title: entity.name,
+    //       kind: entity.type,
+    //       summary: validatedBody.story[entity.type][entity.id].summary,
+    //     })
+    //     .onConflictDoUpdate({
+    //       target: treeEntity.id,
+    //       set: {
+    //         parentId: parentId,
+    //         title: entity.name,
+    //         sortOrder: sortOrder,
+    //         summary: validatedBody.story[entity.type][entity.id].summary,
+    //       },
+    //     });
+    //   if (entity.type === "scene") {
+    //     await db
+    //       .insert(scene)
+    //       .values([
+    //         {
+    //           treeEntityId: entity.id,
+    //           sceneJson: JSON.stringify(
+    //             validatedBody.story[entity.type][entity.id],
+    //           ),
+    //         },
+    //       ])
+    //       .onConflictDoUpdate({
+    //         target: scene.treeEntityId,
+    //         set: {
+    //           sceneJson: JSON.stringify(
+    //             validatedBody.story[entity.type][entity.id],
+    //           ),
+    //         },
+    //       });
+    //   }
+    //   let childIndex = 0;
+    //   for (const child of entity.children ?? []) {
+    //     await saveTree(child, entity.id, childIndex);
+    //     childIndex++;
+    //   }
+    // };
+    // try {
+    //   await Promise.all(
+    //     validatedBody.story.structure.map((node) => {
+    //       return saveTree(node, undefined, undefined);
+    //     }),
+    //   );
+    // } catch (error) {
+    //   console.error("Error saving tree", error);
+    // }
 
     // save the rest of the entities
-    try {
-      await Promise.all(
-        Object.values(validatedBody.story.plotPoints).map((plotPoint) => {
-          return db
-            .insert(plotpoint)
-            .values({
-              id: plotPoint.id,
-              storyId: storyObject.id,
-              summary: plotPoint.summary,
-              name: plotPoint.title,
-            })
-            .onConflictDoUpdate({
-              target: plotpoint.id,
-              set: {
-                name: plotPoint.title,
-                summary: plotPoint.summary,
-              },
-            });
-        }),
-      );
-    } catch (error) {
-      console.error("Error saving plotpoints", error);
-    }
+    // try {
+    //   await Promise.all(
+    //     Object.values(validatedBody.story.plotPoints).map((plotPoint) => {
+    //       return db
+    //         .insert(plotpoint)
+    //         .values({
+    //           id: plotPoint.id,
+    //           storyId: storyObject.id,
+    //           summary: plotPoint.summary,
+    //           name: plotPoint.title,
+    //         })
+    //         .onConflictDoUpdate({
+    //           target: plotpoint.id,
+    //           set: {
+    //             name: plotPoint.title,
+    //             summary: plotPoint.summary,
+    //           },
+    //         });
+    //     }),
+    //   );
+    // } catch (error) {
+    //   console.error("Error saving plotpoints", error);
+    // }
 
-    try {
-      await Promise.all(
-        Object.values(validatedBody.story.characters).map((character) => {
-          return db
-            .insert(characterSchema)
-            .values({
-              id: character.id,
-              storyId: storyObject.id,
-              summary: character.summary,
-              name: character.name,
-              age: character.age,
-              picture: character.picture,
-              isProtagonist: character.isProtagonist ? "1" : "0",
-            })
-            .onConflictDoUpdate({
-              target: characterSchema.id,
-              set: {
-                name: character.name,
-                summary: character.summary,
-                isProtagonist: character.isProtagonist ? "1" : "0",
-                picture: character.picture,
-                age: character.age,
-              },
-            });
-        }),
-      );
-    } catch (error) {
-      console.error("Error saving characters", error);
-    }
+    // try {
+    //   await Promise.all(
+    //     Object.values(validatedBody.story.characters).map((character) => {
+    //       return db
+    //         .insert(characterSchema)
+    //         .values({
+    //           id: character.id,
+    //           storyId: storyObject.id,
+    //           summary: character.summary,
+    //           name: character.name,
+    //           age: character.age,
+    //           picture: character.picture,
+    //           isProtagonist: character.isProtagonist ? "1" : "0",
+    //         })
+    //         .onConflictDoUpdate({
+    //           target: characterSchema.id,
+    //           set: {
+    //             name: character.name,
+    //             summary: character.summary,
+    //             isProtagonist: character.isProtagonist ? "1" : "0",
+    //             picture: character.picture,
+    //             age: character.age,
+    //           },
+    //         });
+    //     }),
+    //   );
+    // } catch (error) {
+    //   console.error("Error saving characters", error);
+    // }
 
     for (const entity of entities) {
       const entityPath = await path.join(projectPath, entity);

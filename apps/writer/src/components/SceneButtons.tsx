@@ -1,4 +1,4 @@
-import { Button, HStack } from "@chakra-ui/react";
+import { Button, HStack, Text } from "@chakra-ui/react";
 import type React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { Scene } from "../lib/persistence";
@@ -16,7 +16,8 @@ export const SceneButtons = (props: { scene: Scene }) => {
   );
 
   return (
-    <HStack gap={1}>
+    <HStack bg={"gray.300"} px={4} py={2} gap={1}>
+      <Text minW="6em">Actions</Text>
       <Button
         onClick={() => {
           props.scene.paragraphs.forEach((p) => {

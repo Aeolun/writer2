@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
 import { CharacterModal } from "./CharacterModal";
+import { convertFileSrc } from "@tauri-apps/api/core";
 
 export const CharacterPanel = () => {
   const dispatch = useDispatch();
   const [charModal, setCharacterModal] = useState<boolean>(false);
   const [characterId, setCharacterId] = useState<string>("");
   const storyName = useSelector((state: RootState) => state.story.name);
+  const openPath = useSelector((state: RootState) => state.base.openPath);
 
   const characters = useSelector((state: RootState) => state.story.characters);
 
@@ -28,9 +30,7 @@ export const CharacterPanel = () => {
             w={300}
             border={"1px solid black"}
             backgroundColor={"gray.500"}
-            backgroundImage={
-              `url(/api/image?story=${storyName}&path=` + char.picture + ")"
-            }
+            backgroundImage={`url(${convertFileSrc(openPath + "/data/" + char.picture)})`}
             backgroundSize={"cover"}
             backgroundPosition={"center"}
           >

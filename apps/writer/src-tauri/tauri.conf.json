@@ -41,6 +41,10 @@
   "app": {
     "security": {
       "csp": null,
+      "assetProtocol": {
+        "enable": true,
+        "scope": ["$HOME/**/*"]
+      },
       "capabilities": [
         {
           "identifier": "my-capability",
@@ -62,6 +66,7 @@
             "window:default",
             "window:allow-set-title",
             "store:allow-get",
+            "store:allow-delete",
             "store:allow-set",
             "store:allow-save",
             "store:allow-load"

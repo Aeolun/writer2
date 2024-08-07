@@ -1,42 +1,36 @@
 import { httpBatchLink } from "@trpc/client";
-import { createTRPCNext } from "@trpc/next";
-import type { AppRouter } from "../server/router";
+import { createTRPCClient } from "@trpc/client";
+import type { AppRouter } from "@writer/server";
+import { settingsStore } from "../global-settings-store.ts";
 
-function getBaseUrl() {
-  if (typeof window !== "undefined")
-    // browser should use relative path
-    return "";
-  if (process.env.VERCEL_URL)
-    // reference for vercel.com
-    return `https://${process.env.VERCEL_URL}`;
-  if (process.env.RENDER_INTERNAL_HOSTNAME)
-    // reference for render.com
-    return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}`;
-  // assume localhost
-  return `http://localhost:${process.env.PORT ?? 3000}`;
-}
-export const trpc = createTRPCNext<AppRouter>({
-  config(opts) {
-    return {
+export let trpc: ReturnType<typeof createTRPCClient<AppRouter>>;
+
+export const reloadTrpc = () => {
+  return settingsStore.get<string>("server-url").then((url) => {
+    const baseUrl = url ?? "https://writer.serial-experiments.com";
+    console.log("creating client");
+    trpc = createTRPCClient<AppRouter>({
       links: [
         httpBatchLink({
           /**
            * If you want to use SSR, you need to use the server's full URL
            * @link https://trpc.io/docs/v11/ssr
            **/
-          url: `${getBaseUrl()}/api/trpc`,
+          url: `${baseUrl}`,
           // You can pass any HTTP headers you wish here
           async headers() {
-            return {
-              //authorization: await ,
-            };
+            const token = await settingsStore.get("client-token");
+
+            return token
+              ? {
+                  authorization: `Bearer ${token}`,
+                }
+              : {};
           },
         }),
       ],
-    };
-  },
-  /**
-   * @link https://trpc.io/docs/v11/ssr
-   **/
-  ssr: false,
-});
+    });
+  });
+};
+
+reloadTrpc();

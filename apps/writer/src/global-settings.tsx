@@ -5,18 +5,25 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
-import { Store } from "@tauri-apps/plugin-store";
 import React, { useEffect } from "react";
 import { WriteHeaderMenu } from "./components/WriteHeaderMenu.tsx";
-
-const store = new Store("global-settings.bin");
+import { settingsStore } from "./global-settings-store.ts";
+import { reloadTrpc } from "./lib/trpc.ts";
 
 const GlobalSettings = () => {
   const [openaiKey, setOpenaiKey] = React.useState("");
+  const [serverUrl, setServerUrl] = React.useState(
+    "https://writer.serial-experiments.com",
+  );
   useEffect(() => {
-    store.get<string>("openai-key").then((key) => {
+    settingsStore.get<string>("openai-key").then((key) => {
       if (key) {
         setOpenaiKey(key);
+      }
+    });
+    settingsStore.get<string>("server-url").then((url) => {
+      if (url) {
+        setServerUrl(url);
       }
     });
   }, []);
@@ -32,12 +39,43 @@ const GlobalSettings = () => {
             value={openaiKey}
             onChange={(e) => {
               setOpenaiKey(e.currentTarget.value);
-              store.set("openai-key", e.currentTarget.value).catch((error) => {
-                console.error(error);
-              });
+              settingsStore
+                .set("openai-key", e.currentTarget.value)
+                .catch((error) => {
+                  console.error(error);
+                });
+            }}
+            onBlur={() => {
+              settingsStore.save();
             }}
           />
-          <FormHelperText>Used for calling external service.</FormHelperText>
+          <FormHelperText>
+            Used for calling external service for AI support.
+          </FormHelperText>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Server URL</FormLabel>
+          <Input
+            placeholder={"Server URL"}
+            value={serverUrl}
+            onChange={(e) => {
+              setServerUrl(e.currentTarget.value);
+              settingsStore
+                .set("server-url", e.currentTarget.value)
+                .then(() => {
+                  reloadTrpc();
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            }}
+            onBlur={() => {
+              settingsStore.save();
+            }}
+          />
+          <FormHelperText>
+            URL for remote functionalities like publishing and synchronization.
+          </FormHelperText>
         </FormControl>
       </Flex>
     </Flex>

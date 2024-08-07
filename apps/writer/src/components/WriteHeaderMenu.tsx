@@ -1,25 +1,37 @@
 import {
+  Avatar,
+  Box,
   Button,
   CircularProgress,
   Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   useColorModeValue,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "wouter";
+import { Link, useLocation, useRouter } from "wouter";
 import { save } from "../lib/actions/save";
 import { sync } from "../lib/actions/sync";
 import { globalActions } from "../lib/slices/global";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
+import { reloadTrpc, trpc } from "../lib/trpc";
+import { settingsStore } from "../global-settings-store";
+import { Drawer, Menu as MenuIcon } from "iconoir-react";
 
 export const WriteHeaderMenu = () => {
   const saving = useSelector((store: RootState) => store.base.saving);
   const syncing = useSelector((store: RootState) => store.base.syncing);
+  const [location, setLocation] = useLocation();
   const aiBackend = useSelector((store: RootState) => store.base.aiBackend);
   const dispatch = useDispatch();
   const color = useColorModeValue("blue.300", "gray.700");
+  const isSignedIn = useSelector((store: RootState) => store.base.signedInUser);
 
   return (
     <Flex
@@ -29,6 +41,25 @@ export const WriteHeaderMenu = () => {
       zIndex={5}
     >
       <Flex px={2} py={1} gap={1}>
+        <Menu>
+          <MenuButton>
+            <IconButton icon={<MenuIcon />} aria-label="menu" />
+          </MenuButton>
+          <MenuList>
+            <Link href="/new-story">
+              <MenuItem>New Story</MenuItem>
+            </Link>
+            <MenuItem
+              onClick={() => {
+                dispatch(storyActions.unload());
+                setLocation("/open-story");
+              }}
+            >
+              Open Story
+            </MenuItem>
+            <MenuItem>Save Story</MenuItem>
+          </MenuList>
+        </Menu>
         <Link href={"/"}>
           <Button>Story</Button>
         </Link>
@@ -42,7 +73,7 @@ export const WriteHeaderMenu = () => {
           <Button>Plot Points</Button>
         </Link>
         <Link href={"/settings"}>
-          <Button>Settings</Button>
+          <Button>Story Settings</Button>
         </Link>
         <Link href={"/language"}>
           <Button>Language</Button>
@@ -59,19 +90,6 @@ export const WriteHeaderMenu = () => {
         >
           AI Question
         </Button>
-        <Link href={"/global-settings"}>
-          <Button>Settings</Button>
-        </Link>
-        <Button
-          onClick={() => {
-            dispatch(storyActions.unload());
-            axios.get("/api/list").then((res) => {
-              dispatch(globalActions.setStories(res.data));
-            });
-          }}
-        >
-          Switch
-        </Button>
 
         <Button
           rightIcon={
@@ -87,25 +105,53 @@ export const WriteHeaderMenu = () => {
         >
           Save
         </Button>
-        <Button
-          rightIcon={
-            syncing ? (
-              <CircularProgress isIndeterminate color="green.300" />
-            ) : undefined
-          }
-          colorScheme={"yellow"}
-          onClick={() => {
-            sync()
-              .catch((e) => {
-                console.error(e);
-              })
-              .then(() => {
-                dispatch(globalActions.setDirty(false));
-              });
-          }}
-        >
-          Git push
-        </Button>
+
+        <Menu>
+          <MenuButton
+            as={Avatar}
+            cursor="pointer"
+            name={isSignedIn?.name ?? undefined}
+            src=""
+            w={"40px"}
+            h={"40px"}
+          />
+          {isSignedIn ? (
+            <MenuList>
+              <Link href={"/global-settings"}>
+                <MenuItem>Settings</MenuItem>
+              </Link>
+              <Link href={"/profile"}>
+                <MenuItem>Profile</MenuItem>
+              </Link>
+              <MenuItem
+                onClick={() => {
+                  trpc.logout.mutate().then(() => {
+                    settingsStore.delete("client-token").then(() => {
+                      reloadTrpc();
+                      dispatch(globalActions.setSignedInUser(undefined));
+                      settingsStore.save();
+                    });
+                  });
+                }}
+              >
+                Log out
+              </MenuItem>
+            </MenuList>
+          ) : (
+            <MenuList>
+              <Link href={"/global-settings"}>
+                <MenuItem>App settings</MenuItem>
+              </Link>
+              <MenuItem
+                onClick={() => {
+                  dispatch(globalActions.setSigninPopupOpen(true));
+                }}
+              >
+                Sign in
+              </MenuItem>
+            </MenuList>
+          )}
+        </Menu>
       </Flex>
     </Flex>
   );

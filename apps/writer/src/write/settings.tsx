@@ -14,7 +14,7 @@ import { storySettingsSelector } from "../lib/selectors/storySettings";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
 
-const Home = () => {
+const Profile = () => {
   const storyLoaded = useSelector((store: RootState) => store.story.name);
   const settings = useSelector(storySettingsSelector);
   const dispatch = useDispatch();
@@ -74,4 +74,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Profile;

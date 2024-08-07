@@ -14,10 +14,18 @@ export interface GlobalState {
   selectedLanguage?: string;
   storyLoaded: boolean;
   aiPopupOpen: boolean;
+  signinPopupOpen: boolean;
   aiBackend: "google" | "openai" | "claude";
   saving: boolean;
   stories?: StorySummary[];
   syncing: boolean;
+  signedInUser?: {
+    name: string | null;
+    id: number;
+    createdAt: string;
+    email: string;
+    password: string;
+  };
   isDirty: boolean;
 }
 
@@ -26,6 +34,7 @@ const initialState: GlobalState = {
   stories: [],
   aiBackend: "openai",
   aiPopupOpen: false,
+  signinPopupOpen: false,
   saving: false,
   syncing: false,
   isDirty: false,
@@ -38,8 +47,17 @@ export const globalSlice = createSlice({
     setStories: (state, action: PayloadAction<StorySummary[]>) => {
       state.stories = action.payload;
     },
+    setSignedInUser: (
+      state,
+      actions: PayloadAction<GlobalState["signedInUser"]>,
+    ) => {
+      state.signedInUser = actions.payload;
+    },
     setAiPopupOpen: (state, action: PayloadAction<boolean>) => {
       state.aiPopupOpen = action.payload;
+    },
+    setSigninPopupOpen: (state, action: PayloadAction<boolean>) => {
+      state.signinPopupOpen = action.payload;
     },
     setExpectedLastModified: (
       state: Draft<GlobalState>,

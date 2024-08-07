@@ -50,25 +50,27 @@ export const StoryParagraphButtons = (props: {
       if (!currentParagraph) {
         return;
       }
-      return useAi(helpKind, `${currentParagraph.text}`).then((res) => {
-        if (extra) {
-          dispatch(
-            storyActions.updateSceneParagraph({
-              sceneId: scene.id,
-              paragraphId: currentParagraph?.id,
-              extra: res ?? undefined,
-            }),
-          );
-        } else {
-          dispatch(
-            storyActions.updateSceneParagraph({
-              sceneId: scene.id,
-              paragraphId: currentParagraph?.id,
-              extra: res ?? undefined,
-            }),
-          );
-        }
-      });
+      return useAi(helpKind, `${currentParagraph.text}`, addInstructions).then(
+        (res) => {
+          if (extra) {
+            dispatch(
+              storyActions.updateSceneParagraph({
+                sceneId: scene.id,
+                paragraphId: currentParagraph?.id,
+                extra: res ?? undefined,
+              }),
+            );
+          } else {
+            dispatch(
+              storyActions.updateSceneParagraph({
+                sceneId: scene.id,
+                paragraphId: currentParagraph?.id,
+                extra: res ?? undefined,
+              }),
+            );
+          }
+        },
+      );
     },
     [scene, dispatch],
   );
@@ -87,6 +89,7 @@ export const StoryParagraphButtons = (props: {
       <IconButton
         aria-label={"rewrite"}
         icon={<MagicWand />}
+        title="Rewrite the paragraph with AI. This will show the suggestion next to the existing paragraph."
         size={"xs"}
         onClick={() => {
           dispatch(
@@ -114,11 +117,13 @@ export const StoryParagraphButtons = (props: {
         text={currentParagraph?.text ?? ""}
         isDisabled={!currentParagraph?.text}
         aria-label={"read paragraph out loud"}
+        title="Read paragraph out loud"
       />
       <IconButton
         aria-label={"rewrite"}
         icon={<RefreshDouble />}
         size={"xs"}
+        title="Rewrite the paragraph with AI, but keep as close to the original as possible. This will show the suggestion next to the existing paragraph."
         onClick={() => {
           dispatch(
             storyActions.updateSceneParagraph({
@@ -260,6 +265,7 @@ export const StoryParagraphButtons = (props: {
           </Modal>
           <MenuItem
             icon={<Translate />}
+            title="If this paragraph contains a foreign language, you can provide a translation here. This will be shown underneath the paragraph."
             onClick={() => {
               setTranslationModalOpen(true);
             }}

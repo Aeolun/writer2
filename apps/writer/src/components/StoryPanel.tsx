@@ -3,6 +3,7 @@ import {
   Button,
   Flex,
   Grid,
+  Text,
   GridItem,
   Heading,
   Select,
@@ -126,6 +127,8 @@ export const StoryPanel = () => {
           overflow={"auto"}
           flexDirection={"column"}
           alignItems={"center"}
+          paddingBottom={"12em"}
+          p={4}
         >
           {scene.paragraphs.length === 0 ? (
             <Button
@@ -151,12 +154,9 @@ export const StoryPanel = () => {
         ) : null}
       </Flex>
       <SceneButtons scene={scene} />
-      <Box>
-        <Heading size={"md"} mt={4}>
-          Plot Points
-        </Heading>
-
-        <div style={{ marginTop: "8px", display: "flex" }}>
+      <Box px={4} py={2} bg={"gray.300"}>
+        <Flex gap={1} alignItems="center" mt="2">
+          <Text minW="6em">Plot Points</Text>
           <Select
             value={plotPoint}
             onChange={(e) => {
@@ -196,7 +196,7 @@ export const StoryPanel = () => {
           >
             Add
           </Button>
-        </div>
+        </Flex>
       </Box>
     </Flex>
   );

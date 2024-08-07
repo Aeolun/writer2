@@ -1,4 +1,4 @@
-import { Box, Flex, useColorModeValue } from "@chakra-ui/react";
+import { Box, Button, Flex, useColorModeValue } from "@chakra-ui/react";
 import { Minus, Plus, Upload } from "iconoir-react";
 import React, { Fragment } from "react";
 import { type NodeRendererProps, Tree } from "react-arborist";
@@ -100,22 +100,14 @@ const nodeParentTypes = {
   scene: "chapter",
 };
 
-export const StoryNavigation = (props: {}) => {
+export const NavTree = () => {
   const books = useSelector((state: RootState) => state.story.structure);
   const selected = useSelector((state: RootState) => state.base.currentId);
   const { ref, width, height } = useResizeObserver();
   const dispatch = useDispatch();
 
   return (
-    <Box
-      width={"20%"}
-      minWidth={"350px"}
-      overflow={"auto"}
-      ref={ref}
-      paddingTop={2}
-      boxShadow={"0px 0px 4px 4px rgba(0, 0, 0, 0.3)"}
-      zIndex={4}
-    >
+    <Box flex={1} ref={ref} overflow="auto">
       <Tree
         data={books}
         height={height}
@@ -133,7 +125,11 @@ export const StoryNavigation = (props: {}) => {
           dragIds,
           parentId,
           index,
-        }: { dragIds: string[]; parentId: string | null; index: number }) => {
+        }: {
+          dragIds: string[];
+          parentId: string | null;
+          index: number;
+        }) => {
           console.log("moved");
           if (parentId) {
             dispatch(
@@ -149,5 +145,32 @@ export const StoryNavigation = (props: {}) => {
         {Node}
       </Tree>
     </Box>
+  );
+};
+
+export const StoryNavigation = (props: {}) => {
+  const books = useSelector((state: RootState) => state.story.structure);
+  const dispatch = useDispatch();
+
+  return (
+    <Flex
+      width={"20%"}
+      minWidth={"350px"}
+      flexDir={"column"}
+      overflow={"hidden"}
+      paddingTop={2}
+      boxShadow={"0px 0px 4px 4px rgba(0, 0, 0, 0.3)"}
+      zIndex={4}
+    >
+      <NavTree />
+
+      <Button
+        onClick={() => {
+          dispatch(storyActions.createBook());
+        }}
+      >
+        Add a book
+      </Button>
+    </Flex>
   );
 };

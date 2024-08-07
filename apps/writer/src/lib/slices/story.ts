@@ -33,27 +33,31 @@ function addItemToStructure(
   if (depth > 4) {
     return;
   }
-  const parent = structure.find((i) => {
-    return i.id === parentId;
-  });
-  if (parent) {
-    if (index !== undefined) {
-      parent.children.splice(index, 0, item);
-    } else {
-      parent.children.push(item);
+  if (!parentId) {
+    structure.push(item);
+  } else {
+    const parent = structure.find((i) => {
+      return i.id === parentId;
+    });
+    if (parent) {
+      if (index !== undefined) {
+        parent.children.splice(index, 0, item);
+      } else {
+        parent.children.push(item);
+      }
+      return;
     }
-    return;
-  }
 
-  for (const i in structure) {
-    const node = structure[i];
-    if (node.children) {
-      addItemToStructure(node.children, parentId, item, index, depth + 1);
+    for (const i in structure) {
+      const node = structure[i];
+      if (node.children) {
+        addItemToStructure(node.children, parentId, item, index, depth + 1);
+      }
     }
   }
 }
 
-function findNodeInStructure(
+export function findNodeInStructure(
   structure: Array<Node>,
   id: string,
   depth = 0,
@@ -320,6 +324,24 @@ export const globalSlice = createSlice({
         isOpen: false,
       });
     },
+    deleteBook: (state, action: PayloadAction<{ bookId: string }>) => {
+      // check if contains arcs
+      const treeObject = findNodeInStructure(
+        state.structure,
+        action.payload.bookId,
+      );
+      console.log(treeObject);
+      if (
+        treeObject &&
+        (treeObject.children === undefined || treeObject.children.length === 0)
+      ) {
+        delete state.book[action.payload.bookId];
+        state.modifiedTime = Date.now();
+        removeItemFromStructure(state.structure, action.payload.bookId);
+      } else {
+        alert(`Remove children ${treeObject?.children?.length} first`);
+      }
+    },
     deleteChapter: (state, action: PayloadAction<{ chapterId: string }>) => {
       // check if contains scenes
       const treeObject = findNodeInStructure(
@@ -356,9 +378,9 @@ export const globalSlice = createSlice({
       const currentParagraph = currentScene.paragraphs[afterParagraphIndex];
       const cursorPosition = currentScene.cursor;
 
-      const newParagraphText = currentParagraph ? currentParagraph.text.substring(
-        cursorPosition ?? 0,
-      ) : '';
+      const newParagraphText = currentParagraph
+        ? currentParagraph.text.substring(cursorPosition ?? 0)
+        : "";
       if (currentParagraph) {
         currentParagraph.text = currentParagraph.text.substring(
           0,

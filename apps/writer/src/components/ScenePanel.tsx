@@ -6,6 +6,7 @@ import type { HelpKind } from "../lib/ai-instructions";
 import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
+import { useAi } from "../lib/use-ai";
 
 export const ScenePanel = () => {
   const selectedScene = useSelector(selectedObjectSelector);
@@ -23,11 +24,11 @@ export const ScenePanel = () => {
           "\n\nScene text:\n\n" +
           selectedScene.data.text +
           "\n\nOutput only the summary.";
-        aiHelp(helpKind, text).then((res) => {
+        useAi(helpKind, text).then((res) => {
           dispatch(
             storyActions.updateScene({
               id: selectedScene?.id,
-              summary: res.data.text,
+              summary: res ?? undefined,
             }),
           );
         });

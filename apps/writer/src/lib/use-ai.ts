@@ -1,11 +1,16 @@
 import { Store } from "@tauri-apps/plugin-store";
 import OpenAI from "openai";
 import { instructions } from "./ai-instructions.ts";
+import { store } from "./store.ts";
 
-const store = new Store("global-settings.bin");
+const settingStore = new Store("global-settings.bin");
 
-export async function useAi(kind: keyof typeof instructions, text: string) {
-  const key = await store.get<string>("openai-key");
+export async function useAi(
+  kind: keyof typeof instructions,
+  text: string,
+  addInstructions = true,
+) {
+  const key = await settingStore.get<string>("openai-key");
   if (!key) {
     throw new Error("No openai key set");
   }
@@ -13,6 +18,8 @@ export async function useAi(kind: keyof typeof instructions, text: string) {
     apiKey: key,
     dangerouslyAllowBrowser: true,
   });
+
+  const data = store.getState();
 
   const result = await openai.chat.completions.create({
     messages: [
@@ -22,7 +29,9 @@ export async function useAi(kind: keyof typeof instructions, text: string) {
       },
       {
         role: "user",
-        content: text,
+        content: addInstructions
+          ? data.story.settings?.aiInstructions + "\n\n" + text
+          : text,
       },
     ],
     model: "gpt-4o-mini",

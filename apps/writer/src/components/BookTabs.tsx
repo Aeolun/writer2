@@ -1,4 +1,5 @@
 import {
+  Button,
   FormControl,
   FormLabel,
   Input,
@@ -13,9 +14,11 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
 import { storyActions } from "../lib/slices/story";
+import { nodeInTree } from "../lib/selectors/nodeInTree";
 
 export const BookTabs = () => {
   const bookObj = useSelector(selectedObjectSelector);
+  const node = useSelector(nodeInTree);
   const dispatch = useDispatch();
 
   return bookObj && bookObj.type === "book" ? (
@@ -90,6 +93,15 @@ export const BookTabs = () => {
               value={bookObj.data.critique}
             />
           </FormControl>
+          <Button
+            colorScheme="red"
+            isDisabled={node?.children && node.children.length > 0}
+            onClick={() => {
+              dispatch(storyActions.deleteBook({ bookId: bookObj.id }));
+            }}
+          >
+            Delete
+          </Button>
         </TabPanel>
       </TabPanels>
     </Tabs>

@@ -49,7 +49,7 @@ export const AiPopup = () => {
               isLoading={loading}
               onClick={() => {
                 setLoading(true);
-                useAi("free", prompt)
+                useAi("free", prompt, false)
                   .then((res) => {
                     if (res) {
                       setResponse(res);
