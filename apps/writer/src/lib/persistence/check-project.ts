@@ -1,8 +1,10 @@
-import { path } from "@tauri-apps/api";
+import { join } from "@tauri-apps/api/path";
 import { exists, readTextFile } from "@tauri-apps/plugin-fs";
 
 export const checkProject = async (projectPath: string) => {
-  const projectFile = await path.join(projectPath, "index.json");
+  console.log("join");
+  const projectFile = await join(projectPath, "index.json");
+  console.log("exists");
   const projectIndexExists = await exists(projectFile);
 
   if (!projectIndexExists) {

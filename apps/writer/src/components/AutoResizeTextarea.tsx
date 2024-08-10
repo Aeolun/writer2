@@ -1,6 +1,7 @@
 import { Box, type TextareaProps } from "@chakra-ui/react";
+import hljs from "highlight.js";
 import React from "react";
-import ResizeTextarea from "react-textarea-autosize";
+import Editor from "react-simple-code-editor";
 
 export const AutoResizeTextarea = React.forwardRef<
   HTMLTextAreaElement,
@@ -20,7 +21,23 @@ export const AutoResizeTextarea = React.forwardRef<
       resize="none"
       ref={ref}
       minRows={1}
-      as={ResizeTextarea}
+      as={Editor}
+      highlight={(text: string) => {
+        const tt = hljs.highlight(text, { language: "typst" }).value;
+        console.log("typst", tt);
+        return tt;
+      }}
+      onValueChange={(text: string) => {
+        props.onChange?.({
+          target: {
+            value: text,
+          },
+          currentTarget: {
+            value: text,
+          },
+          // biome-ignore lint/suspicious/noExplicitAny: Can't remake a whole event object here
+        } as any);
+      }}
       {...props}
     />
   );

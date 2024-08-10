@@ -7,18 +7,7 @@ import {
   stat,
   writeTextFile,
 } from "@tauri-apps/plugin-fs";
-import { eq } from "drizzle-orm";
-import { db } from "../../db";
 import {
-  type StoryTable,
-  character as characterSchema,
-  plotpoint,
-  scene,
-  storyTable,
-  treeEntity,
-} from "../../db/schema.ts";
-import {
-  type Node,
   type SavePayload,
   entities,
   languageEntities,
@@ -36,8 +25,6 @@ export const saveProject = async (projectPath: string, data: SavePayload) => {
 
     const storyFile = await path.join(projectPath, "index.json");
     const story = await readTextFile(storyFile);
-
-    const storyData = JSON.parse(story.toString());
 
     const currentDateTime = new Date().toISOString();
     const storyAutoSavePath = await path.join(projectPath, "autosave");

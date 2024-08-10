@@ -12,15 +12,11 @@ import {
   Textarea,
   useColorModeValue,
 } from "@chakra-ui/react";
-import markdown from "markdown-it";
-import Markdown from "markdown-to-jsx";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "wouter";
 import type { SortedBookObject } from "../lib/selectors/sortedBookObjects";
 import { storyActions } from "../lib/slices/story";
-
-const md = markdown();
 
 export const Preview = (props: { objects: SortedBookObject[] }) => {
   const dispatch = useDispatch();
@@ -33,7 +29,7 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
   const text = props.objects
     .map((item) => {
       if (item.type === "paragraph") {
-        return `${md.render(item.text).replaceAll("--", "—").trim()}`;
+        return `${item.text.replaceAll("--", "—").trim()}`;
       }
       if (item.type === "chapter_header") {
         return `<h1>${item.text}</h1>`;

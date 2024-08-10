@@ -7,6 +7,7 @@ import "./lib/App.css";
 import { Route, Router, Switch } from "wouter";
 import { migrate } from "./db/migrate";
 import GlobalSettings from "./global-settings.tsx";
+import hljs from "highlight.js";
 import { store } from "./lib/store";
 import Home from "./write";
 import Characters from "./write/characters.tsx";
@@ -21,6 +22,7 @@ import OpenStory from "./write/open-story.tsx";
 import NewStory from "./write/new-story.tsx";
 import { trpc } from "./lib/trpc.ts";
 import { SigninProvider } from "./components/SigninProvider.tsx";
+import "highlight.js/styles/a11y-light.css";
 
 if (process.env.NODE_ENV === "development") {
   wdyr(React, {
@@ -35,8 +37,21 @@ const theme = extendTheme({
   },
 });
 
-await migrate();
-
+const initHighlighting = async () => {
+  if (!("$typst$parserModule" in window)) {
+    return;
+  }
+  $typst$parserModule.then(() =>
+    hljs.registerLanguage(
+      "typst",
+      window.hljsTypst({
+        handleCodeBlocks: true,
+        codeBlockDefaultLanguage: "typst",
+      }),
+    ),
+  );
+};
+initHighlighting();
 function MyApp() {
   return (
     <ChakraProvider theme={theme}>
