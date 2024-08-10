@@ -1,0 +1,158 @@
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useRouter } from "wouter";
+import { save } from "../lib/actions/save";
+import { sync } from "../lib/actions/sync";
+import { globalActions } from "../lib/slices/global";
+import { storyActions } from "../lib/slices/story";
+import type { RootState } from "../lib/store";
+import { reloadTrpc, trpc } from "../lib/trpc";
+import { settingsStore } from "../global-settings-store";
+import { Drawer, Menu as MenuIcon } from "iconoir-react";
+
+export const WriteHeaderMenu = () => {
+  const saving = useSelector((store: RootState) => store.base.saving);
+  const syncing = useSelector((store: RootState) => store.base.syncing);
+  const [location, setLocation] = useLocation();
+  const aiBackend = useSelector((store: RootState) => store.base.aiBackend);
+  const dispatch = useDispatch();
+  const color = useColorModeValue("blue.300", "gray.700");
+  const isSignedIn = useSelector((store: RootState) => store.base.signedInUser);
+
+  return (
+    <Flex
+      bg={color}
+      justifyContent={"space-between"}
+      boxShadow={"0px 0px 4px 4px rgba(0, 0, 0, 0.3)"}
+      zIndex={5}
+    >
+      <Flex px={2} py={1} gap={1}>
+        <Menu>
+          <MenuButton>
+            <IconButton icon={<MenuIcon />} aria-label="menu" />
+          </MenuButton>
+          <MenuList>
+            <Link href="/new-story">
+              <MenuItem>New Story</MenuItem>
+            </Link>
+            <MenuItem
+              onClick={() => {
+                dispatch(storyActions.unload());
+                setLocation("/open-story");
+              }}
+            >
+              Open Story
+            </MenuItem>
+            <MenuItem>Save Story</MenuItem>
+          </MenuList>
+        </Menu>
+        <Link href={"/"}>
+          <Button>Story</Button>
+        </Link>
+        <Link href={"/characters"}>
+          <Button>Characters</Button>
+        </Link>
+        <Link href={"/locations"}>
+          <Button>Locations</Button>
+        </Link>
+        <Link href={"/plot-points"}>
+          <Button>Plot Points</Button>
+        </Link>
+        <Link href={"/settings"}>
+          <Button>Story Settings</Button>
+        </Link>
+        <Link href={"/language"}>
+          <Button>Language</Button>
+        </Link>
+        <Link href={"/preview"}>
+          <Button>Preview</Button>
+        </Link>
+      </Flex>
+      <Flex px={2} gap={1} py={1} justifyContent={"flex-end"}>
+        <Button
+          onClick={() => {
+            dispatch(globalActions.setAiPopupOpen(true));
+          }}
+        >
+          AI Question
+        </Button>
+
+        <Button
+          rightIcon={
+            saving ? (
+              <CircularProgress isIndeterminate color="green.300" />
+            ) : undefined
+          }
+          onClick={() => {
+            save(false).catch((e) => {
+              console.error(e);
+            });
+          }}
+        >
+          Save
+        </Button>
+
+        <Menu>
+          <MenuButton
+            as={Avatar}
+            cursor="pointer"
+            name={isSignedIn?.name ?? undefined}
+            src=""
+            w={"40px"}
+            h={"40px"}
+          />
+          {isSignedIn ? (
+            <MenuList>
+              <Link href={"/global-settings"}>
+                <MenuItem>Settings</MenuItem>
+              </Link>
+              <Link href={"/profile"}>
+                <MenuItem>Profile</MenuItem>
+              </Link>
+              <MenuItem
+                onClick={() => {
+                  trpc.logout.mutate().then(() => {
+                    settingsStore.delete("client-token").then(() => {
+                      reloadTrpc();
+                      dispatch(globalActions.setSignedInUser(undefined));
+                      settingsStore.save();
+                    });
+                  });
+                }}
+              >
+                Log out
+              </MenuItem>
+            </MenuList>
+          ) : (
+            <MenuList>
+              <Link href={"/global-settings"}>
+                <MenuItem>App settings</MenuItem>
+              </Link>
+              <MenuItem
+                onClick={() => {
+                  dispatch(globalActions.setSigninPopupOpen(true));
+                }}
+              >
+                Sign in
+              </MenuItem>
+            </MenuList>
+          )}
+        </Menu>
+      </Flex>
+    </Flex>
+  );
+};

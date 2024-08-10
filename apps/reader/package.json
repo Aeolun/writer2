@@ -1,0 +1,28 @@
+{
+  "name": "reader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "@xmldom/xmldom": "^0.8.10",
+    "axios": "^1.7.2",
+    "pure-rand": "^6.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^5.2.13",
+    "xpath": "^0.0.34"
+  },
+  "devDependencies": {
+    "colord": "^2.9.3",
+    "sharp": "^0.33.4",
+    "tsx": "^4.16.5"
+  }
+}

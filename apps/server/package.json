@@ -1,0 +1,26 @@
+{
+  "name": "@writer/server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsx --watch src/index.ts",
+    "migrate:dev": "prisma migrate dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.17.0",
+    "@trpc/client": "11.0.0-rc.467",
+    "@trpc/server": "11.0.0-rc.467",
+    "cors": "^2.8.5",
+    "fastify": "^4.28.1",
+    "prisma": "^5.17.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "tsx": "^4.16.5"
+  }
+}

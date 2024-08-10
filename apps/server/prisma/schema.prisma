@@ -1,0 +1,119 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               Int                @id @default(autoincrement())
+  email            String             @unique
+  name             String?
+  password         String
+  ownedStories     Story[]
+  bookShelfStories BookShelfStory[]
+  createdAt        DateTime           @default(now())
+  accessKeys       AccessKey[]
+  ParagraphComment ParagraphComment[]
+}
+
+model AccessKey {
+  id          Int       @id @default(autoincrement())
+  key         String    @unique
+  description String?
+  ownerId     Int
+  owner       User      @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastUsedAt  DateTime?
+}
+
+enum SavedType {
+  FAVORITE
+  FOLLOW
+  READ_LATER
+}
+
+model BookShelfStory {
+  id        Int       @id @default(autoincrement())
+  name      String    @default("")
+  ownerId   Int
+  owner     User      @relation(fields: [ownerId], references: [id])
+  storyId   String
+  story     Story     @relation(fields: [storyId], references: [id])
+  kind      SavedType
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Story {
+  id               String           @id @default(uuid())
+  name             String           @default("")
+  ownerId          Int
+  owner            User             @relation(fields: [ownerId], references: [id])
+  bookShelfStories BookShelfStory[]
+  coverArtAsset    String
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model Book {
+  id            String    @id @default(uuid())
+  name          String    @default("")
+  coverArtAsset String
+  spineArtAsset String
+  chapters      Chapter[]
+  sortOrder     Int
+}
+
+model Chapter {
+  id          String    @id @default(uuid())
+  name        String    @default("")
+  book        Book?     @relation(fields: [bookId], references: [id])
+  bookId      String?
+  publishedOn DateTime?
+  sortOrder   Int
+  scenes      Scene[]
+}
+
+model Scene {
+  id         String      @id @default(uuid())
+  name       String      @default("")
+  body       String      @db.LongText()
+  chapter    Chapter     @relation(fields: [chapterId], references: [id])
+  chapterId  String
+  sortOrder  Int
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  paragraphs Paragraph[]
+}
+
+model Paragraph {
+  id                 String              @id @default(uuid())
+  sceneId            String
+  scene              Scene               @relation(fields: [sceneId], references: [id])
+  paragraphRevisions ParagraphRevision[]
+  sortOrder          Int
+}
+
+model ParagraphRevision {
+  id               String             @id @default(uuid())
+  paragraphId      String
+  paragraph        Paragraph          @relation(fields: [paragraphId], references: [id])
+  body             String             @db.LongText()
+  createdAt        DateTime           @default(now())
+  paragraphComment ParagraphComment[]
+}
+
+model ParagraphComment {
+  id                  Int               @id @default(autoincrement())
+  paragraphRevisionId String
+  paragraphRevision   ParagraphRevision @relation(fields: [paragraphRevisionId], references: [id])
+  ownerId             Int
+  owner               User              @relation(fields: [ownerId], references: [id])
+  body                String
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}

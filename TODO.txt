@@ -1,0 +1,3 @@
+- Store backups of every autosave to R2. Remove everything but last x files.
+- Load data from database
+- Store a new version of scene on every save.
