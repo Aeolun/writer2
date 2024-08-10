@@ -1,7 +1,9 @@
 import { Box, Button, Flex, HStack, Spinner, Tag } from "@chakra-ui/react";
+import type { TextlintMessage } from "@textlint/kernel";
 import { Check, Trash, TrashSolid } from "iconoir-react";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { linter } from "../lib/linter";
 import type { Scene, SceneParagraph } from "../lib/persistence";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
 import { storyActions } from "../lib/slices/story";
@@ -12,6 +14,7 @@ import { StoryParagraphButtons } from "./StoryParagraphButtons";
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "yellow.500",
   revise: "red.500",
+  sdt: "blue.500",
   final: "green.500",
   ai: "purple.500",
 };
@@ -21,6 +24,7 @@ export const Paragraph = (props: {
   paragraph: SceneParagraph;
 }) => {
   const dispatch = useDispatch();
+  const [issues, setIssues] = useState<TextlintMessage[]>([]);
   const plotpoints = useSelector(plotpointSelector);
 
   return (
@@ -40,6 +44,14 @@ export const Paragraph = (props: {
               outline={"1px solid transparent"}
               value={props.paragraph.text}
               onChange={(e) => {
+                linter
+                  ?.lintText(e.target.value, "")
+                  .then((result) => {
+                    setIssues(result.messages);
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
                 dispatch(
                   storyActions.updateSceneParagraph({
                     sceneId: props.scene.id,
@@ -146,6 +158,15 @@ export const Paragraph = (props: {
                 }
               }}
             />
+            {issues && issues.length > 0 ? (
+              <Box px={8} pb={4}>
+                {issues.map((issue) => (
+                  <Box key={issue.message} color={"red.500"}>
+                    {issue.message}
+                  </Box>
+                ))}
+              </Box>
+            ) : null}
             {props.paragraph.translation ? (
               <Box
                 px={8}
@@ -164,7 +185,7 @@ export const Paragraph = (props: {
               scene={props.scene}
             />
           ) : (
-            <Box minHeight={"52px"}></Box>
+            <Box minHeight={"52px"} />
           )
         }
         extra={

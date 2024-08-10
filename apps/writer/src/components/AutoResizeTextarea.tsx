@@ -23,9 +23,7 @@ export const AutoResizeTextarea = React.forwardRef<
       minRows={1}
       as={Editor}
       highlight={(text: string) => {
-        const tt = hljs.highlight(text, { language: "typst" }).value;
-        console.log("typst", tt);
-        return tt;
+        return hljs.highlight(text, { language: "markdown" }).value;
       }}
       onValueChange={(text: string) => {
         props.onChange?.({

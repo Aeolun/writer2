@@ -1,7 +1,7 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import { StoryPanel } from "../components/StoryPanel";
-import { ScenePanel } from "../components/ScenePanel";
 import React from "react";
+import { ScenePanel } from "../components/ScenePanel";
+import { StoryPanel } from "./StoryPanel.tsx";
 
 export const SceneTabs = () => {
   return (

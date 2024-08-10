@@ -1,27 +1,24 @@
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import wdyr from "@welldone-software/why-did-you-render";
-import React, { useEffect } from "react";
+import React from "react";
 import { Provider } from "react-redux";
 import { AiPopup } from "./components/AiPopup";
 import "./lib/App.css";
-import { Route, Router, Switch } from "wouter";
-import { migrate } from "./db/migrate";
+import { Route, Switch } from "wouter";
+import { SigninPopup } from "./components/SigninPopup.tsx";
+import { SigninProvider } from "./components/SigninProvider.tsx";
 import GlobalSettings from "./global-settings.tsx";
-import hljs from "highlight.js";
 import { store } from "./lib/store";
 import Home from "./write";
 import Characters from "./write/characters.tsx";
 import Language from "./write/language.tsx";
 import Locations from "./write/locations.tsx";
+import NewStory from "./write/new-story.tsx";
+import OpenStory from "./write/open-story.tsx";
 import PlotPoints from "./write/plot-points.tsx";
 import Preview from "./write/preview.tsx";
 import Profile from "./write/profile.tsx";
 import Settings from "./write/settings.tsx";
-import { SigninPopup } from "./components/SigninPopup.tsx";
-import OpenStory from "./write/open-story.tsx";
-import NewStory from "./write/new-story.tsx";
-import { trpc } from "./lib/trpc.ts";
-import { SigninProvider } from "./components/SigninProvider.tsx";
 import "highlight.js/styles/a11y-light.css";
 
 if (process.env.NODE_ENV === "development") {
@@ -37,21 +34,6 @@ const theme = extendTheme({
   },
 });
 
-const initHighlighting = async () => {
-  if (!("$typst$parserModule" in window)) {
-    return;
-  }
-  $typst$parserModule.then(() =>
-    hljs.registerLanguage(
-      "typst",
-      window.hljsTypst({
-        handleCodeBlocks: true,
-        codeBlockDefaultLanguage: "typst",
-      }),
-    ),
-  );
-};
-initHighlighting();
 function MyApp() {
   return (
     <ChakraProvider theme={theme}>

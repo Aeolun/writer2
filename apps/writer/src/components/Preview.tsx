@@ -12,11 +12,14 @@ import {
   Textarea,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React from "react";
+import markdownit from "markdown-it";
+import Markdown from "markdown-to-jsx";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "wouter";
 import type { SortedBookObject } from "../lib/selectors/sortedBookObjects";
 import { storyActions } from "../lib/slices/story";
+
+const md = markdownit();
 
 export const Preview = (props: { objects: SortedBookObject[] }) => {
   const dispatch = useDispatch();
@@ -29,7 +32,7 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
   const text = props.objects
     .map((item) => {
       if (item.type === "paragraph") {
-        return `${item.text.replaceAll("--", "—").trim()}`;
+        return `${md.render(item.text.replaceAll("--", "—").trim())}`;
       }
       if (item.type === "chapter_header") {
         return `<h1>${item.text}</h1>`;
@@ -42,12 +45,50 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
     .filter((i) => i)
     .join("\n");
 
+  const [typstText, setTypstText] = useState("");
+  useEffect(() => {
+    const process = async () => {
+      const contentText = await Promise.all(
+        props.objects.map(async (item) => {
+          if (item.type === "paragraph") {
+            return `${item.text.replaceAll("--", "—").replaceAll("=", "#").replaceAll("*", "_").trim()}\n`;
+          }
+          if (item.type === "chapter_header") {
+            return `= ${item.text}\n`;
+          }
+          if (item.type === "break") {
+            return `#align(center)[\n  #image("public/Group.png", width: 50%)\n]\n`;
+          }
+          return undefined;
+        }),
+      ).then((i) => {
+        return i.filter((i) => i).join("\n");
+      });
+      const newTypstText = `#set text(
+  font: "New Computer Modern",
+  size: 10pt
+)
+#set page(
+  paper: "a5",
+  margin: (x: 1.8cm, y: 1.5cm),
+)
+#set par(
+  justify: true,
+  leading: 0.52em,
+  first-line-indent: 1em,
+)\n\n${contentText}`;
+      setTypstText(newTypstText);
+    };
+    process();
+  }, [props.objects]);
+
   return (
     <Flex flexDirection={"column"} height={"100%"}>
       <Tabs>
         <TabList>
-          <Tab>Source</Tab>
-          <Tab>HTML</Tab>
+          <Tab>HTML Source</Tab>
+          <Tab>Typst Source</Tab>
+          <Tab>Rendered</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -63,6 +104,26 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
                 setTimeout(() => {
                   const textarea: HTMLTextAreaElement | null =
                     document.querySelector("#preview");
+                  if (textarea) {
+                    textarea.select();
+                    textarea.setSelectionRange(0, 99999);
+                    navigator.clipboard.writeText(textarea.value);
+                  }
+                }, 0);
+              }}
+            />
+          </TabPanel>
+          <TabPanel>
+            <Text mb={2}>Designed for easy rendering to PDF/HTML/Markdown</Text>
+            <Textarea
+              id={"preview_typst"}
+              value={typstText}
+              minHeight={"70vh"}
+              onClick={() => {
+                //select all
+                setTimeout(() => {
+                  const textarea: HTMLTextAreaElement | null =
+                    document.querySelector("#preview_typst");
                   if (textarea) {
                     textarea.select();
                     textarea.setSelectionRange(0, 99999);

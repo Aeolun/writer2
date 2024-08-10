@@ -1,30 +1,23 @@
-import {
-  Button,
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Heading,
-  Input,
-  Textarea,
-} from "@chakra-ui/react";
+import { Button, Flex, Heading } from "@chakra-ui/react";
 import { open } from "@tauri-apps/plugin-dialog";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { NoStory } from "../components/NoStory";
-import { WriteHeaderMenu } from "../components/WriteHeaderMenu";
-import { storySettingsSelector } from "../lib/selectors/storySettings";
-import { storyActions } from "../lib/slices/story";
-import type { RootState } from "../lib/store";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "wouter";
+import { settingsStore } from "../global-settings-store.ts";
 import { checkProject } from "../lib/persistence/check-project";
 import { loadProject } from "../lib/persistence/load-project";
-import { useLocation } from "wouter";
 
 const Home = () => {
-  const storyLoaded = useSelector((store: RootState) => store.story.name);
-  const settings = useSelector(storySettingsSelector);
   const [location, setLocation] = useLocation();
-  const dispatch = useDispatch();
+  const [recentStories, setRecentStories] = useState<
+    { name: string; path: string }[]
+  >([]);
+  useEffect(() => {
+    settingsStore.get("recent-stories").then((stories) => {
+      if (stories && Array.isArray(stories)) {
+        setRecentStories(stories);
+      }
+    });
+  }, []);
 
   return (
     <Flex flexDirection={"column"} height={"100%"}>
@@ -48,7 +41,20 @@ const Home = () => {
                 return;
               }
               try {
-                await loadProject(projectPath);
+                const story = await loadProject(projectPath);
+                settingsStore
+                  .set("recent-stories", [
+                    { name: story.story.name, path: projectPath },
+                    ...recentStories
+                      .filter((r) => r.name !== story.story.name)
+                      .slice(0, 9),
+                  ])
+                  .then(() => {
+                    return settingsStore.save();
+                  })
+                  .catch((error) => {
+                    console.error("Error saving recent stories", error);
+                  });
                 setLocation("/");
               } catch (error) {
                 if (error instanceof Error) {
@@ -59,8 +65,44 @@ const Home = () => {
               }
             }}
           >
-            Load a story
+            Load from disk
           </Button>
+          <Heading>Recent stories</Heading>
+          {recentStories.map((story) => (
+            <Button
+              key={story.name}
+              onClick={async () => {
+                try {
+                  const loadedStory = await loadProject(story.path);
+                  settingsStore
+                    .set("recent-stories", [
+                      { name: loadedStory.story.name, path: story.path },
+                      ...recentStories
+                        .filter((r) => r.name !== loadedStory.story.name)
+                        .slice(0, 9),
+                    ])
+                    .then(() => {
+                      return settingsStore.save();
+                    })
+                    .catch((error) => {
+                      console.error("Error saving recent stories", error);
+                    });
+                  setLocation("/");
+                } catch (error) {
+                  if (error instanceof Error) {
+                    alert(error.message);
+                  } else {
+                    alert("Unknown error occurred");
+                  }
+                }
+              }}
+            >
+              {story.name}
+            </Button>
+          ))}
+          <Link href={"/new-story"}>
+            <Button>Create a new story</Button>
+          </Link>
         </Flex>
       </Flex>
     </Flex>

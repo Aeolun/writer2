@@ -9,7 +9,6 @@ import {
   entities,
   languageEntities,
   persistedSchema,
-  saveSchema,
 } from "../persistence.ts";
 import { globalActions } from "../slices/global.ts";
 import { languageActions } from "../slices/language.ts";
@@ -83,4 +82,6 @@ export const loadProject = async (projectPath: string) => {
   if (savedStory.language) {
     store.dispatch(languageActions.setLanguages(savedStory.language));
   }
+
+  return savedStory;
 };

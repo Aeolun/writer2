@@ -74,12 +74,12 @@ export const saveProject = async (projectPath: string, data: SavePayload) => {
     }
 
     const currentFileStat = await stat(storyFile);
-    console.log(
-      "expected",
-      validatedBody.expectedLastModified,
-      "actual",
-      currentFileStat.mtime?.getTime(),
-    );
+    // console.log(
+    //   "expected",
+    //   validatedBody.expectedLastModified,
+    //   "actual",
+    //   currentFileStat.mtime?.getTime(),
+    // );
     if (
       currentFileStat.mtime?.getTime() !== validatedBody.expectedLastModified
     ) {
@@ -278,7 +278,7 @@ export const saveProject = async (projectPath: string, data: SavePayload) => {
     );
 
     const newFileStat = await stat(storyFile);
-    console.log("new last modified", newFileStat.mtime?.getTime());
+    // console.log("new last modified", newFileStat.mtime?.getTime());
 
     if (newFileStat.mtime) {
       store.dispatch(

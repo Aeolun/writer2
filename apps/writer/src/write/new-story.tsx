@@ -1,24 +1,13 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Heading,
-  Input,
-  Textarea,
-} from "@chakra-ui/react";
-import { open } from "@tauri-apps/plugin-dialog";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { storySettingsSelector } from "../lib/selectors/storySettings";
-import { storyActions } from "../lib/slices/story";
-import { store, type RootState } from "../lib/store";
-import { globalActions } from "../lib/slices/global";
-import { useLocation } from "wouter";
-import { stat, writeTextFile } from "@tauri-apps/plugin-fs";
+import { Box, Button, Flex, Heading, Input } from "@chakra-ui/react";
 import { join } from "@tauri-apps/api/path";
+import { open } from "@tauri-apps/plugin-dialog";
+import { stat, writeTextFile } from "@tauri-apps/plugin-fs";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useLocation } from "wouter";
+import { globalActions } from "../lib/slices/global";
+import { storyActions } from "../lib/slices/story";
+import { store } from "../lib/store";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -82,6 +71,9 @@ const Home = () => {
             Create
           </Button>
         </Box>
+        <Link href={"/open-story"}>
+          <Button>Open an existing story</Button>
+        </Link>
       </Flex>
     </Flex>
   );
