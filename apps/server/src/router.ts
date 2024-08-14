@@ -1,8 +1,10 @@
-import { prisma } from "./prisma";
-import z from "zod";
-import { protectedProcedure, publicProcedure, router } from "./trpc";
-import { scrypt, randomBytes } from "node:crypto";
+import { randomBytes, scrypt } from "node:crypto";
 import { promisify } from "util";
+import * as sharp from "sharp";
+import z from "zod";
+import { prisma } from "./prisma";
+import { protectedProcedure, publicProcedure, router } from "./trpc";
+import { uploadFile } from "./util/file-storage";
 
 const scryptAsync = promisify(scrypt);
 
@@ -13,6 +15,31 @@ export const appRouter = router({
 
     return users;
   }),
+  uploadImage: protectedProcedure
+    .input(z.object({ dataBase64: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const data = Buffer.from(input.dataBase64, "base64");
+
+      // Save the image to a database
+      const meta = await sharp(data).metadata();
+      const imageType = meta.format;
+      if (!["png", "jpeg", "webp"].includes(imageType)) {
+        throw new Error("Invalid image type");
+      }
+
+      const storagePath = `upload/${ctx.accessKey.ownerId}/${randomBytes(16).toString("hex")}.${imageType}`;
+      await uploadFile(data, storagePath);
+      return prisma.file.create({
+        data: {
+          ownerId: ctx.accessKey.ownerId,
+          path: storagePath,
+          mimeType: `image/${imageType}`,
+          width: meta.width,
+          height: meta.height,
+          bytes: meta.size,
+        },
+      });
+    }),
   userById: publicProcedure
     .input(z.object({ id: z.number() }))
     .query(async (opts) => {

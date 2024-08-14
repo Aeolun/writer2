@@ -8,15 +8,16 @@ generator client {
 }
 
 model User {
-  id               Int                @id @default(autoincrement())
-  email            String             @unique
-  name             String?
-  password         String
-  ownedStories     Story[]
-  bookShelfStories BookShelfStory[]
-  createdAt        DateTime           @default(now())
-  accessKeys       AccessKey[]
-  ParagraphComment ParagraphComment[]
+  id                Int                @id @default(autoincrement())
+  email             String             @unique
+  name              String?
+  password          String
+  ownedStories      Story[]
+  bookShelfStories  BookShelfStory[]
+  createdAt         DateTime           @default(now())
+  accessKeys        AccessKey[]
+  paragraphComments ParagraphComment[]
+  files             File[]
 }
 
 model AccessKey {
@@ -116,4 +117,17 @@ model ParagraphComment {
   body                String
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
+}
+
+model File {
+  id        String   @id @default(uuid())
+  ownerId   Int
+  owner     User     @relation(fields: [ownerId], references: [id])
+  path      String
+  width     Int
+  height    Int
+  bytes     Int
+  mimeType  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
