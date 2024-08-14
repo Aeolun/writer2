@@ -24,6 +24,7 @@ import { SceneButtons } from "./SceneButtons";
 export const Row = (props: {
   main: React.ReactNode;
   buttons?: React.ReactNode;
+  suggestion?: React.ReactNode;
   extra?: React.ReactNode;
   selected?: boolean;
   borderColor?: string;
@@ -37,10 +38,10 @@ export const Row = (props: {
   return (
     <Grid
       position={"relative"}
-      templateColumns={props.extra ? "1fr 100px 1fr" : "1fr 100px"}
+      templateColumns={props.extra ? "1fr 100px 1fr 0.3fr" : "1fr 100px 0.3fr"}
       justifyContent={"center"}
-      width={"70%"}
-      maxWidth={"1164px"}
+      width={"100%"}
+      maxWidth={"1464px"}
     >
       <GridItem
         borderLeft={"0.5rem"}
@@ -69,6 +70,22 @@ export const Row = (props: {
           {props.extra}
         </GridItem>
       ) : null}
+      <GridItem>
+        {props.suggestion && props.selected ? (
+          <Box
+            bg="white"
+            fontSize={"70%"}
+            borderRadius="5px"
+            p={1}
+            maxH="150px"
+            overflow="auto"
+            whiteSpace={"pre-wrap"}
+            marginLeft={1}
+          >
+            {props.suggestion}
+          </Box>
+        ) : null}
+      </GridItem>
     </Grid>
   );
 };
@@ -126,7 +143,7 @@ export const StoryPanel = () => {
           flex={1}
           overflow={"auto"}
           flexDirection={"column"}
-          alignItems={"center"}
+          alignItems={"flex-start"}
           paddingBottom={"12em"}
           p={4}
         >

@@ -34,6 +34,7 @@ export async function useAi(
           : text,
       },
     ],
+    max_tokens: 2000,
     model: "gpt-4o-mini",
   });
 

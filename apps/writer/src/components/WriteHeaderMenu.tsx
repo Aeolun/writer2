@@ -66,6 +66,9 @@ export const WriteHeaderMenu = () => {
         <Link href={"/characters"}>
           <Button>Characters</Button>
         </Link>
+        <Link href={"/search"}>
+          <Button>Search</Button>
+        </Link>
         <Link href={"/locations"}>
           <Button>Locations</Button>
         </Link>

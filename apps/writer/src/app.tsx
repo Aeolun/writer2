@@ -16,6 +16,7 @@ import Locations from "./write/locations.tsx";
 import NewStory from "./write/new-story.tsx";
 import OpenStory from "./write/open-story.tsx";
 import PlotPoints from "./write/plot-points.tsx";
+import Search from "./write/search.tsx";
 import Preview from "./write/preview.tsx";
 import Profile from "./write/profile.tsx";
 import Settings from "./write/settings.tsx";
@@ -49,6 +50,7 @@ function MyApp() {
             <Route path={"/plot-points"} component={PlotPoints} />
             <Route path={"/preview"} component={Preview} />
             <Route path={"/settings"} component={Settings} />
+            <Route path={"/search"} component={Search} />
             <Route path={"/profile"} component={Profile} />
             <Route path={"/new-story"} component={NewStory} />
             <Route path={"/open-story"} component={OpenStory} />

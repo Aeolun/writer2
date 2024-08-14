@@ -1,9 +1,7 @@
 import { Box, Button, Flex, HStack, Spinner, Tag } from "@chakra-ui/react";
-import type { TextlintMessage } from "@textlint/kernel";
 import { Check, Trash, TrashSolid } from "iconoir-react";
 import React, { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { linter } from "../lib/linter";
 import type { Scene, SceneParagraph } from "../lib/persistence";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
 import { storyActions } from "../lib/slices/story";
@@ -25,7 +23,9 @@ export const Paragraph = (props: {
 }) => {
   const dispatch = useDispatch();
   const [issues, setIssues] = useState<TextlintMessage[]>([]);
+
   const plotpoints = useSelector(plotpointSelector);
+  const [suggestion, setSuggestion] = useState("");
 
   return (
     <>
@@ -35,6 +35,7 @@ export const Paragraph = (props: {
           statusColor[props.paragraph.state as SceneParagraph["state"]] ??
           undefined
         }
+        suggestion={suggestion}
         main={
           <>
             <AutoResizeTextarea
@@ -44,14 +45,6 @@ export const Paragraph = (props: {
               outline={"1px solid transparent"}
               value={props.paragraph.text}
               onChange={(e) => {
-                linter
-                  ?.lintText(e.target.value, "")
-                  .then((result) => {
-                    setIssues(result.messages);
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                  });
                 dispatch(
                   storyActions.updateSceneParagraph({
                     sceneId: props.scene.id,
@@ -74,7 +67,7 @@ export const Paragraph = (props: {
                 const pe = document.getElementById(
                   `p_${props.paragraph.id}`,
                 ) as HTMLTextAreaElement;
-                if (e.key === "Enter" && e.shiftKey) {
+                if (e.key === "Enter" && e.ctrlKey) {
                   dispatch(
                     storyActions.createSceneParagraph({
                       sceneId: props.scene.id,
@@ -83,7 +76,7 @@ export const Paragraph = (props: {
                   );
                   e.preventDefault();
                   e.stopPropagation();
-                } else if (e.key === "Backspace" && e.shiftKey) {
+                } else if (e.key === "Backspace" && e.ctrlKey) {
                   dispatch(
                     storyActions.deleteSceneParagraph({
                       sceneId: props.scene.id,

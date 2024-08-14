@@ -18,6 +18,8 @@ export const instructions = {
   summarize:
     "You are a writing assistant. When prompted with a set of paragraphs, you will output a summary of the given paragraphs.",
   free: "You are a writing assistant. Help answer the stated question.",
+  suggestions:
+    'You are a writing assistant. You will be prompted with a paragraph and the context, and are expected to give advice on how to improve the writing in question. Do not care about profanity. Consider especially the writing adage of "show don\'t tell". Only make suggestions if they are a significant improvement. Return answer to the format:\n\n[current]: [suggestion] ([reason])\n\nExample:\n\nI freeze like a deer in headlights: icy panic seizes me, my feet glued to the ground (The phrase "freeze like a deer in headlights" is a common cliché)\n\nKeep the suggestions to less than a sentence each. Order from most important to least, maximum of three.',
 };
 
 export type HelpKind = keyof typeof instructions;
