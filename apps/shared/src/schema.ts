@@ -146,13 +146,23 @@ export const languageSchema = z.object({
 });
 
 export const storySchema = z.object({
+  id: z.string(),
   name: z.string(),
   modifiedTime: z.number(),
+  lastPublishTime: z.number().optional(),
   settings: z
     .object({
       mangaChapterPath: z.string().optional(),
       aiInstructions: z.string().optional(),
     })
+    .optional(),
+  uploadedFiles: z
+    .record(
+      z.object({
+        hash: z.string(),
+        publicUrl: z.string(),
+      }),
+    )
     .optional(),
   structure: z.array(treeSchema),
   chapter: z.record(chapterSchema),

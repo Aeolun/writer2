@@ -2294,6 +2294,40 @@
           ]
         },
         {
+          "type": "string",
+          "enum": [
+            "clipboard-manager:default"
+          ]
+        },
+        {
+          "description": "clipboard-manager:allow-read -> Enables the read command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "clipboard-manager:allow-read"
+          ]
+        },
+        {
+          "description": "clipboard-manager:allow-write -> Enables the write command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "clipboard-manager:allow-write"
+          ]
+        },
+        {
+          "description": "clipboard-manager:deny-read -> Denies the read command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "clipboard-manager:deny-read"
+          ]
+        },
+        {
+          "description": "clipboard-manager:deny-write -> Denies the write command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "clipboard-manager:deny-write"
+          ]
+        },
+        {
           "description": "dialog:default -> This permission set configures the types of dialogs\navailable from the dialog plugin.\n\n#### Granted Permissions\n\nAll dialog types are enabled.\n\n\n",
           "type": "string",
           "enum": [

@@ -1,20 +1,8 @@
-import { path } from "@tauri-apps/api";
-import {
-  mkdir,
-  readDir,
-  readTextFile,
-  remove,
-  stat,
-  writeTextFile,
-} from "@tauri-apps/plugin-fs";
-import {
-  type SavePayload,
-  entities,
-  languageEntities,
-  saveSchema,
-} from "../persistence.ts";
-import { globalActions } from "../slices/global.ts";
-import { store } from "../store.ts";
+import {path} from "@tauri-apps/api";
+import {mkdir, readDir, readTextFile, remove, stat, writeTextFile,} from "@tauri-apps/plugin-fs";
+import {entities, languageEntities, type SavePayload, saveSchema,} from "@writer/shared";
+import {globalActions} from "../slices/global.ts";
+import {store} from "../store.ts";
 
 export const saveProject = async (projectPath: string, data: SavePayload) => {
   try {

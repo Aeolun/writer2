@@ -11,23 +11,27 @@ const getClient = () => {
   }
   s3Api = new S3Client({
     credentials: {
-      accessKeyId: "Writer2",
-      secretAccessKey: process.env.CLOUDFLARE_API_TOKEN,
+      accessKeyId: process.env.CLOUDFLARE_S3_ACCESS_KEY ?? "",
+      secretAccessKey: process.env.CLOUDFLARE_S3_SECRET_ACCESS_KEY ?? "",
     },
     region: "auto",
-    endpoint:
-      "https://56fb8981aa9ab6006da6d34943c59f88.r2.cloudflarestorage.com",
+    endpoint: process.env.CLOUDFLARE_S3_ENDPOINT ?? "",
   });
   return s3Api;
 };
 
-export const uploadFile = async (data: Buffer, path: string): Promise<void> => {
+export const uploadFile = async (
+  data: Buffer,
+  path: string,
+  contentType: string,
+): Promise<void> => {
   const client = getClient();
   await client.send(
     new PutObjectCommand({
       Bucket: "writer2",
       Key: path,
       Body: data,
+      ContentType: contentType,
     }),
   );
 };
@@ -40,5 +44,8 @@ export const downloadFile = async (path: string): Promise<Buffer> => {
       Key: path,
     }),
   );
+  if (!response.Body) {
+    throw new Error("No body in response");
+  }
   return Buffer.from(await response.Body.transformToByteArray());
 };

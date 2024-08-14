@@ -57,6 +57,9 @@ importers:
       '@trpc/server':
         specifier: 11.0.0-rc.467
         version: 11.0.0-rc.467
+      '@writer/shared':
+        specifier: workspace:*
+        version: link:../shared
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -76,6 +79,12 @@ importers:
       tsx:
         specifier: ^4.16.5
         version: 4.16.5
+
+  apps/shared:
+    dependencies:
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
 
   apps/writer:
     dependencies:
@@ -100,6 +109,9 @@ importers:
       '@tauri-apps/api':
         specifier: 2.0.0-beta.13
         version: 2.0.0-beta.13
+      '@tauri-apps/plugin-clipboard-manager':
+        specifier: 2.0.0-beta.2
+        version: 2.0.0-beta.2
       '@tauri-apps/plugin-dialog':
         specifier: 2.0.0-beta.5
         version: 2.0.0-beta.5
@@ -121,6 +133,9 @@ importers:
       '@trpc/client':
         specifier: 11.0.0-rc.467
         version: 11.0.0-rc.467(@trpc/server@11.0.0-rc.467)
+      '@writer/shared':
+        specifier: workspace:*
+        version: link:../shared
       axios:
         specifier: ^1.7.3
         version: 1.7.3
@@ -3496,6 +3511,11 @@ packages:
     engines: {node: '>= 18.18', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
     dev: false
 
+  /@tauri-apps/api@2.0.0-beta.4:
+    resolution: {integrity: sha512-Nxtj28NYUo5iwYkpYslxmOPkdI2WkELU2e3UH9nbJm9Ydki2CQwJVGQxx4EANtdZcMNsEsUzRqaDTvEUYH1l6w==}
+    engines: {node: '>= 18', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
+    dev: false
+
   /@tauri-apps/cli-darwin-arm64@2.0.0-rc.3:
     resolution: {integrity: sha512-szYCSr/ChbCF+S6Wnr15TYpI2cZR07d+AQOiFGuScP0preM8Pbsk/sb0hfLwqzepjVFFNVWQba9sG7FEW2Y2XA==}
     engines: {node: '>= 10'}
@@ -3602,6 +3622,12 @@ packages:
       '@tauri-apps/cli-win32-ia32-msvc': 2.0.0-rc.3
       '@tauri-apps/cli-win32-x64-msvc': 2.0.0-rc.3
     dev: true
+
+  /@tauri-apps/plugin-clipboard-manager@2.0.0-beta.2:
+    resolution: {integrity: sha512-yue7KTO9r9rlpgjcyRB9xcMyZKTrGOP2bWQnL/EoyVkECsr+8e8W8UMlvajXjv1hinFoiycXJe6GaSTPGO0Jlg==}
+    dependencies:
+      '@tauri-apps/api': 2.0.0-beta.4
+    dev: false
 
   /@tauri-apps/plugin-dialog@2.0.0-beta.5:
     resolution: {integrity: sha512-jkaBCsx2v6WB6sB77fTMCeijuvT3FlzwschiHnPlD7aU6CHvQgRlpCv/FttPdTq4ih2t6MIlM4oX85hNYgfs6w==}

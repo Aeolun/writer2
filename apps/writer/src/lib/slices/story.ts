@@ -9,7 +9,7 @@ import type {
   Scene,
   SceneParagraph,
   Story,
-} from "../persistence";
+} from "../../../../shared/src/schema.ts";
 
 const initialState: Story = {
   name: undefined,
@@ -773,6 +773,25 @@ export const globalSlice = createSlice({
         );
       });
       state.modifiedTime = Date.now();
+    },
+    updatePublishTime: (state, action: PayloadAction<number>) => {
+      state.lastPublishTime = action.payload;
+    },
+    putUploadedFile: (
+      state,
+      action: PayloadAction<{
+        path: string;
+        hash: string;
+        publicUrl: string;
+      }>,
+    ) => {
+      if (!state.uploadedFiles) {
+        state.uploadedFiles = {};
+      }
+      state.uploadedFiles[action.payload.path] = {
+        hash: action.payload.hash,
+        publicUrl: action.payload.publicUrl,
+      };
     },
   },
 });

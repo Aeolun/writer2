@@ -1,6 +1,6 @@
-import { createSelector } from "reselect";
-import type { Arc, Book, Chapter, Scene } from "../persistence";
-import type { RootState } from "../store";
+import {createSelector} from "reselect";
+import type {Arc, Book, Chapter, Scene} from "../../../../shared/src/schema.ts";
+import type {RootState} from "../store";
 
 type Response =
   | { id: string; type: "arc"; data: Arc }

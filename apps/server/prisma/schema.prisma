@@ -123,10 +123,11 @@ model File {
   id        String   @id @default(uuid())
   ownerId   Int
   owner     User     @relation(fields: [ownerId], references: [id])
-  path      String
-  width     Int
-  height    Int
-  bytes     Int
+  path      String   @unique
+  sha256    String   @default("")
+  width     Int?
+  height    Int?
+  bytes     Int?
   mimeType  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

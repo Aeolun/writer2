@@ -1,37 +1,27 @@
 import {
-  Button,
-  HStack,
-  IconButton,
-  Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
+    Button,
+    HStack,
+    IconButton,
+    Input,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
 } from "@chakra-ui/react";
-import {
-  Check,
-  Crop,
-  Crown,
-  MagicWand,
-  Menu as MenuIcon,
-  Pacman,
-  RefreshDouble,
-  Translate,
-} from "iconoir-react";
-import React, { useState } from "react";
-import { useCallback } from "react";
-import { useDispatch } from "react-redux";
-import type { HelpKind } from "../lib/ai-instructions";
-import type { Scene } from "../lib/persistence";
-import { storyActions } from "../lib/slices/story";
-import { useAi } from "../lib/use-ai.ts";
-import { AudioButton } from "./AudioButton";
+import {Check, Crop, Crown, MagicWand, Menu as MenuIcon, Pacman, RefreshDouble, Translate,} from "iconoir-react";
+import React, {useCallback, useState} from "react";
+import {useDispatch} from "react-redux";
+import type {HelpKind} from "../lib/ai-instructions";
+import type {Scene} from "../../../shared/src/schema.ts";
+import {storyActions} from "../lib/slices/story";
+import {useAi} from "../lib/use-ai.ts";
+import {AudioButton} from "./AudioButton";
 
 export const StoryParagraphButtons = (props: {
   scene: Scene;

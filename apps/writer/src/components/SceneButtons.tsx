@@ -1,10 +1,10 @@
-import { Button, HStack, Text } from "@chakra-ui/react";
+import {Button, HStack, Text} from "@chakra-ui/react";
 import type React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { Scene } from "../lib/persistence";
-import { globalActions } from "../lib/slices/global";
-import { storyActions } from "../lib/slices/story";
-import type { RootState } from "../lib/store";
+import {useDispatch, useSelector} from "react-redux";
+import type {Scene} from "../../../shared/src/schema.ts";
+import {globalActions} from "../lib/slices/global";
+import {storyActions} from "../lib/slices/story";
+import type {RootState} from "../lib/store";
 
 export const SceneButtons = (props: { scene: Scene }) => {
   const dispatch = useDispatch();

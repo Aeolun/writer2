@@ -16,3 +16,12 @@ export function getSection(base: string, url?: string) {
     };
   }
 }
+
+export function arrayBufferToBase64(buffer: Uint8Array) {
+  let binary = '';
+  const len = buffer.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(buffer[ i ]);
+  }
+  return window.btoa(binary);
+}

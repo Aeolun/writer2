@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Box,
   Button,
   CircularProgress,
   Flex,
@@ -11,22 +10,24 @@ import {
   MenuList,
   useColorModeValue,
 } from "@chakra-ui/react";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { Menu as MenuIcon } from "iconoir-react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useRouter } from "wouter";
-import { save } from "../lib/actions/save";
-import { sync } from "../lib/actions/sync";
+import { Link, useLocation } from "wouter";
+import { settingsStore } from "../global-settings-store";
 import { globalActions } from "../lib/slices/global";
 import { storyActions } from "../lib/slices/story";
-import type { RootState } from "../lib/store";
+import { type RootState, store } from "../lib/store";
 import { reloadTrpc, trpc } from "../lib/trpc";
-import { settingsStore } from "../global-settings-store";
-import { Drawer, Menu as MenuIcon } from "iconoir-react";
 
 export const WriteHeaderMenu = () => {
   const saving = useSelector((store: RootState) => store.base.saving);
   const syncing = useSelector((store: RootState) => store.base.syncing);
+  const alteredSincePublish = useSelector(
+    (store: RootState) =>
+      !store.story.lastPublishTime ||
+      store.story.modifiedTime > store.story.lastPublishTime,
+  );
   const [location, setLocation] = useLocation();
   const aiBackend = useSelector((store: RootState) => store.base.aiBackend);
   const dispatch = useDispatch();
@@ -66,6 +67,9 @@ export const WriteHeaderMenu = () => {
         <Link href={"/characters"}>
           <Button>Characters</Button>
         </Link>
+        <Link href={"/files"}>
+          <Button>Files</Button>
+        </Link>
         <Link href={"/search"}>
           <Button>Search</Button>
         </Link>
@@ -85,7 +89,16 @@ export const WriteHeaderMenu = () => {
           <Button>Preview</Button>
         </Link>
       </Flex>
-      <Flex px={2} gap={1} py={1} justifyContent={"flex-end"}>
+      <Flex
+        px={2}
+        gap={1}
+        py={1}
+        justifyContent={"flex-end"}
+        alignItems={"center"}
+      >
+        {saving ? (
+          <CircularProgress isIndeterminate color="green.300" size={"40px"} />
+        ) : null}
         <Button
           onClick={() => {
             dispatch(globalActions.setAiPopupOpen(true));
@@ -95,18 +108,26 @@ export const WriteHeaderMenu = () => {
         </Button>
 
         <Button
-          rightIcon={
-            saving ? (
-              <CircularProgress isIndeterminate color="green.300" />
-            ) : undefined
-          }
           onClick={() => {
-            save(false).catch((e) => {
-              console.error(e);
-            });
+            const state = store.getState();
+            trpc.publish
+              .mutate({
+                story: state.story,
+                language: state.language,
+              })
+              .then((result) => {
+                console.log("published");
+                dispatch(
+                  storyActions.updatePublishTime(new Date(result).getTime()),
+                );
+              })
+              .catch((error) => {
+                console.error(error);
+              });
           }}
+          isDisabled={!alteredSincePublish || !isSignedIn?.name}
         >
-          Save
+          Publish
         </Button>
 
         <Menu>

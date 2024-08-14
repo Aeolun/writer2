@@ -11,14 +11,15 @@ import GlobalSettings from "./global-settings.tsx";
 import { store } from "./lib/store";
 import Home from "./write";
 import Characters from "./write/characters.tsx";
+import Files from "./write/files.tsx";
 import Language from "./write/language.tsx";
 import Locations from "./write/locations.tsx";
 import NewStory from "./write/new-story.tsx";
 import OpenStory from "./write/open-story.tsx";
 import PlotPoints from "./write/plot-points.tsx";
-import Search from "./write/search.tsx";
 import Preview from "./write/preview.tsx";
 import Profile from "./write/profile.tsx";
+import Search from "./write/search.tsx";
 import Settings from "./write/settings.tsx";
 import "highlight.js/styles/a11y-light.css";
 
@@ -49,6 +50,7 @@ function MyApp() {
             <Route path={"/locations"} component={Locations} />
             <Route path={"/plot-points"} component={PlotPoints} />
             <Route path={"/preview"} component={Preview} />
+            <Route path={"/files"} component={Files} />
             <Route path={"/settings"} component={Settings} />
             <Route path={"/search"} component={Search} />
             <Route path={"/profile"} component={Profile} />

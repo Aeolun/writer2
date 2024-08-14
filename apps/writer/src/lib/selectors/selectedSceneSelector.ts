@@ -1,6 +1,6 @@
-import { createSelector } from "reselect";
-import type { Scene } from "../persistence";
-import type { RootState } from "../store";
+import {createSelector} from "reselect";
+import type {Scene} from "../../../../shared/src/schema.ts";
+import type {RootState} from "../store";
 
 export const selectedSceneSelector = createSelector(
   [

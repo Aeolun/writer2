@@ -19,12 +19,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { settingsStore } from "../global-settings-store";
 import { globalActions } from "../lib/slices/global";
 import type { RootState } from "../lib/store";
-import { useForm } from "react-hook-form";
 import { reloadTrpc, trpc } from "../lib/trpc";
-import { settingsStore } from "../global-settings-store";
 
 export const SigninPopup = () => {
   const dispatch = useDispatch();
@@ -89,6 +89,7 @@ export const SigninPopup = () => {
                             console.error("Failed to save client token", error);
                           })
                           .then(async () => {
+                            await settingsStore.save();
                             await reloadTrpc();
                             const res = await trpc.whoAmI.query();
                             dispatch(

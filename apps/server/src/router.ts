@@ -1,6 +1,7 @@
-import { randomBytes, scrypt } from "node:crypto";
+import { createHash, randomBytes, scrypt } from "node:crypto";
 import { promisify } from "util";
-import * as sharp from "sharp";
+import { persistedSchema } from "@writer/shared";
+import sharp from "sharp";
 import z from "zod";
 import { prisma } from "./prisma";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
@@ -16,21 +17,53 @@ export const appRouter = router({
     return users;
   }),
   uploadImage: protectedProcedure
-    .input(z.object({ dataBase64: z.string() }))
+    .input(
+      z.object({
+        storyId: z.string(),
+        path: z.string(),
+        dataBase64: z.string(),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
       const data = Buffer.from(input.dataBase64, "base64");
+      const sha256 = createHash("sha256").update(data).digest("hex");
 
       // Save the image to a database
       const meta = await sharp(data).metadata();
       const imageType = meta.format;
-      if (!["png", "jpeg", "webp"].includes(imageType)) {
+      if (!["png", "jpeg", "webp"].includes(imageType ?? "asdf89")) {
         throw new Error("Invalid image type");
       }
 
-      const storagePath = `upload/${ctx.accessKey.ownerId}/${randomBytes(16).toString("hex")}.${imageType}`;
-      await uploadFile(data, storagePath);
-      return prisma.file.create({
-        data: {
+      const story = await prisma.story.findFirst({
+        where: {
+          id: input.storyId,
+          ownerId: ctx.accessKey.ownerId,
+        },
+      });
+
+      if (!story) {
+        throw new Error("Story not found");
+      }
+
+      const pathHash = createHash("sha256").update(input.path).digest("hex");
+      const storagePath = `upload/${ctx.accessKey.ownerId}/${input.storyId}/${pathHash}.${imageType}`;
+
+      const existingFile = await prisma.file.findFirst({
+        where: {
+          ownerId: ctx.accessKey.ownerId,
+          path: storagePath,
+        },
+      });
+
+      if (!existingFile || existingFile.sha256 !== sha256) {
+        await uploadFile(data, storagePath, `image/${imageType}`);
+      }
+      const result = await prisma.file.upsert({
+        where: {
+          path: storagePath,
+        },
+        create: {
           ownerId: ctx.accessKey.ownerId,
           path: storagePath,
           mimeType: `image/${imageType}`,
@@ -38,7 +71,50 @@ export const appRouter = router({
           height: meta.height,
           bytes: meta.size,
         },
+        update: {
+          mimeType: `image/${imageType}`,
+          width: meta.width,
+          height: meta.height,
+          bytes: meta.size,
+        },
       });
+      return {
+        ...result,
+        fullUrl: `https://team.wtf/${storagePath}`,
+      };
+    }),
+  publish: protectedProcedure
+    .input(persistedSchema)
+    .mutation(async ({ input, ctx }) => {
+      const story = await prisma.story.findFirst({
+        where: {
+          id: input.story.id,
+          ownerId: ctx.accessKey.ownerId,
+        },
+      });
+
+      if (!story) {
+        const result = await prisma.story.create({
+          data: {
+            id: input.story.id,
+            ownerId: ctx.accessKey.ownerId,
+            name: input.story.name,
+            coverArtAsset: "",
+          },
+        });
+
+        return result.updatedAt;
+      }
+
+      const result = await prisma.story.update({
+        where: {
+          id: input.story.id,
+        },
+        data: {
+          name: input.story.name,
+        },
+      });
+      return result.updatedAt;
     }),
   userById: publicProcedure
     .input(z.object({ id: z.number() }))

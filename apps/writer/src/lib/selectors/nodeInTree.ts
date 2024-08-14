@@ -1,7 +1,7 @@
-import { createSelector } from "reselect";
-import type { Node } from "../persistence";
-import type { RootState } from "../store";
-import { findNodeInStructure } from "../slices/story";
+import {createSelector} from "reselect";
+import type {Node} from "../../../../shared/src/schema.ts";
+import type {RootState} from "../store";
+import {findNodeInStructure} from "../slices/story";
 
 export const nodeInTree = createSelector(
   [

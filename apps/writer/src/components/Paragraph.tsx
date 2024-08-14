@@ -1,13 +1,13 @@
-import { Box, Button, Flex, HStack, Spinner, Tag } from "@chakra-ui/react";
-import { Check, Trash, TrashSolid } from "iconoir-react";
-import React, { Fragment, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { Scene, SceneParagraph } from "../lib/persistence";
-import { plotpointSelector } from "../lib/selectors/plotpointSelector";
-import { storyActions } from "../lib/slices/story";
-import { AutoResizeTextarea } from "./AutoResizeTextarea";
-import { Row } from "./StoryPanel";
-import { StoryParagraphButtons } from "./StoryParagraphButtons";
+import {Box, Button, Flex, HStack, Spinner, Tag} from "@chakra-ui/react";
+import {Check, Trash, TrashSolid} from "iconoir-react";
+import React, {Fragment, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import type {Scene, SceneParagraph} from "../../../shared/src/schema.ts";
+import {plotpointSelector} from "../lib/selectors/plotpointSelector";
+import {storyActions} from "../lib/slices/story";
+import {AutoResizeTextarea} from "./AutoResizeTextarea";
+import {Row} from "./StoryPanel";
+import {StoryParagraphButtons} from "./StoryParagraphButtons";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "yellow.500",

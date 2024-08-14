@@ -69,7 +69,8 @@
             "store:allow-delete",
             "store:allow-set",
             "store:allow-save",
-            "store:allow-load"
+            "store:allow-load",
+            "clipboard-manager:allow-write"
           ]
         }
       ]
