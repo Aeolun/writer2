@@ -1,13 +1,13 @@
-import {Box, Button, Flex, HStack, Spinner, Tag} from "@chakra-ui/react";
-import {Check, Trash, TrashSolid} from "iconoir-react";
-import React, {Fragment, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import type {Scene, SceneParagraph} from "../../../shared/src/schema.ts";
-import {plotpointSelector} from "../lib/selectors/plotpointSelector";
-import {storyActions} from "../lib/slices/story";
-import {AutoResizeTextarea} from "./AutoResizeTextarea";
-import {Row} from "./StoryPanel";
-import {StoryParagraphButtons} from "./StoryParagraphButtons";
+import { Box, Button, Flex, HStack, Spinner, Tag } from "@chakra-ui/react";
+import { Check, Trash, TrashSolid } from "iconoir-react";
+import React, { Fragment, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { Scene, SceneParagraph } from "../../../shared/src/schema.ts";
+import { plotpointSelector } from "../lib/selectors/plotpointSelector";
+import { storyActions } from "../lib/slices/story";
+import { AutoResizeTextarea } from "./AutoResizeTextarea";
+import { Row } from "./StoryPanel";
+import { StoryParagraphButtons } from "./StoryParagraphButtons";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "yellow.500",
@@ -255,42 +255,97 @@ export const Paragraph = (props: {
         }
         selected={props.scene.selectedParagraph === props.paragraph.id}
         main={
-          props.paragraph?.plot_point_actions &&
-          props.paragraph?.plot_point_actions.length > 0 ? (
-            <Flex flexDirection={"row"} px={8} pb={4} gap={1} flexWrap={"wrap"}>
-              {props.paragraph?.plot_point_actions.map((link) => {
-                const point = plotpoints[link.plot_point_id];
-                return (
-                  <Tag key={link.plot_point_id} p={2} colorScheme={"blue"}>
-                    {point?.title} {link.action}
-                    <Button
-                      variant={"link"}
-                      size={"xs"}
-                      ml={2}
-                      onClick={() => {
-                        if (props.paragraph && props.scene) {
-                          dispatch(
-                            storyActions.removePlotPointFromSceneParagraph({
-                              sceneId: props.scene.id,
-                              paragraphId: props.paragraph.id,
-                              plotpointId: link.plot_point_id,
-                              action: link.action,
-                            }),
-                          );
-                        } else {
-                          console.error("no scene or paragraph");
-                        }
-                      }}
+          <Box>
+            {props.paragraph?.plot_point_actions &&
+            props.paragraph?.plot_point_actions.length > 0 ? (
+              <Flex
+                flexDirection={"row"}
+                px={8}
+                pb={4}
+                gap={1}
+                flexWrap={"wrap"}
+              >
+                {props.paragraph?.plot_point_actions.map((link) => {
+                  const point = plotpoints[link.plot_point_id];
+                  return (
+                    <Tag key={link.plot_point_id} p={2} colorScheme={"blue"}>
+                      {point?.title} {link.action}
+                      <Button
+                        variant={"link"}
+                        size={"xs"}
+                        ml={2}
+                        onClick={() => {
+                          if (props.paragraph && props.scene) {
+                            dispatch(
+                              storyActions.removePlotPointFromSceneParagraph({
+                                sceneId: props.scene.id,
+                                paragraphId: props.paragraph.id,
+                                plotpointId: link.plot_point_id,
+                                action: link.action,
+                              }),
+                            );
+                          } else {
+                            console.error("no scene or paragraph");
+                          }
+                        }}
+                      >
+                        <TrashSolid />
+                      </Button>
+                    </Tag>
+                  );
+                })}
+              </Flex>
+            ) : (
+              <Box pb={4} />
+            )}
+            {props.paragraph?.inventory_actions &&
+            props.paragraph?.inventory_actions.length > 0 ? (
+              <Flex
+                flexDirection={"row"}
+                px={8}
+                pb={4}
+                gap={1}
+                flexWrap={"wrap"}
+              >
+                {props.paragraph?.inventory_actions.map((link) => {
+                  return (
+                    <Tag
+                      key={link.item_name}
+                      p={2}
+                      colorScheme={link.type === "add" ? "green" : "red"}
                     >
-                      <TrashSolid />
-                    </Button>
-                  </Tag>
-                );
-              })}
-            </Flex>
-          ) : (
-            <Box pb={4} />
-          )
+                      {link.item_name} x{link.item_amount}
+                      <Button
+                        variant={"link"}
+                        size={"xs"}
+                        ml={2}
+                        onClick={() => {
+                          if (props.paragraph && props.scene) {
+                            dispatch(
+                              storyActions.removeInventoryActionFromSceneParagraph(
+                                {
+                                  sceneId: props.scene.id,
+                                  paragraphId: props.paragraph.id,
+                                  item_name: link.item_name,
+                                  item_amount: link.item_amount,
+                                },
+                              ),
+                            );
+                          } else {
+                            console.error("no scene or paragraph");
+                          }
+                        }}
+                      >
+                        <TrashSolid />
+                      </Button>
+                    </Tag>
+                  );
+                })}
+              </Flex>
+            ) : (
+              <Box pb={4} />
+            )}
+          </Box>
         }
       />
     </>

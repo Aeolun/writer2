@@ -1,27 +1,37 @@
 import {
-    Button,
-    HStack,
-    IconButton,
-    Input,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
+  Button,
+  HStack,
+  IconButton,
+  Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from "@chakra-ui/react";
-import {Check, Crop, Crown, MagicWand, Menu as MenuIcon, Pacman, RefreshDouble, Translate,} from "iconoir-react";
-import React, {useCallback, useState} from "react";
-import {useDispatch} from "react-redux";
-import type {HelpKind} from "../lib/ai-instructions";
-import type {Scene} from "../../../shared/src/schema.ts";
-import {storyActions} from "../lib/slices/story";
-import {useAi} from "../lib/use-ai.ts";
-import {AudioButton} from "./AudioButton";
+import {
+  Check,
+  Crop,
+  Crown,
+  MagicWand,
+  Menu as MenuIcon,
+  Pacman,
+  RefreshDouble,
+  TextMagnifyingGlass,
+  Translate,
+} from "iconoir-react";
+import React, { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
+import type { HelpKind } from "../lib/ai-instructions";
+import type { Scene } from "../../../shared/src/schema.ts";
+import { storyActions } from "../lib/slices/story";
+import { useAi } from "../lib/use-ai.ts";
+import { AudioButton } from "./AudioButton";
 
 export const StoryParagraphButtons = (props: {
   scene: Scene;
@@ -76,6 +86,32 @@ export const StoryParagraphButtons = (props: {
       flexWrap={"wrap"}
       w={"100%"}
     >
+      <IconButton
+        aria-label={"rewrite"}
+        icon={<TextMagnifyingGlass />}
+        title="Fix grammar with AI. This will show the suggestion next to the existing paragraph."
+        size={"xs"}
+        onClick={() => {
+          dispatch(
+            storyActions.updateSceneParagraph({
+              sceneId: props.scene.id,
+              paragraphId: props.paragraphId,
+              extraLoading: true,
+            }),
+          );
+          help("rewrite_spelling")?.then(() => {
+            dispatch(
+              storyActions.updateSceneParagraph({
+                sceneId: props.scene.id,
+                paragraphId: props.paragraphId,
+                extraLoading: false,
+              }),
+            );
+          });
+        }}
+      >
+        Fix Grammar
+      </IconButton>
       <IconButton
         aria-label={"rewrite"}
         icon={<MagicWand />}

@@ -1,14 +1,19 @@
-import {path} from "@tauri-apps/api";
-import {readDir, readTextFile, stat} from "@tauri-apps/plugin-fs";
-import {eq} from "drizzle-orm";
+import { path } from "@tauri-apps/api";
+import { readDir, readTextFile, stat } from "@tauri-apps/plugin-fs";
+import { eq } from "drizzle-orm";
 import short from "short-uuid";
-import {db} from "../../db";
-import {storyTable} from "../../db/schema.ts";
-import {entities, languageEntities, persistedSchema, type PersistedStory,} from "@writer/shared";
-import {globalActions} from "../slices/global.ts";
-import {languageActions} from "../slices/language.ts";
-import {storyActions} from "../slices/story.ts";
-import {store} from "../store.ts";
+import { db } from "../../db";
+import { storyTable } from "../../db/schema.ts";
+import {
+  entities,
+  languageEntities,
+  persistedSchema,
+  type PersistedStory,
+} from "@writer/shared";
+import { globalActions } from "../slices/global.ts";
+import { languageActions } from "../slices/language.ts";
+import { storyActions } from "../slices/story.ts";
+import { store } from "../store.ts";
 
 export const loadProject = async (projectPath: string) => {
   const indexPath = await path.join(projectPath, "index.json");
@@ -23,15 +28,19 @@ export const loadProject = async (projectPath: string) => {
   for (const entity of entities) {
     delete storyData.story[entity];
 
-    storyData.story[entity] = {};
-    const entityPath = await path.join(projectPath, entity);
-    const entityFiles = await readDir(entityPath);
-    for (const entityId of entityFiles.map((file) =>
-      file.name.replace(".json", ""),
-    )) {
-      const entityFile = await path.join(entityPath, `${entityId}.json`);
-      const entityData = await readTextFile(entityFile);
-      storyData.story[entity][entityId] = JSON.parse(entityData.toString());
+    try {
+      storyData.story[entity] = {};
+      const entityPath = await path.join(projectPath, entity);
+      const entityFiles = await readDir(entityPath);
+      for (const entityId of entityFiles
+        .filter((file) => !file.name.startsWith("."))
+        .map((file) => file.name.replace(".json", ""))) {
+        const entityFile = await path.join(entityPath, `${entityId}.json`);
+        const entityData = await readTextFile(entityFile);
+        storyData.story[entity][entityId] = JSON.parse(entityData.toString());
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 

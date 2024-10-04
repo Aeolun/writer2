@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Box, Flex, Input, useColorModeValue } from "@chakra-ui/react";
 
@@ -9,7 +9,10 @@ import { SceneTabs } from "../components/SceneTabs";
 import { ArcTabs } from "../components/ArcTabs";
 import { BookTabs } from "../components/BookTabs";
 import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
-import { sortedBookObjects } from "../lib/selectors/sortedBookObjects";
+import {
+  SortedBookObject,
+  sortedBookObjects,
+} from "../lib/selectors/sortedBookObjects";
 import { Paragraph } from "./Paragraph";
 
 export const SearchPane = () => {
@@ -21,7 +24,20 @@ export const SearchPane = () => {
   const objects = useSelector(sortedBookObjects);
   const scenes = useSelector((store: RootState) => store.story.scene);
 
+  const [foundParagraphs, setFoundParagraphs] = useState<SortedBookObject[]>(
+    [],
+  );
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (search.length > 3 && objects) {
+      setFoundParagraphs(
+        objects.filter(
+          (i) => i.type === "paragraph" && i.text.includes(search),
+        ),
+      );
+    }
+  }, [search]);
 
   const dispatch = useDispatch();
   const color = useColorModeValue("blue.200", "gray.600");
@@ -32,6 +48,7 @@ export const SearchPane = () => {
       flex={1}
       flexDirection={"column"}
       height={"100%"}
+      overflow={"hidden"}
       backgroundColor={backgroundColor}
       backgroundImage={"url(/rice-paper.png)"}
     >
@@ -42,10 +59,9 @@ export const SearchPane = () => {
           setSearch(e.target.value);
         }}
       />
-      {search.length > 3
-        ? objects
-            ?.filter((i) => i.type === "paragraph" && i.text.includes(search))
-            .map((i) => {
+      <Box flex={1} overflow="auto">
+        {foundParagraphs.length > 0
+          ? foundParagraphs.map((i) => {
               if (i.type === "paragraph") {
                 const p = scenes[i.sceneId].paragraphs.find(
                   (p) => p.id === i.paragraphId,
@@ -65,7 +81,8 @@ export const SearchPane = () => {
                 return null;
               }
             })
-        : null}
+          : null}
+      </Box>
     </Flex>
   );
 };

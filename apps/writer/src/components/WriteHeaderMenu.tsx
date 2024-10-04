@@ -33,6 +33,9 @@ export const WriteHeaderMenu = () => {
   const dispatch = useDispatch();
   const color = useColorModeValue("blue.300", "gray.700");
   const isSignedIn = useSelector((store: RootState) => store.base.signedInUser);
+  const rrStoryId = useSelector(
+    (store: RootState) => store.story.settings.royalRoadId,
+  );
 
   return (
     <Flex
@@ -107,6 +110,27 @@ export const WriteHeaderMenu = () => {
           AI Question
         </Button>
 
+        <Button
+          isDisabled={!rrStoryId || !isSignedIn?.name}
+          onClick={() => {
+            const state = store.getState();
+            trpc.importRoyalroad
+              .mutate({
+                storyId: rrStoryId,
+              })
+              .then((result) => {
+                console.log("imported");
+                if (result?.story) {
+                  dispatch(storyActions.setStory(result.story));
+                }
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }}
+        >
+          Import
+        </Button>
         <Button
           onClick={() => {
             const state = store.getState();

@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { reducer as baseReducer } from "./slices/global";
 import { reducer as storyReducer } from "./slices/story";
 import { reducer as languageReducer } from "./slices/language";
@@ -7,8 +7,12 @@ export const store = configureStore({
   reducer: {
     base: baseReducer,
     story: storyReducer,
-    language: languageReducer
+    language: languageReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
   devTools: true,
 });
 

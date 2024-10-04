@@ -1,7 +1,9 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import React from "react";
 import { ScenePanel } from "../components/ScenePanel";
+
 import { StoryPanel } from "./StoryPanel.tsx";
+import { SceneHistoryPanel } from "./SceneHistoryPanel.tsx";
 
 export const SceneTabs = () => {
   return (
@@ -14,6 +16,7 @@ export const SceneTabs = () => {
       <TabList>
         <Tab>Story</Tab>
         <Tab>Scene</Tab>
+        <Tab>History</Tab>
       </TabList>
 
       <TabPanels
@@ -25,8 +28,11 @@ export const SceneTabs = () => {
         <TabPanel flex={1} p={0} overflow={"hidden"}>
           <StoryPanel />
         </TabPanel>
-        <TabPanel flex={1}>
+        <TabPanel flex={1} p={0} overflow={"hidden"}>
           <ScenePanel />
+        </TabPanel>
+        <TabPanel flex={1} p={0} overflow={"hidden"}>
+          <SceneHistoryPanel />
         </TabPanel>
       </TabPanels>
     </Tabs>

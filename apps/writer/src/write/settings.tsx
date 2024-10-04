@@ -65,6 +65,26 @@ const Profile = () => {
                 every command.
               </FormHelperText>
             </FormControl>
+            <FormControl>
+              <FormLabel>Royal Road ID</FormLabel>
+              <Input
+                placeholder={"Royal Road ID"}
+                value={settings?.royalRoadId}
+                onChange={(e) => {
+                  dispatch(
+                    storyActions.setSetting({
+                      key: "royalRoadId",
+                      value: e.currentTarget.value,
+                    }),
+                  );
+                }}
+              />
+              <FormHelperText>
+                When this is set, and you are logged into the the online
+                service, you can use the 'Import' function to import a story
+                from Royal Road.
+              </FormHelperText>
+            </FormControl>
           </Flex>
         </>
       ) : (

@@ -32,13 +32,23 @@ export const ChapterTabs = () => {
           ?.filter((i) => i.type === "paragraph")
           .map((i) => i.text)
           .join("\n\n");
+
         useAi(helpKind, paragraphs ?? "", false).then((res) => {
-          dispatch(
-            storyActions.updateChapter({
-              id: chapterObj?.id,
-              title: res ?? undefined,
-            }),
-          );
+          if (helpKind === "suggest_title") {
+            dispatch(
+              storyActions.updateChapter({
+                id: chapterObj?.id,
+                title: res ?? undefined,
+              }),
+            );
+          } else {
+            dispatch(
+              storyActions.updateChapter({
+                id: chapterObj?.id,
+                extra: res,
+              }),
+            );
+          }
         });
       }
     },
@@ -63,6 +73,7 @@ export const ChapterTabs = () => {
       >
         <TabPanel flex={1} p={0} overflow={"hidden"}>
           <Box flex={1} p={4} height="100%" overflow="auto">
+            {chapterObj.id}
             <FormControl>
               <FormLabel>Title</FormLabel>
               <Input
@@ -111,6 +122,7 @@ export const ChapterTabs = () => {
                 value={chapterObj.data.start_date}
               />
             </FormControl>
+            <pre>{chapterObj.data.extra}</pre>
             <Button
               colorScheme={"blue"}
               onClick={() => {
@@ -118,6 +130,14 @@ export const ChapterTabs = () => {
               }}
             >
               [AI] Suggest title
+            </Button>
+            <Button
+              colorScheme={"blue"}
+              onClick={() => {
+                help("spelling");
+              }}
+            >
+              [AI] Spelling
             </Button>
             <Button
               colorScheme={"red"}

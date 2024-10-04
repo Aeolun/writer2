@@ -19,6 +19,7 @@ export const AutoResizeTextarea = React.forwardRef<
       w="100%"
       fontSize={"1rem"}
       resize="none"
+      spellCheck={"true"}
       ref={ref}
       minRows={1}
       as={TextArea}

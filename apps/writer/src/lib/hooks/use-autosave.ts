@@ -1,22 +1,35 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { save } from "../actions/save";
 
 export const useAutosave = (storyLoaded: boolean) => {
   let saveCount = 0;
-  const autosavePercentage = 30;
+  const oneSaveEvery = 10_000;
+  const oneAutoSaveForEvery = 12;
   useEffect(() => {
+    let lastAutoSaveAt = Date.now();
     if (storyLoaded) {
-      const saveInterval = setInterval(() => {
+      const saveLogic = (lastAutoSaveTime: number) => {
         saveCount++;
-        save(saveCount % autosavePercentage === 0).catch((e) => {
-          console.error(e);
-        });
-      }, 10000);
+        const isAutoSave = saveCount % oneAutoSaveForEvery === 0;
+        const autoSaveAt = Date.now();
+        save(isAutoSave, lastAutoSaveTime)
+          .catch((e) => {
+            console.error(e);
+          })
+          .finally(() => {
+            if (isAutoSave) {
+              console.log("set auto save time to ", autoSaveAt);
+              lastAutoSaveAt = autoSaveAt;
+            }
+          });
+      };
+
+      const saveInterval = setInterval(() => {
+        saveLogic(lastAutoSaveAt);
+      }, oneSaveEvery);
 
       const handleVisibilityChange = () => {
-        save(saveCount % autosavePercentage === 0).catch((e) => {
-          console.error(e);
-        });
+        saveLogic(lastAutoSaveAt);
       };
       // this to immediately throw a 409 if the story has been updated elsewhere
       window.addEventListener("focus", handleVisibilityChange);

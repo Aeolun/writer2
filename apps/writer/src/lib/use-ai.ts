@@ -1,43 +1,54 @@
-import { Store } from "@tauri-apps/plugin-store";
-import OpenAI from "openai";
-import { instructions } from "./ai-instructions.ts";
+import { settingsStore } from "../global-settings-store.ts";
+import type { instructions } from "./ai-instructions.ts";
+import { Anthropic } from "./llm/anthropic.ts";
+import { Groq } from "./llm/groq.ts";
+import { Ollama } from "./llm/ollama.ts";
+import { OpenAI } from "./llm/openai.ts";
 import { store } from "./store.ts";
-
-const settingStore = new Store("global-settings.bin");
 
 export async function useAi(
   kind: keyof typeof instructions,
   text: string,
   addInstructions = true,
 ) {
-  const key = await settingStore.get<string>("openai-key");
-  if (!key) {
-    throw new Error("No openai key set");
-  }
-  const openai = new OpenAI({
-    apiKey: key,
-    dangerouslyAllowBrowser: true,
-  });
-
+  const aiSource = await settingsStore.get<string>("ai-source");
   const data = store.getState();
 
-  const result = await openai.chat.completions.create({
-    messages: [
-      {
-        role: "system",
-        content: instructions[kind],
-      },
-      {
-        role: "user",
-        content: addInstructions
-          ? data.story.settings?.aiInstructions + "\n\n" + text
-          : text,
-      },
-    ],
-    max_tokens: 2000,
-    model: "gpt-4o-mini",
-  });
-
-  console.log(JSON.stringify(result, null, 2));
-  return result.choices[0].message.content;
+  if (aiSource === "openai") {
+    const openai = new OpenAI();
+    await openai.init();
+    return openai.chat(kind, text, {
+      additionalInstructions: addInstructions
+        ? data.story.settings?.aiInstructions
+        : undefined,
+    });
+  }
+  if (aiSource === "groq") {
+    const groq = new Groq();
+    await groq.init();
+    return groq.chat(kind, text, {
+      additionalInstructions: addInstructions
+        ? data.story.settings?.aiInstructions
+        : undefined,
+    });
+  }
+  if (aiSource === "anthropic") {
+    const anthropic = new Anthropic();
+    await anthropic.init();
+    return anthropic.chat(kind, text, {
+      additionalInstructions: addInstructions
+        ? data.story.settings?.aiInstructions
+        : undefined,
+    });
+  }
+  if (aiSource === "ollama") {
+    const ollama = new Ollama();
+    await ollama.init();
+    return ollama.chat(kind, text, {
+      additionalInstructions: addInstructions
+        ? data.story.settings?.aiInstructions
+        : undefined,
+    });
+  }
+  throw new Error("Unsupported AI source");
 }

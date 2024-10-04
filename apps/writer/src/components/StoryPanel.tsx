@@ -8,7 +8,21 @@ import {
   Heading,
   Select,
   useColorModeValue,
+  Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalProps,
+  ModalBody,
+  Textarea,
 } from "@chakra-ui/react";
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList,
+} from "@choc-ui/chakra-autocomplete";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +34,9 @@ import type { RootState } from "../lib/store";
 import { LanguageForm } from "./LanguageForm";
 import { Paragraph } from "./Paragraph";
 import { SceneButtons } from "./SceneButtons";
+import { useAi } from "../lib/use-ai";
+import { InventoryAction } from "@writer/shared";
+import { itemsUntilParagraphSelector } from "../lib/selectors/itemsUntilParagraphSelector";
 
 export const Row = (props: {
   main: React.ReactNode;
@@ -90,11 +107,47 @@ export const Row = (props: {
   );
 };
 
+export const CurrentInventory = (props: {
+  currentParagraphId?: string;
+  onClose: ModalProps["onClose"];
+}) => {
+  const itemsUntilParagraph = useSelector(itemsUntilParagraphSelector);
+
+  return (
+    <Modal isOpen={true} onClose={props.onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Current Inventory</ModalHeader>
+        <ModalBody>
+          <ul>
+            {Object.keys(itemsUntilParagraph)
+              .filter((item) => itemsUntilParagraph[item] > 0)
+              .map((item) => (
+                <li key={item}>
+                  {item} x{itemsUntilParagraph[item]}
+                </li>
+              ))}
+          </ul>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
+};
+
 export const StoryPanel = () => {
   const scene = useSelector(selectedSceneSelector);
   const [selectedScene, setSelectedScene] = useState<string>("");
   const [selectedParagraph, setSelectedParagraph] = useState<string>("");
   const [plotPoint, setPlotPoint] = useState<string>();
+  const [nextParagraph, setNextParagraph] = useState<string>();
+  const items = useSelector((store: RootState) => store.story.item);
+  const [showCurrentInventory, setShowCurrentInventory] =
+    useState<boolean>(false);
+  const [inventory, setInventory] = useState<InventoryAction>({
+    type: "add",
+    item_name: "",
+    item_amount: 1,
+  });
   const [action, setAction] = useState<string>("mentioned");
   const plotpoints = useSelector(plotpointSelector);
   const selectedLanguage = useSelector(
@@ -131,6 +184,12 @@ export const StoryPanel = () => {
 
   return (
     <Flex flexDirection={"column"} height={"100%"} overflow={"hidden"}>
+      {showCurrentInventory ? (
+        <CurrentInventory
+          currentParagraphId={scene.selectedParagraph}
+          onClose={() => setShowCurrentInventory(false)}
+        />
+      ) : null}
       <Flex
         flexDirection={"row"}
         flex={1}
@@ -163,15 +222,139 @@ export const StoryPanel = () => {
           {scene.paragraphs.map((p) => {
             return <Paragraph key={p.id} scene={scene} paragraph={p} />;
           })}
+          <Flex flexDirection={"column"} alignItems={"flex-start"} w={"100%"}>
+            <Textarea
+              value={nextParagraph}
+              placeholder={"What happens in this paragraph"}
+              onChange={(event) => {
+                setNextParagraph(event.target.value);
+              }}
+            />
+            <Button
+              mt={2}
+              onClick={() => {
+                useAi(
+                  "next_paragraph",
+                  `The summary of the scene is: \n\n${scene.summary}\n\nScene so far:\n\n\`\`\`\n${scene.paragraphs.map((p) => p.text).join("\n\n")}\n\`\`\`\n\nWrite a scene in which the following happens: ${nextParagraph}`,
+                  false,
+                ).then((result) => {
+                  dispatch(
+                    storyActions.createSceneParagraph({
+                      sceneId: scene.id,
+                      text: result ?? undefined,
+                    }),
+                  );
+                });
+              }}
+            >
+              Generate Next Paragraph
+            </Button>
+          </Flex>
+          <Box minH={"400px"} w={"100%"} />
         </Flex>
+        {scene.extra ? (
+          <Textarea
+            flex={0.5}
+            overflow={"auto"}
+            flexDirection={"column"}
+            alignItems={"flex-start"}
+            whiteSpace={"pre-wrap"}
+            height="100%"
+            bg={"gray.100"}
+            p={4}
+            onChange={(e) => {
+              dispatch(
+                storyActions.updateScene({
+                  id: scene.id,
+                  extra: e.currentTarget.value,
+                }),
+              );
+            }}
+            value={scene.extra}
+          />
+        ) : null}
         {selectedLanguage ? (
-          <Flex flex={1} overflow={"auto"} height={"100%"}>
+          <Flex flex={"1"} overflow={"auto"} height={"100%"}>
             <LanguageForm languageId={selectedLanguage} />
           </Flex>
         ) : null}
       </Flex>
       <SceneButtons scene={scene} />
       <Box px={4} py={2} bg={"gray.300"}>
+        <Flex gap={1} alignItems="center" mt="2">
+          <Text minW="6em">Inventory</Text>
+          <Button
+            onClick={() => {
+              setShowCurrentInventory(!showCurrentInventory);
+            }}
+          >
+            Current
+          </Button>
+          <Select
+            value={inventory.type}
+            onChange={(e) => {
+              setInventory({
+                ...inventory,
+                type: e.currentTarget.value as "add" | "remove",
+              });
+            }}
+          >
+            <option value="add">Add</option>
+            <option value="remove">Remove</option>
+          </Select>
+          <AutoComplete
+            openOnFocus
+            onSelectOption={(option) => {
+              setInventory({
+                ...inventory,
+                item_name: option.item.value,
+              });
+            }}
+          >
+            <AutoCompleteInput
+              variant="filled"
+              value={inventory.item_name}
+              onChange={(e) => {
+                setInventory({
+                  ...inventory,
+                  item_name: e.currentTarget.value,
+                });
+              }}
+            />
+            <AutoCompleteList>
+              {Object.values(items ?? {}).map((item) => (
+                <AutoCompleteItem key={`option-${item.id}`} value={item.name}>
+                  {item.name}
+                </AutoCompleteItem>
+              ))}
+            </AutoCompleteList>
+          </AutoComplete>
+          <Input
+            type="number"
+            value={inventory.item_amount}
+            onChange={(e) => {
+              setInventory({
+                ...inventory,
+                item_amount: parseInt(e.currentTarget.value),
+              });
+            }}
+          />
+          <Button
+            onClick={() => {
+              if (scene && inventory && scene.selectedParagraph) {
+                dispatch(
+                  storyActions.addInventoryActionToSceneParagraph({
+                    sceneId: scene.id,
+                    paragraphId: scene.selectedParagraph,
+                    ...inventory,
+                  }),
+                );
+              }
+            }}
+          >
+            Add
+          </Button>
+        </Flex>
         <Flex gap={1} alignItems="center" mt="2">
           <Text minW="6em">Plot Points</Text>
           <Select

@@ -12,10 +12,12 @@ import {
   Textarea,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { writeTextFile } from "@tauri-apps/plugin-fs";
 import markdownit from "markdown-it";
 import Markdown from "markdown-to-jsx";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { open } from "@tauri-apps/plugin-dialog";
 import type { SortedBookObject } from "../lib/selectors/sortedBookObjects";
 import { storyActions } from "../lib/slices/story";
 
@@ -51,7 +53,13 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
       const contentText = await Promise.all(
         props.objects.map(async (item) => {
           if (item.type === "paragraph") {
-            return `${item.text.replaceAll("--", "—").replaceAll("=", "#").replaceAll("*", "_").trim()}\n`;
+            return `${item.text
+              .replace("* * *", "#line(length: 100%)")
+              .replaceAll("#", "\\#")
+              .replaceAll("$", "\\$")
+              .replaceAll("@", "\\@")
+              .replace(/^\* /gm, "- ")
+              .replace(/_{2,}/g, "`--`")}\n`;
           }
           if (item.type === "chapter_header") {
             return `= ${item.text}\n`;
@@ -64,7 +72,8 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
       ).then((i) => {
         return i.filter((i) => i).join("\n");
       });
-      const newTypstText = `#set text(
+      const newTypstText = `#import "@preview/cmarker:0.1.0"
+#set text(
   font: "New Computer Modern",
   size: 10pt
 )
@@ -72,6 +81,7 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
   paper: "a5",
   margin: (x: 1.8cm, y: 1.5cm),
 )
+#set heading(numbering: "1.a)")
 #set par(
   justify: true,
   leading: 0.52em,
@@ -132,6 +142,19 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
                 }, 0);
               }}
             />
+            <Button
+              onClick={async () => {
+                const savePath = await open({
+                  multiple: false,
+                  directory: false,
+                });
+                if (savePath) {
+                  await writeTextFile(savePath.path, typstText);
+                }
+              }}
+            >
+              Save
+            </Button>
           </TabPanel>
           <TabPanel>
             <Box maxWidth={"40em"} m={"auto"}>

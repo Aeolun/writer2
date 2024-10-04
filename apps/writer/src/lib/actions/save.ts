@@ -1,7 +1,7 @@
-import {saveProject} from "../persistence/save-project.ts";
-import {store} from "../store";
+import { saveProject } from "../persistence/save-project.ts";
+import { store } from "../store";
 
-export const save = async (newAutoSave: boolean) => {
+export const save = async (newAutoSave: boolean, lastAutoSaveAt?: number) => {
   const { base, ...rest } = store.getState();
   if (!base.openPath) {
     throw new Error(
@@ -12,5 +12,6 @@ export const save = async (newAutoSave: boolean) => {
     ...rest,
     newAutosave: newAutoSave,
     expectedLastModified: base.expectedLastModified ?? 0,
+    changesSince: lastAutoSaveAt,
   });
 };

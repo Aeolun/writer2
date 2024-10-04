@@ -46,7 +46,7 @@ const Home = () => {
                   .set("recent-stories", [
                     { name: story.story.name, path: projectPath },
                     ...recentStories
-                      .filter((r) => r.name !== story.story.name)
+                      .filter((r) => r.path !== projectPath)
                       .slice(0, 9),
                   ])
                   .then(() => {
@@ -78,7 +78,7 @@ const Home = () => {
                     .set("recent-stories", [
                       { name: loadedStory.story.name, path: story.path },
                       ...recentStories
-                        .filter((r) => r.name !== loadedStory.story.name)
+                        .filter((r) => r.path !== story.path)
                         .slice(0, 9),
                     ])
                     .then(() => {

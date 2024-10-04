@@ -25,12 +25,21 @@ export const ScenePanel = () => {
           selectedScene.data.text +
           "\n\nOutput only the summary.";
         useAi(helpKind, text).then((res) => {
-          dispatch(
-            storyActions.updateScene({
-              id: selectedScene?.id,
-              summary: res ?? undefined,
-            }),
-          );
+          if (extra) {
+            dispatch(
+              storyActions.updateScene({
+                id: selectedScene?.id,
+                extra: res ?? undefined,
+              }),
+            );
+          } else {
+            dispatch(
+              storyActions.updateScene({
+                id: selectedScene?.id,
+                summary: res ?? undefined,
+              }),
+            );
+          }
         });
       }
     },
@@ -40,6 +49,7 @@ export const ScenePanel = () => {
   return selectedScene && selectedScene.type === "scene" ? (
     <>
       <div>
+        Id: {selectedScene.id}
         <Input
           placeholder={"title"}
           onChange={(e) => {
@@ -68,6 +78,23 @@ export const ScenePanel = () => {
         style={{ width: "100%" }}
         value={selectedScene.data.summary}
       />
+      {selectedScene.data.extra && (
+        <Textarea
+          mt={2}
+          onChange={(e) => {
+            dispatch(
+              storyActions.updateScene({
+                id: selectedScene.id,
+                extra: e.target.value,
+              }),
+            );
+          }}
+          rows={18}
+          placeholder="extra"
+          style={{ width: "100%" }}
+          value={selectedScene.data.extra}
+        />
+      )}
       <Box>
         <Checkbox
           isChecked={selectedScene.data.posted ?? false}
@@ -90,6 +117,14 @@ export const ScenePanel = () => {
         }}
       >
         [AI] Summarize
+      </Button>
+      <Button
+        colorScheme={"blue"}
+        onClick={() => {
+          help("improvements", true);
+        }}
+      >
+        [AI] Improvements
       </Button>
       <Button
         colorScheme={"red"}

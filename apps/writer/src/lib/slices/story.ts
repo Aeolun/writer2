@@ -5,14 +5,16 @@ import type {
   Book,
   Chapter,
   Character,
+  InventoryAction,
   Node,
   Scene,
   SceneParagraph,
   Story,
-} from "../../../../shared/src/schema.ts";
+} from "@writer/shared";
 
 const initialState: Story = {
-  name: undefined,
+  id: short.generate(),
+  name: "",
   modifiedTime: Date.now(),
   chapter: {},
   structure: [],
@@ -163,68 +165,7 @@ export const globalSlice = createSlice({
     setStory: (state, action: PayloadAction<Story>) => {
       for (const key in action.payload) {
         const storyKey = key as keyof Story;
-        // if (storyKey === 'structure') {
-        //   continue;
-        // }
 
-        // if (storyKey === 'scene') {
-        //   for(const scene of Object.values(action.payload[storyKey])) {
-        //     scene.paragraphs = scene.paragraphs || [];
-        //   }
-        // }
-        // if (storyKey === 'book') {
-        //   for(const book of Object.values(action.payload[storyKey])) {
-        //     const arcsChildren = book.arcs.map((arcId) => {
-        //         return action.payload.arc[arcId];
-        //     }).sort((a, b) => {
-        //         return a.sort_order - b.sort_order;
-        //     }).map((arc) => {
-        //
-        //         const chapters = arc.chapters.map((chapterId) => {
-        //             return action.payload.chapter[chapterId];
-        //         }).sort((a, b) => {
-        //             return a.sort_order - b.sort_order;
-        //         }).map((chapter) => {
-        //             const scenes = chapter.scenes.map((sceneId) => {
-        //                 return action.payload.scene[sceneId];
-        //             }).sort((a, b) => {
-        //             return a.sort_order - b.sort_order;
-        //             }).map((scene) => {
-        //                 return {
-        //                     id: scene.id,
-        //                     name: scene.title,
-        //                     type: 'scene',
-        //                     isOpen: false,
-        //                 };
-        //             });
-        //
-        //             return {
-        //                 id: chapter.id,
-        //                 name: chapter.title,
-        //                 type: 'chapter',
-        //                 isOpen: false,
-        //                 children: scenes,
-        //             };
-        //         });
-        //         return {
-        //           id: arc.id,
-        //           name: arc.title,
-        //           type: 'arc',
-        //           isOpen: false,
-        //           children: chapters,
-        //         };
-        //     });
-        //     state.structure.push({
-        //         id: book.id,
-        //         name: book.title,
-        //         type: 'book',
-        //         isOpen: false,
-        //         children: arcsChildren,
-        //     })
-        //   }
-        // }
-
-        //@ts-expect-error
         state[storyKey] = action.payload[storyKey];
       }
     },
@@ -254,6 +195,7 @@ export const globalSlice = createSlice({
       const newId = short.generate().toString();
       state.chapter[newId] = {
         id: newId,
+        modifiedAt: Date.now(),
         title: "New Chapter",
         summary: "",
         start_date: "",
@@ -272,6 +214,7 @@ export const globalSlice = createSlice({
       state.book[newId] = {
         id: newId,
         title: "New Book",
+        modifiedAt: Date.now(),
         summary: "",
         start_date: "",
       };
@@ -289,6 +232,7 @@ export const globalSlice = createSlice({
       state.arc[newId] = {
         id: newId,
         title: "New Arc",
+        modifiedAt: Date.now(),
         summary: "",
         start_date: "",
       };
@@ -308,6 +252,7 @@ export const globalSlice = createSlice({
         id: newId,
         title: "New Scene",
         summary: "",
+        modifiedAt: Date.now(),
         words: 0,
         hasAI: false,
         posted: false,
@@ -366,41 +311,58 @@ export const globalSlice = createSlice({
     },
     createSceneParagraph: (
       state,
-      action: PayloadAction<{ sceneId: string; afterParagraphId?: string }>,
+      action: PayloadAction<{
+        sceneId: string;
+        afterParagraphId?: string;
+        text?: string;
+      }>,
     ) => {
       const newId = short.generate().toString();
-      const afterParagraphIndex = state.scene[
+      let afterParagraphIndex = state.scene[
         action.payload.sceneId
       ].paragraphs.findIndex((p) => {
         return p.id === action.payload.afterParagraphId;
       });
+
       const currentScene = state.scene[action.payload.sceneId];
-      const currentParagraph = currentScene.paragraphs[afterParagraphIndex];
+      currentScene.modifiedAt = Date.now();
+      const afterParagraph =
+        afterParagraphIndex >= 0
+          ? currentScene.paragraphs[afterParagraphIndex]
+          : undefined;
       const cursorPosition = currentScene.cursor;
 
-      const newParagraphText = currentParagraph
-        ? currentParagraph.text.substring(cursorPosition ?? 0)
-        : "";
-      if (currentParagraph) {
-        currentParagraph.text = currentParagraph.text.substring(
-          0,
-          cursorPosition,
-        );
+      const newParagraphText = action.payload.text
+        ? action.payload.text
+        : afterParagraph
+          ? afterParagraph.text.substring(cursorPosition ?? 0)
+          : "";
+      if (afterParagraph && !action.payload.text) {
+        afterParagraph.text = afterParagraph.text.substring(0, cursorPosition);
       }
 
       state.modifiedTime = Date.now();
-      state.scene[action.payload.sceneId].paragraphs.splice(
-        afterParagraphIndex + 1,
-        0,
-        {
-          id: newId,
-          text: newParagraphText,
-          state: "draft",
-          modifiedAt: new Date().toISOString(),
-          comments: [],
-          plot_point_actions: [],
-        },
-      );
+
+      const paragraphData: SceneParagraph = {
+        id: newId,
+        text: newParagraphText,
+        state: "draft",
+        modifiedAt: Date.now(),
+        comments: [],
+        plot_point_actions: [],
+      };
+
+      if (afterParagraphIndex > -1) {
+        console.log("adding after paragraph", afterParagraphIndex);
+        state.scene[action.payload.sceneId].paragraphs.splice(
+          afterParagraphIndex + 1,
+          0,
+          paragraphData,
+        );
+      } else {
+        console.log("adding on end");
+        state.scene[action.payload.sceneId].paragraphs.push(paragraphData);
+      }
       // set selected paragraph to new one
       state.scene[action.payload.sceneId].selectedParagraph = newId;
       state.scene[action.payload.sceneId].cursor = 0;
@@ -429,6 +391,7 @@ export const globalSlice = createSlice({
       }>,
     ) {
       const scene = state.scene[action.payload.sceneId];
+      scene.modifiedAt = Date.now();
       const paragraphIndex = scene.paragraphs.findIndex((p) => {
         return p.id === action.payload.paragraphId;
       });
@@ -472,6 +435,7 @@ export const globalSlice = createSlice({
         }${deletableParagraph.text}`;
         console.log("lenght after", previousParagraph.text.length);
       }
+      state.scene[action.payload.sceneId].modifiedAt = Date.now();
       state.scene[action.payload.sceneId].paragraphs.splice(paragraphIndex, 1);
 
       state.modifiedTime = Date.now();
@@ -498,11 +462,14 @@ export const globalSlice = createSlice({
         } else {
           scene.hasAI = scene.paragraphs.some((p) => p.state === "ai");
         }
-        scene.posted = false;
-        scene.words = scene.paragraphs.reduce((acc, p) => {
-          return acc + p.text.split(" ").length;
-        }, 0);
+
         if (paragraph) {
+          scene.posted = false;
+          scene.modifiedAt = Date.now();
+          scene.words = scene.paragraphs.reduce((acc, p) => {
+            return acc + p.text.split(" ").length;
+          }, 0);
+
           if (action.payload.text !== undefined) {
             paragraph.text = action.payload.text;
           }
@@ -524,7 +491,7 @@ export const globalSlice = createSlice({
             console.log("setting extra");
             paragraph.extra = action.payload.extra;
           }
-          paragraph.modifiedAt = new Date().toISOString();
+          paragraph.modifiedAt = Date.now();
           state.modifiedTime = Date.now();
         }
       }
@@ -547,10 +514,12 @@ export const globalSlice = createSlice({
       );
 
       if (paragraph && chapterId) {
+        state.modifiedAt = Date.now();
         // get all paragraphs after the current one
         const paragraphs = scene.paragraphs.splice(
           scene.paragraphs.indexOf(paragraph),
         );
+        scene.modifiedAt = Date.now();
         // create new scene
         const newSceneId = short.generate().toString();
         state.scene[newSceneId] = {
@@ -562,6 +531,7 @@ export const globalSlice = createSlice({
           }, 0),
           // do new paragraphs have AI
           hasAI: paragraphs.some((p) => p.state === "ai"),
+          modifiedAt: Date.now(),
           posted: false,
           plot_point_actions: [],
           cursor: 0,
@@ -580,10 +550,10 @@ export const globalSlice = createSlice({
     updateScene: (state, action: PayloadAction<Partial<Scene>>) => {
       const id = action.payload.id as keyof typeof state.scene;
       if (id) {
+        const obj = state.scene[id];
         const keys = Object.keys(action.payload);
         for (const key of keys) {
           const writableKey = key as keyof Scene;
-          const obj = state.scene[id];
           if (obj[writableKey] !== action.payload[writableKey]) {
             // @ts-ignore
             obj[writableKey] = action.payload[writableKey];
@@ -594,6 +564,7 @@ export const globalSlice = createSlice({
             }
           }
         }
+        obj.modifiedAt = Date.now();
         // update title in structure
         state.modifiedTime = Date.now();
       }
@@ -603,6 +574,7 @@ export const globalSlice = createSlice({
         state.chapter[action.payload.id] = {
           ...state.chapter[action.payload.id],
           ...action.payload,
+          modifiedAt: Date.now(),
         };
         // update title in structure
         updateItemInStructure(state.structure, action.payload.id, {
@@ -616,6 +588,7 @@ export const globalSlice = createSlice({
         state.arc[action.payload.id] = {
           ...state.arc[action.payload.id],
           ...action.payload,
+          modifiedAt: Date.now(),
         };
         // update title in structure
         updateItemInStructure(state.structure, action.payload.id, {
@@ -629,6 +602,7 @@ export const globalSlice = createSlice({
         state.book[action.payload.id] = {
           ...state.book[action.payload.id],
           ...action.payload,
+          modifiedAt: Date.now(),
         };
         // update title in structure
         updateItemInStructure(state.structure, action.payload.id, {
@@ -642,6 +616,7 @@ export const globalSlice = createSlice({
       state.characters[newId] = {
         id: newId,
         name: "New character",
+        modifiedAt: Date.now(),
         summary: "",
         picture: "",
         age: "",
@@ -654,6 +629,7 @@ export const globalSlice = createSlice({
         state.characters[action.payload.id] = {
           ...state.characters[action.payload.id],
           ...action.payload,
+          modifiedAt: Date.now(),
         };
         state.modifiedTime = Date.now();
       }
@@ -675,6 +651,7 @@ export const globalSlice = createSlice({
       const newId = short.generate().toString();
       state.plotPoints[newId] = {
         id: newId,
+        modifiedAt: Date.now(),
         summary: "",
         title: "",
       };
@@ -691,9 +668,85 @@ export const globalSlice = createSlice({
       state.plotPoints[action.payload.id] = {
         ...state.plotPoints[action.payload.id],
         ...action.payload,
+        modifiedAt: Date.now(),
       };
       state.modifiedTime = Date.now();
     },
+    addInventoryActionToSceneParagraph: (
+      state,
+      action: PayloadAction<
+        {
+          sceneId: string;
+          paragraphId: string;
+        } & InventoryAction
+      >,
+    ) => {
+      const scene = state.scene[action.payload.sceneId];
+
+      if (!scene) return;
+
+      const p = scene.paragraphs.find((p) => {
+        return p.id === action.payload.paragraphId;
+      });
+
+      if (!p) return;
+
+      scene.modifiedAt = Date.now();
+      p.modifiedAt = Date.now();
+      if (!p.inventory_actions) p.inventory_actions = [];
+      p.inventory_actions.push({
+        type: action.payload.type,
+        item_name: action.payload.item_name,
+        item_amount: action.payload.item_amount,
+      });
+      // find existing item
+      const item = Object.values(state.item ?? {}).find(
+        (i) => i.name === action.payload.item_name,
+      );
+      if (!item) {
+        // create new item
+        const newId = short.generate().toString();
+        if (!state.item) state.item = {};
+        state.item[newId] = {
+          id: newId,
+          name: action.payload.item_name,
+          modifiedAt: Date.now(),
+        };
+      }
+
+      state.modifiedTime = Date.now();
+    },
+    removeInventoryActionFromSceneParagraph: (
+      state,
+      action: PayloadAction<{
+        sceneId: string;
+        paragraphId: string;
+        item_name: string;
+        item_amount: number;
+      }>,
+    ) => {
+      const scene = state.scene[action.payload.sceneId];
+
+      if (!scene) return;
+
+      const p = scene.paragraphs.find((p) => {
+        return p.id === action.payload.paragraphId;
+      });
+
+      if (!p) return;
+
+      scene.modifiedAt = Date.now();
+      p.modifiedAt = Date.now();
+      if (!p.inventory_actions) return;
+      p.inventory_actions = p.inventory_actions.filter((i) => {
+        return (
+          i.item_name !== action.payload.item_name &&
+          i.item_amount !== action.payload.item_amount
+        );
+      });
+      state.modifiedTime = Date.now();
+    },
+
     addPlotPointToSceneParagraph: (
       state,
       action: PayloadAction<{
@@ -703,7 +756,11 @@ export const globalSlice = createSlice({
         action: string;
       }>,
     ) => {
-      const p = state.scene[action.payload.sceneId].paragraphs.find((p) => {
+      const scene = state.scene[action.payload.sceneId];
+
+      if (!scene) return;
+
+      const p = scene.paragraphs.find((p) => {
         return p.id === action.payload.paragraphId;
       });
 
@@ -713,6 +770,8 @@ export const globalSlice = createSlice({
           return i.plot_point_id === action.payload.plotpointId;
         })
       ) {
+        scene.modifiedAt = Date.now();
+        p.modifiedAt = Date.now();
         p.plot_point_actions.push({
           plot_point_id: action.payload.plotpointId,
           action: action.payload.action,
@@ -728,6 +787,9 @@ export const globalSlice = createSlice({
         action: string;
       }>,
     ) => {
+      const scene = state.scene[action.payload.sceneId];
+      if (!scene) return;
+      scene.modifiedAt = Date.now();
       state.scene[action.payload.sceneId].plot_point_actions.push({
         plot_point_id: action.payload.plotpointId,
         action: action.payload.action,
@@ -743,10 +805,15 @@ export const globalSlice = createSlice({
         action: string;
       }>,
     ) => {
-      const p = state.scene[action.payload.sceneId].paragraphs.find((p) => {
+      const scene = state.scene[action.payload.sceneId];
+      if (!scene) return;
+
+      const p = scene.paragraphs.find((p) => {
         return p.id === action.payload.paragraphId;
       });
       if (p) {
+        scene.modifiedAt = Date.now();
+        p.modifiedAt = Date.now();
         p.plot_point_actions = p?.plot_point_actions.filter((i) => {
           return (
             i.plot_point_id !== action.payload.plotpointId &&
@@ -764,7 +831,9 @@ export const globalSlice = createSlice({
         action: string;
       }>,
     ) => {
-      state.scene[action.payload.sceneId].plot_point_actions = state.scene[
+      const scene = state.scene[action.payload.sceneId];
+      if (!scene) return;
+      scene.plot_point_actions = state.scene[
         action.payload.sceneId
       ].plot_point_actions.filter((i) => {
         return (
