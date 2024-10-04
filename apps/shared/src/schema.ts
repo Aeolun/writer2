@@ -1,6 +1,11 @@
 import z from "zod";
 
-const plotPointSchema = z.object({
+const entitySchema = z.object({
+  id: z.string(),
+  modifiedAt: z.number().or(z.string()).optional(),
+});
+
+const plotPointSchema = entitySchema.extend({
   id: z.string(),
   summary: z.string(),
   title: z.string(),
@@ -8,8 +13,7 @@ const plotPointSchema = z.object({
 
 export type PlotPoint = z.infer<typeof plotPointSchema>;
 
-const characterSchema = z.object({
-  id: z.string(),
+const characterSchema = entitySchema.extend({
   isProtagonist: z.boolean(),
   picture: z.string(),
   name: z.string(),
@@ -18,8 +22,7 @@ const characterSchema = z.object({
 });
 export type Character = z.infer<typeof characterSchema>;
 
-const treeDataSchema = z.object({
-  id: z.string(),
+const treeDataSchema = entitySchema.extend({
   title: z.string(),
   extra: z.string().optional(),
 });
@@ -48,14 +51,20 @@ const chapterSchema = treeDataSchema.extend({
 
 export type Chapter = z.infer<typeof chapterSchema>;
 
-const sceneParagraphSchema = z.object({
-  id: z.string(),
+const inventoryActionSchema = z.object({
+  type: z.enum(["add", "remove"]),
+  item_name: z.string(),
+  item_amount: z.number(),
+});
+
+export type InventoryAction = z.infer<typeof inventoryActionSchema>;
+
+const sceneParagraphSchema = entitySchema.extend({
   text: z.string(),
   extra: z.string().optional(),
   translation: z.string().optional(),
   extraLoading: z.boolean().optional(),
   state: z.enum(["ai", "draft", "revise", "final", "sdt"]),
-  modifiedAt: z.string(),
   comments: z.array(
     z.object({
       text: z.string(),
@@ -69,6 +78,7 @@ const sceneParagraphSchema = z.object({
       action: z.string(),
     }),
   ),
+  inventory_actions: z.array(inventoryActionSchema).optional(),
 });
 
 export type SceneParagraph = z.infer<typeof sceneParagraphSchema>;
@@ -145,6 +155,12 @@ export const languageSchema = z.object({
   ),
 });
 
+const itemSchema = entitySchema.extend({
+  name: z.string(),
+});
+
+export type Item = z.infer<typeof itemSchema>;
+
 export const storySchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -154,6 +170,7 @@ export const storySchema = z.object({
     .object({
       mangaChapterPath: z.string().optional(),
       aiInstructions: z.string().optional(),
+      royalRoadId: z.string().optional(),
     })
     .optional(),
   uploadedFiles: z
@@ -164,6 +181,7 @@ export const storySchema = z.object({
       }),
     )
     .optional(),
+  item: z.record(itemSchema).optional(),
   structure: z.array(treeSchema),
   chapter: z.record(chapterSchema),
   book: z.record(bookSchema),
@@ -183,11 +201,13 @@ export type PersistedStory = z.infer<typeof persistedSchema>;
 export const saveSchema = persistedSchema.extend({
   newAutosave: z.boolean(),
   expectedLastModified: z.number(),
+  changesSince: z.number().optional(),
 });
 
 export type SavePayload = z.infer<typeof saveSchema>;
 
 export const entities = [
+  "item",
   "scene",
   "book",
   "arc",

@@ -19,11 +19,15 @@
     "@writer/shared": "workspace:*",
     "cors": "^2.8.5",
     "fastify": "^4.28.1",
+    "playwright": "^1.46.1",
     "prisma": "^5.17.0",
-    "sharp": "^0.33.4"
+    "sharp": "^0.33.4",
+    "short-uuid": "^4.2.2",
+    "turndown": "^7.2.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
+    "@types/turndown": "^5.0.5",
     "tsx": "^4.16.5"
   }
 }
