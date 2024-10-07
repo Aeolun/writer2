@@ -1,6 +1,5 @@
 import * as ReactDOM from "react-dom/client";
 import { App } from "./app";
-import "./book.css";
 
 const root = document.getElementById("app");
 if (root) {

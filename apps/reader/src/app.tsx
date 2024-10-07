@@ -1,67 +1,52 @@
-import { Book } from "./book";
-import royalroad from "../royalroad.json";
-
-type Book = {
-  title: string;
-  author: string;
-  color: string;
-  textColor: string;
-  id: string;
-  slug: string;
-  pages: number;
-};
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { httpBatchLink } from "@trpc/client";
+import React, { useState } from "react";
+import { trpc } from "./utils/trpc";
+import { Route, Switch } from "wouter";
+import { IndexPage } from "./pages";
+import { Layout } from "./components/layout";
+import { BookshelfPage } from "./pages/bookshelf";
+import { AuthorsPage } from "./pages/authors";
+import { StoriesPage } from "./pages/stories";
 
 export const App = () => {
-  const pagesPerShelf = 2500;
-  const shelves: Book[][] = [];
-  let currentShelf: Book[] = [];
-  let currentPageCount = 0;
-  let totalPageCount = 0;
-  for (const book of royalroad) {
-    const pages = Math.max(Math.round(book.pages / 20), 40);
-    if (currentPageCount + pages > pagesPerShelf) {
-      shelves.push(currentShelf);
-      currentShelf = [];
-      currentPageCount = 0;
-    }
-
-    currentShelf.push(book);
-    currentPageCount += pages;
-    totalPageCount += book.pages;
-  }
-
+  const [queryClient] = useState(() => new QueryClient());
+  const [trpcClient] = useState(() =>
+    trpc.createClient({
+      links: [
+        httpBatchLink({
+          url: "http://localhost:3000/trpc",
+          // You can pass any HTTP headers you wish here
+          async headers() {
+            return {
+              authorization: "",
+            };
+          },
+        }),
+      ],
+    }),
+  );
   return (
-    <div
-      style={{
-        margin: "0 auto",
-        width: "1440px",
-      }}
-    >
-      {shelves.map((shelf) => {
-        return (
-          <div className="shelf">
-            <div className="shelf-contents">
-              {shelf.map((book) => (
-                <Book
-                  key={book.title}
-                  title={book.title}
-                  author={book.author}
-                  spineColor={book.color}
-                  spineTextColor={book.textColor}
-                  image={`${book.id}-${book.slug}.jpg`}
-                  pages={book.pages}
-                />
-              ))}
-            </div>
-          </div>
-        );
-      })}
-      <div>
-        <h1 style={{ textAlign: "center" }}>
-          {shelves.length} shelves, {totalPageCount} pages, takes{" "}
-          {Math.round(totalPageCount / 50)}h to read
-        </h1>
-      </div>
-    </div>
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <Layout>
+          <Switch>
+            <Route path="/bookshelf" component={BookshelfPage} />
+            <Route path="/" component={IndexPage} />
+            <Route path="/authors" component={AuthorsPage} />
+            <Route
+              path="/author/:authorSlug"
+              component={() => <>AuthorPage</>}
+            />
+            <Route path="/stories" component={StoriesPage} />
+            <Route path="/story/:storySlug" component={() => <>Story Page</>} />
+            <Route
+              path="/story/:storySlug/:chapterSlug"
+              component={() => <>Chapter Page</>}
+            />
+          </Switch>
+        </Layout>
+      </QueryClientProvider>
+    </trpc.Provider>
   );
 };

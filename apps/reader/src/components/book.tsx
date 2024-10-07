@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import prand from "pure-rand";
-import { hashString } from "./util";
+import { hashString } from "../util";
 
 const randomFonts = [
   "Arial, Helvetica, sans-serif",
