@@ -13,14 +13,14 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.629.0",
-    "@prisma/client": "^5.17.0",
+    "@prisma/client": "^5.20.0",
     "@trpc/client": "11.0.0-rc.467",
     "@trpc/server": "11.0.0-rc.467",
     "@writer/shared": "workspace:*",
     "cors": "^2.8.5",
     "fastify": "^4.28.1",
     "playwright": "^1.46.1",
-    "prisma": "^5.17.0",
+    "prisma": "^5.20.0",
     "sharp": "^0.33.4",
     "short-uuid": "^4.2.2",
     "turndown": "^7.2.0"

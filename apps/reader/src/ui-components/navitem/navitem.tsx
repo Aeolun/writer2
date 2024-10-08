@@ -1,6 +1,5 @@
 import { PropsWithChildren } from "react";
 import { Link } from "wouter";
-import { navItem } from "./navitem.css";
 
 export const Navitem = (
   props: PropsWithChildren<{
@@ -8,7 +7,7 @@ export const Navitem = (
   }>,
 ) => {
   return (
-    <Link to={props.to} className={navItem}>
+    <Link to={props.to} className="hover:text-gray-300 transition-colors duration-200">
       {props.children}
     </Link>
   );

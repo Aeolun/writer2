@@ -24,8 +24,7 @@ export interface GlobalState {
     id: number;
     createdAt: string;
     email: string;
-    password: string;
-  };
+  } | null;
   isDirty: boolean;
 }
 
@@ -38,6 +37,7 @@ const initialState: GlobalState = {
   saving: false,
   syncing: false,
   isDirty: false,
+  signedInUser: null,
 };
 
 export const globalSlice = createSlice({

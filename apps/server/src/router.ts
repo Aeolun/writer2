@@ -10,7 +10,9 @@ import { logout } from "./procedures/logout";
 import { connectedClients } from "./procedures/connected-clients";
 import { downloadStory } from "./procedures/download-story";
 import { downloadFiles } from "./procedures/download-files";
-
+import { listStories } from "./procedures/list-stories";
+import { getStory } from "./procedures/get-story";
+import { getChapter } from "./procedures/get-chapter";
 import { router } from "./trpc";
 
 export const appRouter = router({
@@ -25,7 +27,10 @@ export const appRouter = router({
   register: register,
   logout: logout,
   connectedClients: connectedClients,
+  listStories: listStories,
+  getStory: getStory,
   login: login,
+  getChapter: getChapter,
 });
 
 // Export type router type signature,

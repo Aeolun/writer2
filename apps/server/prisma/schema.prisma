@@ -50,7 +50,7 @@ model BookShelfStory {
 }
 
 model Story {
-  id               String           @id @default(uuid())
+  id               String           @id @default(uuid(7))
   name             String           @default("")
   ownerId          Int
   owner            User             @relation(fields: [ownerId], references: [id])
@@ -58,19 +58,24 @@ model Story {
   coverArtAsset    String
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
+  pages            Int?
+  books            Book[]
 }
 
 model Book {
-  id            String    @id @default(uuid())
+  id            String    @id @default(uuid(7))
   name          String    @default("")
+  storyId       String
+  story         Story     @relation(fields: [storyId], references: [id])
   coverArtAsset String
   spineArtAsset String
+  pages         Int?
   chapters      Chapter[]
   sortOrder     Int
 }
 
 model Chapter {
-  id          String    @id @default(uuid())
+  id          String    @id @default(uuid(7))
   name        String    @default("")
   book        Book?     @relation(fields: [bookId], references: [id])
   bookId      String?
@@ -80,7 +85,7 @@ model Chapter {
 }
 
 model Scene {
-  id         String      @id @default(uuid())
+  id         String      @id @default(uuid(7))
   name       String      @default("")
   body       String      @db.LongText()
   chapter    Chapter     @relation(fields: [chapterId], references: [id])
@@ -92,7 +97,7 @@ model Scene {
 }
 
 model Paragraph {
-  id                 String              @id @default(uuid())
+  id                 String              @id @default(uuid(7))
   sceneId            String
   scene              Scene               @relation(fields: [sceneId], references: [id])
   paragraphRevisions ParagraphRevision[]
@@ -100,7 +105,7 @@ model Paragraph {
 }
 
 model ParagraphRevision {
-  id               String             @id @default(uuid())
+  id               String             @id @default(uuid(7))
   paragraphId      String
   paragraph        Paragraph          @relation(fields: [paragraphId], references: [id])
   body             String             @db.LongText()
@@ -120,7 +125,7 @@ model ParagraphComment {
 }
 
 model File {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid(7))
   ownerId   Int
   owner     User     @relation(fields: [ownerId], references: [id])
   path      String   @unique

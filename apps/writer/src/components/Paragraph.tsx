@@ -43,8 +43,8 @@ export const Paragraph = (props: {
               id={`p_${props.paragraph.id}`}
               flex={1}
               outline={"1px solid transparent"}
-              value={props.paragraph.text}
-              onChange={(e) => {
+              defaultValue={props.paragraph.text}
+              onBlur={(e) => {
                 dispatch(
                   storyActions.updateSceneParagraph({
                     sceneId: props.scene.id,
