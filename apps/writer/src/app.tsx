@@ -22,6 +22,7 @@ import Profile from "./write/profile.tsx";
 import Search from "./write/search.tsx";
 import Settings from "./write/settings.tsx";
 import "highlight.js/styles/a11y-light.css";
+import EmbedSearch from "./write/embed-search.tsx";
 
 if (process.env.NODE_ENV === "development") {
   wdyr(React, {
@@ -53,6 +54,7 @@ function MyApp() {
             <Route path={"/files"} component={Files} />
             <Route path={"/settings"} component={Settings} />
             <Route path={"/search"} component={Search} />
+            <Route path={"/embed-search"} component={EmbedSearch} />
             <Route path={"/profile"} component={Profile} />
             <Route path={"/new-story"} component={NewStory} />
             <Route path={"/open-story"} component={OpenStory} />

@@ -1,23 +1,37 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
+import { convertFileSrc } from "@tauri-apps/api/core";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
 import { CharacterModal } from "./CharacterModal";
-import { convertFileSrc } from "@tauri-apps/api/core";
 
 export const CharacterPanel = () => {
   const dispatch = useDispatch();
   const [charModal, setCharacterModal] = useState<boolean>(false);
   const [characterId, setCharacterId] = useState<string>("");
-  const storyName = useSelector((state: RootState) => state.story.name);
   const openPath = useSelector((state: RootState) => state.base.openPath);
 
   const characters = useSelector((state: RootState) => state.story.characters);
 
   return (
-    <>
-      <Flex wrap={"wrap"} gap={2} mt={2}>
+    <Flex flexDir={"column"} gap={2}>
+      {charModal && (
+        <CharacterModal
+          characterId={characterId}
+          onClose={() => {
+            setCharacterModal(false);
+          }}
+        />
+      )}
+      <Flex
+        wrap={"wrap"}
+        alignItems={"flex-start"}
+        gap={2}
+        mt={2}
+        flex={1}
+        overflow={"auto"}
+      >
         {Object.values(characters).map((char) => (
           <Box
             key={char.id}
@@ -30,7 +44,7 @@ export const CharacterPanel = () => {
             w={300}
             border={"1px solid black"}
             backgroundColor={"gray.500"}
-            backgroundImage={`url(${convertFileSrc(openPath + "/data/" + char.picture)})`}
+            backgroundImage={`url(${convertFileSrc(`${openPath}/data/${char.picture}`)})`}
             backgroundSize={"cover"}
             backgroundPosition={"center"}
           >
@@ -64,14 +78,6 @@ export const CharacterPanel = () => {
       >
         Add character
       </Button>
-      {charModal && (
-        <CharacterModal
-          characterId={characterId}
-          onClose={() => {
-            setCharacterModal(false);
-          }}
-        />
-      )}
-    </>
+    </Flex>
   );
 };

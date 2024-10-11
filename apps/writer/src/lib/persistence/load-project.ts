@@ -1,15 +1,13 @@
 import { path } from "@tauri-apps/api";
 import { readDir, readTextFile, stat } from "@tauri-apps/plugin-fs";
-import { eq } from "drizzle-orm";
-import short from "short-uuid";
-import { db } from "../../db";
-import { storyTable } from "../../db/schema.ts";
 import {
+  type Node,
+  type PersistedStory,
   entities,
   languageEntities,
   persistedSchema,
-  type PersistedStory,
 } from "@writer/shared";
+import short from "short-uuid";
 import { globalActions } from "../slices/global.ts";
 import { languageActions } from "../slices/language.ts";
 import { storyActions } from "../slices/story.ts";
@@ -71,15 +69,34 @@ export const loadProject = async (projectPath: string) => {
     throw new Error("Story does not match schema and cannot be loaded.");
   }
 
-  const storyObject = await db.query.storyTable.findFirst({
-    where: eq(storyTable.name, savedStory.story.name),
-  });
-  if (!storyObject) {
-    await db.insert(storyTable).values({
-      id: short.generate().toString(),
-      name: savedStory.story.name,
-    });
+  const ids: string[] = [];
+  const getIdFromTreeObject = (node: Node) => {
+    ids.push(node.id);
+    if (node.children) {
+      node.children.forEach(getIdFromTreeObject);
+    }
+  };
+  savedStory.story.structure.forEach(getIdFromTreeObject);
+  // trash all entities that don't have a corresponding id in the structure
+  for (const entity of ["book", "arc", "chapter", "scene"] as const) {
+    if (savedStory.story[entity]) {
+      for (const id of Object.keys(savedStory.story[entity])) {
+        if (!ids.includes(id)) {
+          delete savedStory.story[entity][id];
+        }
+      }
+    }
   }
+
+  // const storyObject = await db.query.storyTable.findFirst({
+  //   where: eq(storyTable.name, savedStory.story.name),
+  // });
+  // if (!storyObject) {
+  //   await db.insert(storyTable).values({
+  //     id: short.generate().toString(),
+  //     name: savedStory.story.name,
+  //   });
+  // }
 
   store.dispatch(storyActions.setStory(savedStory.story));
   store.dispatch(globalActions.setOpenPath(projectPath));

@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Button,
   CircularProgress,
   Flex,
@@ -8,9 +9,8 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  useColorModeValue,
   Text,
-  Box,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { Menu as MenuIcon } from "iconoir-react";
 import React from "react";
@@ -18,10 +18,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "wouter";
 import { settingsStore } from "../global-settings-store";
 import { globalActions } from "../lib/slices/global";
+import { addNotification } from "../lib/slices/notifications";
 import { storyActions } from "../lib/slices/story";
 import { type RootState, store } from "../lib/store";
 import { reloadTrpc, trpc } from "../lib/trpc";
-import { addNotification } from "../lib/slices/notifications";
 import { NotificationManager } from "./NotificationManager";
 
 export const WriteHeaderMenu = () => {
@@ -81,6 +81,9 @@ export const WriteHeaderMenu = () => {
           </Link>
           <Link href={"/search"}>
             <Button>Search</Button>
+          </Link>
+          <Link href={"/embed-search"}>
+            <Button>Embed Search</Button>
           </Link>
           <Link href={"/locations"}>
             <Button>Locations</Button>
