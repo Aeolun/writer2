@@ -140,6 +140,7 @@ export const StoryPanel = () => {
   const [selectedParagraph, setSelectedParagraph] = useState<string>("");
   const [plotPoint, setPlotPoint] = useState<string>();
   const [nextParagraph, setNextParagraph] = useState<string>();
+  const [generatingNext, setGeneratingNext] = useState<boolean>(false);
   const items = useSelector((store: RootState) => store.story.item);
   const [showCurrentInventory, setShowCurrentInventory] =
     useState<boolean>(false);
@@ -232,19 +233,28 @@ export const StoryPanel = () => {
             />
             <Button
               mt={2}
+              isLoading={generatingNext}
               onClick={() => {
+                setGeneratingNext(true);
                 useAi(
                   "next_paragraph",
                   `The summary of the scene is: \n\n${scene.summary}\n\nScene so far:\n\n\`\`\`\n${scene.paragraphs.map((p) => p.text).join("\n\n")}\n\`\`\`\n\nWrite a scene in which the following happens: ${nextParagraph}`,
                   false,
-                ).then((result) => {
-                  dispatch(
-                    storyActions.createSceneParagraph({
-                      sceneId: scene.id,
-                      text: result ?? undefined,
-                    }),
-                  );
-                });
+                )
+                  .then((result) => {
+                    const paragraphs = result.split("\n\n");
+                    for (const paragraph of paragraphs) {
+                      dispatch(
+                        storyActions.createSceneParagraph({
+                          sceneId: scene.id,
+                          text: paragraph ?? undefined,
+                        }),
+                      );
+                    }
+                  })
+                  .finally(() => {
+                    setGeneratingNext(false);
+                  });
               }}
             >
               Generate Next Paragraph

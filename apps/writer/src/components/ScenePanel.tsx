@@ -7,9 +7,10 @@ import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector"
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
 import { useAi } from "../lib/use-ai";
+import { selectedSceneSelector } from "../lib/selectors/selectedSceneSelector";
 
 export const ScenePanel = () => {
-  const selectedScene = useSelector(selectedObjectSelector);
+  const selectedScene = useSelector(selectedSceneSelector);
   const protagonist = useSelector((store: RootState) =>
     Object.values(store.story.characters).find((char) => char.isProtagonist),
   );
@@ -17,36 +18,34 @@ export const ScenePanel = () => {
 
   const help = useCallback(
     (helpKind: HelpKind, extra = false) => {
-      if (selectedScene?.type === "scene") {
-        const text =
-          "Protagonist: " +
-          protagonist?.name +
-          "\n\nScene text:\n\n" +
-          selectedScene.data.text +
-          "\n\nOutput only the summary.";
-        useAi(helpKind, text).then((res) => {
-          if (extra) {
-            dispatch(
-              storyActions.updateScene({
-                id: selectedScene?.id,
-                extra: res ?? undefined,
-              }),
-            );
-          } else {
-            dispatch(
-              storyActions.updateScene({
-                id: selectedScene?.id,
-                summary: res ?? undefined,
-              }),
-            );
-          }
-        });
-      }
+      const text =
+        "Protagonist: " +
+        protagonist?.name +
+        "\n\nScene text:\n\n" +
+        selectedScene?.paragraphs.map((p) => p.text).join("\n\n") +
+        "\n\nOutput only the summary.";
+      useAi(helpKind, text).then((res) => {
+        if (extra) {
+          dispatch(
+            storyActions.updateScene({
+              id: selectedScene?.id,
+              extra: res ?? undefined,
+            }),
+          );
+        } else {
+          dispatch(
+            storyActions.updateScene({
+              id: selectedScene?.id,
+              summary: res ?? undefined,
+            }),
+          );
+        }
+      });
     },
     [selectedScene],
   );
 
-  return selectedScene && selectedScene.type === "scene" ? (
+  return selectedScene ? (
     <>
       <div>
         Id: {selectedScene.id}
@@ -60,7 +59,7 @@ export const ScenePanel = () => {
               }),
             );
           }}
-          value={selectedScene.data.title}
+          value={selectedScene.title}
         />
       </div>
       <Textarea
@@ -76,9 +75,9 @@ export const ScenePanel = () => {
         rows={6}
         placeholder="summary"
         style={{ width: "100%" }}
-        value={selectedScene.data.summary}
+        value={selectedScene.summary}
       />
-      {selectedScene.data.extra && (
+      {selectedScene.extra && (
         <Textarea
           mt={2}
           onChange={(e) => {
@@ -92,17 +91,17 @@ export const ScenePanel = () => {
           rows={18}
           placeholder="extra"
           style={{ width: "100%" }}
-          value={selectedScene.data.extra}
+          value={selectedScene.extra}
         />
       )}
       <Box>
         <Checkbox
-          isChecked={selectedScene.data.posted ?? false}
+          isChecked={selectedScene.posted ?? false}
           onChange={() => {
             dispatch(
               storyActions.updateScene({
                 id: selectedScene.id,
-                posted: !selectedScene.data.posted,
+                posted: !selectedScene.posted,
               }),
             );
           }}
