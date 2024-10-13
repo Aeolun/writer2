@@ -54,7 +54,7 @@ export const EmbedSearchPane = () => {
         isLoading={loadingEmbeddings}
         onClick={() => {
           setIsLoadingEmbeddings(true);
-          loadStoryToEmbeddings(story)
+          loadStoryToEmbeddings()
             .catch((error) => {
               console.error(error);
               dispatch(
@@ -103,7 +103,7 @@ export const EmbedSearchPane = () => {
       />
       <Button
         onClick={() => {
-          searchEmbeddings(search, 5).then((result) => {
+          searchEmbeddings(search, 20).then((result) => {
             setResult(result);
           });
         }}

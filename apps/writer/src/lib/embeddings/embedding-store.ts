@@ -32,8 +32,19 @@ export const addDocuments = async (documents: Document[]) => {
   return store.addDocuments(documents);
 };
 
-export const searchEmbeddings = async (query: string, numResults: number) => {
+export const removeDocuments = async (documentIds: string[]) => {
+  const store = await getVectorStore();
+  return store.memoryVectors.filter(
+    (doc) => !doc.id || !documentIds.includes(doc.id),
+  );
+};
+
+export const searchEmbeddings = async (
+  query: string,
+  numResults: number,
+  filter?: (doc: Document) => boolean,
+) => {
   const store = await getVectorStore();
   console.log("searching embeddings", store.memoryVectors.length);
-  return store.similaritySearchWithScore(query, numResults);
+  return store.similaritySearchWithScore(query, numResults, filter);
 };

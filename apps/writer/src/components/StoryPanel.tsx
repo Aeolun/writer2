@@ -3,19 +3,19 @@ import {
   Button,
   Flex,
   Grid,
-  Text,
   GridItem,
   Heading,
-  Select,
-  useColorModeValue,
   Input,
   Modal,
-  ModalOverlay,
+  ModalBody,
   ModalContent,
   ModalHeader,
-  ModalProps,
-  ModalBody,
+  ModalOverlay,
+  type ModalProps,
+  Select,
+  Text,
   Textarea,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import {
   AutoComplete,
@@ -28,15 +28,17 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { plotpointSelector } from "../lib/selectors/plotpointSelector";
 
+import type { InventoryAction } from "@writer/shared";
+import { searchEmbeddings } from "../lib/embeddings/embedding-store.ts";
+import { loadStoryToEmbeddings } from "../lib/embeddings/load-story-to-embeddings.ts";
+import { itemsUntilParagraphSelector } from "../lib/selectors/itemsUntilParagraphSelector";
 import { selectedSceneSelector } from "../lib/selectors/selectedSceneSelector";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
+import { useAi } from "../lib/use-ai";
 import { LanguageForm } from "./LanguageForm";
 import { Paragraph } from "./Paragraph";
 import { SceneButtons } from "./SceneButtons";
-import { useAi } from "../lib/use-ai";
-import { InventoryAction } from "@writer/shared";
-import { itemsUntilParagraphSelector } from "../lib/selectors/itemsUntilParagraphSelector";
 
 export const Row = (props: {
   main: React.ReactNode;
@@ -236,25 +238,70 @@ export const StoryPanel = () => {
               isLoading={generatingNext}
               onClick={() => {
                 setGeneratingNext(true);
-                useAi(
-                  "next_paragraph",
-                  `The summary of the scene is: \n\n${scene.summary}\n\nScene so far:\n\n\`\`\`\n${scene.paragraphs.map((p) => p.text).join("\n\n")}\n\`\`\`\n\nWrite a scene in which the following happens: ${nextParagraph}`,
-                  false,
-                )
-                  .then((result) => {
-                    const paragraphs = result.split("\n\n");
-                    for (const paragraph of paragraphs) {
-                      dispatch(
-                        storyActions.createSceneParagraph({
-                          sceneId: scene.id,
-                          text: paragraph ?? undefined,
-                        }),
+                const generate = async () => {
+                  if (!nextParagraph) {
+                    return;
+                  }
+                  await loadStoryToEmbeddings();
+                  const appropriateContext = await searchEmbeddings(
+                    nextParagraph,
+                    7,
+                    (doc) => {
+                      return doc.metadata.kind === "context";
+                    },
+                  );
+                  const sceneContent = await searchEmbeddings(
+                    nextParagraph,
+                    7,
+                    (doc) => {
+                      return (
+                        doc.metadata.kind === "content" &&
+                        scene.id === doc.metadata.sceneId
                       );
-                    }
-                  })
-                  .finally(() => {
-                    setGeneratingNext(false);
-                  });
+                    },
+                  );
+                  const storyContent = await searchEmbeddings(
+                    nextParagraph,
+                    7,
+                    (doc) => {
+                      return (
+                        doc.metadata.kind === "content" &&
+                        scene.id !== doc.metadata.sceneId
+                      );
+                    },
+                  );
+
+                  const blockSep = "```";
+                  const relevantContentText =
+                    appropriateContext.length > 0
+                      ? `Relevant context (characters, locations, etc.):\n${blockSep}\n${appropriateContext.map((c) => c[0].pageContent).join("\n\n")}\n${blockSep}\n\n`
+                      : "";
+                  const sceneContentText =
+                    sceneContent.length > 0
+                      ? `Relevant Scene content (in same scene, sorted by relevance):\n${blockSep}\n${sceneContent.map((c) => c[0].pageContent).join("\n\n")}\n${blockSep}\n\n`
+                      : "";
+                  const storyContentText =
+                    storyContent.length > 0
+                      ? `Relevant Story content (sorted by relevance):\n${blockSep}\n${storyContent.map((c) => c[0].pageContent).join("\n\n")}\n${blockSep}\n\n`
+                      : "";
+                  const input = `${relevantContentText}${storyContentText}${sceneContentText}Write a scene/paragraph in which the following happens: ${nextParagraph}`;
+                  console.log("complete input", input);
+                  const result = await useAi("next_paragraph", input, false);
+                  const paragraphs = result.split("\n\n");
+                  console.log("output", result);
+                  for (const paragraph of paragraphs) {
+                    dispatch(
+                      storyActions.createSceneParagraph({
+                        sceneId: scene.id,
+                        text: paragraph ?? undefined,
+                      }),
+                    );
+                  }
+                  setGeneratingNext(false);
+                };
+                generate().catch((error) => {
+                  console.error(error);
+                });
               }}
             >
               Generate Next Paragraph
@@ -345,7 +392,7 @@ export const StoryPanel = () => {
             onChange={(e) => {
               setInventory({
                 ...inventory,
-                item_amount: parseInt(e.currentTarget.value),
+                item_amount: Number.parseInt(e.currentTarget.value),
               });
             }}
           />

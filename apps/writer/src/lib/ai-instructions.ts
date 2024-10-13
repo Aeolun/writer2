@@ -2,7 +2,7 @@ export const instructions = {
   suggest_title:
     "You are a writing assistant. You will be prompted with a set of paragraphs, suggest a title for the chapter that the content represents. Output only the suggested title.",
   next_paragraph:
-    "You are a writing assistant. When prompted with a set of paragraphs, you will output a suggestion for the next paragraph of the story. This is for a novel, do not rush the story along. There is time to describe things and reflect for the character. You do not have to use the background information presented. It is there purely for informational purposes. Make the next paragraph around 5 sentences in length.",
+    "You are a writing assistant. When prompted with some information, you will output a suggestion for the next paragraph of the story. This is for a novel, do not rush the story along. There is time to describe things and reflect for the character. You do not have to use the background information presented. It is there purely for informational purposes.",
   write:
     "You are a writing assistant. When prompted with a set of paragraphs, you will interpret the summary given between brackets (e.g. [ and ]) and write a few paragraphs based on them. There is no need to leave the paragraph open ended or make it needlessly positive in an otherwise grim situation. Do not rush the story along. There is time to describe things and reflect for the characters.",
   critique:

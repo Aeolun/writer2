@@ -1,5 +1,4 @@
 import { type Draft, type PayloadAction, createSlice } from "@reduxjs/toolkit";
-import short from "short-uuid";
 import type {
   Arc,
   Book,
@@ -11,6 +10,8 @@ import type {
   SceneParagraph,
   Story,
 } from "@writer/shared";
+import short from "short-uuid";
+import { removeEntityFromEmbeddingsCache } from "../embeddings/load-story-to-embeddings.ts";
 
 const initialState: Story = {
   id: short.generate(),
@@ -318,7 +319,7 @@ export const globalSlice = createSlice({
       }>,
     ) => {
       const newId = short.generate().toString();
-      let afterParagraphIndex = state.scene[
+      const afterParagraphIndex = state.scene[
         action.payload.sceneId
       ].paragraphs.findIndex((p) => {
         return p.id === action.payload.afterParagraphId;
@@ -416,6 +417,9 @@ export const globalSlice = createSlice({
       ].paragraphs.findIndex((p) => {
         return p.id === action.payload.paragraphId;
       });
+      removeEntityFromEmbeddingsCache(
+        `paragraph/${action.payload.paragraphId}`,
+      );
       if (
         state.scene[action.payload.sceneId].paragraphs[paragraphIndex].text !==
           "" &&
@@ -472,6 +476,9 @@ export const globalSlice = createSlice({
 
           if (action.payload.text !== undefined) {
             paragraph.text = action.payload.text;
+            removeEntityFromEmbeddingsCache(
+              `paragraph/${action.payload.paragraphId}`,
+            );
           }
           if (action.payload.translation !== undefined) {
             paragraph.translation = action.payload.translation;
@@ -514,11 +521,14 @@ export const globalSlice = createSlice({
       );
 
       if (paragraph && chapterId) {
-        state.modifiedAt = Date.now();
+        state.modifiedTime = Date.now();
         // get all paragraphs after the current one
         const paragraphs = scene.paragraphs.splice(
           scene.paragraphs.indexOf(paragraph),
         );
+        for (const p of paragraphs) {
+          removeEntityFromEmbeddingsCache(`paragraph/${p.id}`);
+        }
         scene.modifiedAt = Date.now();
         // create new scene
         const newSceneId = short.generate().toString();
@@ -631,6 +641,7 @@ export const globalSlice = createSlice({
           ...action.payload,
           modifiedAt: Date.now(),
         };
+        removeEntityFromEmbeddingsCache(`character/${action.payload.id}`);
         state.modifiedTime = Date.now();
       }
     },
