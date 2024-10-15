@@ -8,6 +8,9 @@ import { storyActions } from "../lib/slices/story";
 import { AutoResizeTextarea } from "./AutoResizeTextarea";
 import { Row } from "./StoryPanel";
 import { StoryParagraphButtons } from "./StoryParagraphButtons";
+import { sceneSelector } from "../lib/selectors/sceneSelector.ts";
+import { RootState } from "../lib/store.ts";
+import { paragraphSelector } from "../lib/selectors/paragraphSelector.ts";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "yellow.500",
@@ -17,38 +20,42 @@ const statusColor: Record<SceneParagraph["state"], string> = {
   ai: "purple.500",
 };
 
-export const Paragraph = (props: {
-  scene: Scene;
-  paragraph: SceneParagraph;
-}) => {
+export const Paragraph = (props: { sceneId: string; paragraphId: string }) => {
+  const scene = useSelector((state: RootState) => {
+    return sceneSelector(state, props.sceneId);
+  });
+  const paragraph = useSelector((state: RootState) => {
+    return paragraphSelector(state, props.sceneId, props.paragraphId);
+  });
   const dispatch = useDispatch();
-  const [issues, setIssues] = useState<TextlintMessage[]>([]);
+  const [issues, setIssues] = useState<
+    {
+      message: string;
+    }[]
+  >([]);
 
   const plotpoints = useSelector(plotpointSelector);
   const [suggestion, setSuggestion] = useState("");
 
-  return (
+  return scene && paragraph ? (
     <>
       <Row
-        selected={props.scene.selectedParagraph === props.paragraph.id}
+        selected={scene.selectedParagraph === props.paragraphId}
         borderColor={
-          statusColor[props.paragraph.state as SceneParagraph["state"]] ??
-          undefined
+          statusColor[paragraph.state as SceneParagraph["state"]] ?? undefined
         }
         suggestion={suggestion}
         main={
           <>
             <AutoResizeTextarea
-              key={props.paragraph.id}
-              id={`p_${props.paragraph.id}`}
-              flex={1}
-              outline={"1px solid transparent"}
-              defaultValue={props.paragraph.text}
+              key={props.paragraphId}
+              id={`p_${props.paragraphId}`}
+              defaultValue={paragraph.text}
               onBlur={(e) => {
                 dispatch(
                   storyActions.updateSceneParagraph({
-                    sceneId: props.scene.id,
-                    paragraphId: props.paragraph.id,
+                    sceneId: scene.id,
+                    paragraphId: paragraph.id,
                     text: e.target.value,
                   }),
                 );
@@ -57,21 +64,21 @@ export const Paragraph = (props: {
                 console.log("selectionstart on focus", e.target.selectionStart);
                 dispatch(
                   storyActions.updateScene({
-                    id: props.scene.id,
-                    selectedParagraph: props.paragraph.id,
+                    id: scene.id,
+                    selectedParagraph: paragraph.id,
                     cursor: e.currentTarget.selectionStart,
                   }),
                 );
               }}
               onKeyDown={(e) => {
                 const pe = document.getElementById(
-                  `p_${props.paragraph.id}`,
+                  `p_${paragraph.id}`,
                 ) as HTMLTextAreaElement;
                 if (e.key === "Enter" && e.ctrlKey) {
                   dispatch(
                     storyActions.createSceneParagraph({
-                      sceneId: props.scene.id,
-                      afterParagraphId: props.paragraph.id,
+                      sceneId: scene.id,
+                      afterParagraphId: paragraph.id,
                     }),
                   );
                   e.preventDefault();
@@ -79,8 +86,8 @@ export const Paragraph = (props: {
                 } else if (e.key === "Backspace" && e.ctrlKey) {
                   dispatch(
                     storyActions.deleteSceneParagraph({
-                      sceneId: props.scene.id,
-                      paragraphId: props.paragraph.id,
+                      sceneId: scene.id,
+                      paragraphId: paragraph.id,
                     }),
                   );
                   e.preventDefault();
@@ -88,8 +95,8 @@ export const Paragraph = (props: {
                 } else if (e.key === "ArrowUp" && e.shiftKey && e.ctrlKey) {
                   dispatch(
                     storyActions.moveSceneParagraph({
-                      sceneId: props.scene.id,
-                      paragraphId: props.paragraph.id,
+                      sceneId: scene.id,
+                      paragraphId: paragraph.id,
                       direction: "up",
                     }),
                   );
@@ -98,8 +105,8 @@ export const Paragraph = (props: {
                 } else if (e.key === "ArrowDown" && e.shiftKey && e.ctrlKey) {
                   dispatch(
                     storyActions.moveSceneParagraph({
-                      sceneId: props.scene.id,
-                      paragraphId: props.paragraph.id,
+                      sceneId: scene.id,
+                      paragraphId: paragraph.id,
                       direction: "down",
                     }),
                   );
@@ -109,44 +116,44 @@ export const Paragraph = (props: {
                   e.key === "ArrowDown" &&
                   pe.selectionStart === pe.value.length
                 ) {
-                  props.scene?.paragraphs.forEach((p, i) => {
-                    if (
-                      props.paragraph.id === props.scene.selectedParagraph &&
-                      props.scene.paragraphs[i + 1]
-                    ) {
-                      const nextEl = document.getElementById(
-                        `p_${props.scene.paragraphs[i + 1].id}`,
-                      ) as HTMLTextAreaElement;
-                      nextEl.focus();
-                      setTimeout(() => {
-                        nextEl.selectionStart = 0;
-                        nextEl.selectionEnd = 0;
-                      }, 1);
-                    }
-                  });
+                  // scene?.paragraphs.forEach((p, i) => {
+                  //   if (
+                  //     paragraph.id === scene.selectedParagraph &&
+                  //     scene.paragraphs[i + 1]
+                  //   ) {
+                  //     const nextEl = document.getElementById(
+                  //       `p_${scene.paragraphs[i + 1].id}`,
+                  //     ) as HTMLTextAreaElement;
+                  //     nextEl.focus();
+                  //     setTimeout(() => {
+                  //       nextEl.selectionStart = 0;
+                  //       nextEl.selectionEnd = 0;
+                  //     }, 1);
+                  //   }
+                  // });
                 } else if (e.key === "ArrowUp" && pe.selectionStart === 0) {
-                  props.scene?.paragraphs.forEach((p, i) => {
-                    if (
-                      props.paragraph.id === props.scene.selectedParagraph &&
-                      props.scene.paragraphs[i - 1]
-                    ) {
-                      const nextEl = document.getElementById(
-                        `p_${props.scene.paragraphs[i - 1].id}`,
-                      ) as HTMLTextAreaElement;
-                      nextEl.focus();
-                      setTimeout(() => {
-                        nextEl.selectionStart = nextEl.value.length;
-                        nextEl.selectionEnd = nextEl.value.length;
-                      }, 1);
-                    }
-                  });
+                  // scene?.paragraphs.forEach((p, i) => {
+                  //   if (
+                  //     paragraph.id === scene.selectedParagraph &&
+                  //     scene.paragraphs[i - 1]
+                  //   ) {
+                  //     const nextEl = document.getElementById(
+                  //       `p_${scene.paragraphs[i - 1].id}`,
+                  //     ) as HTMLTextAreaElement;
+                  //     nextEl.focus();
+                  //     setTimeout(() => {
+                  //       nextEl.selectionStart = nextEl.value.length;
+                  //       nextEl.selectionEnd = nextEl.value.length;
+                  //     }, 1);
+                  //   }
+                  // });
                 } else {
-                  dispatch(
-                    storyActions.updateScene({
-                      id: props.scene.id,
-                      cursor: e.currentTarget.selectionStart,
-                    }),
-                  );
+                  // dispatch(
+                  //   storyActions.updateScene({
+                  //     id: scene.id,
+                  //     cursor: e.currentTarget.selectionStart,
+                  //   }),
+                  // );
                   console.log(e.key);
                 }
               }}
@@ -160,29 +167,26 @@ export const Paragraph = (props: {
                 ))}
               </Box>
             ) : null}
-            {props.paragraph.translation ? (
+            {paragraph.translation ? (
               <Box
                 px={8}
                 textIndent={"1em"}
                 fontFamily={"Noteworthy, Comic Sans MS, sans-serif"}
               >
-                {props.paragraph.translation}
+                {paragraph.translation}
               </Box>
             ) : null}
           </>
         }
         buttons={
-          props.paragraph.id === props.scene.selectedParagraph ? (
-            <StoryParagraphButtons
-              paragraphId={props.paragraph.id}
-              scene={props.scene}
-            />
+          paragraph.id === scene.selectedParagraph ? (
+            <StoryParagraphButtons paragraphId={paragraph.id} scene={scene} />
           ) : (
             <Box minHeight={"52px"} />
           )
         }
         extra={
-          props.paragraph.extraLoading ? (
+          paragraph.extraLoading ? (
             <Flex
               alignItems={"center"}
               justifyContent={"center"}
@@ -196,7 +200,7 @@ export const Paragraph = (props: {
                 size="xl"
               />
             </Flex>
-          ) : props.paragraph.extra ? (
+          ) : paragraph.extra ? (
             <>
               <HStack gap={0} position={"absolute"} top={4} right={2}>
                 <Button
@@ -205,9 +209,9 @@ export const Paragraph = (props: {
                   onClick={() => {
                     dispatch(
                       storyActions.updateSceneParagraph({
-                        sceneId: props.scene.id,
-                        paragraphId: props.paragraph.id,
-                        text: props.paragraph.extra,
+                        sceneId: scene.id,
+                        paragraphId: paragraph.id,
+                        text: paragraph.extra,
                         extra: "",
                       }),
                     );
@@ -221,8 +225,8 @@ export const Paragraph = (props: {
                   onClick={() => {
                     dispatch(
                       storyActions.updateSceneParagraph({
-                        sceneId: props.scene.id,
-                        paragraphId: props.paragraph.id,
+                        sceneId: scene.id,
+                        paragraphId: paragraph.id,
                         extra: "",
                       }),
                     );
@@ -232,122 +236,21 @@ export const Paragraph = (props: {
                 </Button>
               </HStack>
               <AutoResizeTextarea
-                outline={"1px solid transparent"}
                 onChange={(e) => {
                   dispatch(
                     storyActions.updateSceneParagraph({
-                      sceneId: props.scene.id,
-                      paragraphId: props.paragraph.id,
+                      sceneId: scene.id,
+                      paragraphId: paragraph.id,
                       extra: e.currentTarget.value,
                     }),
                   );
                 }}
-                value={props.paragraph.extra}
+                value={paragraph.extra}
               />
             </>
           ) : null
         }
       />
-      <Row
-        borderColor={
-          statusColor[props.paragraph.state as SceneParagraph["state"]] ??
-          undefined
-        }
-        selected={props.scene.selectedParagraph === props.paragraph.id}
-        main={
-          <Box>
-            {props.paragraph?.plot_point_actions &&
-            props.paragraph?.plot_point_actions.length > 0 ? (
-              <Flex
-                flexDirection={"row"}
-                px={8}
-                pb={4}
-                gap={1}
-                flexWrap={"wrap"}
-              >
-                {props.paragraph?.plot_point_actions.map((link) => {
-                  const point = plotpoints[link.plot_point_id];
-                  return (
-                    <Tag key={link.plot_point_id} p={2} colorScheme={"blue"}>
-                      {point?.title} {link.action}
-                      <Button
-                        variant={"link"}
-                        size={"xs"}
-                        ml={2}
-                        onClick={() => {
-                          if (props.paragraph && props.scene) {
-                            dispatch(
-                              storyActions.removePlotPointFromSceneParagraph({
-                                sceneId: props.scene.id,
-                                paragraphId: props.paragraph.id,
-                                plotpointId: link.plot_point_id,
-                                action: link.action,
-                              }),
-                            );
-                          } else {
-                            console.error("no scene or paragraph");
-                          }
-                        }}
-                      >
-                        <TrashSolid />
-                      </Button>
-                    </Tag>
-                  );
-                })}
-              </Flex>
-            ) : (
-              <Box pb={4} />
-            )}
-            {props.paragraph?.inventory_actions &&
-            props.paragraph?.inventory_actions.length > 0 ? (
-              <Flex
-                flexDirection={"row"}
-                px={8}
-                pb={4}
-                gap={1}
-                flexWrap={"wrap"}
-              >
-                {props.paragraph?.inventory_actions.map((link) => {
-                  return (
-                    <Tag
-                      key={link.item_name}
-                      p={2}
-                      colorScheme={link.type === "add" ? "green" : "red"}
-                    >
-                      {link.item_name} x{link.item_amount}
-                      <Button
-                        variant={"link"}
-                        size={"xs"}
-                        ml={2}
-                        onClick={() => {
-                          if (props.paragraph && props.scene) {
-                            dispatch(
-                              storyActions.removeInventoryActionFromSceneParagraph(
-                                {
-                                  sceneId: props.scene.id,
-                                  paragraphId: props.paragraph.id,
-                                  item_name: link.item_name,
-                                  item_amount: link.item_amount,
-                                },
-                              ),
-                            );
-                          } else {
-                            console.error("no scene or paragraph");
-                          }
-                        }}
-                      >
-                        <TrashSolid />
-                      </Button>
-                    </Tag>
-                  );
-                })}
-              </Flex>
-            ) : (
-              <Box pb={4} />
-            )}
-          </Box>
-        }
-      />
     </>
-  );
+  ) : null;
 };

@@ -14,6 +14,7 @@ export interface GlobalState {
   selectedLanguage?: string;
   storyLoaded: boolean;
   aiPopupOpen: boolean;
+  showInventory: boolean;
   signinPopupOpen: boolean;
   aiBackend: "google" | "openai" | "claude";
   saving: boolean;
@@ -34,6 +35,7 @@ const initialState: GlobalState = {
   aiBackend: "openai",
   aiPopupOpen: false,
   signinPopupOpen: false,
+  showInventory: false,
   saving: false,
   syncing: false,
   isDirty: false,
@@ -52,6 +54,9 @@ export const globalSlice = createSlice({
       actions: PayloadAction<GlobalState["signedInUser"]>,
     ) => {
       state.signedInUser = actions.payload;
+    },
+    setShowInventory: (state, action: PayloadAction<boolean>) => {
+      state.showInventory = action.payload;
     },
     setAiPopupOpen: (state, action: PayloadAction<boolean>) => {
       state.aiPopupOpen = action.payload;

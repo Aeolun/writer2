@@ -10,7 +10,6 @@ import { SearchPane } from "../components/SearchPane.tsx";
 import { StoryNavigation } from "../components/StoryNavigation";
 import { StoryPane } from "../components/StoryPane";
 import { WriteHeaderMenu } from "../components/WriteHeaderMenu";
-import { useAutosave } from "../lib/hooks/use-autosave";
 import { checkProject } from "../lib/persistence/check-project.ts";
 import { loadProject } from "../lib/persistence/load-project.ts";
 import { storySettingsSelector } from "../lib/selectors/storySettings";

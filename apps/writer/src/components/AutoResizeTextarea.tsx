@@ -1,29 +1,58 @@
-import { Box, type TextareaProps } from "@chakra-ui/react";
-import hljs from "highlight.js";
-import React from "react";
-import TextArea from "react-textarea-autosize";
+import {
+  CSSProperties,
+  SyntheticEvent,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+} from "react";
 
-export const AutoResizeTextarea = React.forwardRef<
-  HTMLTextAreaElement,
-  TextareaProps
->((props, ref) => {
+const textAreaStyle: CSSProperties = {
+  outline: "none",
+  background: "transparent",
+  padding: "0.5em",
+  overflow: "hidden",
+  resize: "none",
+};
+
+const resize = (textArea: HTMLTextAreaElement) => {
+  textArea.style.height = "auto";
+  textArea.style.height = textArea.scrollHeight + "px";
+};
+
+export const AutoResizeTextarea = (
+  props: React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+) => {
+  const textArea = useRef<HTMLTextAreaElement>(null);
+  useLayoutEffect(() => {
+    const current = textArea.current;
+    if (current) {
+      current.style.height = "auto";
+      current.style.height = current.scrollHeight + "px";
+    }
+  }, []);
+
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      resize(e.currentTarget);
+      props.onChange && props.onChange(e);
+    },
+    [props.onChange],
+  );
+  const onFocus = useCallback(
+    (e: SyntheticEvent<HTMLTextAreaElement>) => {
+      resize(e.currentTarget);
+      props.onFocus && props.onFocus(e);
+    },
+    [props.onFocus],
+  );
+
   return (
-    <Box
-      px={6}
-      py={2}
-      pb={0}
-      minH="unset"
-      textIndent={"1em"}
-      overflow="hidden"
-      background={"transparent"}
-      w="100%"
-      fontSize={"1rem"}
-      resize="none"
-      spellCheck={"true"}
-      ref={ref}
-      minRows={1}
-      as={TextArea}
+    <textarea
       {...props}
+      ref={textArea}
+      onChange={onChange}
+      onFocus={onFocus}
+      style={textAreaStyle}
     />
   );
-});
+};

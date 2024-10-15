@@ -1,29 +1,30 @@
-import {Button, HStack, Text} from "@chakra-ui/react";
+import { Button, HStack, Text } from "@chakra-ui/react";
 import type React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import type {Scene} from "../../../shared/src/schema.ts";
-import {globalActions} from "../lib/slices/global";
-import {storyActions} from "../lib/slices/story";
-import type {RootState} from "../lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { globalActions } from "../lib/slices/global";
+import { storyActions } from "../lib/slices/story";
+import { useAppSelector, type RootState } from "../lib/store";
+import { selectedSceneParagraphsSelector } from "../lib/selectors/selectedSceneParagraphsSelector.ts";
 
-export const SceneButtons = (props: { scene: Scene }) => {
+export const SceneButtons = () => {
   const dispatch = useDispatch();
   const languages = useSelector((store: RootState) =>
     Object.values(store.language.languages),
   );
+  const scene = useAppSelector(selectedSceneParagraphsSelector);
   const selectedLanguage = useSelector(
     (store: RootState) => store.base.selectedLanguage,
   );
 
-  return (
+  return scene ? (
     <HStack bg={"gray.300"} px={4} py={2} gap={1}>
       <Text minW="6em">Actions</Text>
       <Button
         onClick={() => {
-          props.scene.paragraphs.forEach((p) => {
+          scene.paragraphs.forEach((p) => {
             dispatch(
               storyActions.updateSceneParagraph({
-                sceneId: props.scene.id,
+                sceneId: scene.id,
                 paragraphId: p.id,
                 extra: p.text,
                 text: "",
@@ -37,10 +38,10 @@ export const SceneButtons = (props: { scene: Scene }) => {
       <Button
         colorScheme={"orange"}
         onClick={() => {
-          props.scene.paragraphs.forEach((p) => {
+          scene.paragraphs.forEach((p) => {
             dispatch(
               storyActions.updateSceneParagraph({
-                sceneId: props.scene.id,
+                sceneId: scene.id,
                 paragraphId: p.id,
                 state: "ai",
               }),
@@ -53,10 +54,10 @@ export const SceneButtons = (props: { scene: Scene }) => {
       <Button
         colorScheme={"orange"}
         onClick={() => {
-          props.scene.paragraphs.forEach((p) => {
+          scene.paragraphs.forEach((p) => {
             dispatch(
               storyActions.updateSceneParagraph({
-                sceneId: props.scene.id,
+                sceneId: scene.id,
                 paragraphId: p.id,
                 state: "draft",
               }),
@@ -82,5 +83,5 @@ export const SceneButtons = (props: { scene: Scene }) => {
         );
       })}
     </HStack>
-  );
+  ) : null;
 };

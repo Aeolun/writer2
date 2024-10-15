@@ -1,7 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Preview } from "../components/Preview";
-import { useAutosave } from "../lib/hooks/use-autosave";
 import { sortedBookObjects } from "../lib/selectors/sortedBookObjects";
 import type { RootState } from "../lib/store";
 import { Flex } from "@chakra-ui/react";
@@ -12,7 +11,6 @@ const Home = () => {
   const scenes = useSelector(sortedBookObjects);
 
   const dispatch = useDispatch();
-  useAutosave(!!storyLoaded);
 
   return (
     <Flex flexDirection={"column"} height={"100%"}>

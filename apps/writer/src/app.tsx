@@ -23,6 +23,7 @@ import Search from "./write/search.tsx";
 import Settings from "./write/settings.tsx";
 import "highlight.js/styles/a11y-light.css";
 import EmbedSearch from "./write/embed-search.tsx";
+import { Autosave } from "./components/Autosave.tsx";
 
 if (process.env.NODE_ENV === "development") {
   wdyr(React, {
@@ -42,6 +43,7 @@ function MyApp() {
     <ChakraProvider theme={theme}>
       <Provider store={store}>
         <SigninProvider>
+          <Autosave />
           <AiPopup />
           <SigninPopup />
           <Switch>

@@ -2,16 +2,20 @@ import { createSelector } from "reselect";
 import type { Scene } from "../../../../shared/src/schema.ts";
 import type { RootState } from "../store";
 
-export const selectedSceneSelector = createSelector(
+export const selectedSceneParagraphsSelector = createSelector(
   [
     (state: RootState) => state.base.currentId,
     (state: RootState) => state.base.selectedEntity,
     (state: RootState) => state.story.scene,
   ],
-  (currentId, type, scenes): Scene | undefined => {
+  (currentId, type, scenes) => {
     if (type !== "scene" || !currentId) {
       return undefined;
     }
-    return scenes[currentId];
+    const scene = scenes[currentId];
+    return {
+      id: scene.id,
+      paragraphs: scene.paragraphs,
+    };
   },
 );

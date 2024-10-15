@@ -315,6 +315,7 @@ export const globalSlice = createSlice({
       action: PayloadAction<{
         sceneId: string;
         afterParagraphId?: string;
+        state?: SceneParagraph["state"];
         text?: string;
       }>,
     ) => {
@@ -347,7 +348,7 @@ export const globalSlice = createSlice({
       const paragraphData: SceneParagraph = {
         id: newId,
         text: newParagraphText,
-        state: "draft",
+        state: action.payload.state ?? "draft",
         modifiedAt: Date.now(),
         comments: [],
         plot_point_actions: [],

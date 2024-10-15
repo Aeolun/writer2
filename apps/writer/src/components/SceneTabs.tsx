@@ -4,6 +4,7 @@ import { ScenePanel } from "../components/ScenePanel";
 
 import { StoryPanel } from "./StoryPanel.tsx";
 import { SceneHistoryPanel } from "./SceneHistoryPanel.tsx";
+import { ErrorBoundary } from "./ErrorBoundary.tsx";
 
 export const SceneTabs = () => {
   return (
@@ -26,7 +27,9 @@ export const SceneTabs = () => {
         flexDirection={"column"}
       >
         <TabPanel flex={1} p={0} overflow={"hidden"}>
-          <StoryPanel />
+          <ErrorBoundary>
+            <StoryPanel />
+          </ErrorBoundary>
         </TabPanel>
         <TabPanel flex={1} p={0} overflow={"hidden"}>
           <ScenePanel />

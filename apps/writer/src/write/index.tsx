@@ -8,7 +8,6 @@ import { PageImage } from "../components/PageImage";
 import { StoryNavigation } from "../components/StoryNavigation";
 import { StoryPane } from "../components/StoryPane";
 import { WriteHeaderMenu } from "../components/WriteHeaderMenu";
-import { useAutosave } from "../lib/hooks/use-autosave";
 import { checkProject } from "../lib/persistence/check-project.ts";
 import { loadProject } from "../lib/persistence/load-project.ts";
 import { storySettingsSelector } from "../lib/selectors/storySettings";
@@ -18,7 +17,6 @@ import type { RootState } from "../lib/store";
 const Home = () => {
   const dispatch = useDispatch();
   const storySettings = useSelector(storySettingsSelector);
-  const [saving, setSaving] = useState(false);
   const [location, setLocation] = useLocation();
   const storyLoaded = useSelector((store: RootState) => store.story.name);
   const stories = useSelector((store: RootState) => store.base.stories);
@@ -30,10 +28,6 @@ const Home = () => {
     }
   }, [storyLoaded, setLocation]);
 
-  useAutosave(!!storyLoaded);
-  console.log({
-    stories,
-  });
   return (
     <Flex flexDirection={"column"} height={"100%"}>
       {storyLoaded ? (
