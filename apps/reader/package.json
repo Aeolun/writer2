@@ -19,9 +19,11 @@
     "@vitejs/plugin-react": "^4.3.2",
     "@xmldom/xmldom": "^0.8.10",
     "axios": "^1.7.7",
+    "classnames": "^2.5.1",
     "pure-rand": "^6.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-helmet": "^6.1.0",
     "react-hook-form": "^7.53.0",
     "use-dark-mode": "^2.3.1",
     "vite": "^5.4.8",
@@ -29,6 +31,7 @@
     "xpath": "^0.0.34"
   },
   "devDependencies": {
+    "@types/react-helmet": "^6.1.11",
     "@vanilla-extract/css": "^1.16.0",
     "@vanilla-extract/vite-plugin": "^4.0.16",
     "autoprefixer": "^10.4.20",

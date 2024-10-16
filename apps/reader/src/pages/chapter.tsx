@@ -3,6 +3,8 @@ import { trpc } from "../utils/trpc"; // Assuming you have a trpc setup
 import { useLocation, useParams } from "wouter";
 
 import Divider from "../assets/divider.svg"; // Adjust the path as necessary
+import { useColorMode } from "../hooks/use-color-mode";
+import { Helmet } from "react-helmet";
 
 const ChapterPage = () => {
   const { chapterId, storyId, bookId } = useParams<{
@@ -11,6 +13,7 @@ const ChapterPage = () => {
     bookId: string;
   }>();
   const [location, setLocation] = useLocation();
+  const colorMode = useColorMode();
   const { data, error, isLoading } = trpc.getChapter.useQuery({ chapterId });
 
   // Function to navigate to a different chapter
@@ -22,7 +25,10 @@ const ChapterPage = () => {
   if (error) return <div>Error loading chapter</div>;
 
   return (
-    <div className="p-4 max-w-2xl mx-auto bg-white text-black dark:bg-gray-900 dark:text-white">
+    <div className="p-4 max-w-2xl mx-auto bg-white text-black dark:bg-slate-900 dark:text-white">
+      <Helmet>
+        <title>{data?.name} - Reader</title>
+      </Helmet>
       <h1 className="text-2xl font-bold mb-4 text-black dark:text-white">
         {data?.name}
       </h1>
@@ -33,6 +39,9 @@ const ChapterPage = () => {
             <img
               src={Divider}
               alt="Scene Divider"
+              style={{
+                filter: colorMode === "dark" ? "invert(1)" : "invert(0)",
+              }}
               className="my-8 m-auto max-w-60"
             />
           )}

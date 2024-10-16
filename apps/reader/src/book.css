@@ -182,7 +182,7 @@ body {
 } */
 
 .spine h2 {
-    text-align: right;
+    text-align: left;
     background: var(--spine-text-background, none);
     -webkit-text-fill-color: var(--text-fill-color, inherit);
     color: transparent;

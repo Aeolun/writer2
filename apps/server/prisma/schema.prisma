@@ -10,7 +10,7 @@ generator client {
 model User {
   id                Int                @id @default(autoincrement())
   email             String             @unique
-  name              String?
+  name              String             @unique
   password          String
   ownedStories      Story[]
   bookShelfStories  BookShelfStory[]
@@ -24,7 +24,7 @@ model User {
 model Session {
   id         String   @id @default(uuid(7))
   ownerId    Int
-  owner      User     @relation(fields: [ownerId], references: [id])
+  owner      User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   validUntil DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -35,7 +35,7 @@ model AccessKey {
   key         String    @unique
   description String?
   ownerId     Int
-  owner       User      @relation(fields: [ownerId], references: [id])
+  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   lastUsedAt  DateTime?
@@ -51,9 +51,9 @@ model BookShelfStory {
   id        Int       @id @default(autoincrement())
   name      String    @default("")
   ownerId   Int
-  owner     User      @relation(fields: [ownerId], references: [id])
+  owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   storyId   String
-  story     Story     @relation(fields: [storyId], references: [id])
+  story     Story     @relation(fields: [storyId], references: [id], onDelete: Cascade)
   kind      SavedType
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -62,10 +62,15 @@ model BookShelfStory {
 model Story {
   id               String           @id @default(uuid(7))
   name             String           @default("")
+  summary          String           @default("") @db.Text()
   ownerId          Int
-  owner            User             @relation(fields: [ownerId], references: [id])
+  owner            User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  royalRoadId      Int?             @unique
   bookShelfStories BookShelfStory[]
+  published        Boolean          @default(false)
   coverArtAsset    String
+  coverColor       String           @default("#000000")
+  coverTextColor   String           @default("#FFFFFF")
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
   pages            Int?
@@ -77,7 +82,7 @@ model Book {
   id            String    @id @default(uuid(7))
   name          String    @default("")
   storyId       String
-  story         Story     @relation(fields: [storyId], references: [id])
+  story         Story     @relation(fields: [storyId], references: [id], onDelete: Cascade)
   coverArtAsset String
   spineArtAsset String
   pages         Int?
@@ -99,7 +104,7 @@ model Scene {
   id         String      @id @default(uuid(7))
   name       String      @default("")
   body       String      @db.LongText()
-  chapter    Chapter     @relation(fields: [chapterId], references: [id])
+  chapter    Chapter     @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   chapterId  String
   sortOrder  Int
   createdAt  DateTime    @default(now())
@@ -110,7 +115,7 @@ model Scene {
 model Paragraph {
   id                 String              @id @default(uuid(7))
   sceneId            String
-  scene              Scene               @relation(fields: [sceneId], references: [id])
+  scene              Scene               @relation(fields: [sceneId], references: [id], onDelete: Cascade)
   paragraphRevisions ParagraphRevision[]
   sortOrder          Int
 }
@@ -118,7 +123,7 @@ model Paragraph {
 model ParagraphRevision {
   id               String             @id @default(uuid(7))
   paragraphId      String
-  paragraph        Paragraph          @relation(fields: [paragraphId], references: [id])
+  paragraph        Paragraph          @relation(fields: [paragraphId], references: [id], onDelete: Cascade)
   body             String             @db.LongText()
   createdAt        DateTime           @default(now())
   paragraphComment ParagraphComment[]
@@ -127,9 +132,9 @@ model ParagraphRevision {
 model ParagraphComment {
   id                  Int               @id @default(autoincrement())
   paragraphRevisionId String
-  paragraphRevision   ParagraphRevision @relation(fields: [paragraphRevisionId], references: [id])
+  paragraphRevision   ParagraphRevision @relation(fields: [paragraphRevisionId], references: [id], onDelete: Cascade)
   ownerId             Int
-  owner               User              @relation(fields: [ownerId], references: [id])
+  owner               User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   body                String
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
@@ -138,9 +143,9 @@ model ParagraphComment {
 model File {
   id        String   @id @default(uuid(7))
   ownerId   Int
-  owner     User     @relation(fields: [ownerId], references: [id])
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   storyId   String?
-  story     Story?   @relation(fields: [storyId], references: [id])
+  story     Story?   @relation(fields: [storyId], references: [id], onDelete: Cascade)
   localPath String?
   path      String   @unique
   sha256    String   @default("")

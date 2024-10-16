@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, Link } from "wouter";
 import { trpc } from "../utils/trpc";
+import { Helmet } from "react-helmet";
 
 export const StoryPage = () => {
   const { storyId } = useParams();
@@ -40,11 +41,9 @@ export const StoryPage = () => {
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-      <img
-        src={story.coverArtAsset}
-        alt={story.name}
-        className="w-full h-64 object-cover"
-      />
+      <Helmet>
+        <title>{story.name} - Reader</title>
+      </Helmet>
       <div className="p-6">
         <h1 className="text-3xl font-bold mb-2 text-black dark:text-white">
           {story.name}

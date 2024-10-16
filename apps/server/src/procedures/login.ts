@@ -28,6 +28,7 @@ export const login = publicProcedure
       const newAccessKey = await prisma.accessKey.create({
         data: {
           key: randomBytes(64).toString("hex"),
+          description: input.description,
           owner: {
             connect: emailUser,
           },

@@ -4,6 +4,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  HStack,
   Input,
   Tab,
   TabList,
@@ -163,24 +164,38 @@ export const ChapterTabs = () => {
           <Box flex={1} p={4} height="100%" overflow="auto">
             <FormControl>
               <FormLabel>Published At</FormLabel>
-              <Datetime
-                renderInput={(props) => <Input {...props} />}
-                onChange={(e) => {
-                  if (e instanceof moment) {
+              <HStack>
+                <Datetime
+                  renderInput={(props) => <Input {...props} />}
+                  onChange={(e) => {
+                    if (e instanceof moment) {
+                      dispatch(
+                        storyActions.updateChapter({
+                          id: chapterObj.id,
+                          visibleFrom: e.toISOString(),
+                        }),
+                      );
+                    }
+                  }}
+                  value={
+                    chapterObj.data.visibleFrom
+                      ? new Date(chapterObj.data.visibleFrom)
+                      : undefined
+                  }
+                />
+                <Button
+                  onClick={() => {
                     dispatch(
                       storyActions.updateChapter({
                         id: chapterObj.id,
-                        visibleFrom: e.toISOString(),
+                        visibleFrom: new Date().toISOString(),
                       }),
                     );
-                  }
-                }}
-                value={
-                  chapterObj.data.visibleFrom
-                    ? new Date(chapterObj.data.visibleFrom)
-                    : undefined
-                }
-              />
+                  }}
+                >
+                  Set to now
+                </Button>
+              </HStack>
               <FormHelperText>
                 This is the date the chapter will be visible in the reader
                 application (or RoyalRoad, if published there).

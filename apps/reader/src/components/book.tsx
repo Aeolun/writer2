@@ -41,9 +41,8 @@ export const Book = (props: {
   );
   const colorVariant = prand.unsafeUniformIntDistribution(0, 2, rng);
   const spineLines = Math.min(Math.floor(width / 50), 2);
-  const titleSizing = Math.min(
-    (37 * spineLines) / props.title.length,
-    1.2 * (width / 50),
+  const titleSizing = Math.max(
+    Math.min((37 * spineLines) / props.title.length, 1.2 * (width / 50)),
     2,
   );
   const openedWidth = (height / 600) * 400;
@@ -100,7 +99,7 @@ export const Book = (props: {
             <div
               className="cover"
               style={{
-                background: `${props.spineColor} url(covers/${props.image})`,
+                background: `${props.spineColor} url(${props.image})`,
                 backgroundSize: "contain",
               }}
             ></div>
@@ -110,6 +109,8 @@ export const Book = (props: {
           className="spine"
           style={{
             backgroundColor: props.spineColor,
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
           <h2>

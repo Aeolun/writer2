@@ -1,5 +1,5 @@
 import { Box, Button, Flex, useColorModeValue } from "@chakra-ui/react";
-import { Minus, Plus, Upload } from "iconoir-react";
+import { Clock, Minus, Plus, Upload } from "iconoir-react";
 import React, { Fragment } from "react";
 import { type NodeRendererProps, Tree } from "react-arborist";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,7 @@ function Node({ node, tree, style, dragHandle }: NodeRendererProps<any>) {
   const dispatch = useDispatch();
   const selectedColor = useColorModeValue("red.500", "red.700");
   const scenes = useSelector((state: RootState) => state.story.scene);
+  const chapters = useSelector((state: RootState) => state.story.chapter);
   /* This node instance can do many things. See the API reference. */
   return (
     <>
@@ -43,6 +44,19 @@ function Node({ node, tree, style, dragHandle }: NodeRendererProps<any>) {
         >
           <span>{node.isLeaf ? "🍁" : "🌲"}</span>
           <span>{node.data.name}</span>
+          {node.data.type === "chapter" ? (
+            <>
+              {chapters[node.data.id].visibleFrom ? (
+                <div style={{ marginLeft: "auto" }}>
+                  {new Date(chapters[node.data.id].visibleFrom) < new Date() ? (
+                    <Upload color={"#4c4"} />
+                  ) : (
+                    <Clock color={"#4c4"} />
+                  )}
+                </div>
+              ) : null}
+            </>
+          ) : null}
           {node.data.type === "scene" ? (
             <>
               <span style={{ fontSize: "70%" }}>
@@ -50,11 +64,6 @@ function Node({ node, tree, style, dragHandle }: NodeRendererProps<any>) {
               </span>
               <span style={{ marginLeft: "auto", display: "flex" }}>
                 <div>{scenes[node.data.id].hasAI ? "🤖" : "🧑"}</div>
-                {scenes[node.data.id].posted ? (
-                  <div style={{}}>
-                    <Upload color={"#4c4"} />
-                  </div>
-                ) : null}
               </span>
             </>
           ) : null}

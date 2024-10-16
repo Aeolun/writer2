@@ -5,6 +5,9 @@ import sharp from "sharp";
 import { prisma } from "../prisma";
 import { uploadFile } from "../util/file-storage";
 
+import short from "short-uuid";
+const translator = short();
+
 export const uploadStoryImage = protectedProcedure
   .input(
     z.object({
@@ -23,10 +26,14 @@ export const uploadStoryImage = protectedProcedure
     if (!["png", "jpeg", "webp"].includes(imageType ?? "asdf89")) {
       throw new Error("Invalid image type");
     }
+    let extension = imageType;
+    if (imageType === "jpeg") {
+      extension = "jpg";
+    }
 
     const story = await prisma.story.findFirst({
       where: {
-        id: input.storyId,
+        id: translator.toUUID(input.storyId),
         ownerId: ctx.authenticatedUser.id,
       },
     });
@@ -36,12 +43,14 @@ export const uploadStoryImage = protectedProcedure
     }
 
     const pathHash = createHash("sha256").update(input.path).digest("hex");
-    const storagePath = `upload/${ctx.authenticatedUser.id}/${input.storyId}/${pathHash}.${imageType}`;
+    const storagePath = `upload/${ctx.authenticatedUser.id}/${translator.toUUID(
+      input.storyId,
+    )}/${pathHash}.${extension}`;
 
     const existingFile = await prisma.file.findFirst({
       where: {
         ownerId: ctx.authenticatedUser.id,
-        storyId: input.storyId,
+        storyId: translator.toUUID(input.storyId),
         path: storagePath,
       },
     });
@@ -52,11 +61,11 @@ export const uploadStoryImage = protectedProcedure
     const result = await prisma.file.upsert({
       where: {
         path: storagePath,
-        storyId: input.storyId,
+        storyId: translator.toUUID(input.storyId),
       },
       create: {
         ownerId: ctx.authenticatedUser.id,
-        storyId: input.storyId,
+        storyId: translator.toUUID(input.storyId),
         path: storagePath,
         localPath: input.path,
         mimeType: `image/${imageType}`,

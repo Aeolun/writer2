@@ -1,11 +1,21 @@
 import { trpc } from "../utils/trpc";
 
+import StoryCard from "../components/storycard";
+import { useLocation, useParams } from "wouter";
+import { useSearchParams } from "../hooks/use-search-params";
+import { Helmet } from "react-helmet";
+
 export const StoriesPage = () => {
+  const params = useSearchParams();
   const {
     data: storiesData,
     isLoading,
     error,
-  } = trpc.listStories.useQuery({ limit: 20 });
+  } = trpc.listStories.useQuery({
+    limit: 20,
+    cursor: params.get("cursor") ?? undefined,
+  });
+  const [location, navigate] = useLocation();
 
   if (isLoading) {
     return (
@@ -21,38 +31,50 @@ export const StoriesPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Stories - Reader</title>
+      </Helmet>
       <h1 className="text-3xl font-bold mb-6">Stories</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex flex-wrap justify-between gap-6">
         {storiesData?.stories.map((story) => (
-          <div key={story.id} className="card bg-base-100 shadow-xl">
-            <figure>
-              <img
-                src={story.coverArtAsset}
-                alt={story.name}
-                className="w-full h-48 object-cover"
-              />
-            </figure>
-            <div className="card-body">
-              <h2 className="card-title">{story.name}</h2>
-              <p className="text-gray-600 mb-2">by {story.owner.name}</p>
-              <p>{story.pages} pages</p>
-              <div className="card-actions justify-end">
-                <a href={`/story/${story.id}`} className="btn btn-primary">
-                  Read Now
-                </a>
-              </div>
-            </div>
-          </div>
+          <StoryCard
+            key={story.id}
+            id={story.id}
+            summary={story.summary}
+            coverArtAsset={story.coverArtAsset}
+            name={story.name}
+            ownerName={story.owner.name ?? ""}
+            pages={story.pages ?? 0}
+            color={story.coverColor}
+            textColor={story.coverTextColor}
+            royalRoadId={story.royalRoadId ?? undefined}
+          />
         ))}
       </div>
-      {storiesData?.nextCursor && (
+      {storiesData?.nextCursor ? (
         <div className="mt-8 text-center">
           <button
             type="button"
-            className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
+            className="bg-gray-200 dark:bg-gray-800 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+            onClick={() => {
+              navigate(`/stories?cursor=${storiesData.nextCursor}`);
+            }}
           >
             Load More
           </button>
+        </div>
+      ) : (
+        <div className="mt-8 text-center flex flex-col gap-4">
+          <p>Woe is me, no more stories 😔</p>
+          <p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => navigate("/")}
+            >
+              Go home
+            </button>
+          </p>
         </div>
       )}
     </>

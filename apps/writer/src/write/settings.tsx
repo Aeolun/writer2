@@ -14,6 +14,7 @@ import { storySettingsSelector } from "../lib/selectors/storySettings";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
 import { FileSelector } from "../components/FileSelector";
+import StoryStatus from "../components/StoryStatus";
 
 const Profile = () => {
   const storyLoaded = useSelector((store: RootState) => store.story);
@@ -59,6 +60,7 @@ const Profile = () => {
                 story.
               </FormHelperText>
             </FormControl>
+            <StoryStatus storyId={storyLoaded.id} />
             <FormControl>
               <FormLabel>Instructions to give AI</FormLabel>
               <Textarea

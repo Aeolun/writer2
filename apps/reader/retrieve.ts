@@ -8,7 +8,7 @@ import { join, parse } from "path";
 import { colord } from "colord";
 
 const royalRoadUrl = "https://www.royalroad.com";
-const pages = 16;
+const pages = 10;
 const cacheFolder = "cache/royalroad/";
 
 fs.mkdirSync(cacheFolder, {
@@ -92,9 +92,25 @@ const retrieve = async () => {
         bookDoc,
       );
 
+      const descriptionParagraphs = selectNodes(
+        ".//div[@class='description']//p",
+        bookDoc,
+      );
+      const description = descriptionParagraphs
+        .filter(
+          (p) =>
+            p.textContent?.trim() !== "" && p.textContent?.trim() !== "&nbsp;",
+        )
+        .map((p) => p.toString()) // Use toString() to get HTML content
+        .join("\n");
+
       const cover = selectString(".//img[@class='img-responsive']/@src", node);
       let color = "#000000";
       let textColor = "#FFFFFF";
+      if (!url) {
+        continue;
+      }
+      const fictionSlug = url.replace("/fiction/", "").replaceAll("/", "-");
       if (cover && url && !cover.includes("nocover")) {
         let coverData: Buffer;
         try {
@@ -105,12 +121,9 @@ const retrieve = async () => {
         } catch (e) {
           coverData = await getPage(cover, "jpg");
         }
+
         fs.writeFileSync(
-          join(
-            cacheFolder,
-            "covers",
-            `${url.replace("/fiction/", "").replaceAll("/", "-")}.jpg`,
-          ),
+          join(cacheFolder, "covers", `${fictionSlug}.jpg`),
           coverData,
         );
 
@@ -136,6 +149,52 @@ const retrieve = async () => {
           .replaceAll(",", "") ?? "0",
       );
 
+      let chapters: object[] = [];
+      let volumes: {
+        id: number;
+        cover: string;
+        title: string;
+        order: number;
+      }[] = [];
+      const scriptTags = selectNodes("//script", bookDoc);
+      for (const scriptTag of scriptTags) {
+        const scriptContent = scriptTag.textContent;
+        if (scriptContent?.includes("window.fictionCover =")) {
+          //console.log("scriptContent", scriptContent);
+          const [before, after] = scriptContent.split("window.chapters = ");
+
+          const chapterString = after.split(/;\s+window.volumes/);
+          if (chapterString.length > 1) {
+            chapters = JSON.parse(chapterString[0]);
+          } else {
+            throw new Error("Failed to split chapters");
+          }
+
+          const [beforeVolumes, afterVolumes] =
+            after.split("window.volumes = ");
+          const volumeString = afterVolumes.split(/;\s+window.readingProgress/);
+          if (volumeString.length > 1) {
+            volumes = JSON.parse(volumeString[0]);
+
+            if (volumes.length > 0) {
+              for (const volume of volumes) {
+                // get cover for each volume
+                const coverUrl = volume.cover;
+                const coverData = await getPage(coverUrl, "jpg");
+                fs.writeFileSync(
+                  join(
+                    cacheFolder,
+                    "covers",
+                    `${fictionSlug}-volume-${volume.id}.jpg`,
+                  ),
+                  coverData,
+                );
+              }
+            }
+          }
+        }
+      }
+
       const [, category, id, slug] = url?.split("/") ?? [];
 
       result.push({
@@ -143,12 +202,15 @@ const retrieve = async () => {
         category,
         slug,
         title,
+        description,
         url,
         author,
         color,
         textColor,
         pages,
         cover,
+        chapters,
+        volumes,
       });
     }
   }

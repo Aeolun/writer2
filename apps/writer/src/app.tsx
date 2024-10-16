@@ -1,6 +1,6 @@
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import wdyr from "@welldone-software/why-did-you-render";
-import React from "react";
+import React, { useState } from "react";
 import { Provider } from "react-redux";
 import { AiPopup } from "./components/AiPopup";
 import "./lib/App.css";
@@ -24,6 +24,8 @@ import Settings from "./write/settings.tsx";
 import "highlight.js/styles/a11y-light.css";
 import EmbedSearch from "./write/embed-search.tsx";
 import { Autosave } from "./components/Autosave.tsx";
+import { batchLink, trpc, trpcReact } from "./lib/trpc.ts";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const theme = extendTheme({
   config: {
@@ -33,30 +35,41 @@ const theme = extendTheme({
 });
 
 function MyApp() {
+  const [queryClient] = useState(() => new QueryClient());
+  const [trpcClient] = useState(() =>
+    trpcReact.createClient({
+      links: [batchLink],
+    }),
+  );
+
   return (
     <ChakraProvider theme={theme}>
       <Provider store={store}>
-        <SigninProvider>
-          <Autosave />
-          <AiPopup />
-          <SigninPopup />
-          <Switch>
-            <Route path={"/"} component={Home} />
-            <Route path={"/characters"} component={Characters} />
-            <Route path={"/language"} component={Language} />
-            <Route path={"/locations"} component={Locations} />
-            <Route path={"/plot-points"} component={PlotPoints} />
-            <Route path={"/preview"} component={Preview} />
-            <Route path={"/files"} component={Files} />
-            <Route path={"/settings"} component={Settings} />
-            <Route path={"/search"} component={Search} />
-            <Route path={"/embed-search"} component={EmbedSearch} />
-            <Route path={"/profile"} component={Profile} />
-            <Route path={"/new-story"} component={NewStory} />
-            <Route path={"/open-story"} component={OpenStory} />
-            <Route path={"/global-settings"} component={GlobalSettings} />
-          </Switch>
-        </SigninProvider>
+        <trpcReact.Provider client={trpcClient} queryClient={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <SigninProvider>
+              <Autosave />
+              <AiPopup />
+              <SigninPopup />
+              <Switch>
+                <Route path={"/"} component={Home} />
+                <Route path={"/characters"} component={Characters} />
+                <Route path={"/language"} component={Language} />
+                <Route path={"/locations"} component={Locations} />
+                <Route path={"/plot-points"} component={PlotPoints} />
+                <Route path={"/preview"} component={Preview} />
+                <Route path={"/files"} component={Files} />
+                <Route path={"/settings"} component={Settings} />
+                <Route path={"/search"} component={Search} />
+                <Route path={"/embed-search"} component={EmbedSearch} />
+                <Route path={"/profile"} component={Profile} />
+                <Route path={"/new-story"} component={NewStory} />
+                <Route path={"/open-story"} component={OpenStory} />
+                <Route path={"/global-settings"} component={GlobalSettings} />
+              </Switch>
+            </SigninProvider>
+          </QueryClientProvider>
+        </trpcReact.Provider>
       </Provider>
     </ChakraProvider>
   );

@@ -1,6 +1,8 @@
 import { Node, persistedSchema } from "@writer/shared";
 import { protectedProcedure } from "../trpc";
 import { prisma } from "../prisma";
+import short from "short-uuid";
+const translator = short();
 
 // Helper function to build maps for scene-to-chapter, chapter-to-book, and book-to-story relationships
 function buildRelationshipMaps(structure: Node[]) {
@@ -54,9 +56,9 @@ export const uploadStory = protectedProcedure
 
     // Create or update the Story
     const upsertedStory = await prisma.story.upsert({
-      where: { id: story.id },
+      where: { id: translator.toUUID(story.id) },
       create: {
-        id: story.id,
+        id: translator.toUUID(story.id),
         name: story.name,
         ownerId: ctx.authenticatedUser.id,
         coverArtAsset: story.settings?.headerImage || "",
@@ -79,12 +81,12 @@ export const uploadStory = protectedProcedure
     for (const [bookId, bookData] of Object.entries(story.book)) {
       const sortOrder = sortOrders.book.get(bookId) ?? 0;
       if (sortOrders.book.has(bookId)) {
-        existingBooks.push(bookId);
+        existingBooks.push(translator.toUUID(bookId));
       }
       await prisma.book.upsert({
-        where: { id: bookId },
+        where: { id: translator.toUUID(bookId) },
         create: {
-          id: bookId,
+          id: translator.toUUID(bookId),
           name: bookData.title,
           coverArtAsset: "",
           spineArtAsset: "",
@@ -108,6 +110,7 @@ export const uploadStory = protectedProcedure
       },
     });
 
+    const publishedChapters = new Set();
     // Create or update Chapters
     for (const [chapterId, chapterData] of Object.entries(story.chapter)) {
       const bookId = chapterToBookMap.get(chapterId) || "";
@@ -115,19 +118,31 @@ export const uploadStory = protectedProcedure
       if (bookId) {
         const sortOrder = sortOrders.chapter.get(chapterId) ?? 0;
         await prisma.chapter.upsert({
-          where: { id: chapterId },
+          where: { id: translator.toUUID(chapterId) },
           create: {
-            id: chapterId,
+            id: translator.toUUID(chapterId),
             name: chapterData.title,
+            publishedOn: chapterData.visibleFrom
+              ? new Date(chapterData.visibleFrom)
+              : undefined,
             sortOrder: sortOrder,
-            bookId: bookId,
+            bookId: translator.toUUID(bookId),
           },
           update: {
             name: chapterData.title,
-            bookId: bookId,
+            bookId: translator.toUUID(bookId),
+            publishedOn: chapterData.visibleFrom
+              ? new Date(chapterData.visibleFrom)
+              : undefined,
             sortOrder: sortOrder,
           },
         });
+        if (
+          chapterData.visibleFrom &&
+          new Date(chapterData.visibleFrom) < new Date()
+        ) {
+          publishedChapters.add(chapterId);
+        }
       }
     }
 
@@ -137,7 +152,8 @@ export const uploadStory = protectedProcedure
 
       // add words to book
       const bookId = chapterToBookMap.get(chapterId) || "";
-      if (bookId) {
+      // only count words for scenes that are published
+      if (bookId && publishedChapters.has(chapterId)) {
         wordsPerBook.set(
           bookId,
           (wordsPerBook.get(bookId) || 0) + (sceneData.words ?? 0),
@@ -149,18 +165,18 @@ export const uploadStory = protectedProcedure
       if (chapterId) {
         const sortOrder = sortOrders.scene.get(sceneId) ?? 0;
         const scene = await prisma.scene.upsert({
-          where: { id: sceneId },
+          where: { id: translator.toUUID(sceneId) },
           create: {
-            id: sceneId,
+            id: translator.toUUID(sceneId),
             name: sceneData.title,
             body: sceneData.text,
-            chapterId: chapterId,
+            chapterId: translator.toUUID(chapterId),
             sortOrder: sortOrder,
           },
           update: {
             name: sceneData.title,
             body: sceneData.text,
-            chapterId: chapterId,
+            chapterId: translator.toUUID(chapterId),
             sortOrder: sortOrder,
           },
         });
@@ -190,9 +206,9 @@ export const uploadStory = protectedProcedure
         // Create or update Paragraphs and ParagraphRevisions
         for (const [index, paragraphData] of sceneData.paragraphs.entries()) {
           const paragraph = await prisma.paragraph.upsert({
-            where: { id: paragraphData.id },
+            where: { id: translator.toUUID(paragraphData.id) },
             create: {
-              id: paragraphData.id,
+              id: translator.toUUID(paragraphData.id),
               sceneId: scene.id,
               sortOrder: index,
             },
@@ -226,7 +242,7 @@ export const uploadStory = protectedProcedure
     // Update the books with the total words
     for (const [bookId, words] of wordsPerBook.entries()) {
       await prisma.book.update({
-        where: { id: bookId },
+        where: { id: translator.toUUID(bookId) },
         data: {
           pages: Math.ceil(words / 250),
         },

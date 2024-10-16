@@ -34,6 +34,11 @@ export const getChapter = publicProcedure
             chapters: {
               orderBy: { sortOrder: "asc" },
               select: { id: true },
+              where: {
+                publishedOn: {
+                  lte: new Date(),
+                },
+              },
             },
           },
         },

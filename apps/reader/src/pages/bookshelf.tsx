@@ -1,40 +1,54 @@
 import { Book } from "../components/book";
-import royalroad from "../../royalroad.json";
+import { trpc } from "../utils/trpc";
+import "../book.css";
 
-type Book = {
+type BookType = {
   title: string;
   author: string;
   color: string;
   textColor: string;
   id: string;
-  slug: string;
+  cover: string;
   pages: number;
 };
 
 export const BookshelfPage = () => {
-  const pagesPerShelf = 2500;
-  const shelves: Book[][] = [];
-  let currentShelf: Book[] = [];
+  const stories = trpc.listStories.useQuery({
+    limit: 500,
+  });
+
+  const pagesPerShelf = Math.round(2200 * (window.innerWidth / 1440));
+  const shelves: BookType[][] = [];
+  let currentShelf: BookType[] = [];
   let currentPageCount = 0;
   let totalPageCount = 0;
-  for (const book of royalroad) {
-    const pages = Math.max(Math.round(book.pages / 20), 40);
+  for (const book of stories.data?.stories ?? []) {
+    const pages = Math.max(Math.round((book.pages ?? 0) / 20), 40);
     if (currentPageCount + pages > pagesPerShelf) {
       shelves.push(currentShelf);
       currentShelf = [];
       currentPageCount = 0;
     }
 
-    currentShelf.push(book);
+    currentShelf.push({
+      title: book.name,
+      author: book.owner.name,
+      color: book.coverColor,
+      textColor: book.coverTextColor,
+      id: book.id,
+      cover: book.coverArtAsset,
+      pages: book.pages ?? 0,
+    });
     currentPageCount += pages;
-    totalPageCount += book.pages;
+    totalPageCount += book.pages ?? 0;
   }
 
   return (
     <div
       style={{
         margin: "0 auto",
-        width: "1440px",
+        backgroundColor: "#000",
+        padding: "1rem",
       }}
     >
       {shelves.map((shelf) => {
@@ -48,7 +62,7 @@ export const BookshelfPage = () => {
                   author={book.author}
                   spineColor={book.color}
                   spineTextColor={book.textColor}
-                  image={`${book.id}-${book.slug}.jpg`}
+                  image={book.cover}
                   pages={book.pages}
                 />
               ))}

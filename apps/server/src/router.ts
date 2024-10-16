@@ -17,7 +17,12 @@ import { router } from "./trpc";
 import { sessionLogin } from "./procedures/sessionLogin";
 import { sessionSignout } from "./procedures/sessionSignout";
 import { listUploadedFiles } from "./procedures/uploaded-files";
-
+import { getBookshelfStories } from "./procedures/get-bookshelf-stories";
+import { authorList } from "./procedures/author-list";
+import { getStoryStatus } from "./procedures/get-story-status";
+import { publishStory } from "./procedures/publish-story";
+import { getReleases } from "./procedures/get-releases";
+import { listRandomStories } from "./procedures/list-random-stories";
 export const appRouter = router({
   userList: userList,
   importRoyalroad: importRoyalRoad,
@@ -37,6 +42,12 @@ export const appRouter = router({
   getChapter: getChapter,
   sessionSignout: sessionSignout,
   listUploadedFiles: listUploadedFiles,
+  getBookshelfStories: getBookshelfStories,
+  authorList: authorList,
+  getStoryStatus: getStoryStatus,
+  publishStory: publishStory,
+  getReleases: getReleases,
+  listRandomStories: listRandomStories,
 });
 
 // Export type router type signature,
