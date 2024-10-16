@@ -42,7 +42,17 @@ function Node({ node, tree, style, dragHandle }: NodeRendererProps<any>) {
           gap={2}
           style={{ flex: 1, maxHeight: "24px", overflow: "hidden" }}
         >
-          <span>{node.isLeaf ? "🍁" : "🌲"}</span>
+          <span>
+            {node.data.type === "book"
+              ? "📚"
+              : node.data.type === "arc"
+                ? "🏹"
+                : node.data.type === "chapter"
+                  ? "📖"
+                  : node.data.type === "scene"
+                    ? "📝"
+                    : ""}
+          </span>
           <span>{node.data.name}</span>
           {node.data.type === "chapter" ? (
             <>
