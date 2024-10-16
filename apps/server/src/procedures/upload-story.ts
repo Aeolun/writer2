@@ -58,12 +58,12 @@ export const uploadStory = protectedProcedure
       create: {
         id: story.id,
         name: story.name,
-        ownerId: ctx.accessKey.ownerId,
-        coverArtAsset: story.uploadedFiles?.coverArt?.publicUrl || "",
+        ownerId: ctx.authenticatedUser.id,
+        coverArtAsset: story.settings?.headerImage || "",
       },
       update: {
         name: story.name,
-        coverArtAsset: story.uploadedFiles?.coverArt?.publicUrl || "",
+        coverArtAsset: story.settings?.headerImage || "",
       },
     });
 

@@ -2,6 +2,7 @@ import { prisma } from "../prisma";
 import { publicProcedure } from "../trpc";
 
 export const whoAmI = publicProcedure.query(async (opts) => {
+  console.log("whoAmI", opts);
   if (!opts.ctx.token) {
     throw new Error("No token provided");
   }
@@ -15,9 +16,18 @@ export const whoAmI = publicProcedure.query(async (opts) => {
     },
   });
 
-  if (!accessToken) {
+  const session = await prisma.session.findFirst({
+    where: {
+      id: opts.ctx.token,
+    },
+    include: {
+      owner: true,
+    },
+  });
+
+  if (!accessToken && !session) {
     return null;
   }
 
-  return accessToken.owner;
+  return accessToken?.owner ?? session?.owner;
 });

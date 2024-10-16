@@ -12,6 +12,7 @@ import { StoriesPage } from "./pages/stories";
 import { StoryPage } from "./pages/story";
 import { ChapterPage } from "./pages/chapter";
 import { AuthorPage } from "./pages/author";
+import { LoginPage } from "./pages/login";
 
 export const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -19,11 +20,11 @@ export const App = () => {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:2022/",
+          url: "http://localhost:2022/trpc",
           // You can pass any HTTP headers you wish here
           async headers() {
             return {
-              authorization: "",
+              Authorization: `Bearer ${localStorage.getItem("sessionToken")}`,
             };
           },
         }),
@@ -41,6 +42,7 @@ export const App = () => {
             <Route path="/author/:authorId" component={AuthorPage} />
             <Route path="/stories" component={StoriesPage} />
             <Route path="/story/:storyId" component={StoryPage} />
+            <Route path="/login" component={LoginPage} />
             <Route
               path="/story/:storyId/book/:bookId/chapter/:chapterId"
               component={ChapterPage}

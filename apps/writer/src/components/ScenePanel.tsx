@@ -46,7 +46,7 @@ export const ScenePanel = () => {
   );
 
   return selectedScene ? (
-    <>
+    <Box flex={1} p={4} height="100%" overflow="auto">
       <div>
         Id: {selectedScene.id}
         <Input
@@ -133,6 +133,6 @@ export const ScenePanel = () => {
       >
         Delete
       </Button>
-    </>
+    </Box>
   ) : null;
 };

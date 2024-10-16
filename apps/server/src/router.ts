@@ -1,6 +1,6 @@
 import { importRoyalRoad } from "./procedures/import-royal-road";
 import { userList } from "./procedures/user-list";
-import { uploadImage } from "./procedures/upload-image";
+import { uploadStoryImage } from "./procedures/upload-story-image";
 import { uploadStory } from "./procedures/upload-story";
 import { login } from "./procedures/login";
 import { userById } from "./procedures/user-by-id";
@@ -14,11 +14,14 @@ import { listStories } from "./procedures/list-stories";
 import { getStory } from "./procedures/get-story";
 import { getChapter } from "./procedures/get-chapter";
 import { router } from "./trpc";
+import { sessionLogin } from "./procedures/sessionLogin";
+import { sessionSignout } from "./procedures/sessionSignout";
+import { listUploadedFiles } from "./procedures/uploaded-files";
 
 export const appRouter = router({
   userList: userList,
   importRoyalroad: importRoyalRoad,
-  uploadImage: uploadImage,
+  uploadStoryImage: uploadStoryImage,
   uploadStory: uploadStory,
   downloadStory: downloadStory,
   downloadFiles: downloadFiles,
@@ -30,7 +33,10 @@ export const appRouter = router({
   listStories: listStories,
   getStory: getStory,
   login: login,
+  sessionLogin: sessionLogin,
   getChapter: getChapter,
+  sessionSignout: sessionSignout,
+  listUploadedFiles: listUploadedFiles,
 });
 
 // Export type router type signature,

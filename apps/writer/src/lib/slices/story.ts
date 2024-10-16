@@ -180,7 +180,7 @@ export const globalSlice = createSlice({
     setSetting(
       state: Draft<Story>,
       action: PayloadAction<{
-        key: "mangaChapterPath" | "aiInstructions";
+        key: keyof Story["settings"];
         value: string;
       }>,
     ) {
@@ -582,15 +582,18 @@ export const globalSlice = createSlice({
     },
     updateChapter: (state, action: PayloadAction<Partial<Chapter>>) => {
       if (action.payload.id) {
-        state.chapter[action.payload.id] = {
-          ...state.chapter[action.payload.id],
-          ...action.payload,
-          modifiedAt: Date.now(),
-        };
+        console.log(action.payload);
+        state.chapter[action.payload.id].modifiedAt = Date.now();
+        for (const key in action.payload) {
+          state.chapter[action.payload.id][key as keyof Chapter] =
+            action.payload[key as keyof Chapter];
+        }
         // update title in structure
-        updateItemInStructure(state.structure, action.payload.id, {
-          name: action.payload.title,
-        });
+        if (action.payload.title) {
+          updateItemInStructure(state.structure, action.payload.id, {
+            name: action.payload.title,
+          });
+        }
         state.modifiedTime = Date.now();
       }
     },
@@ -873,6 +876,9 @@ export const globalSlice = createSlice({
         hash: action.payload.hash,
         publicUrl: action.payload.publicUrl,
       };
+    },
+    setName: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
     },
   },
 });

@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `File` ADD COLUMN `storyId` VARCHAR(191) NULL;
+
+-- AddForeignKey
+ALTER TABLE `File` ADD CONSTRAINT `File_storyId_fkey` FOREIGN KEY (`storyId`) REFERENCES `Story`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

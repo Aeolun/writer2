@@ -32,6 +32,7 @@ import { useCallback, useEffect, useState } from "react";
 import { storyActions } from "../lib/slices/story.ts";
 import { trpc } from "../lib/trpc.ts";
 import { arrayBufferToBase64 } from "../lib/util.ts";
+import { addNotification } from "../lib/slices/notifications.ts";
 
 export interface File {
   name: string;
@@ -44,18 +45,20 @@ const Item = ({
   handleAction,
   uploadData,
   file,
+  selectFile,
 }: {
   signedIn: boolean;
   handleClick: (fileName: string, isDir: boolean) => Promise<void>;
   handleAction: (
     fileName: string,
-    action: "delete" | "upload" | "copy-link",
+    action: "delete" | "upload" | "copy-link" | "select",
   ) => Promise<void>;
   uploadData?: {
     hash: string;
     publicUrl: string;
   };
   file: File;
+  selectFile?: (fileName: string) => void;
 }): JSX.Element => {
   const [uploading, setUploading] = useState<boolean>(false);
   return (
@@ -74,7 +77,19 @@ const Item = ({
       {file.isDir ? "📁" : file.name.includes(".png") ? "🖼" : "📄"}
       {file.name}
       {file.isDir ? "/" : ""}
-      {!file.isDir ? (
+      {!file.isDir && selectFile ? (
+        <Button
+          ml={"auto"}
+          size={"xs"}
+          colorScheme={"blue"}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAction(file.name, "select");
+          }}
+        >
+          Select
+        </Button>
+      ) : !file.isDir ? (
         <>
           {uploadData?.publicUrl ? (
             <IconButton
@@ -121,7 +136,13 @@ const Item = ({
   );
 };
 
-export const FilePanel = () => {
+export const FilePanel = ({
+  selectFile,
+  showOnlyUploaded = false, // New prop with default value
+}: {
+  selectFile?: (fileName: string) => void;
+  showOnlyUploaded?: boolean;
+}) => {
   const [files, setFiles] = useState<File[]>([]);
 
   const uploadedFiles = useSelector(
@@ -136,6 +157,24 @@ export const FilePanel = () => {
   const [openedFile, setOpenedFile] = useState<string>("");
   const [newDirectoryName, setNewDirectoryName] = useState<string>("");
 
+  useEffect(() => {
+    trpc.listUploadedFiles
+      .query({
+        storyId,
+      })
+      .then((uploadedFiles) => {
+        console.log(uploadedFiles);
+        for (const file of uploadedFiles) {
+          dispatch(
+            storyActions.putUploadedFile({
+              path: file.localPath ?? "",
+              hash: file.sha256,
+              publicUrl: file.fullUrl,
+            }),
+          );
+        }
+      });
+  }, [storyId, dispatch]);
   if (!projectDir) {
     throw new Error("No project directory set");
   }
@@ -149,21 +188,31 @@ export const FilePanel = () => {
         }
         setCurrentPath(newPath.replace(`${projectDir}/data`, ""));
       } else {
-        const newPath = await resolve(
+        const fullPath = await resolve(
           projectDir,
           "data",
           currentPath.replace(/^\//, ""),
           name,
         );
-        setOpenedFile(convertFileSrc(newPath));
+
+        setOpenedFile(convertFileSrc(fullPath));
       }
     },
     [currentPath, projectDir],
   );
 
   const handleAction = useCallback(
-    async (name: string, action: "delete" | "upload" | "copy-link") => {
-      if (action === "delete") {
+    async (
+      name: string,
+      action: "delete" | "upload" | "copy-link" | "select",
+    ) => {
+      console.log("handleAction", name, action);
+      if (action === "select") {
+        const fullPath = await resolve(projectDir, "data", currentPath, name);
+        const partialPath = fullPath.replace(`${projectDir}/data`, "");
+
+        selectFile?.(partialPath);
+      } else if (action === "delete") {
         const newPath = await resolve(
           projectDir,
           "data",
@@ -174,36 +223,47 @@ export const FilePanel = () => {
         await getFiles();
       } else if (action === "upload") {
         if (!isSignedIn) {
+          dispatch(
+            addNotification({
+              message: "You must be signed in to upload files",
+              type: "error",
+            }),
+          );
           throw new Error("Not signed in");
         }
-        const readPath = await resolve(
-          projectDir,
-          "data",
-          currentPath.replace(/^\//, ""),
-          name,
-        );
-        const newPath = readPath.replace(`${projectDir}/data`, "");
-        console.log("uploading", readPath, newPath);
-        const fileData = await readFile(readPath);
-        return trpc.uploadImage
-          .mutate({
-            dataBase64: arrayBufferToBase64(fileData),
-            path: newPath,
-            storyId: storyId,
-          })
-          .then((res) => {
-            console.log("uploaded");
-            dispatch(
-              storyActions.putUploadedFile({
-                path: newPath,
-                hash: res.sha256,
-                publicUrl: res.fullUrl,
-              }),
-            );
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+        try {
+          const readPath = await resolve(
+            projectDir,
+            "data",
+            currentPath.replace(/^\//, ""),
+            name,
+          );
+          const newPath = readPath.replace(`${projectDir}/data`, "");
+          console.log("uploading", readPath, newPath);
+
+          const fileData = await readFile(readPath);
+          return trpc.uploadStoryImage
+            .mutate({
+              dataBase64: arrayBufferToBase64(fileData),
+              path: newPath,
+              storyId: storyId,
+            })
+            .then((res) => {
+              console.log("uploaded");
+              dispatch(
+                storyActions.putUploadedFile({
+                  path: newPath,
+                  hash: res.sha256,
+                  publicUrl: res.fullUrl,
+                }),
+              );
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.error(error);
+        }
       } else if (action === "copy-link") {
         writeText(name)
           .then(() => {
@@ -214,7 +274,7 @@ export const FilePanel = () => {
           });
       }
     },
-    [currentPath, projectDir, isSignedIn, storyId],
+    [currentPath, projectDir, isSignedIn, storyId, dispatch, selectFile],
   );
 
   const getFiles = useCallback(
@@ -264,51 +324,61 @@ export const FilePanel = () => {
             flex={1}
             w={"100%"}
           >
-            {files.map((file: File) => (
-              <Item
-                key={file.name}
-                signedIn={!!isSignedIn?.name}
-                handleAction={handleAction}
-                uploadData={uploadedFiles?.[`${currentPath}/${file.name}`]}
-                handleClick={handleClick}
-                file={file}
-              />
-            ))}
+            {files
+              .filter(
+                (file: File) =>
+                  !showOnlyUploaded ||
+                  file.isDir ||
+                  uploadedFiles?.[`${currentPath}/${file.name}`],
+              )
+              .map((file: File) => (
+                <Item
+                  key={file.name}
+                  signedIn={!!isSignedIn?.name}
+                  handleAction={handleAction}
+                  uploadData={uploadedFiles?.[`${currentPath}/${file.name}`]}
+                  handleClick={handleClick}
+                  file={file}
+                  selectFile={selectFile}
+                />
+              ))}
           </VStack>
-          <HStack>
-            <Button
-              onClick={async () => {
-                setCreateDirOpen(true);
-              }}
-            >
-              Create Dir
-            </Button>
-            <Button
-              onClick={async () => {
-                const files = await open({
-                  multiple: true,
-                  directory: false,
-                });
-                console.log(files);
-                await Promise.all(
-                  files?.map(async (f) => {
-                    if (f.name) {
-                      const destination = await resolve(
-                        projectDir,
-                        "data",
-                        currentPath.replace(/^\//, ""),
-                        f.name,
-                      );
-                      return copyFile(f.path, destination);
-                    }
-                  }) ?? [],
-                );
-                await getFiles();
-              }}
-            >
-              Add File
-            </Button>
-          </HStack>
+          {!selectFile && (
+            <HStack>
+              <Button
+                onClick={async () => {
+                  setCreateDirOpen(true);
+                }}
+              >
+                Create Dir
+              </Button>
+              <Button
+                onClick={async () => {
+                  const files = await open({
+                    multiple: true,
+                    directory: false,
+                  });
+                  console.log(files);
+                  await Promise.all(
+                    files?.map(async (f) => {
+                      if (f.name) {
+                        const destination = await resolve(
+                          projectDir,
+                          "data",
+                          currentPath.replace(/^\//, ""),
+                          f.name,
+                        );
+                        return copyFile(f.path, destination);
+                      }
+                    }) ?? [],
+                  );
+                  await getFiles();
+                }}
+              >
+                Add File
+              </Button>
+            </HStack>
+          )}
           <Modal
             isOpen={createDirOpen}
             onClose={() => {

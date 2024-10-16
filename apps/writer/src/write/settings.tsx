@@ -13,9 +13,10 @@ import { WriteHeaderMenu } from "../components/WriteHeaderMenu";
 import { storySettingsSelector } from "../lib/selectors/storySettings";
 import { storyActions } from "../lib/slices/story";
 import type { RootState } from "../lib/store";
+import { FileSelector } from "../components/FileSelector";
 
 const Profile = () => {
-  const storyLoaded = useSelector((store: RootState) => store.story.name);
+  const storyLoaded = useSelector((store: RootState) => store.story);
   const settings = useSelector(storySettingsSelector);
   const dispatch = useDispatch();
 
@@ -26,22 +27,36 @@ const Profile = () => {
           <WriteHeaderMenu />
           <Flex flex={1} direction={"column"} p={4} gap={2} overflow={"hidden"}>
             <FormControl>
-              <FormLabel>Image path</FormLabel>
+              <FormLabel>Story Name</FormLabel>
               <Input
-                placeholder={"Image path"}
-                value={settings?.mangaChapterPath}
+                value={storyLoaded.name}
                 onChange={(e) => {
+                  dispatch(storyActions.setName(e.currentTarget.value));
+                }}
+              />
+              <FormHelperText>
+                This is the name of the story that will be displayed in the
+                reader (if you upload it).
+              </FormHelperText>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Header Image</FormLabel>
+              <FileSelector
+                value={settings?.headerImage}
+                showOnlyUploaded={true}
+                onChange={(value) => {
+                  console.log("value", value);
                   dispatch(
                     storyActions.setSetting({
-                      key: "mangaChapterPath",
-                      value: e.currentTarget.value,
+                      key: "headerImage",
+                      value: value,
                     }),
                   );
                 }}
               />
               <FormHelperText>
-                If this is for converting manga, where the chapter images are
-                stored.
+                This is the image that will be displayed at the top of the
+                story.
               </FormHelperText>
             </FormControl>
             <FormControl>

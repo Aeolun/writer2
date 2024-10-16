@@ -2,8 +2,15 @@ import {
   Box,
   Button,
   Checkbox,
+  HStack,
   Input,
+  Table,
+  Tbody,
+  Td,
   Textarea,
+  Th,
+  Thead,
+  Tr,
   VStack,
 } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -23,30 +30,36 @@ const Entry = (props: { v: AutoSaveFile }) => {
   const v = props.v;
 
   return (
-    <Box>
-      <Box>
-        {v.savedDate.toLocaleString()}: {v.name} ({v.words}){" "}
-        <Button
-          onClick={() => {
-            dispatch(storyActions.updateScene(v.object));
-          }}
-        >
-          Restore
-        </Button>
-        <Button
-          onClick={() => {
-            setIsOpen(!isOpen);
-          }}
-        >
-          {isOpen ? "Close" : "Open"}
-        </Button>
-      </Box>
+    <Tr>
+      <Td>{v.savedDate.toLocaleString()}</Td>
+      <Td>{v.name}</Td>
+      <Td>{v.words}</Td>
+      <Td>
+        <HStack>
+          <Button
+            size="xs"
+            onClick={() => {
+              dispatch(storyActions.updateScene(v.object));
+            }}
+          >
+            Restore
+          </Button>
+          <Button
+            size="xs"
+            onClick={() => {
+              setIsOpen(!isOpen);
+            }}
+          >
+            {isOpen ? "Close" : "Open"}
+          </Button>
+        </HStack>
+      </Td>
       {isOpen ? (
         <Box>
           <pre>{JSON.stringify(v.object, null, 2)}</pre>
         </Box>
       ) : null}
-    </Box>
+    </Tr>
   );
 };
 
@@ -64,14 +77,26 @@ export const SceneHistoryPanel = () => {
         setHistoricalVersions(result);
       });
     }
-  }, [selectedScene]);
+  }, [selectedScene, projectPath]);
 
   return selectedScene && selectedScene.type === "scene" ? (
-    <Box overflow="auto" flex="1" h="100%" p={2}>
+    <Box flex={1} p={4} height="100%" overflow="auto">
       <VStack gap={2} alignItems={"flex-start"}>
-        {historicalVersions?.map((v) => {
-          return <Entry v={v} key={v.name} />;
-        })}
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>Date</Th>
+              <Th>Name</Th>
+              <Th>Words</Th>
+              <Th>Actions</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {historicalVersions?.map((v) => {
+              return <Entry v={v} key={v.name} />;
+            })}
+          </Tbody>
+        </Table>
       </VStack>
     </Box>
   ) : null;

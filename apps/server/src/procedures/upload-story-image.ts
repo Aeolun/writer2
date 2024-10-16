@@ -5,7 +5,7 @@ import sharp from "sharp";
 import { prisma } from "../prisma";
 import { uploadFile } from "../util/file-storage";
 
-export const uploadImage = protectedProcedure
+export const uploadStoryImage = protectedProcedure
   .input(
     z.object({
       storyId: z.string(),
@@ -27,7 +27,7 @@ export const uploadImage = protectedProcedure
     const story = await prisma.story.findFirst({
       where: {
         id: input.storyId,
-        ownerId: ctx.accessKey.ownerId,
+        ownerId: ctx.authenticatedUser.id,
       },
     });
 
@@ -36,11 +36,12 @@ export const uploadImage = protectedProcedure
     }
 
     const pathHash = createHash("sha256").update(input.path).digest("hex");
-    const storagePath = `upload/${ctx.accessKey.ownerId}/${input.storyId}/${pathHash}.${imageType}`;
+    const storagePath = `upload/${ctx.authenticatedUser.id}/${input.storyId}/${pathHash}.${imageType}`;
 
     const existingFile = await prisma.file.findFirst({
       where: {
-        ownerId: ctx.accessKey.ownerId,
+        ownerId: ctx.authenticatedUser.id,
+        storyId: input.storyId,
         path: storagePath,
       },
     });
@@ -51,20 +52,26 @@ export const uploadImage = protectedProcedure
     const result = await prisma.file.upsert({
       where: {
         path: storagePath,
+        storyId: input.storyId,
       },
       create: {
-        ownerId: ctx.accessKey.ownerId,
+        ownerId: ctx.authenticatedUser.id,
+        storyId: input.storyId,
         path: storagePath,
+        localPath: input.path,
         mimeType: `image/${imageType}`,
         width: meta.width,
         height: meta.height,
         bytes: meta.size,
+        sha256,
       },
       update: {
         mimeType: `image/${imageType}`,
+        localPath: input.path,
         width: meta.width,
         height: meta.height,
         bytes: meta.size,
+        sha256,
       },
     });
     return {

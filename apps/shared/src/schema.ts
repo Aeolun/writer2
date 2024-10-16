@@ -47,6 +47,7 @@ export type Arc = z.infer<typeof arcSchema>;
 const chapterSchema = treeDataSchema.extend({
   summary: z.string(),
   start_date: z.string().optional(),
+  visibleFrom: z.string().datetime().optional(),
 });
 
 export type Chapter = z.infer<typeof chapterSchema>;
@@ -168,6 +169,7 @@ export const storySchema = z.object({
   lastPublishTime: z.number().optional(),
   settings: z
     .object({
+      headerImage: z.string().optional(),
       mangaChapterPath: z.string().optional(),
       aiInstructions: z.string().optional(),
       royalRoadId: z.string().optional(),

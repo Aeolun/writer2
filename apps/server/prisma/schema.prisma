@@ -18,6 +18,16 @@ model User {
   accessKeys        AccessKey[]
   paragraphComments ParagraphComment[]
   files             File[]
+  sessions          Session[]
+}
+
+model Session {
+  id         String   @id @default(uuid(7))
+  ownerId    Int
+  owner      User     @relation(fields: [ownerId], references: [id])
+  validUntil DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model AccessKey {
@@ -60,6 +70,7 @@ model Story {
   updatedAt        DateTime         @updatedAt
   pages            Int?
   books            Book[]
+  files            File[]
 }
 
 model Book {
@@ -128,6 +139,9 @@ model File {
   id        String   @id @default(uuid(7))
   ownerId   Int
   owner     User     @relation(fields: [ownerId], references: [id])
+  storyId   String?
+  story     Story?   @relation(fields: [storyId], references: [id])
+  localPath String?
   path      String   @unique
   sha256    String   @default("")
   width     Int?

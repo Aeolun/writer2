@@ -6,12 +6,11 @@ import z from "zod";
 
 const scryptAsync = promisify(scrypt);
 
-export const login = publicProcedure
+export const sessionLogin = publicProcedure
   .input(
     z.object({
       email: z.string(),
       password: z.string(),
-      description: z.string().optional(),
     }),
   )
   .mutation(async ({ input, ctx }) => {
@@ -25,15 +24,15 @@ export const login = publicProcedure
     const buf = (await scryptAsync(input.password, salt, 64)) as Buffer;
 
     if (hashedValue === buf.toString("hex")) {
-      const newAccessKey = await prisma.accessKey.create({
+      const newAccessKey = await prisma.session.create({
         data: {
-          key: randomBytes(64).toString("hex"),
           owner: {
             connect: emailUser,
           },
+          validUntil: new Date(Date.now() + 1000 * 60 * 60 * 24),
         },
       });
-      return newAccessKey.key;
+      return newAccessKey.id;
     }
     return undefined;
   });

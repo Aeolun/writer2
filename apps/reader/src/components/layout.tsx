@@ -1,11 +1,10 @@
 import { PropsWithChildren } from "react";
-import { Link } from "wouter";
 import { Navitem } from "../ui-components/navitem/navitem";
-
+import useDarkMode from "use-dark-mode";
+import UserStatus from "./user-status";
+import { useColorMode } from "../hooks/use-color-mode";
 export const Layout = (props: PropsWithChildren) => {
-  const prefersDarkMode = window.matchMedia?.(
-    "(prefers-color-scheme: dark)",
-  ).matches;
+  const colorMode = useColorMode();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -17,19 +16,19 @@ export const Layout = (props: PropsWithChildren) => {
               <Navitem to="/authors">Authors</Navitem>
               <Navitem to="/stories">Stories</Navitem>
             </div>
+            <UserStatus />
           </div>
         </div>
       </nav>
       <main
         className="flex-grow px-4 py-8 dark:bg-gray-800 dark:text-gray-200"
         style={{
-          backgroundImage: prefersDarkMode
-            ? "url(/bg-dark.png)"
-            : "url(/bg-light.png)",
+          backgroundImage:
+            colorMode === "dark" ? "url(/bg-dark.png)" : "url(/bg-light.png)",
           backgroundAttachment: "fixed",
         }}
       >
-        {props.children}
+        <div className="container mx-auto">{props.children}</div>
       </main>
     </div>
   );

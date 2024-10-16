@@ -46,6 +46,12 @@ export const getChapter = publicProcedure
 
     const chapters = chapter.book?.chapters;
     const currentIndex = chapters?.findIndex((ch) => ch.id === chapterId);
+    if (currentIndex === undefined) {
+      throw new Error("Chapter not found");
+    }
+    if (!chapters) {
+      throw new Error("Chapters not found");
+    }
     const previousChapterId =
       currentIndex > 0 ? chapters[currentIndex - 1].id : null;
     const nextChapterId =

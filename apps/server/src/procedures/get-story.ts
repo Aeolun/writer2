@@ -1,6 +1,7 @@
 import { protectedProcedure, publicProcedure } from "../trpc";
 import { prisma } from "../prisma";
 import { z } from "zod";
+import { getAssetUrl } from "../util/get-asset-url";
 
 export const getStory = publicProcedure
   .input(z.object({ storyId: z.string() }))
@@ -41,7 +42,7 @@ export const getStory = publicProcedure
     return {
       id: story.id,
       name: story.name,
-      coverArtAsset: story.coverArtAsset,
+      coverArtAsset: getAssetUrl(story.ownerId, story.id, story.coverArtAsset),
       createdAt: story.createdAt,
       updatedAt: story.updatedAt,
       pages: story.pages,

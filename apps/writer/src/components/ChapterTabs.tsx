@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Tab,
@@ -11,6 +12,7 @@ import {
   Tabs,
   Textarea,
 } from "@chakra-ui/react";
+import moment from "moment";
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { storyActions } from "../lib/slices/story";
@@ -19,6 +21,8 @@ import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector"
 import { sortedBookObjects } from "../lib/selectors/sortedBookObjects";
 import { HelpKind } from "../lib/ai-instructions";
 import { useAi } from "../lib/use-ai";
+import "react-datetime/css/react-datetime.css";
+import Datetime from "react-datetime";
 
 export const ChapterTabs = () => {
   const chapterObj = useSelector(selectedObjectSelector);
@@ -64,6 +68,7 @@ export const ChapterTabs = () => {
     >
       <TabList>
         <Tab>Overview</Tab>
+        <Tab>Publishing</Tab>
       </TabList>
       <TabPanels
         flex={1}
@@ -73,7 +78,7 @@ export const ChapterTabs = () => {
       >
         <TabPanel flex={1} p={0} overflow={"hidden"}>
           <Box flex={1} p={4} height="100%" overflow="auto">
-            {chapterObj.id}
+            <Box>ID: {chapterObj.id}</Box>
             <FormControl>
               <FormLabel>Title</FormLabel>
               <Input
@@ -121,6 +126,9 @@ export const ChapterTabs = () => {
                 placeholder={"start date"}
                 value={chapterObj.data.start_date}
               />
+              <FormHelperText>
+                This is the date the chapter starts in story time.
+              </FormHelperText>
             </FormControl>
             <pre>{chapterObj.data.extra}</pre>
             <Button
@@ -149,6 +157,35 @@ export const ChapterTabs = () => {
             >
               Delete
             </Button>
+          </Box>
+        </TabPanel>
+        <TabPanel flex={1} p={0} overflow={"hidden"}>
+          <Box flex={1} p={4} height="100%" overflow="auto">
+            <FormControl>
+              <FormLabel>Published At</FormLabel>
+              <Datetime
+                renderInput={(props) => <Input {...props} />}
+                onChange={(e) => {
+                  if (e instanceof moment) {
+                    dispatch(
+                      storyActions.updateChapter({
+                        id: chapterObj.id,
+                        visibleFrom: e.toISOString(),
+                      }),
+                    );
+                  }
+                }}
+                value={
+                  chapterObj.data.visibleFrom
+                    ? new Date(chapterObj.data.visibleFrom)
+                    : undefined
+                }
+              />
+              <FormHelperText>
+                This is the date the chapter will be visible in the reader
+                application (or RoyalRoad, if published there).
+              </FormHelperText>
+            </FormControl>
           </Box>
         </TabPanel>
       </TabPanels>
