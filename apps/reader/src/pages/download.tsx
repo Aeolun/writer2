@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { trpc } from "../utils/trpc";
+import { Apple, LinkXmark, Linux, Menu, Windows } from "iconoir-react";
+import { Helmet } from "react-helmet";
 
 export const DownloadPage: React.FC = () => {
   const releases = trpc.getReleases.useQuery();
@@ -13,6 +15,9 @@ export const DownloadPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
+      <Helmet>
+        <title>Releases - Reader</title>
+      </Helmet>
       <h1 className="text-3xl font-bold mb-6">Releases</h1>
       <div className="mb-6 card glass bg-base-100">
         <div className="card-body">
@@ -24,26 +29,87 @@ export const DownloadPage: React.FC = () => {
           </p>
         </div>
       </div>
-      <ul className="list-disc list-inside">
+      <div className="flex flex-col gap-2">
         {releases.data?.map((release) => (
-          <li key={release.id} className="mb-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-xl font-semibold">{release.version}</h2>
-                <p className="text-gray-600">{release.date}</p>
+          <div
+            key={release.id}
+            className="flex flex-row justify-between w-full"
+          >
+            <div className="flex justify-between items-center bg-slate-100 dark:bg-slate-800 w-full p-2 rounded-lg">
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold">{release.name}</h2>
+                <p className="text-gray-600">{release.publishedAt}</p>
               </div>
-              <a
-                href={release.downloadUrl}
-                className="btn btn-primary"
-                download
-              >
-                Download
-              </a>
+              <div className="grid grid-cols-5 gap-2">
+                {release.windowsUrl ? (
+                  <a
+                    href={release.windowsUrl}
+                    className="btn btn-primary"
+                    download
+                  >
+                    <Windows />
+                  </a>
+                ) : (
+                  <div></div>
+                )}
+                {release.macUrl ? (
+                  <a href={release.macUrl} className="btn btn-primary" download>
+                    <Apple /> x64
+                  </a>
+                ) : (
+                  <a className="btn btn-primary btn-disabled" download>
+                    <Apple /> x64
+                  </a>
+                )}
+                {release.siliconUrl ? (
+                  <a
+                    href={release.siliconUrl}
+                    className="btn btn-primary"
+                    download
+                  >
+                    <Apple /> ARM
+                  </a>
+                ) : (
+                  <a className="btn btn-primary btn-disabled" download>
+                    <Apple /> ARM
+                  </a>
+                )}
+                {release.linuxUrl ? (
+                  <a
+                    href={release.linuxUrl}
+                    className="btn btn-primary"
+                    download
+                  >
+                    <Linux />
+                  </a>
+                ) : (
+                  <div></div>
+                )}
+                <div className="dropdown w-full">
+                  <button type="button" className="btn btn-accent">
+                    <Menu />
+                  </button>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+                  >
+                    <li>
+                      <a>.deb</a>
+                    </li>
+                    <li>
+                      <a>.rpm</a>
+                    </li>
+                    <li>
+                      <a>.msi</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
-          </li>
+          </div>
         ))}
         {releases.data?.length === 0 && <div>No releases found</div>}
-      </ul>
+      </div>
     </div>
   );
 };

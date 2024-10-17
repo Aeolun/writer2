@@ -62,7 +62,7 @@ model BookShelfStory {
 model Story {
   id               String           @id @default(uuid(7))
   name             String           @default("")
-  summary          String           @default("") @db.Text()
+  summary          String?          @db.Text()
   ownerId          Int
   owner            User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   royalRoadId      Int?             @unique

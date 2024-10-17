@@ -20,6 +20,7 @@
     "@xmldom/xmldom": "^0.8.10",
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
+    "iconoir-react": "^7.9.0",
     "pure-rand": "^6.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

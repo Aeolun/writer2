@@ -4,11 +4,11 @@
     "beforeBuildCommand": "pnpm run build",
     "beforeDevCommand": "pnpm run dev",
     "devUrl": "http://localhost:3000",
-    "frontendDist": "../out"
+    "frontendDist": "../dist"
   },
-  "identifier": "com.tauri.dev",
-  "productName": "writer2",
-  "version": "0.1.0",
+  "identifier": "com.serial-experiments.writer",
+  "productName": "writer",
+  "version": "1.0.0",
   "bundle": {
     "active": true,
     "category": "DeveloperTool",
@@ -28,7 +28,7 @@
       "exceptionDomain": "",
       "frameworks": [],
       "providerShortName": null,
-      "signingIdentity": null
+      "signingIdentity": "1CFB1406AEB3CBB9266E43569EDC1BF7F545DCE3"
     },
     "shortDescription": "",
     "targets": "all",
