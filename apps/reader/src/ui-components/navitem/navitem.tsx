@@ -7,7 +7,7 @@ export const Navitem = (
   }>,
 ) => {
   return (
-    <Link to={props.to} className="hover:text-gray-300 transition-colors duration-200">
+    <Link to={props.to} className="transition-colors duration-200">
       {props.children}
     </Link>
   );

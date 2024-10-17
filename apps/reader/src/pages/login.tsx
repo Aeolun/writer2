@@ -37,6 +37,10 @@ export const LoginPage = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-md mx-auto p-4 bg-white dark:bg-gray-700 shadow-md rounded"
     >
+      <p className="mb-4">
+        If you don't have an account yet, first download Writer and create one
+        from the interface.
+      </p>
       <input
         type="email"
         {...register("email")}

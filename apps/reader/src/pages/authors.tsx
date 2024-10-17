@@ -17,7 +17,7 @@ export const AuthorsPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <>
       <Helmet>
         <title>Authors - Reader</title>
       </Helmet>
@@ -37,6 +37,6 @@ export const AuthorsPage = () => {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };

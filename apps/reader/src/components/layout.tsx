@@ -16,7 +16,7 @@ export const Layout = (props: PropsWithChildren) => {
         <meta charSet="utf-8" />
         <title>Unknown - Reader</title>
       </Helmet>
-      <nav className="sticky navbar top-0 bg-gray-800 text-white dark:bg-gray-900 dark:text-gray-300 shadow-md z-50">
+      <nav className="sticky navbar top-0 bg-base-100 text-base-content dark:bg-gray-900 dark:text-gray-300 shadow-md z-50">
         <div className="container m-auto">
           <div>
             <a href="/" className="btn btn-ghost text-xl">
@@ -47,14 +47,17 @@ export const Layout = (props: PropsWithChildren) => {
         </div>
       </nav>
       <main
-        className="flex-grow px-4 py-8 overflow-hidden"
+        className="flex-grow overflow-hidden"
         style={{
           backgroundImage:
             colorMode === "dark" ? "url(/bg-dark.png)" : "url(/bg-light.png)",
           backgroundAttachment: "fixed",
+          backgroundSize: "cover",
         }}
       >
-        <div className="container mx-auto">{props.children}</div>
+        <div className="container mx-auto flex-1">
+          <div className="bg-base-100 p-4 h-full">{props.children}</div>
+        </div>
       </main>
     </div>
   );

@@ -1,6 +1,7 @@
 import StoryCard from "../components/storycard";
 import { trpc } from "../utils/trpc";
 import { Helmet } from "react-helmet";
+import { version } from "../version";
 
 export const IndexPage = () => {
   const {
@@ -47,7 +48,7 @@ export const IndexPage = () => {
       </div>
 
       {/* Announcement Section */}
-      <div className="announcement-section bg-blue-100 dark:bg-blue-900 p-4 rounded w-full shadow-md">
+      <div className="announcement-section bg-blue-100 dark:bg-blue-900 p-4 rounded w-full">
         <h2 className="text-2xl font-semibold">Announcement</h2>
         <p className="mt-2">
           You might notice that the site is currently very bare bones. I'm
@@ -66,7 +67,7 @@ export const IndexPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card w-80 bg-base-100 dark:bg-base-800 shadow-xl">
+        <div className="card bg-base-200 dark:bg-base-800">
           <div className="card-body">
             <h2 className="card-title">Latest Releases</h2>
             <p>Check out the latest stories added to our collection.</p>
@@ -78,7 +79,7 @@ export const IndexPage = () => {
           </div>
         </div>
 
-        <div className="card w-80 bg-base-100 dark:bg-base-800 shadow-xl">
+        <div className="card bg-base-200 dark:bg-base-800">
           <div className="card-body">
             <h2 className="card-title">Join Our Community</h2>
             <p>
@@ -91,7 +92,7 @@ export const IndexPage = () => {
             </div>
           </div>
         </div>
-        <div className="card w-80 bg-base-100 dark:bg-base-800 shadow-xl">
+        <div className="card bg-base-200 dark:bg-base-800">
           <div className="card-body">
             <h2 className="card-title">Here from RoyalRoad?</h2>
             <p>Import your existing RoyalRoad stories.</p>
@@ -106,7 +107,8 @@ export const IndexPage = () => {
 
       <footer className="mt-8 text-center">
         <p className="text-sm">
-          © {new Date().getFullYear()} Reader. All rights reserved.
+          © {new Date().getFullYear()} Reader. All rights reserved. Reader
+          version {version}.
         </p>
       </footer>
     </div>

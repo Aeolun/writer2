@@ -20,6 +20,13 @@ const UserStatus = () => {
 
   return (
     <div className="flex items-center space-x-4 ml-auto">
+      <div className="form-control">
+        <input
+          type="text"
+          placeholder="Search"
+          className="input input-bordered w-24 md:w-auto"
+        />
+      </div>
       {user ? (
         <>
           <ul className="menu menu-horizontal px-1">
@@ -74,7 +81,11 @@ const UserStatus = () => {
           </div>
         </>
       ) : (
-        <Navitem to="/login">Login</Navitem>
+        <ul className="menu menu-horizontal px-1">
+          <li>
+            <Navitem to="/login">Login</Navitem>
+          </li>
+        </ul>
       )}
     </div>
   );

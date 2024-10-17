@@ -13,7 +13,10 @@ export const listRandomStories = publicProcedure
     const { limit } = input;
 
     const storiesCount = await prisma.story.count();
-    const randomStoryIndex = Math.floor(Math.random() * (storiesCount - limit));
+    const randomStoryIndex = Math.max(
+      Math.floor(Math.random() * (storiesCount - limit)),
+      0,
+    );
 
     const stories = await prisma.story.findMany({
       select: {
