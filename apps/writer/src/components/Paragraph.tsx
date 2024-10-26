@@ -2,6 +2,7 @@ import { AiOutlineCheck, AiOutlineDelete } from "solid-icons/ai";
 import type { SceneParagraph } from "../../../shared/src/schema.ts";
 import { currentScene } from "../lib/stores/retrieval/current-scene.ts";
 import {
+  scenesState,
   updateSceneCursor,
   updateSceneData,
   updateSceneParagraphData,
@@ -11,6 +12,7 @@ import { AutoResizeTextarea } from "./AutoResizeTextarea";
 import { Row } from "./Row";
 import { StoryParagraphButtons } from "./StoryParagraphButtons";
 import { ParagraphDetails } from "./ParagraphDetails.tsx";
+import { findPathToNode } from "../lib/stores/tree.ts";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "border-yellow-500",
@@ -23,9 +25,25 @@ const statusColor: Record<SceneParagraph["state"], string> = {
 export const Paragraph = (props: {
   sceneId: string;
   paragraph: SceneParagraph;
+  identifyLocation?: boolean;
 }) => {
   return (
     <>
+      {props.identifyLocation ? (
+        <div class="px-4 w-full breadcrumbs">
+          <ul>
+            {findPathToNode(props.sceneId).map((n) => (
+              <li>{n.name}</li>
+            ))}
+            <li>
+              Paragraph{" "}
+              {scenesState.scenes[props.sceneId].paragraphs.findIndex(
+                (p) => p.id === props.paragraph.id,
+              ) + 1}
+            </li>
+          </ul>
+        </div>
+      ) : null}
       <Row
         onClick={() => {
           updateSceneSelectedParagraph(props.sceneId, props.paragraph.id);

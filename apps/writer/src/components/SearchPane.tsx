@@ -1,88 +1,155 @@
-import React, { useEffect, useState } from "react";
-
-import { Box, Flex, Input, useColorModeValue } from "@chakra-ui/react";
-
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { RootState } from "../lib/store";
-import { ChapterTabs } from "../components/ChapterTabs";
-import { SceneTabs } from "../components/SceneTabs";
-import { ArcTabs } from "../components/ArcTabs";
-import { BookTabs } from "../components/BookTabs";
-import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
-import {
-  SortedBookObject,
-  sortedBookObjects,
-} from "../lib/selectors/sortedBookObjects";
+import { createEffect, createSignal } from "solid-js";
 import { Paragraph } from "./Paragraph";
+import { sortedObjects } from "../lib/stores/retrieval/sorted-objects";
+import { scenesState } from "../lib/stores/scenes";
+import { plotpoints } from "../lib/stores/plot-points";
+import { loadStoryToEmbeddings } from "../lib/embeddings/load-story-to-embeddings";
+import { addNotification } from "../lib/stores/notifications";
+import { searchEmbeddings } from "../lib/embeddings/embedding-store";
+import { set } from "zod";
 
 export const SearchPane = () => {
-  const selectedObject = useSelector(selectedObjectSelector);
-  const selectedEntity = useSelector(
-    (store: RootState) => store.base.selectedEntity,
-  );
-
-  const objects = useSelector(sortedBookObjects);
-  const scenes = useSelector((store: RootState) => store.story.scene);
-
-  const [foundParagraphs, setFoundParagraphs] = useState<SortedBookObject[]>(
-    [],
-  );
-  const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    if (search.length > 3 && objects) {
-      setFoundParagraphs(
-        objects.filter(
-          (i) => i.type === "paragraph" && i.text.includes(search),
-        ),
-      );
+  const [search, setSearch] = createSignal("");
+  const [plotpoint, setPlotpoint] = createSignal<string | null>(null);
+  const [isLoadingEmbeddings, setIsLoadingEmbeddings] = createSignal(false);
+  const [foundParagraphs, setFoundParagraphs] = createSignal<
+    {
+      sceneId: string;
+      paragraphId: string;
+    }[]
+  >([]);
+  const [lastSearchType, setLastSearchType] = createSignal<
+    "text" | "embeddings"
+  >("text");
+  createEffect(() => {
+    if (search().length < 3) {
+      setFoundParagraphs([]);
+      return;
     }
-  }, [search]);
-
-  const dispatch = useDispatch();
-  const color = useColorModeValue("blue.200", "gray.600");
-  const backgroundColor = useColorModeValue("blue.400", "black");
+  }); // Assume this is defined elsewhere
 
   return (
-    <Flex
-      flex={1}
-      flexDirection={"column"}
-      height={"100%"}
-      overflow={"hidden"}
-      backgroundColor={backgroundColor}
-      backgroundImage={"url(/rice-paper.png)"}
+    <div
+      class="flex flex-col gap-2 w-full h-full overflow-hidden bg-cover"
+      style="background-image: url('/rice-paper.png');"
     >
-      <Input
-        placeholder="Search"
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-        }}
-      />
-      <Box flex={1} overflow="auto">
-        {foundParagraphs.length > 0
-          ? foundParagraphs.map((i) => {
-              if (i.type === "paragraph") {
-                const p = scenes[i.sceneId].paragraphs.find(
-                  (p) => p.id === i.paragraphId,
+      <div class="flex flex-row p-4 pb-0 gap-2">
+        <input
+          type="text"
+          placeholder="Search"
+          value={search()}
+          onInput={(e) => setSearch(e.currentTarget.value)}
+          class="input input-bordered w-full"
+        />
+        <select
+          class="select select-bordered"
+          value={plotpoint() ?? ""}
+          onChange={(e) => setPlotpoint(e.currentTarget.value)}
+        >
+          {Object.values(plotpoints.plotPoints).map((p) => (
+            <option value={p.id}>{p.title}</option>
+          ))}
+        </select>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onClick={() => {
+            const objects = sortedObjects();
+            const found = objects
+              .filter(
+                (o) =>
+                  o.type === "paragraph" &&
+                  (search().length === 0 ||
+                    o.text.toLowerCase().includes(search().toLowerCase())) &&
+                  o.plotpointIds.includes(plotpoint() ?? ""),
+              )
+              .map((o) => {
+                return o.type === "paragraph"
+                  ? {
+                      sceneId: o.sceneId,
+                      paragraphId: o.paragraphId,
+                    }
+                  : null;
+              });
+            setFoundParagraphs(found.filter((o) => o !== null));
+          }}
+        >
+          Search
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          disabled={isLoadingEmbeddings()}
+          onClick={() => {
+            setIsLoadingEmbeddings(true);
+            loadStoryToEmbeddings()
+              .catch((error) => {
+                console.error(error);
+                addNotification({
+                  message: error.message,
+                  type: "error",
+                });
+              })
+              .then(() => {
+                searchEmbeddings(search(), 10).then((results) => {
+                  console.log(results);
+                  const found = results.map((r) => {
+                    return r[0].metadata.kind === "content"
+                      ? {
+                          sceneId: r[0].metadata.sceneId,
+                          paragraphId: r[0].metadata.paragraphId,
+                        }
+                      : null;
+                  });
+                  setFoundParagraphs(found.filter((o) => o !== null));
+                });
+              })
+              .finally(() => {
+                setIsLoadingEmbeddings(false);
+              })
+              .catch((error) => {
+                addNotification({
+                  message: error.message,
+                  type: "error",
+                });
+              });
+          }}
+        >
+          Embeddings Search
+        </button>
+      </div>
+
+      {foundParagraphs().length > 0 ? (
+        <div class="w-full px-4">
+          {lastSearchType() === "embeddings" ? (
+            <div class="alert alert-warning">
+              Search results are in order of relevance.
+            </div>
+          ) : (
+            <div class="alert alert-info">
+              Search results are in story order.
+            </div>
+          )}
+        </div>
+      ) : null}
+      <div class="flex-1 overflow-auto">
+        {foundParagraphs().length > 0
+          ? foundParagraphs().map((i) => {
+              const p = scenesState.scenes[i.sceneId].paragraphs.find(
+                (p) => p.id === i.paragraphId,
+              );
+              if (p) {
+                return (
+                  <Paragraph
+                    identifyLocation={true}
+                    sceneId={i.sceneId}
+                    paragraph={p}
+                  />
                 );
-                if (p) {
-                  return (
-                    <Paragraph
-                      key={p.id}
-                      scene={scenes[i.sceneId]}
-                      paragraph={p}
-                    />
-                  );
-                } else {
-                  return null;
-                }
-              } else {
-                return null;
               }
             })
           : null}
-      </Box>
-    </Flex>
+      </div>
+    </div>
   );
 };

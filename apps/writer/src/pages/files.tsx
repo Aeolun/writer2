@@ -1,27 +1,14 @@
-import { Flex } from "@chakra-ui/react";
-import React from "react";
-import { useSelector } from "react-redux";
-import { FilePanel } from "../components/FilePanel.tsx";
-import { NoStory } from "../components/NoStory.tsx";
+import { NotImplementedYet } from "../components/NotImplementedYet.tsx";
 import { WriteHeaderMenu } from "../components/WriteHeaderMenu.tsx";
-import type { RootState } from "../lib/store";
 
 const Files = () => {
-  const storyLoaded = useSelector((store: RootState) => store.story.name);
-
   return (
-    <Flex flexDirection={"column"} height={"100%"}>
-      {storyLoaded ? (
-        <>
-          <WriteHeaderMenu />
-          <Flex flex={1} overflow={"hidden"}>
-            <FilePanel />
-          </Flex>
-        </>
-      ) : (
-        <NoStory />
-      )}
-    </Flex>
+    <div class="flex flex-col h-full">
+      <WriteHeaderMenu />
+      <div class="flex flex-1 overflow-hidden">
+        <NotImplementedYet />
+      </div>
+    </div>
   );
 };
 

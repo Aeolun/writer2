@@ -45,8 +45,6 @@ export const setSelectedCharacterId = (characterId: string) => {
 };
 
 export const removeCharacter = (characterId: string) => {
-  setCharactersState("characters", (characters) => {
-    const { [characterId]: _, ...rest } = characters;
-    return rest;
-  });
+  // @ts-expect-error: yes, this is a valid operation
+  setCharactersState("characters", characterId, undefined);
 };

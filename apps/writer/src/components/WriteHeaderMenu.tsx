@@ -78,11 +78,6 @@ export const WriteHeaderMenu = () => {
               Search
             </button>
           </A>
-          <A href={"/embed-search"}>
-            <button class="btn btn-ghost btn-xs" type="button">
-              Embed Search
-            </button>
-          </A>
           <A href={"/locations"}>
             <button class="btn btn-ghost btn-xs" type="button">
               Locations
@@ -98,13 +93,8 @@ export const WriteHeaderMenu = () => {
               Story Settings
             </button>
           </A>
-          <A href={"/language"}>
-            <button class="btn btn-ghost btn-xs" type="button">
-              Language
-            </button>
-          </A>
           <A href={"/preview"}>
-            <button class="btn btn-ghost btn-xs" type="button">
+            <button class="btn btn-secondary btn-xs" type="button">
               Preview
             </button>
           </A>

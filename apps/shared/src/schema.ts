@@ -165,19 +165,21 @@ const itemSchema = entitySchema.extend({
 
 export type Item = z.infer<typeof itemSchema>;
 
+export const storySettingsSchema = z.object({
+  headerImage: z.string().optional(),
+  mangaChapterPath: z.string().optional(),
+  aiInstructions: z.string().optional(),
+  royalRoadId: z.string().optional(),
+});
+
+export type StorySettings = z.infer<typeof storySettingsSchema>;
+
 export const storySchema = z.object({
   id: z.string(),
   name: z.string(),
   modifiedTime: z.number(),
   lastPublishTime: z.number().optional(),
-  settings: z
-    .object({
-      headerImage: z.string().optional(),
-      mangaChapterPath: z.string().optional(),
-      aiInstructions: z.string().optional(),
-      royalRoadId: z.string().optional(),
-    })
-    .optional(),
+  settings: storySettingsSchema.optional(),
   uploadedFiles: z
     .record(
       z.object({

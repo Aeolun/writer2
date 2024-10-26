@@ -1,11 +1,16 @@
 import { createStore } from "solid-js/store";
 import short from "short-uuid";
-import { Story } from "@writer/shared";
+import { Story, StorySettings } from "@writer/shared";
 import { join } from "@tauri-apps/api/path";
 import { readTextFile, stat, writeTextFile } from "@tauri-apps/plugin-fs";
 
+type StoryStateProperties = Pick<
+  Story,
+  "id" | "name" | "modifiedTime" | "settings"
+>;
+
 export const [storyState, setStoryState] = createStore<{
-  story: Pick<Story, "id" | "name" | "modifiedTime" | "settings"> | undefined;
+  story: StoryStateProperties | undefined;
   openPath?: string;
   expectedLastModified?: number;
   storyLoaded: boolean;
@@ -19,9 +24,7 @@ export const [storyState, setStoryState] = createStore<{
   storyLoaded: false,
 });
 
-export const setStory = (
-  story: Pick<Story, "id" | "name" | "modifiedTime" | "settings">,
-) =>
+export const setStory = (story: StoryStateProperties) =>
   setStoryState("story", {
     id: story.id,
     name: story.name,
@@ -71,4 +74,18 @@ export const unloadStory = () => {
   setStoryState("openPath", undefined);
   setStoryState("expectedLastModified", undefined);
   setStoryState("storyLoaded", false);
+};
+
+export const setStoryProperty = <K extends keyof StoryStateProperties>(
+  property: K,
+  value: StoryStateProperties[K],
+) => {
+  setStoryState("story", property, value);
+};
+
+export const setStorySetting = <K extends keyof StorySettings>(
+  property: K,
+  value: StorySettings[K],
+) => {
+  setStoryState("story", "settings", property, value);
 };

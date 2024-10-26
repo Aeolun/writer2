@@ -1,27 +1,15 @@
-import { Flex } from "@chakra-ui/react";
-import React from "react";
-import { useSelector } from "react-redux";
-import { NoStory } from "../components/NoStory";
+import { NotImplementedYet } from "../components/NotImplementedYet";
 import { WriteHeaderMenu } from "../components/WriteHeaderMenu";
-import type { RootState } from "../lib/store";
 
-const Home = () => {
-  const storyLoaded = useSelector((store: RootState) => store.story.name);
-
+const Locations = () => {
   return (
-    <Flex flexDirection={"column"} height={"100%"}>
-      {storyLoaded ? (
-        <>
-          <WriteHeaderMenu />
-          <Flex flex={1} overflow={"hidden"}>
-            Locations
-          </Flex>
-        </>
-      ) : (
-        <NoStory />
-      )}
-    </Flex>
+    <div class="flex flex-col h-full">
+      <WriteHeaderMenu />
+      <div class="flex flex-1 overflow-hidden">
+        <NotImplementedYet />
+      </div>
+    </div>
   );
 };
 
-export default Home;
+export default Locations;

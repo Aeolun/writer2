@@ -2,6 +2,10 @@ import type { Document } from "@langchain/core/documents";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { settingsState } from "../stores/settings";
+import {
+  CharacterEmbeddingMetadata,
+  ParagraphEmbeddingMetadata,
+} from "./load-story-to-embeddings";
 
 let memoryStore: MemoryVectorStore;
 export const getVectorStore = async () => {
@@ -43,8 +47,15 @@ export const searchEmbeddings = async (
   query: string,
   numResults: number,
   filter?: (doc: Document) => boolean,
-) => {
+): Promise<
+  [Document<CharacterEmbeddingMetadata | ParagraphEmbeddingMetadata>, number][]
+> => {
   const store = await getVectorStore();
   console.log("searching embeddings", store.memoryVectors.length);
-  return store.similaritySearchWithScore(query, numResults, filter);
+  return store.similaritySearchWithScore(query, numResults, filter) as Promise<
+    [
+      Document<CharacterEmbeddingMetadata | ParagraphEmbeddingMetadata>,
+      number,
+    ][]
+  >;
 };

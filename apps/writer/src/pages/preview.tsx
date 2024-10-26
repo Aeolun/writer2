@@ -1,29 +1,15 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Preview } from "../components/Preview";
-import { sortedBookObjects } from "../lib/selectors/sortedBookObjects";
-import type { RootState } from "../lib/store";
-import { Flex } from "@chakra-ui/react";
 import { WriteHeaderMenu } from "../components/WriteHeaderMenu";
 
-const Home = () => {
-  const storyLoaded = useSelector((store: RootState) => store.story.name);
-  const scenes = useSelector(sortedBookObjects);
-
-  const dispatch = useDispatch();
-
+const PreviewPage = () => {
   return (
-    <Flex flexDirection={"column"} height={"100%"}>
+    <div class="flex flex-col h-full">
       <WriteHeaderMenu />
-      {scenes ? (
-        <Preview objects={scenes} />
-      ) : (
-        <Flex flex={1} overflow={"hidden"}>
-          Select a paragraph in the story navigation to see a preview
-        </Flex>
-      )}
-    </Flex>
+      <div class="flex flex-1 overflow-hidden">
+        <Preview />
+      </div>
+    </div>
   );
 };
 
-export default Home;
+export default PreviewPage;

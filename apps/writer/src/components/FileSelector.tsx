@@ -1,14 +1,6 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
 import { FilePanel } from "./FilePanel";
+import { createSignal } from "solid-js";
+import { NotImplementedYet } from "./NotImplementedYet";
 
 interface FileSelectorProps {
   value?: string;
@@ -16,12 +8,12 @@ interface FileSelectorProps {
   showOnlyUploaded?: boolean;
 }
 
-export const FileSelector: React.FC<FileSelectorProps> = ({
+export const FileSelector = ({
   value,
   onChange,
   showOnlyUploaded,
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
+}: FileSelectorProps) => {
+  const [isOpen, setIsOpen] = createSignal(false);
 
   const handleSelectFile = (fileName: string) => {
     console.log("fileName", fileName);
@@ -31,22 +23,32 @@ export const FileSelector: React.FC<FileSelectorProps> = ({
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>Select File</Button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        onClick={() => setIsOpen(true)}
+      >
+        Select File
+      </button>
       <div>Selected File: {value}</div>
 
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Select a File</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FilePanel
-              selectFile={handleSelectFile}
-              showOnlyUploaded={showOnlyUploaded}
-            />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      <div class="modal" classList={{ "modal-open": isOpen() }}>
+        <div class="modal-box">
+          <h3 class="font-bold text-lg">Select a File</h3>
+          <button
+            type="button"
+            class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            onClick={() => setIsOpen(false)}
+          >
+            ✕
+          </button>
+          <NotImplementedYet />
+          {/* <FilePanel
+            selectFile={handleSelectFile}
+            showOnlyUploaded={showOnlyUploaded}
+          /> */}
+        </div>
+      </div>
     </>
   );
 };

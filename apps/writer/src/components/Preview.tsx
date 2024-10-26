@@ -1,37 +1,19 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-  Textarea,
-  useColorModeValue,
-} from "@chakra-ui/react";
 import { writeTextFile } from "@tauri-apps/plugin-fs";
 import markdownit from "markdown-it";
 import Markdown from "markdown-to-jsx";
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { open } from "@tauri-apps/plugin-dialog";
-import type { SortedBookObject } from "../lib/selectors/sortedBookObjects";
-import { storyActions } from "../lib/slices/story";
+import { sortedObjects } from "../lib/stores/retrieval/sorted-objects";
+import { uiState } from "../lib/stores/ui";
+import { createEffect, createSignal } from "solid-js";
+import {
+  updateSceneParagraph,
+  updateSceneParagraphData,
+} from "../lib/stores/scenes";
 
 const md = markdownit();
 
-export const Preview = (props: { objects: SortedBookObject[] }) => {
-  const dispatch = useDispatch();
-
-  const imageStyle = useColorModeValue(
-    { width: "300px", margin: "2em auto" },
-    { filter: "invert(1)", width: "300px", margin: "2em auto" },
-  );
-  const statsBackground = useColorModeValue("gray.200", "gray.700");
-  const text = props.objects
+export const Preview = () => {
+  const text = sortedObjects(uiState.currentId)
     .map((item) => {
       if (item.type === "paragraph") {
         return `${md.render(item.text.replaceAll("--", "—").trim())}`;
@@ -47,11 +29,11 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
     .filter((i) => i)
     .join("\n");
 
-  const [typstText, setTypstText] = useState("");
-  useEffect(() => {
+  const [typstText, setTypstText] = createSignal("");
+  createEffect(() => {
     const process = async () => {
       const contentText = await Promise.all(
-        props.objects.map(async (item) => {
+        sortedObjects(uiState.currentId).map(async (item) => {
           if (item.type === "paragraph") {
             return `${item.text
               .replace("* * *", "#line(length: 100%)")
@@ -90,25 +72,43 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
       setTypstText(newTypstText);
     };
     process();
-  }, [props.objects]);
+  });
+
+  const [tab, setTab] = createSignal(0);
 
   return (
-    <Flex flexDirection={"column"} height={"100%"}>
-      <Tabs>
-        <TabList>
-          <Tab>HTML Source</Tab>
-          <Tab>Typst Source</Tab>
-          <Tab>Rendered</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <Text mb={2}>
-              Designed for easy copying to the place you publish
-            </Text>
-            <Textarea
+    <div class="flex flex-col h-full w-full">
+      <div class="flex w-full tabs tabs-bordered">
+        <button
+          class={`tab ${tab() === 0 ? "tab-active" : ""}`}
+          type="button"
+          onClick={() => setTab(0)}
+        >
+          HTML Source
+        </button>
+        <button
+          class={`tab ${tab() === 1 ? "tab-active" : ""}`}
+          type="button"
+          onClick={() => setTab(1)}
+        >
+          Typst Source
+        </button>
+        <button
+          class={`tab ${tab() === 2 ? "tab-active" : ""}`}
+          type="button"
+          onClick={() => setTab(2)}
+        >
+          Rendered
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto px-4 py-2">
+        {tab() === 0 && (
+          <div>
+            <p>Designed for easy copying to the place you publish</p>
+            <textarea
+              class="textarea textarea-bordered"
               id={"preview"}
               value={text}
-              minHeight={"70vh"}
               onClick={() => {
                 //select all
                 setTimeout(() => {
@@ -122,13 +122,15 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
                 }, 0);
               }}
             />
-          </TabPanel>
-          <TabPanel>
-            <Text mb={2}>Designed for easy rendering to PDF/HTML/Markdown</Text>
-            <Textarea
+          </div>
+        )}
+        {tab() === 1 && (
+          <div>
+            <p>Designed for easy rendering to PDF/HTML/Markdown</p>
+            <textarea
+              class="textarea textarea-bordered"
               id={"preview_typst"}
-              value={typstText}
-              minHeight={"70vh"}
+              value={typstText()}
               onClick={() => {
                 //select all
                 setTimeout(() => {
@@ -142,26 +144,30 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
                 }, 0);
               }}
             />
-            <Button
+            <button
+              class="btn btn-primary"
+              type="button"
               onClick={async () => {
                 const savePath = await open({
                   multiple: false,
                   directory: false,
                 });
                 if (savePath) {
-                  await writeTextFile(savePath.path, typstText);
+                  await writeTextFile(savePath.path, typstText());
                 }
               }}
             >
               Save
-            </Button>
-          </TabPanel>
-          <TabPanel>
-            <Box maxWidth={"40em"} m={"auto"}>
-              {props.objects?.map((scene) => {
+            </button>
+          </div>
+        )}
+        {tab() === 2 && (
+          <div>
+            <div class="max-w-xl m-auto">
+              {sortedObjects(uiState.currentId).map((scene) => {
                 if (scene.type === "summary") {
                   return (
-                    <Box p={4} my={2} bg={statsBackground}>
+                    <div class="p-4 my-2 bg-base-300">
                       Words: {scene.words}, TTS Cost:{" "}
                       {((scene.words * 6) / 1_000_000) * 15} AI Words:{" "}
                       {scene.aiWords}, Books: {scene.books}, Chapters:{" "}
@@ -170,118 +176,80 @@ export const Preview = (props: { objects: SortedBookObject[] }) => {
                         ((scene.words + scene.aiWords) / 14280) * 100,
                       ) / 100}{" "}
                       hours
-                    </Box>
+                    </div>
                   );
                 }
                 if (scene.type === "chapter_header") {
                   return (
-                    <Heading
-                      w={"100%"}
-                      color={"gray.900"}
-                      textShadow={
-                        "0px 0px 7px #fff, 0px 0px 27px #fff, 0px 0px 37px #fff, 0px 0px 47px #fff"
-                      }
-                      h={"2.2em"}
-                      py={4}
-                      textAlign={"center"}
-                      fontFamily={"big caslon"}
-                    >
-                      {scene.text}
-                    </Heading>
+                    <h1 class="w-full text-center text-xl">{scene.text}</h1>
                   );
                 }
                 if (scene.type === "break") {
                   return (
-                    <Box my={12} w={"70%"} mx={"auto"}>
+                    <div class="my-12 m-auto flex justify-center">
                       <img
-                        style={imageStyle}
                         alt={"break"}
                         src={
                           "https://pub-43e7e0f137a34d1ca1ce3be7325ba046.r2.dev/Group.png"
                         }
                       />
-                    </Box>
+                    </div>
                   );
                 }
                 if (scene.type === "paragraph") {
                   return (
-                    <Box
-                      as={"p"}
-                      position={"relative"}
-                      textIndent={"2em"}
-                      color={
+                    <div
+                      class={`relative font-serif font-medium indent-4 my-2 ${
                         scene.state === "sdt"
-                          ? "purple.500"
+                          ? "text-purple-500"
                           : scene.state === "revise"
-                            ? "red.500"
+                            ? "text-red-500"
                             : scene.posted
-                              ? "gray.600"
+                              ? "text-gray-600"
                               : undefined
-                      }
-                      role={"group"}
-                      my={"1em"}
-                      fontFamily={"georgia, garamond, serif"}
-                      fontWeight={"500"}
+                      }`}
                     >
-                      {scene.text ? (
-                        <Markdown options={{ wrapper: "div" }}>
-                          {scene.text.replaceAll("--", "—")}
-                        </Markdown>
-                      ) : null}
-                      <Box
-                        position={"absolute"}
-                        display={"flex"}
-                        gap={2}
-                        userSelect={"none"}
-                        visibility={"hidden"}
-                        _groupHover={{
-                          visibility: "visible",
-                        }}
-                        background={"#ccc"}
-                        right={"-120px"}
-                        width={"120px"}
-                        padding={2}
-                        top={0}
-                      >
-                        <Button
-                          size={"xs"}
+                      {scene.text ? scene.text.replaceAll("--", "—") : null}
+                      <div class="absolute flex gap-2 items-center select-none hidden group-hover:flex">
+                        <button
+                          type="button"
+                          class="btn btn-xs"
                           title={"Revise"}
                           onClick={() => {
-                            dispatch(
-                              storyActions.updateSceneParagraph({
-                                sceneId: scene.sceneId,
-                                paragraphId: scene.paragraphId,
+                            updateSceneParagraphData(
+                              scene.sceneId,
+                              scene.paragraphId,
+                              {
                                 state: "revise",
-                              }),
+                              },
                             );
                           }}
                         >
                           R
-                        </Button>
-                        <Button
-                          size={"xs"}
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-xs"
                           title={"Show don't tell"}
                           onClick={() => {
-                            dispatch(
-                              storyActions.updateSceneParagraph({
-                                sceneId: scene.sceneId,
-                                paragraphId: scene.paragraphId,
-                                state: "sdt",
-                              }),
+                            updateSceneParagraphData(
+                              scene.sceneId,
+                              scene.paragraphId,
+                              { state: "sdt" },
                             );
                           }}
                         >
                           SDT
-                        </Button>
-                      </Box>
-                    </Box>
+                        </button>
+                      </div>
+                    </div>
                   );
                 }
               })}
-            </Box>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </Flex>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
