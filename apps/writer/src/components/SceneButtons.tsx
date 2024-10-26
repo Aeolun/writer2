@@ -1,87 +1,58 @@
-import { Button, HStack, Text } from "@chakra-ui/react";
-import type React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { globalActions } from "../lib/slices/global";
-import { storyActions } from "../lib/slices/story";
-import { useAppSelector, type RootState } from "../lib/store";
-import { selectedSceneParagraphsSelector } from "../lib/selectors/selectedSceneParagraphsSelector.ts";
+import { Show } from "solid-js";
+import { currentScene } from "../lib/stores/retrieval/current-scene";
+import { updateSceneParagraphData } from "../lib/stores/scenes";
 
 export const SceneButtons = () => {
-  const dispatch = useDispatch();
-  const languages = useSelector((store: RootState) =>
-    Object.values(store.language.languages),
-  );
-  const scene = useAppSelector(selectedSceneParagraphsSelector);
-  const selectedLanguage = useSelector(
-    (store: RootState) => store.base.selectedLanguage,
-  );
+  const scene = currentScene();
 
-  return scene ? (
-    <HStack bg={"gray.300"} px={4} py={2} gap={1}>
-      <Text minW="6em">Actions</Text>
-      <Button
-        onClick={() => {
-          scene.paragraphs.forEach((p) => {
-            dispatch(
-              storyActions.updateSceneParagraph({
-                sceneId: scene.id,
-                paragraphId: p.id,
+  return (
+    <Show when={scene}>
+      <div class="flex flex-row items-center bg-gray-300 gap-2">
+        <span class="min-w-[6em]">Actions</span>
+        <button
+          type="button"
+          class="btn btn-secondary btn-xs"
+          onClick={() => {
+            if (!scene) return;
+            for (const p of scene.paragraphs) {
+              updateSceneParagraphData(scene.id, p.id, {
                 extra: p.text,
                 text: "",
-              }),
-            );
-          });
-        }}
-      >
-        Shift to extra
-      </Button>
-      <Button
-        colorScheme={"orange"}
-        onClick={() => {
-          scene.paragraphs.forEach((p) => {
-            dispatch(
-              storyActions.updateSceneParagraph({
-                sceneId: scene.id,
-                paragraphId: p.id,
+              });
+            }
+          }}
+        >
+          Shift to extra
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary btn-xs"
+          onClick={() => {
+            if (!scene) return;
+            for (const p of scene.paragraphs) {
+              updateSceneParagraphData(scene.id, p.id, {
                 state: "ai",
-              }),
-            );
-          });
-        }}
-      >
-        All AI
-      </Button>
-      <Button
-        colorScheme={"orange"}
-        onClick={() => {
-          scene.paragraphs.forEach((p) => {
-            dispatch(
-              storyActions.updateSceneParagraph({
-                sceneId: scene.id,
-                paragraphId: p.id,
+              });
+            }
+          }}
+        >
+          All AI
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary btn-xs"
+          onClick={() => {
+            if (!scene) return;
+            for (const p of scene.paragraphs) {
+              updateSceneParagraphData(scene.id, p.id, {
                 state: "draft",
-              }),
-            );
-          });
-        }}
-      >
-        All Draft
-      </Button>
-      {languages.map((lang) => {
-        return (
-          <Button
-            onClick={() => {
-              if (selectedLanguage) {
-                dispatch(globalActions.setSelectedLanguage(undefined));
-              } else {
-                dispatch(globalActions.setSelectedLanguage(lang.id));
-              }
-            }}
-          >
-            {lang.title}
-          </Button>
-        );
-      })}
-    </HStack>
-  ) : null;
+              });
+            }
+          }}
+        >
+          All Draft
+        </button>
+      </div>
+    </Show>
+  );
 };

@@ -4,9 +4,16 @@ import useDarkMode from "use-dark-mode";
 import UserStatus from "./user-status";
 import { useColorMode } from "../hooks/use-color-mode";
 import { Helmet } from "react-helmet";
+import { AddToBookshelf } from "./add-to-bookshelf";
+import { RootState, useAppDispatch, useAppSelector } from "../store";
+import {
+  openAddToBookshelf,
+  closeAddToBookshelf,
+} from "../slices/bookshelf-slice";
 export const Layout = (props: PropsWithChildren) => {
   const colorMode = useColorMode();
-
+  const { isOpen, storyId } = useAppSelector((state) => state.bookshelf);
+  const dispatch = useAppDispatch();
   return (
     <div
       className="flex flex-col min-h-screen"
@@ -32,12 +39,6 @@ export const Layout = (props: PropsWithChildren) => {
                 <Navitem to="/stories">Stories</Navitem>
               </li>
               <li>
-                <Navitem to="/bookshelf">Bookshelf</Navitem>
-              </li>
-              <li>
-                <Navitem to="/authors">Authors</Navitem>
-              </li>
-              <li>
                 <Navitem to="/download">Download Writer</Navitem>
               </li>
             </ul>
@@ -59,6 +60,7 @@ export const Layout = (props: PropsWithChildren) => {
           <div className="bg-base-100 p-4 h-full">{props.children}</div>
         </div>
       </main>
+      {storyId ? <AddToBookshelf storyId={storyId} isOpen={isOpen} /> : null}
     </div>
   );
 };

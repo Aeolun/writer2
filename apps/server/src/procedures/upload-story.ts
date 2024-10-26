@@ -126,6 +126,7 @@ export const uploadStory = protectedProcedure
               ? new Date(chapterData.visibleFrom)
               : undefined,
             sortOrder: sortOrder,
+            royalRoadId: chapterData.royalRoadId,
             bookId: translator.toUUID(bookId),
           },
           update: {
@@ -134,6 +135,7 @@ export const uploadStory = protectedProcedure
             publishedOn: chapterData.visibleFrom
               ? new Date(chapterData.visibleFrom)
               : undefined,
+            royalRoadId: chapterData.royalRoadId,
             sortOrder: sortOrder,
           },
         });

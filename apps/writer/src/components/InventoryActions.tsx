@@ -1,104 +1,123 @@
-import { Flex, Button, Select, Input, Text } from "@chakra-ui/react";
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteList,
-  AutoCompleteItem,
-} from "@choc-ui/chakra-autocomplete";
-import { scene } from "../db/schema";
-import { storyActions } from "../lib/slices/story";
 import { InventoryAction } from "@writer/shared";
-import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../lib/store";
-import { globalActions } from "../lib/slices/global";
-import { selectedSceneSelectedParagraphSelector } from "../lib/selectors/selectedSceneSelectedParagraphSelector";
+import { currentScene } from "../lib/stores/retrieval/current-scene";
+import { setShowInventory } from "../lib/stores/ui";
+import { createSignal } from "solid-js";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxControl,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxItemLabel,
+  ComboboxTrigger,
+} from "../solid-ui/combobox";
+import { addInventoryActionToSceneParagraph } from "../lib/stores/scenes";
+import {
+  NumberField,
+  NumberFieldDecrementTrigger,
+  NumberFieldErrorMessage,
+  NumberFieldGroup,
+  NumberFieldIncrementTrigger,
+  NumberFieldInput,
+} from "../solid-ui/number-field";
+import { items } from "../lib/stores/items";
 
 export const InventoryActions = () => {
-  const [inventory, setInventory] = useState<InventoryAction>({
+  const [inventory, setInventory] = createSignal<InventoryAction>({
     type: "add",
     item_name: "",
     item_amount: 1,
   });
-  const items = useAppSelector((store) => store.story.item);
-  const dispatch = useAppDispatch();
-  const selectedParagraph = useAppSelector(
-    selectedSceneSelectedParagraphSelector,
-  );
+
+  const currentSceneData = currentScene();
 
   return (
-    <Flex gap={1} alignItems="center" mt="2">
-      <Text minW="6em">Inventory</Text>
-      <Button
+    <div class="flex flex-row items-center gap-2">
+      <div class="min-w-[6em]">Inventory</div>
+      <button
+        type="button"
+        class="btn btn-outline"
         onClick={() => {
-          dispatch(globalActions.setShowInventory(true));
+          setShowInventory(true);
         }}
       >
         Current
-      </Button>
-      <Select
-        value={inventory.type}
+      </button>
+      <select
+        class="select select-bordered max-w-48"
+        value={inventory().type}
         onChange={(e) => {
-          setInventory({
-            ...inventory,
+          setInventory((prev) => ({
+            ...prev,
             type: e.currentTarget.value as "add" | "remove",
-          });
+          }));
         }}
       >
         <option value="add">Add</option>
         <option value="remove">Remove</option>
-      </Select>
-      <AutoComplete
-        openOnFocus
-        onSelectOption={(option) => {
-          setInventory({
-            ...inventory,
-            item_name: option.item.value,
-          });
+      </select>
+      <Combobox
+        options={Object.values(items.items).map((item) => item.name)}
+        value={inventory().item_name}
+        onChange={(e) => {
+          setInventory((prev) => ({
+            ...prev,
+            item_name: e ?? "",
+          }));
+        }}
+        class="min-w-48"
+        triggerMode="focus"
+        itemComponent={(props) => {
+          return (
+            <ComboboxItem {...props}>
+              <ComboboxItemLabel>{props.item.rawValue}</ComboboxItemLabel>
+            </ComboboxItem>
+          );
         }}
       >
-        <AutoCompleteInput
-          variant="filled"
-          value={inventory.item_name}
-          onChange={(e) => {
-            setInventory({
-              ...inventory,
-              item_name: e.currentTarget.value,
-            });
-          }}
-        />
-        <AutoCompleteList>
-          {Object.values(items ?? {}).map((item) => (
-            <AutoCompleteItem key={`option-${item.id}`} value={item.name}>
-              {item.name}
-            </AutoCompleteItem>
-          ))}
-        </AutoCompleteList>
-      </AutoComplete>
-      <Input
-        type="number"
-        value={inventory.item_amount}
-        onChange={(e) => {
-          setInventory({
-            ...inventory,
-            item_amount: Number.parseInt(e.currentTarget.value),
-          });
+        <ComboboxControl class="input input-bordered" aria-label="Food">
+          <ComboboxInput />
+          <ComboboxTrigger />
+        </ComboboxControl>
+        <ComboboxContent class="bg-base-100 max-h-64 overflow-y-auto" />
+      </Combobox>
+      <NumberField
+        class="flex w-36 flex-col gap-2"
+        onRawValueChange={(e) => {
+          setInventory((prev) => ({
+            ...prev,
+            item_amount: e,
+          }));
         }}
-      />
-      <Button
+        value={inventory().item_amount}
+        validationState={inventory().item_amount !== 40 ? "invalid" : "valid"}
+      >
+        <NumberFieldGroup>
+          <NumberFieldInput />
+          <NumberFieldIncrementTrigger />
+          <NumberFieldDecrementTrigger />
+        </NumberFieldGroup>
+      </NumberField>
+
+      <button
+        type="button"
+        class="btn btn-primary"
         onClick={() => {
-          if (scene && inventory && selectedParagraph?.selectedParagraph) {
-            dispatch(
-              storyActions.addInventoryActionToSceneParagraph({
-                sceneId: selectedParagraph.id,
-                paragraphId: selectedParagraph.selectedParagraph,
-                ...inventory,
-              }),
+          if (
+            currentSceneData &&
+            inventory() &&
+            currentSceneData.selectedParagraph
+          ) {
+            addInventoryActionToSceneParagraph(
+              currentSceneData.id,
+              currentSceneData.selectedParagraph,
+              inventory(),
             );
           }
         }}
       >
         Add
-      </Button>
-    </Flex>
+      </button>
+    </div>
   );
 };

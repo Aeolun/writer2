@@ -12,6 +12,7 @@ model User {
   email             String             @unique
   name              String             @unique
   password          String
+  role              String             @default("user")
   ownedStories      Story[]
   bookShelfStories  BookShelfStory[]
   createdAt         DateTime           @default(now())
@@ -19,6 +20,7 @@ model User {
   paragraphComments ParagraphComment[]
   files             File[]
   sessions          Session[]
+  storyReadStatuses StoryReadStatus[]
 }
 
 model Session {
@@ -59,23 +61,72 @@ model BookShelfStory {
   updatedAt DateTime  @updatedAt
 }
 
+enum StoryStatus {
+  COMPLETED
+  ONGOING
+  HIATUS
+}
+
+enum StoryType {
+  FANFICTION
+  ORIGINAL
+}
+
 model Story {
-  id               String           @id @default(uuid(7))
-  name             String           @default("")
-  summary          String?          @db.Text()
-  ownerId          Int
-  owner            User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  royalRoadId      Int?             @unique
-  bookShelfStories BookShelfStory[]
-  published        Boolean          @default(false)
-  coverArtAsset    String
-  coverColor       String           @default("#000000")
-  coverTextColor   String           @default("#FFFFFF")
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-  pages            Int?
-  books            Book[]
-  files            File[]
+  id                String            @id @default(uuid(7))
+  name              String            @default("")
+  summary           String?           @db.Text()
+  ownerId           Int
+  owner             User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  royalRoadId       Int?              @unique
+  bookShelfStories  BookShelfStory[]
+  published         Boolean           @default(false)
+  status            StoryStatus       @default(ONGOING)
+  type              StoryType         @default(ORIGINAL)
+  coverArtAsset     String
+  coverColor        String            @default("#000000")
+  coverTextColor    String            @default("#FFFFFF")
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  sortOrder         Int               @default(0)
+  pages             Int?
+  books             Book[]
+  files             File[]
+  storyReadStatuses StoryReadStatus[]
+  storyTags         StoryTag[]
+}
+
+model Tag {
+  id        String     @id @default(uuid(7))
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  storyTags StoryTag[]
+}
+
+model StoryTag {
+  id        String   @id @default(uuid(7))
+  storyId   String
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  tagId     String
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([storyId, tagId])
+}
+
+model StoryReadStatus {
+  id                String    @id @default(uuid(7))
+  storyId           String
+  story             Story     @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  userId            Int
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastChapterId     String?
+  lastChapter       Chapter?  @relation(fields: [lastChapterId], references: [id])
+  lastChapterReadAt DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 model Book {
@@ -91,13 +142,15 @@ model Book {
 }
 
 model Chapter {
-  id          String    @id @default(uuid(7))
-  name        String    @default("")
-  book        Book?     @relation(fields: [bookId], references: [id])
-  bookId      String?
-  publishedOn DateTime?
-  sortOrder   Int
-  scenes      Scene[]
+  id              String            @id @default(uuid(7))
+  name            String            @default("")
+  book            Book?             @relation(fields: [bookId], references: [id])
+  bookId          String?
+  publishedOn     DateTime?
+  royalRoadId     Int?              @unique
+  sortOrder       Int
+  scenes          Scene[]
+  StoryReadStatus StoryReadStatus[]
 }
 
 model Scene {
@@ -129,15 +182,21 @@ model ParagraphRevision {
   paragraphComment ParagraphComment[]
 }
 
+enum ParagraphCommentType {
+  COMMENT
+  SUGGESTION
+}
+
 model ParagraphComment {
-  id                  Int               @id @default(autoincrement())
+  id                  Int                  @id @default(autoincrement())
   paragraphRevisionId String
-  paragraphRevision   ParagraphRevision @relation(fields: [paragraphRevisionId], references: [id], onDelete: Cascade)
+  paragraphRevision   ParagraphRevision    @relation(fields: [paragraphRevisionId], references: [id], onDelete: Cascade)
   ownerId             Int
-  owner               User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner               User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   body                String
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
+  type                ParagraphCommentType @default(COMMENT)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
 }
 
 model File {

@@ -1,30 +1,20 @@
-import { useDispatch, useSelector } from "react-redux";
-import { selectedSceneParagraphsSelector } from "../lib/selectors/selectedSceneParagraphsSelector";
-import { Button } from "@chakra-ui/react";
-import { storyActions } from "../lib/slices/story";
 import { Paragraph } from "./Paragraph";
+import { currentScene } from "../lib/stores/retrieval/current-scene";
 
 export const ParagraphsList = () => {
-  const scene = useSelector(selectedSceneParagraphsSelector);
-  const dispatch = useDispatch();
-
-  return scene ? (
+  return currentScene() ? (
     <>
-      {scene.paragraphs.length === 0 ? (
-        <Button
-          onClick={() => {
-            dispatch(
-              storyActions.createSceneParagraph({
-                sceneId: scene.id,
-              }),
-            );
-          }}
-        >
+      {currentScene()?.paragraphs.length === 0 ? (
+        <button type="button" class="btn btn-primary" onClick={() => {}}>
           Create paragraph
-        </Button>
+        </button>
       ) : null}
-      {scene.paragraphs.map((p) => {
-        return <Paragraph key={p.id} sceneId={scene.id} paragraphId={p.id} />;
+      {currentScene()?.paragraphs.map((p) => {
+        const thisScene = currentScene();
+        if (thisScene) {
+          return <Paragraph sceneId={thisScene.id} paragraph={p} />;
+        }
+        return null;
       })}
     </>
   ) : null;

@@ -14,8 +14,17 @@ export const getBookshelfStories = protectedProcedure.query(
             id: true,
             name: true,
             coverArtAsset: true,
+            summary: true,
+            coverColor: true,
+            coverTextColor: true,
+            royalRoadId: true,
             pages: true,
             ownerId: true,
+            owner: {
+              select: {
+                name: true,
+              },
+            },
           },
         },
       },
@@ -24,6 +33,12 @@ export const getBookshelfStories = protectedProcedure.query(
     return bookshelfStories.map((bookshelfStory) => ({
       id: bookshelfStory.story.id,
       name: bookshelfStory.story.name,
+      kind: bookshelfStory.kind,
+      ownerName: bookshelfStory.story.owner.name,
+      summary: bookshelfStory.story.summary,
+      color: bookshelfStory.story.coverColor,
+      textColor: bookshelfStory.story.coverTextColor,
+      royalRoadId: bookshelfStory.story.royalRoadId,
       coverArtAsset: getStoryAssetUrl(
         bookshelfStory.story.ownerId,
         bookshelfStory.story.id,

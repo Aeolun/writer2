@@ -32,6 +32,9 @@ interface Story {
   description: string;
   url: string;
   author: string;
+  isFanfiction: boolean;
+  isCompleted: boolean;
+  tags: string[];
   color: string;
   textColor: string;
   pages: number;
@@ -51,7 +54,25 @@ const royalroadData: Story[] = require("../../reader/royalroad.json");
 bar1.start(royalroadData.length, 0);
 
 const insert = async () => {
+  const tags = await prisma.tag.findMany();
+  const tagMap = new Map(tags.map((tag) => [tag.name, tag.id]));
+
   for (const story of royalroadData) {
+    for (const tag of story.tags) {
+      if (!tagMap.has(tag)) {
+        const newTag = await prisma.tag.create({
+          data: { name: tag },
+        });
+        tagMap.set(tag, newTag.id);
+      }
+    }
+  }
+
+  for (const story of royalroadData) {
+    if (!story.author) {
+      console.error("Story has no author", story);
+      continue;
+    }
     const createdAuthor = await prisma.user.upsert({
       where: { name: story.author },
       update: {},
@@ -62,74 +83,104 @@ const insert = async () => {
       .replaceAll("&nbsp;", "")
       .replace(/\n+/g, "\n\n")
       .substring(0, 65000);
+
     const storyData = await prisma.story.upsert({
       where: { royalRoadId: parseInt(story.id) },
       update: {
-        coverArtAsset: "/cover.jpg",
+        coverArtAsset: story.cover.includes("nocover") ? "" : "/cover.jpg",
         summary: fixedSummary,
         coverColor: story.color,
+        coverTextColor: story.textColor,
+        status: story.isCompleted ? "COMPLETED" : "ONGOING",
+        type: story.isFanfiction ? "FANFICTION" : "ORIGINAL",
         pages: story.pages,
         royalRoadId: parseInt(story.id),
-        coverTextColor: story.textColor,
       },
       create: {
         summary: fixedSummary,
         ownerId: createdAuthor.id,
         name: story.title,
         royalRoadId: parseInt(story.id),
+        status: story.isCompleted ? "COMPLETED" : "ONGOING",
+        type: story.isFanfiction ? "FANFICTION" : "ORIGINAL",
         published: true,
         pages: story.pages,
-        coverArtAsset: "/cover.jpg",
+        coverArtAsset: story.cover.includes("nocover") ? "" : "/cover.jpg",
         coverColor: story.color,
         coverTextColor: story.textColor,
       },
+      include: { storyTags: true },
+    });
+    const storyTags: { tagId: string; storyId: string }[] = [];
+    for (const tag of story.tags) {
+      const tagId = tagMap.get(tag);
+      if (!tagId) {
+        console.error("Tag not found", tag);
+        continue;
+      }
+      storyTags.push({
+        tagId,
+        storyId: storyData.id,
+      });
+    }
+
+    const existingStoryTags = storyData.storyTags.map((tag) => tag.tagId);
+    const newStoryTags = storyTags.filter(
+      (tag) => !existingStoryTags.includes(tag.tagId),
+    );
+    await prisma.storyTag.createMany({
+      data: newStoryTags,
     });
 
     try {
-      const coverData = fs.readFileSync(
-        `../reader/cache/royalroad/covers/${story.id}-${story.slug}.jpg`,
-      );
-      const sharpData = await sharp(coverData).metadata();
-      const coverHash = createHash("sha256").update(coverData).digest("hex");
-      const pathHash = createHash("sha256").update("/cover.jpg").digest("hex");
-      const storagePath = `upload/${createdAuthor.id}/${storyData.id}/${pathHash}.jpg`;
+      if (!story.cover.includes("nocover")) {
+        const coverData = fs.readFileSync(
+          `../reader/cache/royalroad/covers/${story.id}-${story.slug}.jpg`,
+        );
+        const sharpData = await sharp(coverData).metadata();
+        const coverHash = createHash("sha256").update(coverData).digest("hex");
+        const pathHash = createHash("sha256")
+          .update("/cover.jpg")
+          .digest("hex");
+        const storagePath = `upload/${createdAuthor.id}/${storyData.id}/${pathHash}.jpg`;
 
-      const existingFile = await prisma.file.findFirst({
-        where: {
-          ownerId: createdAuthor.id,
-          storyId: storyData.id,
-          path: storagePath,
-        },
-      });
+        const existingFile = await prisma.file.findFirst({
+          where: {
+            ownerId: createdAuthor.id,
+            storyId: storyData.id,
+            path: storagePath,
+          },
+        });
 
-      if (!existingFile || existingFile.sha256 !== coverHash) {
-        await uploadFile(coverData, storagePath, "image/jpeg");
+        if (!existingFile || existingFile.sha256 !== coverHash) {
+          await uploadFile(coverData, storagePath, "image/jpeg");
+        }
+        const result = await prisma.file.upsert({
+          where: {
+            path: storagePath,
+            storyId: storyData.id,
+          },
+          create: {
+            ownerId: createdAuthor.id,
+            storyId: storyData.id,
+            path: storagePath,
+            localPath: "/cover.jpg",
+            mimeType: "image/jpeg",
+            width: sharpData.width,
+            height: sharpData.height,
+            bytes: sharpData.size,
+            sha256: coverHash,
+          },
+          update: {
+            mimeType: "image/jpeg",
+            localPath: "/cover.jpg",
+            width: sharpData.width,
+            height: sharpData.height,
+            bytes: sharpData.size,
+            sha256: coverHash,
+          },
+        });
       }
-      const result = await prisma.file.upsert({
-        where: {
-          path: storagePath,
-          storyId: storyData.id,
-        },
-        create: {
-          ownerId: createdAuthor.id,
-          storyId: storyData.id,
-          path: storagePath,
-          localPath: "/cover.jpg",
-          mimeType: "image/jpeg",
-          width: sharpData.width,
-          height: sharpData.height,
-          bytes: sharpData.size,
-          sha256: coverHash,
-        },
-        update: {
-          mimeType: "image/jpeg",
-          localPath: "/cover.jpg",
-          width: sharpData.width,
-          height: sharpData.height,
-          bytes: sharpData.size,
-          sha256: coverHash,
-        },
-      });
     } catch (e) {
       console.error("Cover image does not exist", e.message);
     }

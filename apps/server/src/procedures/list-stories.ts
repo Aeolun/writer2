@@ -9,10 +9,11 @@ export const listStories = publicProcedure
     z.object({
       limit: z.number().min(1).max(500).optional().default(10),
       cursor: z.string().optional(),
+      genre: z.string().optional(),
     }),
   )
   .query(async ({ input }) => {
-    const { limit, cursor } = input;
+    const { limit, cursor, genre } = input;
 
     const stories = await prisma.story.findMany({
       select: {
@@ -24,6 +25,7 @@ export const listStories = publicProcedure
         coverTextColor: true,
         royalRoadId: true,
         pages: true,
+        status: true,
         ownerId: true,
         owner: {
           select: {
@@ -34,9 +36,12 @@ export const listStories = publicProcedure
       take: limit + 1,
       where: {
         id: cursor ? { gte: cursor } : undefined,
+        storyTags: genre
+          ? { some: { tag: { name: { equals: genre } } } }
+          : undefined,
       },
       orderBy: {
-        id: "asc",
+        sortOrder: "asc",
       },
     });
 

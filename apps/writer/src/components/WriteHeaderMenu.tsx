@@ -1,243 +1,220 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  CircularProgress,
-  Flex,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { Menu as MenuIcon } from "iconoir-react";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "wouter";
-import { settingsStore } from "../global-settings-store";
-import { globalActions } from "../lib/slices/global";
-import { addNotification } from "../lib/slices/notifications";
-import { storyActions } from "../lib/slices/story";
-import { type RootState, store } from "../lib/store";
-import { reloadTrpc, trpc } from "../lib/trpc";
+import { createSignal, Show } from "solid-js";
+import { setSignedInUser, userState } from "../lib/stores/user";
+import { trpc } from "../lib/trpc";
+import { FiMenu } from "solid-icons/fi";
 import { NotificationManager } from "./NotificationManager";
+import { A, useNavigate } from "@solidjs/router";
+import { storyState, unloadStory } from "../lib/stores/story";
+import {
+  setAiPopupOpen,
+  setSigninPopupOpen,
+  store,
+  uiState,
+} from "../lib/stores/ui";
+import { uploadStory } from "../lib/persistence/upload-story";
+import { importRoyalRoad } from "../lib/persistence/import-royal-road";
+import { setSetting } from "../lib/stores/settings";
 
 export const WriteHeaderMenu = () => {
-  const saving = useSelector((store: RootState) => store.base.saving);
-  const syncing = useSelector((store: RootState) => store.base.syncing);
-  const alteredSincePublish = useSelector(
-    (store: RootState) =>
-      !store.story.lastPublishTime ||
-      store.story.modifiedTime > store.story.lastPublishTime,
-  );
-  const [location, setLocation] = useLocation();
-  const aiBackend = useSelector((store: RootState) => store.base.aiBackend);
-  const dispatch = useDispatch();
-  const color = useColorModeValue("blue.300", "gray.700");
-  const isSignedIn = useSelector((store: RootState) => store.base.signedInUser);
-  const rrStoryId = useSelector(
-    (store: RootState) => store.story.settings?.royalRoadId,
-  );
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = createSignal(false);
+  const isSignedIn = userState.signedInUser;
+  const saving = uiState.saving;
+  const rrStoryId = storyState.story?.id;
 
   return (
     <>
       <NotificationManager />
-      <Flex
-        bg={color}
-        justifyContent={"space-between"}
-        boxShadow={"0px 0px 4px 4px rgba(0, 0, 0, 0.3)"}
-        zIndex={5}
-      >
-        <Flex px={2} py={1} gap={1}>
-          <Menu>
-            <MenuButton>
-              <IconButton icon={<MenuIcon />} aria-label="menu" />
-            </MenuButton>
-            <MenuList>
-              <Link href="/new-story">
-                <MenuItem>New Story</MenuItem>
-              </Link>
-              <MenuItem
-                onClick={() => {
-                  dispatch(storyActions.unload());
-                  setLocation("/open-story");
-                }}
-              >
-                Open Story
-              </MenuItem>
-              <MenuItem>Save Story</MenuItem>
-            </MenuList>
-          </Menu>
-          <Link href={"/"}>
-            <Button>Story</Button>
-          </Link>
-          <Link href={"/characters"}>
-            <Button>Characters</Button>
-          </Link>
-          <Link href={"/files"}>
-            <Button>Files</Button>
-          </Link>
-          <Link href={"/search"}>
-            <Button>Search</Button>
-          </Link>
-          <Link href={"/embed-search"}>
-            <Button>Embed Search</Button>
-          </Link>
-          <Link href={"/locations"}>
-            <Button>Locations</Button>
-          </Link>
-          <Link href={"/plot-points"}>
-            <Button>Plot Points</Button>
-          </Link>
-          <Link href={"/settings"}>
-            <Button>Story Settings</Button>
-          </Link>
-          <Link href={"/language"}>
-            <Button>Language</Button>
-          </Link>
-          <Link href={"/preview"}>
-            <Button>Preview</Button>
-          </Link>
-        </Flex>
-        <Flex
-          px={2}
-          gap={1}
-          py={1}
-          justifyContent={"flex-end"}
-          alignItems={"center"}
-        >
-          {saving ? (
-            <CircularProgress isIndeterminate color="green.300" size={"40px"} />
-          ) : null}
-          <Button
+      <div class="bg-white flex justify-between shadow-lg z-50">
+        <div class="px-2 py-1 flex items-center gap-1">
+          <div class="dropdown">
+            <button type="button" class="btn btn-ghost">
+              <FiMenu />
+            </button>
+            <ul class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li>
+                <A href="/new-story">New Story</A>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    unloadStory();
+                    navigate("/open-story");
+                  }}
+                >
+                  Open Story
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    alert("save");
+                  }}
+                >
+                  Save Story
+                </button>
+              </li>
+            </ul>
+          </div>
+          <A href={"/write"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Story
+            </button>
+          </A>
+          <A href={"/characters"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Characters
+            </button>
+          </A>
+          <A href={"/files"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Files
+            </button>
+          </A>
+          <A href={"/search"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Search
+            </button>
+          </A>
+          <A href={"/embed-search"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Embed Search
+            </button>
+          </A>
+          <A href={"/locations"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Locations
+            </button>
+          </A>
+          <A href={"/plot-points"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Plot Points
+            </button>
+          </A>
+          <A href={"/settings"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Story Settings
+            </button>
+          </A>
+          <A href={"/language"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Language
+            </button>
+          </A>
+          <A href={"/preview"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Preview
+            </button>
+          </A>
+        </div>
+        <div class="px-2 py-1 flex gap-1 justify-end items-center">
+          <Show when={saving}>
+            <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-green-300" />
+          </Show>
+          <button
+            class="btn btn-ghost"
+            type="button"
             onClick={() => {
-              dispatch(globalActions.setAiPopupOpen(true));
+              setAiPopupOpen(true);
             }}
           >
             AI Question
-          </Button>
+          </button>
 
-          <Button
-            isDisabled={!rrStoryId || !isSignedIn?.name}
+          <button
+            class="btn btn-ghost"
+            type="button"
+            disabled={!rrStoryId || !isSignedIn?.name}
             onClick={() => {
-              const state = store.getState();
-              const numericStoryId = Number(rrStoryId);
-
-              if (Number.isNaN(numericStoryId)) {
-                console.error("Invalid Royal Road story ID");
-                return;
+              if (rrStoryId) {
+                importRoyalRoad(rrStoryId);
               }
-
-              trpc.importRoyalroad
-                .mutate({
-                  storyId: numericStoryId,
-                })
-                .then((result) => {
-                  console.log("imported");
-                  if (result?.story) {
-                    dispatch(storyActions.setStory(result.story));
-                  }
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
             }}
           >
             Import
-          </Button>
-          <Button
+          </button>
+          <button
+            class="btn btn-ghost"
+            type="button"
             onClick={() => {
-              const state = store.getState();
-              trpc.uploadStory
-                .mutate({
-                  story: state.story,
-                  language: state.language,
-                })
-                .then((result) => {
-                  console.log("uploaded");
-                  dispatch(
-                    storyActions.updatePublishTime(new Date(result).getTime()),
-                  );
-                  dispatch(
-                    addNotification({
-                      message: "Story uploaded successfully",
-                      type: "success",
-                    }),
-                  );
-                })
-                .catch((error) => {
-                  console.error(error);
-                  const errorMessage =
-                    error.message || "An unknown error occurred";
-                  const errorDetails =
-                    error.shape?.data?.zodError?.fieldErrors || {};
-                  dispatch(
-                    addNotification({
-                      message: `Failed to upload story: ${errorMessage}`,
-                      type: "error",
-                      details: errorDetails,
-                    }),
-                  );
-                });
+              uploadStory();
             }}
-            isDisabled={!isSignedIn?.name}
+            disabled={!isSignedIn?.name}
           >
             Upload
-          </Button>
+          </button>
 
-          <Menu>
-            <MenuButton as={Box} bg="transparent" _hover={{ bg: "blue.400" }}>
-              <Flex alignItems="center" h="40px">
-                <Avatar
-                  size="md"
-                  h="40px"
-                  w="40px"
-                  name={isSignedIn?.name ?? undefined}
-                  src=""
-                />
-              </Flex>
-            </MenuButton>
-            {isSignedIn ? (
-              <MenuList>
-                <Link href={"/global-settings"}>
-                  <MenuItem>Settings</MenuItem>
-                </Link>
-                <Link href={"/profile"}>
-                  <MenuItem>Profile</MenuItem>
-                </Link>
-                <MenuItem
-                  onClick={() => {
-                    trpc.logout.mutate().then(() => {
-                      settingsStore.delete("client-token").then(() => {
-                        reloadTrpc();
-                        dispatch(globalActions.setSignedInUser(undefined));
-                        settingsStore.save();
-                      });
-                    });
-                  }}
-                >
-                  Log out
-                </MenuItem>
-              </MenuList>
-            ) : (
-              <MenuList>
-                <Link href={"/global-settings"}>
-                  <MenuItem>App settings</MenuItem>
-                </Link>
-                <MenuItem
-                  onClick={() => {
-                    dispatch(globalActions.setSigninPopupOpen(true));
-                  }}
-                >
-                  Sign in
-                </MenuItem>
-              </MenuList>
-            )}
-          </Menu>
-        </Flex>
-      </Flex>
+          <div
+            class="dropdown dropdown-end"
+            classList={{ "dropdown-open": isOpen() }}
+          >
+            <div
+              class="avatar"
+              role="button"
+              onClick={() => setIsOpen(!isOpen())}
+            >
+              <div class="w-10 rounded-full">
+                <img src="" alt={isSignedIn?.name ?? "Avatar"} />
+              </div>
+            </div>
+
+            <ul class="dropdown-content menu p-2 shadow bg-base-100 z-[1] rounded-box w-52">
+              <Show
+                when={isSignedIn?.name}
+                fallback={
+                  <>
+                    <li>
+                      <button
+                        class="btn btn-ghost"
+                        type="button"
+                        onClick={() => navigate("/global-settings")}
+                      >
+                        App settings
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        class="btn btn-ghost"
+                        type="button"
+                        onClick={() => {
+                          setSigninPopupOpen(true);
+                        }}
+                      >
+                        Sign in
+                      </button>
+                    </li>
+                  </>
+                }
+              >
+                <>
+                  <li>
+                    <A href={"/global-settings"}>Settings</A>
+                  </li>
+                  <li>
+                    <A href={"/profile"}>Profile</A>
+                  </li>
+                  <li>
+                    <button
+                      class="btn btn-ghost"
+                      type="button"
+                      onClick={() => {
+                        trpc.logout.mutate().then(() => {
+                          setSignedInUser(undefined);
+                          setSetting("clientToken", "");
+                        });
+                      }}
+                    >
+                      Log out
+                    </button>
+                  </li>
+                </>
+              </Show>
+            </ul>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

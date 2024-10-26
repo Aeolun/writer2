@@ -22,7 +22,6 @@ body {
 .container {
     z-index: 1;
     perspective: 3000px;
-    cursor: pointer;
 }
 
 .container .book {

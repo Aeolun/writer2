@@ -1,6 +1,6 @@
 import axios from "axios";
 import { DOMParser } from "@xmldom/xmldom";
-import xpath from "xpath";
+import xpath, { select } from "xpath";
 import fs from "fs";
 import { createHash } from "crypto";
 import sharp from "sharp";
@@ -8,7 +8,7 @@ import { join, parse } from "path";
 import { colord } from "colord";
 
 const royalRoadUrl = "https://www.royalroad.com";
-const pages = 10;
+const pages = 446;
 const cacheFolder = "cache/royalroad/";
 
 fs.mkdirSync(cacheFolder, {
@@ -62,17 +62,24 @@ const selectString = (xpathString: string, node: Node) => {
 };
 
 const retrieve = async () => {
-  const result: object[] = [];
+  // get existing result first
+  const existingResult = fs.existsSync("royalroad.json")
+    ? JSON.parse(fs.readFileSync("royalroad.json", "utf-8"))
+    : [];
+
+  const result: object[] = existingResult;
 
   for (let i = 1; i < pages; i++) {
     console.log(`Page ${i}`);
-    const page = await getPage(`${royalRoadUrl}/fictions/best-rated?page=${i}`);
+    const page = await getPage(
+      `${royalRoadUrl}/fictions/weekly-popular?page=${i}`,
+    );
     const doc = new DOMParser({
       errorHandler: () => {
         // ignore errors
       },
     }).parseFromString(page);
-    console.log("still finished");
+    console.log("Got index page");
     const nodes = selectNodes("//div[@class='fiction-list-item row']", doc);
 
     for (const node of nodes) {
@@ -87,6 +94,7 @@ const retrieve = async () => {
           // ignore errors
         },
       }).parseFromString(bookPage);
+      console.log(`Got book page for ${title}`);
       const author = selectString(
         ".//h4[@class='font-white']/span/a/text()",
         bookDoc,
@@ -104,7 +112,28 @@ const retrieve = async () => {
         .map((p) => p.toString()) // Use toString() to get HTML content
         .join("\n");
 
-      const cover = selectString(".//img[@class='img-responsive']/@src", node);
+      const defaultLabels = selectNodes(
+        "//span[contains(@class, 'label-default')]/text()",
+        bookDoc,
+      );
+
+      const isFanfiction = defaultLabels.some((label) =>
+        label.textContent?.includes("Fan Fiction"),
+      );
+      const isCompleted = defaultLabels.some((label) =>
+        label.textContent?.includes("COMPLETED"),
+      );
+
+      const tags: string[] = [];
+      const tagsNodes = selectNodes(
+        ".//a[contains(@class, 'fiction-tag')]",
+        bookDoc,
+      );
+      for (const tagNode of tagsNodes) {
+        tags.push(tagNode.textContent?.trim() ?? "");
+      }
+
+      let cover = selectString(".//img[@class='img-responsive']/@src", node);
       let color = "#000000";
       let textColor = "#FFFFFF";
       if (!url) {
@@ -133,6 +162,8 @@ const retrieve = async () => {
           ? "#FFFFFF"
           : "#000000";
         color = rgbToHex(r, g, b);
+      } else {
+        cover = undefined;
       }
       // const author = selectNodes(
       //   "//div[@class='fiction-list-item__author']/a",
@@ -180,6 +211,9 @@ const retrieve = async () => {
               for (const volume of volumes) {
                 // get cover for each volume
                 const coverUrl = volume.cover;
+                if (coverUrl.includes("nocover")) {
+                  continue;
+                }
                 const coverData = await getPage(coverUrl, "jpg");
                 fs.writeFileSync(
                   join(
@@ -200,6 +234,9 @@ const retrieve = async () => {
       result.push({
         id,
         category,
+        isFanfiction,
+        isCompleted,
+        tags,
         slug,
         title,
         description,
@@ -213,8 +250,8 @@ const retrieve = async () => {
         volumes,
       });
     }
+    fs.writeFileSync("royalroad.json", JSON.stringify(result, null, 2));
+    console.log(`Persisted ${result.length} stories`);
   }
-
-  fs.writeFileSync("royalroad.json", JSON.stringify(result, null, 2));
 };
 retrieve();

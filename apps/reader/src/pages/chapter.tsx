@@ -13,13 +13,29 @@ const ChapterPage = () => {
     bookId: string;
   }>();
   const [location, setLocation] = useLocation();
+  const [isBacktracking, setIsBacktracking] = useState(false);
   const colorMode = useColorMode();
   const { data, error, isLoading } = trpc.getChapter.useQuery({ chapterId });
+  const { mutateAsync: updateStoryReadStatus } =
+    trpc.updateStoryReadStatus.useMutation();
 
   // Function to navigate to a different chapter
   const navigateToChapter = (newChapterId: string) => {
+    setIsBacktracking(false);
+    window.scrollTo(0, 0);
     setLocation(`/story/${storyId}/book/${bookId}/chapter/${newChapterId}`);
   };
+
+  useEffect(() => {
+    updateStoryReadStatus({
+      storyId,
+      lastChapterId: chapterId,
+    }).then((res) => {
+      if (!res.success) {
+        setIsBacktracking(true);
+      }
+    });
+  }, [chapterId, storyId, updateStoryReadStatus]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading chapter</div>;
@@ -32,6 +48,33 @@ const ChapterPage = () => {
       <h1 className="text-2xl font-bold mb-4 text-black dark:text-white">
         {data?.name}
       </h1>
+      {isBacktracking ? (
+        <div className="flex flex-col gap-4 my-4">
+          <div className="alert alert-info">
+            <p>
+              It seems you have already read this chapter. If you want to reset
+              your reading progress, click the button below.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => {
+              updateStoryReadStatus({
+                storyId,
+                lastChapterId: chapterId,
+                override: true,
+              }).then((res) => {
+                if (res.success) {
+                  setIsBacktracking(false);
+                }
+              });
+            }}
+          >
+            Reset Reading Progress
+          </button>
+        </div>
+      ) : null}
       {data?.scenes.map((scene, index) => (
         <div key={scene.id} className="mb-6">
           {/* Separator between scenes */}

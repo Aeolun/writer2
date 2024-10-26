@@ -18,14 +18,29 @@ export const DownloadPage: React.FC = () => {
       <Helmet>
         <title>Releases - Reader</title>
       </Helmet>
-      <h1 className="text-3xl font-bold mb-6">Releases</h1>
-      <div className="mb-6 card glass bg-base-100">
+      <h1 className="text-3xl font-bold mb-6">Writer</h1>
+      <h2 className="card-title">The fuck is this?</h2>
+      <p className="mt-2">
+        Writer is (obviously) the companion to Reader! It's software developed
+        with the explicit goal of writing web novels. It does things like keep
+        track of chapters, characters and locations. It also has fairly heavy
+        integration with a variety of AI platforms to help you with editing (and
+        a convenient assistant for questions).
+      </p>
+      <p className="mt-2">
+        The best feature of Writer is that everything you do happens completely
+        offline. Lack of internet doesn't prevent you from writing. Some of the
+        AI features (OpenAI, Anthropic, Groq) are obviously unavailable, but you
+        could still make that work using Ollama on your local machine.
+      </p>
+      <div className="mb-6 card glass bg-base-100 mt-4">
         <div className="card-body">
           <p>
-            Writer 2 is currently in beta. Download the latest version to get
-            the best experience. At this point we do not check for version
-            discrepancies between client and server, so if you are encountering
-            issues, please download the latest version of the writer client.
+            This is the absolute first version of Writer and I'm sure it's full
+            of bugs. Download the latest version to get the best experience. At
+            this point we do not check for version discrepancies between client
+            and server, so if you are encountering issues, please download the
+            latest version of the writer client.
           </p>
         </div>
       </div>
@@ -53,16 +68,16 @@ export const DownloadPage: React.FC = () => {
                     <Windows />
                   </a>
                 ) : (
-                  <div></div>
+                  <div />
                 )}
                 {release.macUrl ? (
                   <a href={release.macUrl} className="btn btn-primary" download>
                     <Apple /> x64
                   </a>
                 ) : (
-                  <a className="btn btn-primary btn-disabled" download>
+                  <span className="btn btn-primary btn-disabled">
                     <Apple /> x64
-                  </a>
+                  </span>
                 )}
                 {release.siliconUrl ? (
                   <a
@@ -73,9 +88,9 @@ export const DownloadPage: React.FC = () => {
                     <Apple /> ARM
                   </a>
                 ) : (
-                  <a className="btn btn-primary btn-disabled" download>
+                  <span className="btn btn-primary btn-disabled">
                     <Apple /> ARM
-                  </a>
+                  </span>
                 )}
                 {release.linuxUrl ? (
                   <a
@@ -86,25 +101,28 @@ export const DownloadPage: React.FC = () => {
                     <Linux />
                   </a>
                 ) : (
-                  <div></div>
+                  <div />
                 )}
               </div>
               <div className="dropdown dropdown-left">
                 <button type="button" className="btn btn-accent">
                   <Menu />
                 </button>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
-                >
+                <ul className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
                   <li>
-                    <a>.deb</a>
+                    <a href={release.depUrl} download>
+                      .deb
+                    </a>
                   </li>
                   <li>
-                    <a>.rpm</a>
+                    <a href={release.rpmUrl} download>
+                      .rpm
+                    </a>
                   </li>
                   <li>
-                    <a>.msi</a>
+                    <a href={release.msiUrl} download>
+                      .msi
+                    </a>
                   </li>
                 </ul>
               </div>

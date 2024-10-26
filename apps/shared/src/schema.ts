@@ -48,6 +48,7 @@ const chapterSchema = treeDataSchema.extend({
   summary: z.string(),
   start_date: z.string().optional(),
   visibleFrom: z.string().datetime().optional(),
+  royalRoadId: z.number().optional(),
 });
 
 export type Chapter = z.infer<typeof chapterSchema>;
@@ -59,6 +60,13 @@ const inventoryActionSchema = z.object({
 });
 
 export type InventoryAction = z.infer<typeof inventoryActionSchema>;
+
+const plotpointActionSchema = z.object({
+  plot_point_id: z.string(),
+  action: z.string(),
+});
+
+export type PlotpointAction = z.infer<typeof plotpointActionSchema>;
 
 const sceneParagraphSchema = entitySchema.extend({
   text: z.string(),
@@ -73,12 +81,7 @@ const sceneParagraphSchema = entitySchema.extend({
       createdAt: z.string(),
     }),
   ),
-  plot_point_actions: z.array(
-    z.object({
-      plot_point_id: z.string(),
-      action: z.string(),
-    }),
-  ),
+  plot_point_actions: z.array(plotpointActionSchema).optional(),
   inventory_actions: z.array(inventoryActionSchema).optional(),
 });
 

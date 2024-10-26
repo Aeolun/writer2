@@ -28,12 +28,16 @@ export const listRandomStories = publicProcedure
         coverTextColor: true,
         royalRoadId: true,
         pages: true,
+        status: true,
         ownerId: true,
         owner: {
           select: {
             name: true,
           },
         },
+      },
+      orderBy: {
+        sortOrder: "asc",
       },
       // this works fine as long as we don't have millions of stories...
       skip: randomStoryIndex,

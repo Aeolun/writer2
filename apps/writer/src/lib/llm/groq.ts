@@ -1,7 +1,7 @@
 import OpenAI from "openai";
-import { settingsStore } from "../../global-settings-store";
 import { instructions } from "../ai-instructions.ts";
 import type { LlmInterface } from "./llm-interface";
+import { settingsState } from "../stores/settings.ts";
 
 export class Groq implements LlmInterface {
   api?: OpenAI;
@@ -12,8 +12,8 @@ export class Groq implements LlmInterface {
     if (this.initialized) {
       return;
     }
-    const key = await settingsStore.get<string>("groq-key");
-    this.model = (await settingsStore.get<string>("ai-model")) ?? undefined;
+    const key = settingsState.groqKey;
+    this.model = settingsState.aiModel ?? undefined;
     if (!key) {
       throw new Error("No groq key set");
     }

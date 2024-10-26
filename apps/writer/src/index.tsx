@@ -1,10 +1,10 @@
-import { createRoot } from "react-dom/client";
-import App from "./app.tsx";
+import { render } from "solid-js/web";
+import App from "./router.tsx";
+import "./index.css";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
   alert("No root element");
 } else {
-  const root = createRoot(rootElement);
-  root.render(<App />);
+  render(() => <App />, rootElement);
 }

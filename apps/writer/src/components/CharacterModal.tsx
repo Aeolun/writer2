@@ -1,114 +1,111 @@
 import {
-  Box,
-  Checkbox,
-  FormControl,
-  FormLabel,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Textarea,
-} from "@chakra-ui/react";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { storyActions } from "../lib/slices/story";
-import type { RootState } from "../lib/store";
+  charactersState,
+  updateCharacterProperty,
+} from "../lib/stores/characters";
 
 export const CharacterModal = (props: {
-  characterId: string;
   onClose: () => void;
 }) => {
-  const { characterId } = props;
-  const dispatch = useDispatch();
-
-  const character = useSelector(
-    (state: RootState) => state.story.characters[characterId],
-  );
-
   return (
-    <Modal isOpen={true} onClose={props.onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Character {character?.id}</ModalHeader>
-        <ModalBody>
-          <FormControl>
-            <FormLabel>Name</FormLabel>
-            <Input
-              type={"text"}
-              value={character?.name || undefined}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateCharacter({
-                    id: characterId,
-                    name: e.currentTarget.value,
-                  }),
+    <div class="modal modal-open">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">
+          Character {charactersState.selectedCharacter?.id}
+        </h3>
+        <div class="py-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Name</span>
+            </label>
+            <input
+              type="text"
+              class="input input-bordered"
+              value={charactersState.selectedCharacter?.name ?? ""}
+              onInput={(e) => {
+                updateCharacterProperty(
+                  charactersState.selectedCharacterId,
+                  "name",
+                  e.currentTarget.value,
                 );
               }}
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Picture</FormLabel>
-            <Input
-              type={"text"}
-              value={character?.picture || undefined}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateCharacter({
-                    id: characterId,
-                    picture: e.currentTarget.value,
-                  }),
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Picture</span>
+            </label>
+            <input
+              type="text"
+              class="input input-bordered"
+              value={charactersState.selectedCharacter?.picture ?? ""}
+              onInput={(e) => {
+                updateCharacterProperty(
+                  charactersState.selectedCharacterId,
+                  "picture",
+                  e.currentTarget.value,
                 );
               }}
             />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel>Summary</FormLabel>
-            <Textarea
-              value={character?.summary}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateCharacter({
-                    id: characterId,
-                    summary: e.currentTarget.value,
-                  }),
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Summary</span>
+            </label>
+            <textarea
+              class="textarea textarea-bordered"
+              value={charactersState.selectedCharacter?.summary ?? ""}
+              onInput={(e) => {
+                updateCharacterProperty(
+                  charactersState.selectedCharacterId,
+                  "summary",
+                  e.currentTarget.value,
                 );
               }}
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Age</FormLabel>
-            <Input
-              type={"number"}
-              value={character?.age || undefined}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateCharacter({
-                    id: characterId,
-                    age: e.currentTarget.value,
-                  }),
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Age</span>
+            </label>
+            <input
+              type="number"
+              class="input input-bordered"
+              value={charactersState.selectedCharacter?.age ?? ""}
+              onInput={(e) => {
+                updateCharacterProperty(
+                  charactersState.selectedCharacterId,
+                  "age",
+                  e.currentTarget.value,
                 );
               }}
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Protagonist</FormLabel>
-            <Checkbox
-              isChecked={character?.isProtagonist}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateCharacter({
-                    id: characterId,
-                    isProtagonist: !character?.isProtagonist,
-                  }),
-                );
-              }}
-            />
-          </FormControl>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+          </div>
+          <div class="form-control">
+            <label class="label cursor-pointer">
+              <span class="label-text">Protagonist</span>
+              <input
+                type="checkbox"
+                class="checkbox"
+                checked={
+                  charactersState.selectedCharacter?.isProtagonist ?? false
+                }
+                onChange={(e) => {
+                  updateCharacterProperty(
+                    charactersState.selectedCharacterId,
+                    "isProtagonist",
+                    e.currentTarget.checked,
+                  );
+                }}
+              />
+            </label>
+          </div>
+        </div>
+        <div class="modal-action">
+          <button type="button" class="btn" onClick={props.onClose}>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };

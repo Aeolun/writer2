@@ -1,58 +1,35 @@
-import {
-  CSSProperties,
-  SyntheticEvent,
-  useCallback,
-  useLayoutEffect,
-  useRef,
-} from "react";
-
-const textAreaStyle: CSSProperties = {
-  outline: "none",
-  background: "transparent",
-  padding: "0.5em",
-  overflow: "hidden",
-  resize: "none",
-};
+import { JSX, createEffect, createSignal } from "solid-js";
 
 const resize = (textArea: HTMLTextAreaElement) => {
+  textArea.style.overflow = "hidden";
   textArea.style.height = "auto";
-  textArea.style.height = textArea.scrollHeight + "px";
+  textArea.style.height = `${textArea.scrollHeight}px`;
 };
 
 export const AutoResizeTextarea = (
-  props: React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  props: JSX.TextareaHTMLAttributes<HTMLTextAreaElement>,
 ) => {
-  const textArea = useRef<HTMLTextAreaElement>(null);
-  useLayoutEffect(() => {
-    const current = textArea.current;
-    if (current) {
-      current.style.height = "auto";
-      current.style.height = current.scrollHeight + "px";
-    }
-  }, []);
+  const [textarea, setTextarea] = createSignal<HTMLTextAreaElement>();
 
-  const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      resize(e.currentTarget);
-      props.onChange && props.onChange(e);
-    },
-    [props.onChange],
-  );
-  const onFocus = useCallback(
-    (e: SyntheticEvent<HTMLTextAreaElement>) => {
-      resize(e.currentTarget);
-      props.onFocus && props.onFocus(e);
-    },
-    [props.onFocus],
-  );
+  createEffect(() => {
+    const ta = textarea();
+    if (ta) {
+      resize(ta);
+    }
+  });
 
   return (
     <textarea
       {...props}
-      ref={textArea}
-      onChange={onChange}
-      onFocus={onFocus}
-      style={textAreaStyle}
+      ref={setTextarea}
+      class="w-full py-2 px-2 outline-none resize-none text-justify"
+      onInput={(e) => {
+        const ta = textarea();
+        if (ta) {
+          resize(ta);
+        }
+        props.onInput?.(e);
+      }}
     />
   );
 };

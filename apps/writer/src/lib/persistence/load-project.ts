@@ -8,10 +8,18 @@ import {
   persistedSchema,
 } from "@writer/shared";
 import short from "short-uuid";
-import { globalActions } from "../slices/global.ts";
-import { languageActions } from "../slices/language.ts";
-import { storyActions } from "../slices/story.ts";
-import { store } from "../store.ts";
+import { setArcsStore } from "../stores/arcs";
+import {
+  setExpectedLastModified,
+  setOpenPath,
+  setStory,
+} from "../stores/story";
+import { setCharactersState } from "../stores/characters";
+import { setTree } from "../stores/tree";
+import { setChaptersState } from "../stores/chapters";
+import { setScenesState } from "../stores/scenes";
+import { setPlotpoints } from "../stores/plot-points";
+import { setItems } from "../stores/items";
 
 export const loadProject = async (projectPath: string) => {
   const indexPath = await path.join(projectPath, "index.json");
@@ -73,10 +81,14 @@ export const loadProject = async (projectPath: string) => {
   const getIdFromTreeObject = (node: Node) => {
     ids.push(node.id);
     if (node.children) {
-      node.children.forEach(getIdFromTreeObject);
+      for (const child of node.children) {
+        getIdFromTreeObject(child);
+      }
     }
   };
-  savedStory.story.structure.forEach(getIdFromTreeObject);
+  for (const node of savedStory.story.structure) {
+    getIdFromTreeObject(node);
+  }
   // trash all entities that don't have a corresponding id in the structure
   for (const entity of ["book", "arc", "chapter", "scene"] as const) {
     if (savedStory.story[entity]) {
@@ -98,14 +110,32 @@ export const loadProject = async (projectPath: string) => {
   //   });
   // }
 
-  store.dispatch(storyActions.setStory(savedStory.story));
-  store.dispatch(globalActions.setOpenPath(projectPath));
-  store.dispatch(
-    globalActions.setExpectedLastModified(storyStat.mtime?.getTime() ?? 0),
-  );
-  if (savedStory.language) {
-    store.dispatch(languageActions.setLanguages(savedStory.language));
-  }
+  setArcsStore({
+    arcs: savedStory.story.arc,
+  });
+  console.log(savedStory.story.characters);
+  setCharactersState({
+    characters: savedStory.story.characters,
+  });
+  setChaptersState({
+    chapters: savedStory.story.chapter,
+  });
+  setScenesState({
+    scenes: savedStory.story.scene,
+  });
+  setItems({
+    items: savedStory.story.item,
+  });
+  setPlotpoints({
+    plotPoints: savedStory.story.plotPoints,
+  });
+  setCharactersState({
+    characters: savedStory.story.characters,
+  });
+  setTree(savedStory.story.structure);
+  setStory(savedStory.story);
+  setOpenPath(projectPath);
+  setExpectedLastModified(storyStat.mtime?.getTime() ?? 0);
 
   return savedStory;
 };

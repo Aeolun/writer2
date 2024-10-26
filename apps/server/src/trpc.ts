@@ -25,7 +25,16 @@ const logger = t.middleware(async (opts) => {
   try {
     const result = await opts.next();
 
-    console.log(result);
+    console.log({
+      path: opts.path,
+      type: opts.type,
+      results:
+        result.ok && Array.isArray(result.data)
+          ? result.data.length
+          : undefined,
+      ok: result.ok,
+      error: result.ok === false ? result.error : undefined,
+    });
 
     return result;
   } catch (error) {
@@ -112,3 +121,16 @@ export const protectedProcedure = publicProcedure
     });
     return result;
   });
+
+export const adminProcedure = protectedProcedure.use(async (opts) => {
+  const authenticatedUser = opts.ctx.authenticatedUser;
+
+  if (authenticatedUser.role !== "admin") {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You are not authorized to access this resource.",
+    });
+  }
+
+  return opts.next();
+});

@@ -1,73 +1,44 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import {
-  Box,
-  Alert,
-  AlertIcon,
-  CloseButton,
-  VStack,
-  Text,
-} from "@chakra-ui/react";
-import { RootState } from "../lib/store";
-import { removeNotification } from "../lib/slices/notifications";
+  notificationsState,
+  removeNotification,
+} from "../lib/stores/notifications";
+import { For } from "solid-js";
 
-export const NotificationManager: React.FC = () => {
-  const notifications = useSelector(
-    (state: RootState) => state.notifications.notifications,
-  );
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const timers: NodeJS.Timeout[] = [];
-
-    for (const notification of notifications) {
-      // Only set a timer for non-error notifications
-      if (notification.type !== "error") {
-        const timer = setTimeout(() => {
-          dispatch(removeNotification(notification.id));
-        }, 5000);
-        timers.push(timer);
-      }
-    }
-
-    return () => {
-      for (const timer of timers) {
-        clearTimeout(timer);
-      }
-    };
-  }, [notifications, dispatch]);
+export const NotificationManager = () => {
+  const notifications = notificationsState.notifications;
 
   return (
-    <Box position="fixed" top={4} right={4} zIndex={9999}>
-      <VStack spacing={2} align="stretch">
-        {notifications.map((notification) => (
-          <Alert key={notification.id} status={notification.type} pr={8}>
-            <AlertIcon />
-            <Box flex="1" mr={2}>
-              <Text>{notification.message}</Text>
-              {notification.details &&
-                Object.keys(notification.details).length > 0 && (
-                  <Box mt={2}>
-                    {Object.entries(notification.details).map(
-                      ([field, errors]) => (
-                        <Text key={field} fontSize="sm" color="red.500">
-                          {field}: {errors.join(", ")}
-                        </Text>
-                      ),
-                    )}
-                  </Box>
-                )}
-            </Box>
-            <CloseButton
-              position="absolute"
-              right={1}
-              top="50%"
-              transform="translateY(-50%)"
-              onClick={() => dispatch(removeNotification(notification.id))}
-            />
-          </Alert>
-        ))}
-      </VStack>
-    </Box>
+    <div class="fixed top-4 right-4 z-50">
+      <div class="flex flex-col space-y-2">
+        <For each={notifications}>
+          {(notification) => (
+            <div class={`alert alert-${notification.type} relative pr-8`}>
+              <div class="flex-1 mr-2">
+                <span>{notification.message}</span>
+                {notification.details &&
+                  Object.keys(notification.details).length > 0 && (
+                    <div class="mt-2">
+                      <For each={Object.entries(notification.details)}>
+                        {([field, errors]) => (
+                          <span class="text-sm text-red-500">
+                            {field}: {errors.join(", ")}
+                          </span>
+                        )}
+                      </For>
+                    </div>
+                  )}
+              </div>
+              <button
+                type="button"
+                class="absolute right-1 top-1/2 transform -translate-y-1/2"
+                onClick={() => removeNotification(notification.id)}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+        </For>
+      </div>
+    </div>
   );
 };

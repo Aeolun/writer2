@@ -2,6 +2,13 @@
   "$schema": "node_modules/@biomejs/biome/configuration_schema.json",
   "formatter": {
     "indentStyle": "space",
-    "indentSize": 2
+    "indentWidth": 2
+  },
+  "linter": {
+    "rules": {
+      "a11y": {
+        "useKeyWithClickEvents": "off"
+      }
+    }
   }
 }

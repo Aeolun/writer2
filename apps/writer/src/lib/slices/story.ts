@@ -462,24 +462,24 @@ export const globalSlice = createSlice({
         const paragraph = scene.paragraphs?.find((p) => {
           return p.id === action.payload.paragraphId;
         });
-        if (action.payload.state === "ai") {
-          scene.hasAI = true;
-        } else {
-          scene.hasAI = scene.paragraphs.some((p) => p.state === "ai");
-        }
+        // if (action.payload.state === "ai") {
+        //   scene.hasAI = true;
+        // } else {
+        //   scene.hasAI = scene.paragraphs.some((p) => p.state === "ai");
+        // }
 
         if (paragraph) {
-          scene.posted = false;
-          scene.modifiedAt = Date.now();
-          scene.words = scene.paragraphs.reduce((acc, p) => {
-            return acc + p.text.split(" ").length;
-          }, 0);
+          // scene.posted = false;
+          // scene.modifiedAt = Date.now();
+          // scene.words = scene.paragraphs.reduce((acc, p) => {
+          //   return acc + p.text.split(" ").length;
+          // }, 0);
 
           if (action.payload.text !== undefined) {
             paragraph.text = action.payload.text;
-            removeEntityFromEmbeddingsCache(
-              `paragraph/${action.payload.paragraphId}`,
-            );
+            // removeEntityFromEmbeddingsCache(
+            //   `paragraph/${action.payload.paragraphId}`,
+            // );
           }
           if (action.payload.translation !== undefined) {
             paragraph.translation = action.payload.translation;
@@ -500,7 +500,7 @@ export const globalSlice = createSlice({
             paragraph.extra = action.payload.extra;
           }
           paragraph.modifiedAt = Date.now();
-          state.modifiedTime = Date.now();
+          // state.modifiedTime = Date.now();
         }
       }
     },

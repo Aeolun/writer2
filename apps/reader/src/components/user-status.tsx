@@ -3,6 +3,7 @@ import { trpc } from "../utils/trpc";
 import { Navitem } from "../ui-components/navitem/navitem";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
+import { BookStack, EditPencil } from "iconoir-react";
 
 const UserStatus = () => {
   const { data: user, isLoading, error } = trpc.whoAmI.useQuery();
@@ -29,12 +30,16 @@ const UserStatus = () => {
       </div>
       {user ? (
         <>
-          <ul className="menu menu-horizontal px-1">
+          <ul className="menu menu-horizontal flex-nowrap gap-2 px-1">
             <li>
-              <Navitem to="/library">Library</Navitem>
+              <Navitem to="/library">
+                <BookStack />
+              </Navitem>
             </li>
             <li>
-              <Navitem to="/my-fiction">Own Fiction</Navitem>
+              <Navitem to="/my-fiction">
+                <EditPencil />
+              </Navitem>
             </li>
           </ul>
           <div className="dropdown dropdown-end">
@@ -44,16 +49,18 @@ const UserStatus = () => {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                />
+                <img alt="Tailwind CSS Navbar component" src={user.avatarUrl} />
               </div>
             </div>
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
             >
+              {user.role === "admin" && (
+                <li>
+                  <Navitem to="/admin">Admin</Navitem>
+                </li>
+              )}
               <li>
                 <a>Profile</a>
               </li>

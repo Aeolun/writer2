@@ -2,13 +2,16 @@ import StoryCard from "../components/storycard";
 import { trpc } from "../utils/trpc";
 import { Helmet } from "react-helmet";
 import { version } from "../version";
+import { useColorMode } from "../hooks/use-color-mode";
 
 export const IndexPage = () => {
   const {
     data: storiesData,
     isLoading,
     error,
+    refetch,
   } = trpc.listRandomStories.useQuery({ limit: 8 });
+  const colorScheme = useColorMode();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -23,19 +26,18 @@ export const IndexPage = () => {
       <Helmet>
         <title>Home - Reader</title>
       </Helmet>
-      <header className="text-center my-8 text-base-content">
-        <h1 className="text-5xl font-bold">Welcome to Reader</h1>
-        <p className="text-xl mt-4">
-          Dive into a world of stories and imagination
-        </p>
-      </header>
+
+      <img
+        src={colorScheme === "dark" ? "/service-dark.png" : "/service.png"}
+        alt="Banner"
+      />
 
       <div className="flex flex-row overflow-x-hidden py-4 justify-around gap-6">
         {storiesData?.stories.map((story) => (
           <StoryCard
             key={story.id}
             id={story.id}
-            summary={story.summary}
+            summary={story.summary ?? ""}
             coverArtAsset={story.coverArtAsset}
             name={story.name}
             ownerName={story.owner.name ?? ""}
@@ -43,9 +45,19 @@ export const IndexPage = () => {
             color={story.coverColor}
             textColor={story.coverTextColor}
             royalRoadId={story.royalRoadId ?? undefined}
+            isCompleted={story.status === "COMPLETED"}
           />
         ))}
       </div>
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => {
+          refetch();
+        }}
+      >
+        More!
+      </button>
 
       {/* Announcement Section */}
       <div className="announcement-section bg-blue-100 dark:bg-blue-900 p-4 rounded w-full">
@@ -55,11 +67,25 @@ export const IndexPage = () => {
           working on adding more features and improving the site, but it's still
           a work in progress. Most of the content you see is actually from&nbsp;
           <a href="https://www.royalroad.com" target="_blank" rel="noreferrer">
-            RoyalRoad
+            Royal Road
           </a>
           , and was mostly added to prevent the site from looking extremely sad.
-          Any attempt to read those stories here will redirect you to RoyalRoad
+          Any attempt to read those stories here will redirect you to Royal Road
           instead.
+        </p>
+        <p className="mt-2">
+          Why a new web-novel site, when we already have Royal Road? Well, I
+          wanted something that was more focused on improving the reading,
+          writing and editing experience (yes, editing, good books are made by
+          editing!). I'm also sad when I see so many novels stubbed due to
+          Amazon contracts, so I'm hoping to add monetization directly to the
+          platform which means we can retain it all and still earn money!
+        </p>
+        <p className="mt-2">
+          There's also this thing with Royal Road where paying them to advertise
+          your novel is a fantastic way to get readers, but it doesn't really
+          feel fair, and leads to a lot of bad incentives. I want to make
+          <i>every</i> story more discoverable.
         </p>
         <p className="mt-2 text-xs">
           Posted <time dateTime="2024-10-17">2024-10-17</time> by Aeolun

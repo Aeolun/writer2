@@ -23,6 +23,13 @@ import { getStoryStatus } from "./procedures/get-story-status";
 import { publishStory } from "./procedures/publish-story";
 import { getReleases } from "./procedures/get-releases";
 import { listRandomStories } from "./procedures/list-random-stories";
+import { randomizeOrder } from "./procedures/randomize-order";
+import { setBookshelfState } from "./procedures/set-bookshelf-state";
+import { checkBookshelfState } from "./procedures/check-bookshelf-state";
+import { updateStoryReadStatus } from "./procedures/update-story-read-status";
+import { getUserStories } from "./procedures/my-fiction";
+import { publishToRoyalRoad } from "./procedures/publish-to-royal-road";
+
 export const appRouter = router({
   userList: userList,
   importRoyalroad: importRoyalRoad,
@@ -32,6 +39,7 @@ export const appRouter = router({
   downloadFiles: downloadFiles,
   userById: userById,
   whoAmI: whoAmI,
+  randomizeOrder: randomizeOrder,
   register: register,
   logout: logout,
   connectedClients: connectedClients,
@@ -48,6 +56,11 @@ export const appRouter = router({
   publishStory: publishStory,
   getReleases: getReleases,
   listRandomStories: listRandomStories,
+  setBookshelfState: setBookshelfState,
+  checkBookshelfState: checkBookshelfState,
+  updateStoryReadStatus: updateStoryReadStatus,
+  myFiction: getUserStories,
+  publishToRoyalRoad: publishToRoyalRoad,
 });
 
 // Export type router type signature,

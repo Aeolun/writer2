@@ -1,42 +1,42 @@
-import { Flex, Textarea, Button } from "@chakra-ui/react";
-import { scene } from "../db/schema";
+import { createSignal } from "solid-js";
 import { searchEmbeddings } from "../lib/embeddings/embedding-store";
 import { loadStoryToEmbeddings } from "../lib/embeddings/load-story-to-embeddings";
-import { storyActions } from "../lib/slices/story";
+import { currentScene } from "../lib/stores/retrieval/current-scene";
 import { useAi } from "../lib/use-ai";
-import { useSelector } from "react-redux";
-import { selectedSceneSelector } from "../lib/selectors/selectedSceneSelector";
-import { useState } from "react";
-import { useAppDispatch } from "../lib/store";
+import { createSceneParagraph } from "../lib/stores/scenes";
+import shortUUID from "short-uuid";
 
 export const GenerateNext = () => {
-  const scene = useSelector(selectedSceneSelector);
-  const dispatch = useAppDispatch();
-  const [nextParagraph, setNextParagraph] = useState<string>();
-  const [generatingNext, setGeneratingNext] = useState<boolean>(false);
+  const scene = currentScene();
+  const [nextParagraph, setNextParagraph] = createSignal<string>("");
+  const [generatingNext, setGeneratingNext] = createSignal<boolean>(false);
 
   return scene ? (
     <>
-      <Flex flexDirection={"column"} alignItems={"flex-start"} w={"100%"}>
-        <Textarea
-          value={nextParagraph}
+      <div class="flex flex-col items-start w-full gap-2 mt-2">
+        <textarea
+          class="w-full textarea textarea-bordered"
+          value={nextParagraph()}
           placeholder={"What happens in this paragraph"}
           onChange={(event) => {
             setNextParagraph(event.target.value);
           }}
         />
-        <Button
-          mt={2}
-          isLoading={generatingNext}
+        <button
+          type="button"
+          class="btn btn-primary"
+          disabled={generatingNext()}
           onClick={() => {
+            const nextParagraphValue = nextParagraph();
+            if (!nextParagraphValue) return;
             setGeneratingNext(true);
             const generate = async () => {
-              if (!nextParagraph) {
+              if (!nextParagraphValue) {
                 return;
               }
               await loadStoryToEmbeddings();
               const appropriateContext = await searchEmbeddings(
-                nextParagraph,
+                nextParagraphValue,
                 5,
                 (doc) => {
                   return doc.metadata.kind === "context";
@@ -47,7 +47,7 @@ export const GenerateNext = () => {
               );
               const recentContentIds = recentContent.map((p) => p.id);
               const sceneContent = await searchEmbeddings(
-                nextParagraph,
+                nextParagraphValue,
                 5,
                 (doc) => {
                   return (
@@ -58,7 +58,7 @@ export const GenerateNext = () => {
                 },
               );
               const storyContent = await searchEmbeddings(
-                nextParagraph,
+                nextParagraphValue,
                 5,
                 (doc) => {
                   return (
@@ -71,20 +71,28 @@ export const GenerateNext = () => {
               const blockSep = "```";
               const relevantContentText =
                 appropriateContext.length > 0
-                  ? `Relevant context (characters, locations, etc.):\n${blockSep}\n${appropriateContext.map((c) => c[0].pageContent).join("\n\n")}\n${blockSep}\n\n`
+                  ? `Relevant context (characters, locations, etc.):\n${blockSep}\n${appropriateContext
+                      .map((c) => c[0].pageContent)
+                      .join("\n\n")}\n${blockSep}\n\n`
                   : "";
 
               const sceneContentText =
                 sceneContent.length > 0
-                  ? `Relevant Scene content (in same scene, sorted by relevance):\n${blockSep}\n${sceneContent.map((c) => c[0].pageContent).join("\n\n")}\n${blockSep}\n\n`
+                  ? `Relevant Scene content (in same scene, sorted by relevance):\n${blockSep}\n${sceneContent
+                      .map((c) => c[0].pageContent)
+                      .join("\n\n")}\n${blockSep}\n\n`
                   : "";
               const storyContentText =
                 storyContent.length > 0
-                  ? `Relevant Story content (sorted by relevance):\n${blockSep}\n${storyContent.map((c) => c[0].pageContent).join("\n\n")}\n${blockSep}\n\n`
+                  ? `Relevant Story content (sorted by relevance):\n${blockSep}\n${storyContent
+                      .map((c) => c[0].pageContent)
+                      .join("\n\n")}\n${blockSep}\n\n`
                   : "";
               const recentContentText =
                 recentContent.length > 0
-                  ? `Recent content (last 10 paragraphs):\n${blockSep}\n${recentContent.map((c) => c.text).join("\n\n")}\n${blockSep}\n\n`
+                  ? `Recent content (last 10 paragraphs):\n${blockSep}\n${recentContent
+                      .map((c) => c.text)
+                      .join("\n\n")}\n${blockSep}\n\n`
                   : "";
 
               const input = `${relevantContentText}${storyContentText}${sceneContentText}${recentContentText}---\n\nWrite the next scene/paragraph in which the following happens: ${nextParagraph}`;
@@ -93,13 +101,12 @@ export const GenerateNext = () => {
               const paragraphs = result.split("\n\n");
               console.log("output", result);
               for (const paragraph of paragraphs) {
-                dispatch(
-                  storyActions.createSceneParagraph({
-                    sceneId: scene.id,
-                    state: "ai",
-                    text: paragraph ?? undefined,
-                  }),
-                );
+                createSceneParagraph(scene.id, {
+                  id: shortUUID.generate(),
+                  text: paragraph,
+                  state: "ai",
+                  comments: [],
+                });
               }
               setGeneratingNext(false);
             };
@@ -109,8 +116,8 @@ export const GenerateNext = () => {
           }}
         >
           Generate Next Paragraph
-        </Button>
-      </Flex>
+        </button>
+      </div>
     </>
   ) : null;
 };

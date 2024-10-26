@@ -1,6 +1,6 @@
 import { prisma } from "../prisma";
 import { publicProcedure } from "../trpc";
-
+import { createHash } from "crypto";
 export const whoAmI = publicProcedure.query(async (opts) => {
   console.log("whoAmI", opts);
   if (!opts.ctx.token) {
@@ -19,6 +19,9 @@ export const whoAmI = publicProcedure.query(async (opts) => {
   const session = await prisma.session.findFirst({
     where: {
       id: opts.ctx.token,
+      validUntil: {
+        gt: new Date(),
+      },
     },
     include: {
       owner: true,
@@ -29,5 +32,11 @@ export const whoAmI = publicProcedure.query(async (opts) => {
     return null;
   }
 
-  return accessToken?.owner ?? session?.owner;
+  const owner = accessToken?.owner ?? session?.owner;
+
+  const sha256Email = createHash("sha256").update(owner?.email).digest("hex");
+  return {
+    ...owner,
+    avatarUrl: `https://gravatar.com/avatar/${sha256Email}`,
+  };
 });

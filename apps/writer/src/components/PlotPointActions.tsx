@@ -1,38 +1,30 @@
-import { Button, Flex, Select, Text } from "@chakra-ui/react";
-import { scene } from "../db/schema";
-import { storyActions } from "../lib/slices/story";
-import { useState } from "react";
-import { plotpointSelector } from "../lib/selectors/plotpointSelector";
-import { useAppDispatch, useAppSelector } from "../lib/store";
-import { selectedSceneSelectedParagraphSelector } from "../lib/selectors/selectedSceneSelectedParagraphSelector";
+import { createSignal } from "solid-js";
+import { addPlotpointActionToSceneParagraph } from "../lib/stores/scenes";
+import { currentScene } from "../lib/stores/retrieval/current-scene";
+import { plotpoints } from "../lib/stores/plot-points";
 
 export const PlotpointActions = () => {
-  const [plotPoint, setPlotPoint] = useState<string>();
-  const [action, setAction] = useState<string>("mentioned");
-  const plotpoints = useAppSelector(plotpointSelector);
-  const selectedParagraph = useAppSelector(
-    selectedSceneSelectedParagraphSelector,
-  );
-  const dispatch = useAppDispatch();
+  const [plotPoint, setPlotPoint] = createSignal<string>("");
+  const [action, setAction] = createSignal<string>("mentioned");
 
   return (
-    <Flex gap={1} alignItems="center" mt="2">
-      <Text minW="6em">Plot Points</Text>
-      <Select
-        value={plotPoint}
+    <div class="flex flex-row items-center gap-2 mt-2">
+      <div class="min-w-[6em]">Plot Points</div>
+      <select
+        class="select select-bordered max-w-48"
+        value={plotPoint()}
         onChange={(e) => {
           setPlotPoint(e.currentTarget.value);
         }}
       >
         <option>-- select --</option>
-        {Object.values(plotpoints).map((point) => (
-          <option key={point.id} value={point.id}>
-            {point.title}
-          </option>
+        {Object.values(plotpoints.plotPoints).map((point) => (
+          <option value={point.id}>{point.title}</option>
         ))}
-      </Select>
-      <Select
-        value={action}
+      </select>
+      <select
+        class="select select-bordered max-w-48"
+        value={action()}
         onChange={(e) => {
           setAction(e.currentTarget.value);
         }}
@@ -40,23 +32,22 @@ export const PlotpointActions = () => {
         <option>mentioned</option>
         <option>partially resolved</option>
         <option>resolved</option>
-      </Select>
-      <Button
+      </select>
+      <button
+        type="button"
+        class="btn btn-outline"
         onClick={() => {
-          if (scene && plotPoint && selectedParagraph?.selectedParagraph) {
-            dispatch(
-              storyActions.addPlotPointToSceneParagraph({
-                sceneId: selectedParagraph.id,
-                paragraphId: selectedParagraph.selectedParagraph,
-                plotpointId: plotPoint,
-                action: action,
-              }),
-            );
-          }
+          const scene = currentScene();
+          const paragraphId = scene?.selectedParagraph;
+          if (!scene?.id || !paragraphId) return;
+          addPlotpointActionToSceneParagraph(scene.id, paragraphId, {
+            plot_point_id: plotPoint(),
+            action: action(),
+          });
         }}
       >
         Add
-      </Button>
-    </Flex>
+      </button>
+    </div>
   );
 };

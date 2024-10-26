@@ -18,8 +18,13 @@ export const userById = publicProcedure
           select: {
             id: true,
             name: true,
+            summary: true,
+            royalRoadId: true,
             pages: true,
+            coverColor: true,
+            coverTextColor: true,
             coverArtAsset: true,
+            status: true,
           },
           where: {
             published: true,
@@ -31,6 +36,7 @@ export const userById = publicProcedure
       ...user,
       ownedStories: user.ownedStories.map((story) => ({
         ...story,
+
         coverArtAsset: getStoryAssetUrl(
           input.id,
           story.id,

@@ -33,18 +33,18 @@ export const AuthorPage = () => {
       <h2 className="text-2xl font-semibold mb-2">Published Stories</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {user.ownedStories.map((story) => (
-          <li key={story.id} className="mb-2">
-            <StoryCard
-              id={story.id}
-              coverArtAsset={story.coverArtAsset} // Assuming this field exists
-              name={story.name}
-              ownerName={user.name ?? ""}
-              pages={story.pages ?? 0}
-              summary={story.summary ?? ""}
-              color={story.color ?? ""}
-              textColor={story.textColor ?? ""}
-            />
-          </li>
+          <StoryCard
+            id={story.id}
+            coverArtAsset={story.coverArtAsset} // Assuming this field exists
+            name={story.name}
+            ownerName={user.name ?? ""}
+            pages={story.pages ?? 0}
+            summary={story.summary ?? ""}
+            color={story.coverColor ?? ""}
+            textColor={story.coverTextColor ?? ""}
+            isCompleted={story.status === "COMPLETED"}
+            royalRoadId={story.royalRoadId ?? undefined}
+          />
         ))}
       </div>
     </div>

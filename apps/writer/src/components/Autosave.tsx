@@ -1,9 +1,8 @@
 import { useAutosave } from "../lib/hooks/use-autosave";
-import { useAppSelector } from "../lib/store";
+import { storyState } from "../lib/stores/story";
 
 export const Autosave = () => {
-  const story = useAppSelector((state) => state.story.id);
-  useAutosave(!!story);
+  useAutosave(!!storyState.story?.id);
 
   return <></>;
 };

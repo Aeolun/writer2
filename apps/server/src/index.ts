@@ -7,6 +7,7 @@ import { createContext } from "./trpc.ts";
 // import authModel from "./auth-model.ts";
 
 export type { AppRouter };
+export * from "@prisma/client";
 
 const fastify = Fastify({
   bodyLimit: 10485760, // Set the payload limit to 10 MB (10 * 1024 * 1024 bytes)

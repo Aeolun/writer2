@@ -1,14 +1,14 @@
 import type { Document } from "@langchain/core/documents";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
-import { settingsStore } from "../../global-settings-store.ts";
+import { settingsState } from "../stores/settings";
 
 let memoryStore: MemoryVectorStore;
 export const getVectorStore = async () => {
   if (memoryStore) {
     return memoryStore;
   }
-  const key = await settingsStore.get<string>("openai-key");
+  const key = settingsState.openaiKey;
   if (!key) {
     throw new Error("No openai key set");
   }

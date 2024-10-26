@@ -1,7 +1,7 @@
 import { Anthropic as AnthropicAPI } from "@anthropic-ai/sdk";
-import { settingsStore } from "../../global-settings-store";
 import { instructions } from "../ai-instructions.ts";
 import type { LlmInterface } from "./llm-interface";
+import { settingsState } from "../stores/settings.ts";
 
 export class Anthropic implements LlmInterface {
   api?: AnthropicAPI;
@@ -12,8 +12,8 @@ export class Anthropic implements LlmInterface {
     if (this.initialized) {
       return;
     }
-    const key = await settingsStore.get<string>("anthropic-key");
-    this.model = (await settingsStore.get<string>("ai-model")) ?? undefined;
+    const key = settingsState.anthropicKey;
+    this.model = settingsState.aiModel ?? undefined;
     if (!key) {
       throw new Error("No anthropic key set");
     }

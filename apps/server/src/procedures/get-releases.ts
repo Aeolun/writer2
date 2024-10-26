@@ -27,7 +27,9 @@ export const getReleases = publicProcedure.query(async () => {
             "https://api.github.com/repos/aeolun/writer2/releases",
             {
               headers: {
-                Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+                Authorization: process.env.GITHUB_TOKEN
+                  ? `Bearer ${process.env.GITHUB_TOKEN}`
+                  : undefined,
               },
             },
           )
@@ -45,14 +47,20 @@ export const getReleases = publicProcedure.query(async () => {
           windowsUrl: release.assets.find((asset) =>
             asset.name.includes("setup.exe"),
           )?.browser_download_url,
-          macUrl: release.assets.find((asset) => asset.name.includes("mac.dmg"))
+          macUrl: release.assets.find((asset) => asset.name.includes("x64.dmg"))
             ?.browser_download_url,
           siliconUrl: release.assets.find((asset) =>
-            asset.name.includes("mac-silicon.dmg"),
+            asset.name.includes("aarch64.dmg"),
           )?.browser_download_url,
           linuxUrl: release.assets.find((asset) =>
             asset.name.includes("amd64.AppImage"),
           )?.browser_download_url,
+          depUrl: release.assets.find((asset) => asset.name.includes(".deb"))
+            ?.browser_download_url,
+          rpmUrl: release.assets.find((asset) => asset.name.includes(".rpm"))
+            ?.browser_download_url,
+          msiUrl: release.assets.find((asset) => asset.name.includes(".msi"))
+            ?.browser_download_url,
           releaseUrl: release.html_url,
         };
       });

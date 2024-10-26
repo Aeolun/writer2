@@ -1,6 +1,11 @@
 import { trpc } from "../utils/trpc";
+import StoryCard from "../components/storycard";
+import { SavedType } from "@writer/server";
+import { Helmet } from "react-helmet";
+import { useState } from "react";
 
 export const ListsPage = () => {
+  const [selectedTab, setSelectedTab] = useState<SavedType>("FAVORITE");
   const {
     data: bookshelfStories,
     isLoading,
@@ -19,31 +24,74 @@ export const ListsPage = () => {
     return <div className="text-red-500">Error: {error.message}</div>;
   }
 
+  // Categorize bookshelfStories by kind
+  const categorizedStories: Record<SavedType, any[]> = {
+    FAVORITE: [],
+    FOLLOW: [],
+    READ_LATER: [],
+  };
+
+  for (const story of bookshelfStories ?? []) {
+    categorizedStories[story.kind].push(story);
+  }
+
   return (
     <div className="container mx-auto p-4">
+      <Helmet>
+        <title>My Library - Reader</title>
+      </Helmet>
       <h1 className="text-3xl font-bold mb-6">My library</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {bookshelfStories?.map((story) => (
-          <div key={story.id} className="card bg-base-100 shadow-xl">
-            <figure>
-              <img
-                src={story.coverArtAsset}
-                alt={story.name}
-                className="w-full h-48 object-cover"
-              />
-            </figure>
-            <div className="card-body">
-              <h2 className="card-title">{story.name}</h2>
-              <p>{story.pages} pages</p>
-              <div className="card-actions justify-end">
-                <a href={`/story/${story.id}`} className="btn btn-primary">
-                  Read Now
-                </a>
+
+      <div role="tablist" className="tabs tabs-boxed">
+        <button
+          type="button"
+          role="tab"
+          className={`tab ${selectedTab === "FAVORITE" ? "tab-active" : ""}`}
+          onClick={() => setSelectedTab("FAVORITE")}
+        >
+          Favorites
+        </button>
+        <button
+          type="button"
+          role="tab"
+          className={`tab ${selectedTab === "FOLLOW" ? "tab-active" : ""}`}
+          onClick={() => setSelectedTab("FOLLOW")}
+        >
+          Followed
+        </button>
+        <button
+          type="button"
+          role="tab"
+          className={`tab ${selectedTab === "READ_LATER" ? "tab-active" : ""}`}
+          onClick={() => setSelectedTab("READ_LATER")}
+        >
+          Read Later
+        </button>
+      </div>
+
+      {Object.entries(categorizedStories).map(
+        ([kind, stories]) =>
+          selectedTab === kind && (
+            <div key={kind} className="mt-8">
+              <div className="flex flex-wrap gap-6">
+                {stories.map((story) => (
+                  <StoryCard
+                    key={story.id}
+                    id={story.id}
+                    coverArtAsset={story.coverArtAsset}
+                    name={story.name}
+                    ownerName={story.ownerName ?? ""}
+                    pages={story.pages ?? 0}
+                    summary={story.summary ?? ""}
+                    color={story.color ?? ""}
+                    textColor={story.textColor ?? ""}
+                    royalRoadId={story.royalRoadId ?? undefined}
+                  />
+                ))}
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ),
+      )}
     </div>
   );
 };

@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./storycard.module.css";
 import classnames from "classnames";
 import { useLocation } from "wouter";
+import { openAddToBookshelf, setIsOpen } from "../slices/bookshelf-slice";
+import { useAppDispatch } from "../store";
+import { Check } from "iconoir-react";
+
 interface StoryCardProps {
   id: string;
   coverArtAsset: string;
@@ -12,6 +16,7 @@ interface StoryCardProps {
   color: string;
   textColor: string;
   royalRoadId?: number;
+  isCompleted?: boolean;
 }
 
 const StoryCard: React.FC<StoryCardProps> = ({
@@ -23,8 +28,15 @@ const StoryCard: React.FC<StoryCardProps> = ({
   textColor,
   pages,
   royalRoadId,
+  isCompleted,
 }) => {
   const [location, navigate] = useLocation();
+  const dispatch = useAppDispatch();
+
+  const handleAddToLibraryClick = () => {
+    dispatch(openAddToBookshelf(id)); // Show the popup when the button is clicked
+  };
+
   return (
     <div
       className={styles.cardContainer}
@@ -38,7 +50,17 @@ const StoryCard: React.FC<StoryCardProps> = ({
             "bg-slate-100 dark:bg-slate-800 relative",
           )}
         >
-          <img src={coverArtAsset} alt={name} className="w-full object-cover" />
+          {coverArtAsset ? (
+            <img
+              src={coverArtAsset}
+              alt={name}
+              className="w-full object-cover"
+            />
+          ) : (
+            <p className="text-center text-gray-500 self-start mt-8 font-serif">
+              {name}
+            </p>
+          )}
           {royalRoadId && (
             <a
               href={`https://www.royalroad.com/fiction/${royalRoadId}`}
@@ -56,15 +78,31 @@ const StoryCard: React.FC<StoryCardProps> = ({
             "flex flex-col shadow-md p-4 gap-2",
           )}
         >
-          <h2 className={"text-lg font-bold"}>{name}</h2>
-          <p className={"text-xs overflow-x-hidden w-full"}>{pages} pages</p>
+          <h2
+            className={`${
+              name.length > 40
+                ? "text-xs"
+                : name.length > 20
+                  ? "text-md"
+                  : "text-lg"
+            } font-bold`}
+          >
+            {name}
+          </h2>
+          <p className={"text-xs overflow-x-hidden w-full"}>
+            {pages} pages{isCompleted ? " ✅" : " 🔥"}
+          </p>
           <div
             className={"text-xs flex-1 overflow-x-hidden w-full"}
             dangerouslySetInnerHTML={{ __html: summary }}
           />
 
           <div className="flex flex-row gap-2 justify-around">
-            <button type="button" className="btn btn-accent btn-sm">
+            <button
+              type="button"
+              className="btn btn-accent btn-sm"
+              onClick={handleAddToLibraryClick} // Attach the event handler
+            >
               + Library
             </button>
             <a
@@ -74,7 +112,8 @@ const StoryCard: React.FC<StoryCardProps> = ({
                   ? `https://www.royalroad.com/fiction/${royalRoadId}`
                   : `/story/${id}`
               }
-              rel="noopener noreferrer"
+              target={royalRoadId ? "_blank" : undefined}
+              rel={royalRoadId ? "noopener noreferrer" : undefined}
             >
               Read
             </a>

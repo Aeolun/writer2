@@ -1,21 +1,5 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  HStack,
-  Input,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Textarea,
-} from "@chakra-ui/react";
 import moment from "moment";
 import React, { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { storyActions } from "../lib/slices/story";
 
 import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
@@ -23,12 +7,15 @@ import { sortedBookObjects } from "../lib/selectors/sortedBookObjects";
 import { HelpKind } from "../lib/ai-instructions";
 import { useAi } from "../lib/use-ai";
 import "react-datetime/css/react-datetime.css";
-import Datetime from "react-datetime";
+import { useAppSelector } from "../lib/store";
 
 export const ChapterTabs = () => {
   const chapterObj = useSelector(selectedObjectSelector);
   const dispatch = useDispatch();
   const sortedBook = useSelector(sortedBookObjects);
+  const globalSettings = useAppSelector((state) => state.base.settings);
+  const publishToRoyalRoad = trpcReact.publishToRoyalRoad.useMutation();
+  const signedInUser = useAppSelector((state) => state.base.signedInUser);
 
   const help = useCallback(
     (helpKind: HelpKind, extra = false) => {
@@ -199,6 +186,49 @@ export const ChapterTabs = () => {
               <FormHelperText>
                 This is the date the chapter will be visible in the reader
                 application (or RoyalRoad, if published there).
+              </FormHelperText>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Royal Road ID</FormLabel>
+              <Input
+                onChange={(e) => {
+                  dispatch(
+                    storyActions.updateChapter({
+                      id: chapterObj.id,
+                      royalRoadId: parseInt(e.target.value),
+                    }),
+                  );
+                }}
+                value={chapterObj.data.royalRoadId}
+              />
+
+              <FormHelperText>
+                If you've already published this chapter on RoyalRoad, you can
+                enter the ID here.
+              </FormHelperText>
+            </FormControl>
+            <FormControl>
+              <Button
+                isDisabled={
+                  !globalSettings.royalRoadEmail ||
+                  !globalSettings.royalRoadPassword ||
+                  !chapterObj.data.royalRoadId ||
+                  !signedInUser
+                }
+                onClick={() => {
+                  publishToRoyalRoad.mutate({
+                    chapterId: chapterObj.id,
+                  });
+                }}
+              >
+                Publish to RoyalRoad
+              </Button>
+              <FormHelperText>
+                This will publish the chapter to Royal Road.{" "}
+                <span style={{ color: "red" }}>
+                  WARNING: This will send your Royal Road email and password to
+                  the server. It won't be stored.
+                </span>
               </FormHelperText>
             </FormControl>
           </Box>

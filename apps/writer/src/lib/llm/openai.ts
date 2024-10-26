@@ -1,7 +1,7 @@
 import { OpenAI as OpenAIAPI } from "openai";
-import { settingsStore } from "../../global-settings-store";
 import { instructions } from "../ai-instructions.ts";
 import type { LlmInterface } from "./llm-interface";
+import { settingsState } from "../stores/settings.ts";
 
 export class OpenAI implements LlmInterface {
   api?: OpenAIAPI;
@@ -12,14 +12,14 @@ export class OpenAI implements LlmInterface {
     if (this.initialized) {
       return;
     }
-    const key = await settingsStore.get<string>("openai-key");
-    this.model = (await settingsStore.get<string>("ai-model")) ?? undefined;
+    const key = settingsState.openaiKey;
+    this.model = settingsState.aiModel ?? undefined;
     if (!key) {
       throw new Error("No openai key set");
     }
     this.api = new OpenAIAPI({
       apiKey: key,
-      timeout: 20000,
+      timeout: 30000,
       dangerouslyAllowBrowser: true,
     });
   }

@@ -5,6 +5,9 @@ export const getStoryAssetUrl = (
   storyId: string,
   filePath: string,
 ) => {
+  if (!filePath) {
+    return "";
+  }
   const hash = createHash("sha256").update(filePath).digest("hex");
   return `https://team.wtf/upload/${ownerId}/${storyId}/${hash}.${filePath
     .split(".")

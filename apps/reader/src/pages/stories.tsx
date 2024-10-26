@@ -4,16 +4,19 @@ import StoryCard from "../components/storycard";
 import { useLocation, useParams } from "wouter";
 import { useSearchParams } from "../hooks/use-search-params";
 import { Helmet } from "react-helmet";
+import { useState } from "react";
 
 export const StoriesPage = () => {
-  const params = useSearchParams();
+  const searchParams = useSearchParams();
+  const params = useParams();
   const {
     data: storiesData,
     isLoading,
     error,
   } = trpc.listStories.useQuery({
     limit: 20,
-    cursor: params.get("cursor") ?? undefined,
+    cursor: searchParams.get("cursor") ?? undefined,
+    genre: params.genre,
   });
   const [location, navigate] = useLocation();
 
@@ -35,12 +38,41 @@ export const StoriesPage = () => {
         <title>Stories - Reader</title>
       </Helmet>
       <h1 className="text-3xl font-bold mb-6">Stories</h1>
-      <div className="flex flex-wrap justify-between gap-6">
+      <div role="tablist" className="tabs tabs-boxed">
+        <button
+          type="button"
+          role="tab"
+          className={`tab ${params.genre === undefined ? "tab-active" : ""}`}
+          onClick={() => navigate("/stories")}
+        >
+          All
+        </button>
+        {[
+          "Action",
+          "Adventure",
+          "Comedy",
+          "Drama",
+          "Fantasy",
+          "Horror",
+          "Mystery",
+          "Romance",
+        ].map((genre) => (
+          <button
+            type="button"
+            role="tab"
+            className={`tab ${params.genre === genre ? "tab-active" : ""}`}
+            onClick={() => navigate(`/stories/${genre}`)}
+          >
+            {genre}
+          </button>
+        ))}
+      </div>
+      <div className="flex flex-wrap justify-between gap-6 mt-6">
         {storiesData?.stories.map((story) => (
           <StoryCard
             key={story.id}
             id={story.id}
-            summary={story.summary}
+            summary={story.summary ?? ""}
             coverArtAsset={story.coverArtAsset}
             name={story.name}
             ownerName={story.owner.name ?? ""}
@@ -48,6 +80,7 @@ export const StoriesPage = () => {
             color={story.coverColor}
             textColor={story.coverTextColor}
             royalRoadId={story.royalRoadId ?? undefined}
+            isCompleted={story.status === "COMPLETED"}
           />
         ))}
       </div>

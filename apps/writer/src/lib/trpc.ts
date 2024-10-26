@@ -1,36 +1,32 @@
-import { httpBatchLink } from "@trpc/client";
-import { createTRPCClient } from "@trpc/client";
-import { CreateTRPCClient, createTRPCReact } from "@trpc/react-query";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "@writer/server";
-import { settingsStore } from "../global-settings-store.ts";
+import { settingsState } from "./stores/settings";
 
-// Create a TRPC React client
-export const trpcReact = createTRPCReact<AppRouter>();
-
-export let trpc: CreateTRPCClient<AppRouter>;
+export let trpc: ReturnType<typeof createTRPCClient<AppRouter>>;
 export let batchLink: ReturnType<typeof httpBatchLink>;
 
-export const reloadTrpc = () => {
-  return settingsStore.get<string>("server-url").then((url) => {
-    const baseUrl = url ?? "https://writer.serial-experiments.com";
-    console.log("creating client");
-    batchLink = httpBatchLink({
-      url: `${baseUrl}`,
-      // You can pass any HTTP headers you wish here
-      async headers() {
-        const token = await settingsStore.get("client-token");
+export const reloadTrpc = (passedServerUrl?: string) => {
+  let serverUrl = passedServerUrl ?? settingsState.serverUrl;
+  if (!serverUrl) {
+    serverUrl = "https://writer.serial-experiments.com/trpc";
+  }
+  console.log("creating client", serverUrl);
+  batchLink = httpBatchLink({
+    url: `${serverUrl}`,
+    // You can pass any HTTP headers you wish here
+    async headers() {
+      const token = settingsState.clientToken;
 
-        return token
-          ? {
-              authorization: `Bearer ${token}`,
-            }
-          : {};
-      },
-    });
+      return token
+        ? {
+            authorization: `Bearer ${token}`,
+          }
+        : {};
+    },
+  });
 
-    trpc = createTRPCClient<AppRouter>({
-      links: [batchLink],
-    });
+  trpc = createTRPCClient<AppRouter>({
+    links: [batchLink],
   });
 };
 

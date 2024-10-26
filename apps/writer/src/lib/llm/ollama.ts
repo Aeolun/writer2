@@ -1,7 +1,7 @@
 import axios from "axios";
-import { settingsStore } from "../../global-settings-store";
 import { instructions } from "../ai-instructions.ts";
 import type { LlmInterface } from "./llm-interface";
+import { settingsState } from "../stores/settings.ts";
 
 export class Ollama implements LlmInterface {
   model?: string;
@@ -11,7 +11,7 @@ export class Ollama implements LlmInterface {
     if (this.initialized) {
       return;
     }
-    this.model = (await settingsStore.get<string>("ai-model")) ?? undefined;
+    this.model = settingsState.aiModel ?? undefined;
   }
   async listModels() {
     await this.init();

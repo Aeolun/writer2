@@ -1,7 +1,8 @@
 import type { Document } from "@langchain/core/documents";
 import type { PersistedStory } from "@writer/shared";
-import { store } from "../store.ts";
 import { addDocuments, removeDocuments } from "./embedding-store.ts";
+import { scenesState } from "../stores/scenes.ts";
+import { charactersState } from "../stores/characters.ts";
 
 const addCache = new Set<string>();
 
@@ -16,9 +17,9 @@ export const loadStoryToEmbeddings = async () => {
   const documents: Document[] = [];
   let nr = 0;
 
-  const story = store.getState().story;
+  const scenes = scenesState.scenes;
 
-  for (const [sceneId, scene] of Object.entries(story.scene)) {
+  for (const [sceneId, scene] of Object.entries(scenes)) {
     for (const paragraph of scene.paragraphs) {
       if (
         paragraph.text.length > 0 &&
@@ -30,7 +31,7 @@ export const loadStoryToEmbeddings = async () => {
           metadata: {
             sceneId,
             paragraphId: paragraph.id,
-            storyId: story.id,
+            storyId: scenes.id,
             kind: "content",
           },
         });
@@ -40,14 +41,16 @@ export const loadStoryToEmbeddings = async () => {
     }
   }
 
-  for (const [characterId, character] of Object.entries(story.characters)) {
+  for (const [characterId, character] of Object.entries(
+    charactersState.characters,
+  )) {
     if (!addCache.has(`character/${characterId}`)) {
       documents.push({
         id: `character/${characterId}`,
         pageContent: `${character.name} (${character.age} years old): ${character.summary}`,
         metadata: {
           characterId,
-          storyId: story.id,
+          storyId: scenes.id,
           kind: "context",
         },
       });

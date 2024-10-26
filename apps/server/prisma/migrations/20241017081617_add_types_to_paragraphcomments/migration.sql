@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `ParagraphComment` ADD COLUMN `type` ENUM('COMMENT', 'SUGGESTION') NOT NULL DEFAULT 'COMMENT';
