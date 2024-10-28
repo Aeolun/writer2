@@ -6,6 +6,7 @@ import { trpc } from "../trpc";
 export interface UserState {
   signedInUser?: {
     name: string | null | undefined;
+    picture: string | null | undefined;
     id: number;
     createdAt: string;
     email: string;

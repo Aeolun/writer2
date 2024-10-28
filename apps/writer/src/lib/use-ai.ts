@@ -1,5 +1,6 @@
 import type { instructions } from "./ai-instructions.ts";
 import { Anthropic } from "./llm/anthropic.ts";
+import { Cerebras } from "./llm/cerebras.ts";
 import { Groq } from "./llm/groq.ts";
 import { Ollama } from "./llm/ollama.ts";
 import { OpenAI } from "./llm/openai.ts";
@@ -14,6 +15,7 @@ export async function useAi(
   const aiSource = settingsState.aiSource;
   const storyInstructions = storyState.story?.settings?.aiInstructions;
 
+  console.log("using", aiSource, storyInstructions);
   if (aiSource === "openai") {
     const openai = new OpenAI();
     await openai.init();
@@ -25,6 +27,13 @@ export async function useAi(
     const groq = new Groq();
     await groq.init();
     return groq.chat(kind, text, {
+      additionalInstructions: addInstructions ? storyInstructions : undefined,
+    });
+  }
+  if (aiSource === "cerebras") {
+    const cerebras = new Cerebras();
+    await cerebras.init();
+    return cerebras.chat(kind, text, {
       additionalInstructions: addInstructions ? storyInstructions : undefined,
     });
   }

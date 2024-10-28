@@ -15,6 +15,9 @@ export interface UIState {
   selectionPath?: Node[];
   selectedLanguage?: string;
   aiPopupOpen: boolean;
+  aiPrompt?: string;
+  aiOpenTab?: number;
+  aiResponseHistory?: string[];
   showInventory: boolean;
   signinPopupOpen: boolean;
   saving: boolean;
@@ -63,3 +66,10 @@ export const setSelectedImageChapter = (chapter: string) =>
   setUIState("selectedImageChapter", chapter);
 export const setImagePath = (path: string) => setUIState("imagePath", path);
 export const setCurrentId = (id?: string) => setUIState("currentId", id);
+export const addAiResponse = (response: string) =>
+  setUIState("aiResponseHistory", (prev) => [
+    response,
+    ...(prev ?? []).slice(0, 9),
+  ]);
+export const setAiPrompt = (prompt: string) => setUIState("aiPrompt", prompt);
+export const setAiOpenTab = (tab: number) => setUIState("aiOpenTab", tab);

@@ -159,6 +159,8 @@ export const languageSchema = z.object({
   ),
 });
 
+export type Language = z.infer<typeof languageSchema>;
+
 const itemSchema = entitySchema.extend({
   name: z.string(),
 });
@@ -174,20 +176,20 @@ export const storySettingsSchema = z.object({
 
 export type StorySettings = z.infer<typeof storySettingsSchema>;
 
+export const uploadedFileSchema = z.object({
+  hash: z.string(),
+  publicUrl: z.string(),
+});
+
+export type UploadedFile = z.infer<typeof uploadedFileSchema>;
+
 export const storySchema = z.object({
   id: z.string(),
   name: z.string(),
   modifiedTime: z.number(),
   lastPublishTime: z.number().optional(),
   settings: storySettingsSchema.optional(),
-  uploadedFiles: z
-    .record(
-      z.object({
-        hash: z.string(),
-        publicUrl: z.string(),
-      }),
-    )
-    .optional(),
+  uploadedFiles: z.record(uploadedFileSchema).optional(),
   item: z.record(itemSchema).optional(),
   structure: z.array(treeSchema),
   chapter: z.record(chapterSchema),

@@ -1,10 +1,10 @@
 import OpenAI from "openai";
 import { instructions } from "../ai-instructions.ts";
-import type { LlmInterface } from "./llm-interface";
+import type { LlmInterface } from "./llm-interface.ts";
 import { settingsState } from "../stores/settings.ts";
 import { unwrap } from "solid-js/store";
 
-export class Groq implements LlmInterface {
+export class Cerebras implements LlmInterface {
   api?: OpenAI;
   model?: string;
   initialized = false;
@@ -13,16 +13,16 @@ export class Groq implements LlmInterface {
     if (this.initialized) {
       return;
     }
-    const key = unwrap(settingsState).groqKey;
+    const key = unwrap(settingsState).cerebrasKey;
     this.model = unwrap(settingsState).aiModel ?? undefined;
     if (!key) {
-      throw new Error("No groq key set");
+      throw new Error("No cerebras key set");
     }
     this.api = new OpenAI({
       apiKey: key,
       dangerouslyAllowBrowser: true,
       timeout: 10000,
-      baseURL: "https://api.groq.com/openai/v1",
+      baseURL: "https://api.cerebras.ai/v1",
     });
   }
   async listModels() {
@@ -59,7 +59,7 @@ export class Groq implements LlmInterface {
       ],
       max_tokens: 2000,
       temperature: 0.6,
-      frequency_penalty: 0.5,
+      //frequency_penalty: 0.5,
       model: this.model ?? "",
     });
 

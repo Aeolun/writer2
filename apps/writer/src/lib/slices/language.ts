@@ -1,34 +1,5 @@
 import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
-import short from 'short-uuid';
-
-export interface Word {
-  id: string
-  native: string
-  meaning: string
-}
-
-export interface Phoneme { id: string, identifier: string, options: string }
-export interface WordOption {
-  id: string, identifier: string, option: string
-}
-
-export interface Language {
-  id: string;
-  summary: string;
-  title: string;
-  phonemes: Phoneme[]
-  wordOptions: WordOption[]
-  vocabulary: Word[]
-  pronouns: Word[]
-}
-
-export interface LanguageState {
-  languages: Record<string, Language>
-}
-
-const initialState: LanguageState = {
-  languages: {}
-};
+import short from "short-uuid";
 
 export const languageSlice = createSlice({
   name: "language",
@@ -41,31 +12,42 @@ export const languageSlice = createSlice({
       const id = short.generate();
       state.languages[id] = {
         id,
-        summary: '',
-        title: '',
+        summary: "",
+        title: "",
         phonemes: [],
         wordOptions: [],
         vocabulary: [],
         pronouns: [],
-        ...action.payload
+        ...action.payload,
       };
     },
-    updateLanguage: (state, action: PayloadAction<Partial<Language> & {id: string}>) => {
+    updateLanguage: (
+      state,
+      action: PayloadAction<Partial<Language> & { id: string }>,
+    ) => {
       state.languages[action.payload.id] = {
         ...state.languages[action.payload.id],
-        ...action.payload
+        ...action.payload,
       };
     },
-    addWord: (state, action: PayloadAction<{languageId: string}>) => {
+    addWord: (state, action: PayloadAction<{ languageId: string }>) => {
       state.languages[action.payload.languageId].vocabulary.push({
         id: short.generate(),
-        native: 'native',
-        meaning: 'meaning'
+        native: "native",
+        meaning: "meaning",
       });
     },
-    updateWord: (state, action: PayloadAction<{languageId: string, word: Partial<Word> & {id: string}}>) => {
+    updateWord: (
+      state,
+      action: PayloadAction<{
+        languageId: string;
+        word: Partial<Word> & { id: string };
+      }>,
+    ) => {
       const language = state.languages[action.payload.languageId];
-      const word = language.vocabulary.find(word => word.id === action.payload.word.id);
+      const word = language.vocabulary.find(
+        (word) => word.id === action.payload.word.id,
+      );
 
       if (word) {
         if (action.payload.word.native !== undefined) {
@@ -76,20 +58,33 @@ export const languageSlice = createSlice({
         }
       }
     },
-    deleteWord: (state, action: PayloadAction<{languageId: string, wordId: string}>) => {
+    deleteWord: (
+      state,
+      action: PayloadAction<{ languageId: string; wordId: string }>,
+    ) => {
       const language = state.languages[action.payload.languageId];
-      language.vocabulary = language.vocabulary.filter(word => word.id !== action.payload.wordId);
+      language.vocabulary = language.vocabulary.filter(
+        (word) => word.id !== action.payload.wordId,
+      );
     },
-    addPronoun: (state, action: PayloadAction<{languageId: string}>) => {
+    addPronoun: (state, action: PayloadAction<{ languageId: string }>) => {
       state.languages[action.payload.languageId].pronouns.push({
         id: short.generate(),
-        native: 'native',
-        meaning: 'meaning'
+        native: "native",
+        meaning: "meaning",
       });
     },
-    updatePronoun: (state, action: PayloadAction<{languageId: string, word: Partial<Word> & {id: string}}>) => {
+    updatePronoun: (
+      state,
+      action: PayloadAction<{
+        languageId: string;
+        word: Partial<Word> & { id: string };
+      }>,
+    ) => {
       const language = state.languages[action.payload.languageId];
-      const word = language.pronouns.find(word => word.id === action.payload.word.id);
+      const word = language.pronouns.find(
+        (word) => word.id === action.payload.word.id,
+      );
 
       if (word) {
         if (action.payload.word.native !== undefined) {
@@ -100,43 +95,74 @@ export const languageSlice = createSlice({
         }
       }
     },
-    deletePronoun: (state, action: PayloadAction<{languageId: string, wordId: string}>) => {
+    deletePronoun: (
+      state,
+      action: PayloadAction<{ languageId: string; wordId: string }>,
+    ) => {
       const language = state.languages[action.payload.languageId];
-      language.pronouns = language.pronouns.filter(word => word.id !== action.payload.wordId);
+      language.pronouns = language.pronouns.filter(
+        (word) => word.id !== action.payload.wordId,
+      );
     },
-    addPhoneme: (state, action: PayloadAction<{languageId: string}>) => {
+    addPhoneme: (state, action: PayloadAction<{ languageId: string }>) => {
       state.languages[action.payload.languageId].phonemes.push({
         id: short.generate(),
-        identifier: state.languages[action.payload.languageId].phonemes.length.toString(16),
-        options: 'a a'
+        identifier:
+          state.languages[action.payload.languageId].phonemes.length.toString(
+            16,
+          ),
+        options: "a a",
       });
     },
-    updatePhoneme: (state, action: PayloadAction<{languageId: string, phonemeId: string, values: Partial<Phoneme>}>) => {
-      const phoneme = state.languages[action.payload.languageId].phonemes.find(phoneme => phoneme.id === action.payload.phonemeId)
+    updatePhoneme: (
+      state,
+      action: PayloadAction<{
+        languageId: string;
+        phonemeId: string;
+        values: Partial<Phoneme>;
+      }>,
+    ) => {
+      const phoneme = state.languages[action.payload.languageId].phonemes.find(
+        (phoneme) => phoneme.id === action.payload.phonemeId,
+      );
       if (phoneme) {
         if (action.payload.values.identifier !== undefined) {
-          phoneme.identifier = action.payload.values.identifier
+          phoneme.identifier = action.payload.values.identifier;
         }
         if (action.payload.values.options !== undefined) {
-          phoneme.options = action.payload.values.options
+          phoneme.options = action.payload.values.options;
         }
       }
     },
-    addWordOption: (state, action: PayloadAction<{languageId: string}>) => {
+    addWordOption: (state, action: PayloadAction<{ languageId: string }>) => {
       state.languages[action.payload.languageId].wordOptions.push({
         id: short.generate(),
-        identifier: state.languages[action.payload.languageId].wordOptions.length.toString(16),
-        option: '{A}{A?}}'
+        identifier:
+          state.languages[
+            action.payload.languageId
+          ].wordOptions.length.toString(16),
+        option: "{A}{A?}}",
       });
     },
-    updateWordOption: (state, action: PayloadAction<{languageId: string, wordoptionId: string, values: Partial<WordOption>}>) => {
-      const option = state.languages[action.payload.languageId].wordOptions.find(phoneme => phoneme.id === action.payload.wordoptionId)
+    updateWordOption: (
+      state,
+      action: PayloadAction<{
+        languageId: string;
+        wordoptionId: string;
+        values: Partial<WordOption>;
+      }>,
+    ) => {
+      const option = state.languages[
+        action.payload.languageId
+      ].wordOptions.find(
+        (phoneme) => phoneme.id === action.payload.wordoptionId,
+      );
       if (option) {
         if (action.payload.values.identifier !== undefined) {
-          option.identifier = action.payload.values.identifier
+          option.identifier = action.payload.values.identifier;
         }
         if (action.payload.values.option !== undefined) {
-          option.option = action.payload.values.option
+          option.option = action.payload.values.option;
         }
       }
     },

@@ -2,6 +2,7 @@ import { Anthropic as AnthropicAPI } from "@anthropic-ai/sdk";
 import { instructions } from "../ai-instructions.ts";
 import type { LlmInterface } from "./llm-interface";
 import { settingsState } from "../stores/settings.ts";
+import { unwrap } from "solid-js/store";
 
 export class Anthropic implements LlmInterface {
   api?: AnthropicAPI;
@@ -12,8 +13,8 @@ export class Anthropic implements LlmInterface {
     if (this.initialized) {
       return;
     }
-    const key = settingsState.anthropicKey;
-    this.model = settingsState.aiModel ?? undefined;
+    const key = unwrap(settingsState).anthropicKey;
+    this.model = unwrap(settingsState).aiModel ?? undefined;
     if (!key) {
       throw new Error("No anthropic key set");
     }
@@ -26,10 +27,16 @@ export class Anthropic implements LlmInterface {
   async listModels() {
     await this.init();
     return [
+      "claude-3-5-sonnet-latest",
+      "claude-3-5-sonnet-20241022",
       "claude-3-5-sonnet-20240620",
+      "claude-3-opus-latest",
       "claude-3-opus-20240229",
       "claude-3-sonnet-20240229",
       "claude-3-haiku-20240307",
+      "claude-2.1",
+      "claude-2.0",
+      "claude-instant-1.2",
     ];
   }
   async chat(

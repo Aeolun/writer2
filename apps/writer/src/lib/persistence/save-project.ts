@@ -3,7 +3,6 @@ import {
   copyFile,
   mkdir,
   readDir,
-  readTextFile,
   remove,
   stat,
   writeTextFile,
@@ -15,8 +14,6 @@ import {
   languageEntities,
   saveSchema,
 } from "@writer/shared";
-import { globalActions } from "../slices/global.ts";
-import { store } from "../store.ts";
 
 const writeStoryPath = async (
   validatedBody: PersistedStory,

@@ -5,12 +5,30 @@ import { reloadTrpc, trpc } from "../lib/trpc.ts";
 import { setSetting, settingsState } from "../lib/stores/settings.ts";
 import { FormField } from "../components/styled/FormField.tsx";
 
+let lastSource: string | undefined = undefined;
+let lastSetAvailableModels: any = undefined;
 const GlobalSettings = () => {
   const [availableModels, setAvailableModels] = createSignal<string[]>([]);
-  createEffect(() => {
-    if (settingsState.aiSource && settingsState.aiSource in llms) {
-      llms[settingsState.aiSource]?.listModels().then(setAvailableModels);
+
+  createEffect(async () => {
+    const source = settingsState.aiSource;
+    console.log(
+      "aiSource",
+      source,
+      lastSource === source,
+      lastSetAvailableModels === setAvailableModels,
+    );
+
+    if (source && source in llms) {
+      console.log("updating models");
+      const models = await llms[source]?.listModels();
+      setAvailableModels(models ?? []);
+      if (models && !models.includes(settingsState.aiModel)) {
+        setSetting("aiModel", "");
+      }
     }
+    lastSource = source;
+    lastSetAvailableModels = setAvailableModels;
   });
 
   return (
@@ -27,12 +45,19 @@ const GlobalSettings = () => {
             onChange={(e) => {
               setSetting(
                 "aiSource",
-                e.target.value as "openai" | "groq" | "anthropic" | "ollama",
+                e.currentTarget.value as
+                  | "openai"
+                  | "groq"
+                  | "anthropic"
+                  | "ollama"
+                  | "cerebras",
               );
             }}
           >
+            <option value={""}>None</option>
             <option value={"openai"}>OpenAI</option>
             <option value={"groq"}>Groq</option>
+            <option value={"cerebras"}>Cerebras</option>
             <option value={"anthropic"}>Anthropic</option>
             <option value={"ollama"}>Ollama</option>
           </select>
@@ -46,9 +71,10 @@ const GlobalSettings = () => {
             class="select select-bordered"
             value={settingsState.aiModel}
             onChange={(e) => {
-              setSetting("aiModel", e.target.value);
+              setSetting("aiModel", e.currentTarget.value);
             }}
           >
+            <option value={""}>None</option>
             {availableModels().map((m) => {
               return <option value={m}>{m}</option>;
             })}
@@ -88,6 +114,18 @@ const GlobalSettings = () => {
             value={settingsState.groqKey}
             onChange={(e) => {
               setSetting("groqKey", e.target.value);
+            }}
+          />
+        </FormField>
+        <FormField
+          label="Cerebras key"
+          helpText="Used for calling external service for AI support."
+        >
+          <input
+            class="input input-bordered"
+            value={settingsState.cerebrasKey}
+            onChange={(e) => {
+              setSetting("cerebrasKey", e.target.value);
             }}
           />
         </FormField>

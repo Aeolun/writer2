@@ -7,6 +7,7 @@ export interface SettingsState {
   clientToken: string;
   openaiKey: string;
   groqKey: string;
+  cerebrasKey: string;
   anthropicKey: string;
   serverUrl: string;
   aiSource: LLMName | "";
@@ -20,6 +21,7 @@ const initialSettings: SettingsState = {
   clientToken: "",
   openaiKey: "",
   groqKey: "",
+  cerebrasKey: "",
   anthropicKey: "",
   serverUrl: "",
   aiSource: "",

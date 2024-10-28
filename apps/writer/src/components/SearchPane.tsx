@@ -7,6 +7,7 @@ import { loadStoryToEmbeddings } from "../lib/embeddings/load-story-to-embedding
 import { addNotification } from "../lib/stores/notifications";
 import { searchEmbeddings } from "../lib/embeddings/embedding-store";
 import { set } from "zod";
+import { NoItems } from "./NoItems";
 
 export const SearchPane = () => {
   const [search, setSearch] = createSignal("");
@@ -29,11 +30,46 @@ export const SearchPane = () => {
   }); // Assume this is defined elsewhere
 
   return (
-    <div
-      class="flex flex-col gap-2 w-full h-full overflow-hidden bg-cover"
-      style="background-image: url('/rice-paper.png');"
-    >
-      <div class="flex flex-row p-4 pb-0 gap-2">
+    <div class="flex flex-col gap-2 p-2 w-full h-full overflow-hidden bg-cover">
+      {foundParagraphs().length > 0 ? (
+        <div class="w-full px-4">
+          {lastSearchType() === "embeddings" ? (
+            <div class="alert alert-warning">
+              Search results are in order of relevance.
+            </div>
+          ) : (
+            <div class="alert alert-info">
+              Search results are in story order.
+            </div>
+          )}
+        </div>
+      ) : null}
+      {sortedObjects().filter((o) => o.type === "paragraph").length === 0 ? (
+        <NoItems
+          itemKind="paragraphs"
+          suggestion="You can create a new paragraph under the 'Story' option in the header."
+        />
+      ) : (
+        <div class="flex-1 overflow-auto">
+          {foundParagraphs().length > 0
+            ? foundParagraphs().map((i) => {
+                const p = scenesState.scenes[i.sceneId].paragraphs.find(
+                  (p) => p.id === i.paragraphId,
+                );
+                if (p) {
+                  return (
+                    <Paragraph
+                      identifyLocation={true}
+                      sceneId={i.sceneId}
+                      paragraph={p}
+                    />
+                  );
+                }
+              })
+            : null}
+        </div>
+      )}
+      <div class="flex flex-row gap-2">
         <input
           type="text"
           placeholder="Search"
@@ -117,38 +153,6 @@ export const SearchPane = () => {
         >
           Embeddings Search
         </button>
-      </div>
-
-      {foundParagraphs().length > 0 ? (
-        <div class="w-full px-4">
-          {lastSearchType() === "embeddings" ? (
-            <div class="alert alert-warning">
-              Search results are in order of relevance.
-            </div>
-          ) : (
-            <div class="alert alert-info">
-              Search results are in story order.
-            </div>
-          )}
-        </div>
-      ) : null}
-      <div class="flex-1 overflow-auto">
-        {foundParagraphs().length > 0
-          ? foundParagraphs().map((i) => {
-              const p = scenesState.scenes[i.sceneId].paragraphs.find(
-                (p) => p.id === i.paragraphId,
-              );
-              if (p) {
-                return (
-                  <Paragraph
-                    identifyLocation={true}
-                    sceneId={i.sceneId}
-                    paragraph={p}
-                  />
-                );
-              }
-            })
-          : null}
       </div>
     </div>
   );

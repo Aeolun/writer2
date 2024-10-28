@@ -1,23 +1,22 @@
 import { FilePanel } from "./FilePanel";
 import { createSignal } from "solid-js";
 import { NotImplementedYet } from "./NotImplementedYet";
+import { Portal } from "solid-js/web";
 
 interface FileSelectorProps {
+  /** What is the thing we are selecting a file for? */
+  name?: string;
   value?: string;
   onChange: (newValue: string) => void;
   showOnlyUploaded?: boolean;
 }
 
-export const FileSelector = ({
-  value,
-  onChange,
-  showOnlyUploaded,
-}: FileSelectorProps) => {
+export const FileSelector = (props: FileSelectorProps) => {
   const [isOpen, setIsOpen] = createSignal(false);
 
   const handleSelectFile = (fileName: string) => {
     console.log("fileName", fileName);
-    onChange(fileName);
+    props.onChange(fileName);
     setIsOpen(false);
   };
 
@@ -30,25 +29,28 @@ export const FileSelector = ({
       >
         Select File
       </button>
-      <div>Selected File: {value}</div>
+      <div>Selected File: {props.value}</div>
 
-      <div class="modal" classList={{ "modal-open": isOpen() }}>
-        <div class="modal-box">
-          <h3 class="font-bold text-lg">Select a File</h3>
-          <button
-            type="button"
-            class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            onClick={() => setIsOpen(false)}
-          >
-            ✕
-          </button>
-          <NotImplementedYet />
-          {/* <FilePanel
-            selectFile={handleSelectFile}
-            showOnlyUploaded={showOnlyUploaded}
-          /> */}
-        </div>
-      </div>
+      {isOpen() ? (
+        <Portal>
+          <div class="modal modal-open">
+            <div class="modal-box flex flex-col min-w-[700px]">
+              <h3 class="font-bold text-lg">Select a file for {props.name}</h3>
+              <button
+                type="button"
+                class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                onClick={() => setIsOpen(false)}
+              >
+                ✕
+              </button>
+              <FilePanel
+                selectFile={handleSelectFile}
+                showOnlyUploaded={props.showOnlyUploaded}
+              />
+            </div>
+          </div>
+        </Portal>
+      ) : null}
     </>
   );
 };

@@ -1,22 +1,5 @@
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../lib/store.ts";
 
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  IconButton,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  VStack,
-} from "@chakra-ui/react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { resolve } from "@tauri-apps/api/path";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -27,12 +10,18 @@ import {
   readFile,
   remove,
 } from "@tauri-apps/plugin-fs";
-import { Link as LinkIcon, Trash, Upload } from "iconoir-react";
-import { useCallback, useEffect, useState } from "react";
-import { storyActions } from "../lib/slices/story.ts";
 import { trpc } from "../lib/trpc.ts";
 import { arrayBufferToBase64 } from "../lib/util.ts";
-import { addNotification } from "../lib/slices/notifications.ts";
+import { createEffect, createSignal, JSX } from "solid-js";
+import { FiEdit, FiLink, FiTrash, FiUpload } from "solid-icons/fi";
+import { storyState } from "../lib/stores/story.ts";
+import {
+  addUploadedFile,
+  uploadedFiles,
+} from "../lib/stores/uploaded-files.ts";
+import { userState } from "../lib/stores/user.ts";
+import { addNotification } from "../lib/stores/notifications.ts";
+import { NoItems } from "./NoItems.tsx";
 
 export interface File {
   name: string;
@@ -46,6 +35,7 @@ const Item = ({
   uploadData,
   file,
   selectFile,
+  openRenameDialog,
 }: {
   signedIn: boolean;
   handleClick: (fileName: string, isDir: boolean) => Promise<void>;
@@ -59,58 +49,52 @@ const Item = ({
   };
   file: File;
   selectFile?: (fileName: string) => void;
+  openRenameDialog: (fileName: string) => void;
 }): JSX.Element => {
-  const [uploading, setUploading] = useState<boolean>(false);
+  const [uploading, setUploading] = createSignal<boolean>(false);
   return (
-    <Flex
-      key={file.name}
-      className={file.isDir ? "dir" : "file"}
+    <div
+      class={`flex items-center justify-start py-0.5 px-1 w-full cursor-pointer ${
+        file.isDir ? "bg-base-100" : "bg-white"
+      } hover:bg-gray-300`}
       onClick={() => {
         handleClick(file.name, file.isDir);
       }}
-      cursor={"pointer"}
-      _hover={{
-        bg: "gray.300",
-      }}
-      w={"100%"}
     >
       {file.isDir ? "📁" : file.name.includes(".png") ? "🖼" : "📄"}
       {file.name}
       {file.isDir ? "/" : ""}
       {!file.isDir && selectFile ? (
-        <Button
-          ml={"auto"}
-          size={"xs"}
-          colorScheme={"blue"}
+        <button
+          type="button"
+          class="ml-auto btn btn-xs btn-primary"
           onClick={(e) => {
             e.stopPropagation();
             handleAction(file.name, "select");
           }}
         >
           Select
-        </Button>
+        </button>
       ) : !file.isDir ? (
-        <>
+        <div class="ml-auto flex items-center gap-2">
           {uploadData?.publicUrl ? (
-            <IconButton
+            <button
+              type="button"
+              class="btn btn-xs btn-primary"
               aria-label={"copy link"}
-              size={"xs"}
-              colorScheme={"blue"}
-              icon={<LinkIcon />}
               onClick={(e) => {
                 e.stopPropagation();
                 handleAction(uploadData.publicUrl, "copy-link");
               }}
-            />
+            >
+              <FiLink />
+            </button>
           ) : null}
-          <IconButton
-            ml={"auto"}
-            isDisabled={!signedIn}
+          <button
+            type="button"
+            class={`btn btn-xs btn-primary ${uploading() ? "loading" : ""}`}
+            disabled={!signedIn}
             aria-label={"upload"}
-            size={"xs"}
-            isLoading={uploading}
-            colorScheme={"blue"}
-            icon={<Upload />}
             onClick={(e) => {
               e.stopPropagation();
               setUploading(true);
@@ -118,46 +102,61 @@ const Item = ({
                 setUploading(false);
               });
             }}
-          />
+          >
+            <FiUpload />
+          </button>
 
-          <IconButton
+          <button
+            type="button"
+            class="btn btn-xs btn-error"
             aria-label={"delete"}
-            size={"xs"}
-            colorScheme={"red"}
-            icon={<Trash />}
             onClick={(e) => {
               e.stopPropagation();
               handleAction(file.name, "delete");
             }}
-          />
-        </>
+          >
+            <FiTrash />
+          </button>
+          <button
+            type="button"
+            class="btn btn-xs btn-secondary"
+            aria-label={"rename"}
+            onClick={(e) => {
+              e.stopPropagation();
+              openRenameDialog(file.name);
+            }}
+          >
+            <FiEdit />
+          </button>
+        </div>
       ) : null}
-    </Flex>
+    </div>
   );
 };
 
 export const FilePanel = ({
   selectFile,
-  showOnlyUploaded = false, // New prop with default value
+  showOnlyUploaded = false,
 }: {
   selectFile?: (fileName: string) => void;
   showOnlyUploaded?: boolean;
 }) => {
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = createSignal<File[]>([]);
 
-  const uploadedFiles = useSelector(
-    (store: RootState) => store.story.uploadedFiles,
-  );
-  const storyId = useSelector((store: RootState) => store.story.id);
-  const dispatch = useDispatch();
-  const isSignedIn = useSelector((store: RootState) => store.base.signedInUser);
-  const projectDir = useSelector((store: RootState) => store.base.openPath);
-  const [currentPath, setCurrentPath] = useState<string>("");
-  const [createDirOpen, setCreateDirOpen] = useState<boolean>(false);
-  const [openedFile, setOpenedFile] = useState<string>("");
-  const [newDirectoryName, setNewDirectoryName] = useState<string>("");
+  const [currentPath, setCurrentPath] = createSignal<string>("");
+  const [createDirOpen, setCreateDirOpen] = createSignal<boolean>(false);
+  const [openedFile, setOpenedFile] = createSignal<string>("");
+  const [newDirectoryName, setNewDirectoryName] = createSignal<string>("");
 
-  useEffect(() => {
+  const [renameDialogOpen, setRenameDialogOpen] = createSignal<boolean>(false);
+  const [fileToRename, setFileToRename] = createSignal<string>("");
+  const [newFileName, setNewFileName] = createSignal<string>("");
+
+  createEffect(() => {
+    const storyId = storyState.story?.id;
+    if (!storyId) {
+      return;
+    }
     trpc.listUploadedFiles
       .query({
         storyId,
@@ -165,166 +164,207 @@ export const FilePanel = ({
       .then((uploadedFiles) => {
         console.log(uploadedFiles);
         for (const file of uploadedFiles) {
-          dispatch(
-            storyActions.putUploadedFile({
-              path: file.localPath ?? "",
-              hash: file.sha256,
-              publicUrl: file.fullUrl,
-            }),
-          );
+          addUploadedFile(file.localPath ?? "", {
+            hash: file.sha256,
+            publicUrl: file.fullUrl,
+          });
         }
       });
-  }, [storyId, dispatch]);
-  if (!projectDir) {
-    throw new Error("No project directory set");
-  }
+  });
 
-  const handleClick = useCallback(
-    async (name: string, isDir: boolean) => {
-      if (isDir) {
-        let newPath = await resolve(projectDir, "data", currentPath, name);
-        if (!newPath.includes(`${projectDir}/data`)) {
-          newPath = `${projectDir}/data`;
-        }
-        setCurrentPath(newPath.replace(`${projectDir}/data`, ""));
-      } else {
-        const fullPath = await resolve(
-          projectDir,
-          "data",
-          currentPath.replace(/^\//, ""),
-          name,
-        );
-
-        setOpenedFile(convertFileSrc(fullPath));
+  const handleClick = async (name: string, isDir: boolean) => {
+    const openPath = storyState.openPath;
+    if (!openPath) {
+      throw new Error("No open path");
+    }
+    if (isDir) {
+      let newPath = await resolve(openPath, "data", currentPath(), name);
+      if (!newPath.includes(`${openPath}/data`)) {
+        newPath = `${openPath}/data`;
       }
-    },
-    [currentPath, projectDir],
-  );
+      setCurrentPath(newPath.replace(`${openPath}/data`, ""));
+    } else {
+      const fullPath = await resolve(
+        openPath,
+        "data",
+        currentPath().replace(/^\//, ""),
+        name,
+      );
 
-  const handleAction = useCallback(
-    async (
-      name: string,
-      action: "delete" | "upload" | "copy-link" | "select",
-    ) => {
-      console.log("handleAction", name, action);
-      if (action === "select") {
-        const fullPath = await resolve(projectDir, "data", currentPath, name);
-        const partialPath = fullPath.replace(`${projectDir}/data`, "");
+      setOpenedFile(convertFileSrc(fullPath));
+    }
+  };
 
-        selectFile?.(partialPath);
-      } else if (action === "delete") {
-        const newPath = await resolve(
-          projectDir,
+  const addFile = async () => {
+    const openPath = storyState.openPath;
+    if (!openPath) {
+      throw new Error("No open path");
+    }
+    const files = await open({
+      multiple: true,
+      directory: false,
+    });
+    console.log(files);
+    await Promise.all(
+      files?.map(async (f) => {
+        if (f.name) {
+          const destination = await resolve(
+            openPath,
+            "data",
+            currentPath().replace(/^\//, ""),
+            f.name,
+          );
+          return copyFile(f.path, destination);
+        }
+      }) ?? [],
+    );
+    getFiles();
+  };
+
+  const handleAction = async (
+    name: string,
+    action: "delete" | "upload" | "copy-link" | "select",
+  ) => {
+    const openPath = storyState.openPath;
+    if (!openPath) {
+      throw new Error("No open path");
+    }
+    console.log("handleAction", name, action);
+    if (action === "select") {
+      const fullPath = await resolve(openPath, "data", currentPath(), name);
+      const partialPath = fullPath.replace(`${openPath}/data`, "");
+
+      selectFile?.(partialPath);
+    } else if (action === "delete") {
+      const newPath = await resolve(
+        openPath,
+        "data",
+        currentPath().replace(/^\//, ""),
+        name,
+      );
+      await remove(newPath);
+    } else if (action === "upload") {
+      if (!userState.signedInUser) {
+        addNotification({
+          message: "You must be signed in to upload files",
+          type: "error",
+        });
+        throw new Error("Not signed in");
+      }
+      const storyId = storyState.story?.id;
+      if (!storyId) {
+        throw new Error("No story id");
+      }
+      try {
+        const readPath = await resolve(
+          openPath,
           "data",
-          currentPath.replace(/^\//, ""),
+          currentPath().replace(/^\//, ""),
           name,
         );
-        await remove(newPath);
-        await getFiles();
-      } else if (action === "upload") {
-        if (!isSignedIn) {
-          dispatch(
-            addNotification({
-              message: "You must be signed in to upload files",
-              type: "error",
-            }),
-          );
-          throw new Error("Not signed in");
-        }
-        try {
-          const readPath = await resolve(
-            projectDir,
-            "data",
-            currentPath.replace(/^\//, ""),
-            name,
-          );
-          const newPath = readPath.replace(`${projectDir}/data`, "");
-          console.log("uploading", readPath, newPath);
+        const newPath = readPath.replace(`${openPath}/data`, "");
+        console.log("uploading", readPath, newPath);
 
-          const fileData = await readFile(readPath);
-          return trpc.uploadStoryImage
-            .mutate({
-              dataBase64: arrayBufferToBase64(fileData),
-              path: newPath,
-              storyId: storyId,
-            })
-            .then((res) => {
-              console.log("uploaded");
-              dispatch(
-                storyActions.putUploadedFile({
-                  path: newPath,
-                  hash: res.sha256,
-                  publicUrl: res.fullUrl,
-                }),
-              );
-            })
-            .catch((error) => {
-              console.error(error);
+        const fileData = await readFile(readPath);
+        return trpc.uploadStoryImage
+          .mutate({
+            dataBase64: arrayBufferToBase64(fileData),
+            path: newPath,
+            storyId,
+          })
+          .then((res) => {
+            console.log("uploaded");
+            addUploadedFile(newPath, {
+              hash: res.sha256,
+              publicUrl: res.fullUrl,
             });
-        } catch (error) {
-          console.error(error);
-        }
-      } else if (action === "copy-link") {
-        writeText(name)
-          .then(() => {
-            console.log("copied");
           })
           .catch((error) => {
             console.error(error);
           });
+      } catch (error) {
+        console.error(error);
       }
-    },
-    [currentPath, projectDir, isSignedIn, storyId, dispatch, selectFile],
-  );
+    } else if (action === "copy-link") {
+      writeText(name)
+        .then(() => {
+          console.log("copied");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
 
-  const getFiles = useCallback(
-    async function getFiles() {
-      if (!projectDir) {
-        throw new Error("No project directory set");
-      }
-      const loadPath = await resolve(
-        projectDir,
-        "data",
-        currentPath.replace(/^\//, ""),
-      );
+  const getFiles = async () => {
+    const openPath = storyState.openPath;
+    if (!openPath) {
+      throw new Error("No open path");
+    }
+    const loadPath = await resolve(
+      openPath,
+      "data",
+      currentPath().replace(/^\//, ""),
+    );
 
-      const contents = await readDir(loadPath);
+    const contents = await readDir(loadPath);
 
-      const entries = [
-        { name: "..", isDirectory: true, path: ".." },
-        ...contents,
-      ];
+    const entries = [
+      { name: "..", isDirectory: true, path: ".." },
+      ...contents,
+    ];
 
-      console.log(entries);
-      const names = entries.map((entry) => ({
-        name: entry.name || "",
-        isDir: entry.isDirectory,
-      }));
+    console.log(entries);
+    const names = entries.map((entry) => ({
+      name: entry.name || "",
+      isDir: entry.isDirectory,
+    }));
+    // sort directories first, then by name
+    names.sort((a, b) => (b.isDir ? 1 : -1) || a.name.localeCompare(b.name));
 
-      setFiles(names);
-    },
-    [currentPath, projectDir],
-  );
+    setFiles(names);
+  };
 
-  useEffect(() => {
+  createEffect(getFiles);
+
+  const openRenameDialog = (fileName: string) => {
+    setFileToRename(fileName);
+    setNewFileName(fileName);
+    setRenameDialogOpen(true);
+  };
+
+  const renameFile = async () => {
+    const openPath = storyState.openPath;
+    if (!openPath) {
+      throw new Error("No open path");
+    }
+    const currentFilePath = await resolve(
+      openPath,
+      "data",
+      currentPath().replace(/^\//, ""),
+      fileToRename(),
+    );
+    const newFilePath = await resolve(
+      openPath,
+      "data",
+      currentPath().replace(/^\//, ""),
+      newFileName(),
+    );
+    await copyFile(currentFilePath, newFilePath);
+    await remove(currentFilePath);
+    setRenameDialogOpen(false);
     getFiles();
-  }, [getFiles]);
+  };
 
-  return (
-    <Flex flex={1} direction={"column"} overflow={"hidden"}>
-      <HStack overflow={"hidden"} flex={1}>
-        <VStack maxW={"30%"} minW={"300px"} h={"100%"} flex={1}>
-          <Box bg={"gray.400"} px={2} py={1} w={"100%"} minH={"2em"}>
-            {currentPath}
-          </Box>
-          <VStack
-            alignItems={"flex-start"}
-            gap={2}
-            overflow={"auto"}
-            flex={1}
-            w={"100%"}
-          >
-            {files
+  return storyState.openPath ? (
+    <div class="flex flex-1 flex-col overflow-hidden">
+      <div class="flex overflow-hidden flex-1">
+        <div class="flex flex-col w-1/5 min-w-[350px] flex-1 border-r border-gray-200">
+          <div class="bg-gray-400 px-2 py-1 w-full min-h-[2em]">
+            {currentPath()}
+          </div>
+          <div class="flex flex-col items-start overflow-auto flex-1 w-full">
+            {files()
               .filter(
                 (file: File) =>
                   !showOnlyUploaded ||
@@ -333,103 +373,133 @@ export const FilePanel = ({
               )
               .map((file: File) => (
                 <Item
-                  key={file.name}
-                  signedIn={!!isSignedIn?.name}
+                  signedIn={!!userState.signedInUser}
                   handleAction={handleAction}
-                  uploadData={uploadedFiles?.[`${currentPath}/${file.name}`]}
+                  uploadData={uploadedFiles?.[`${currentPath()}/${file.name}`]}
                   handleClick={handleClick}
                   file={file}
                   selectFile={selectFile}
+                  openRenameDialog={openRenameDialog}
                 />
               ))}
-          </VStack>
+          </div>
           {!selectFile && (
-            <HStack>
-              <Button
+            <div class="flex gap-2 p-2">
+              <button
+                type="button"
+                class="btn btn-secondary flex-1"
                 onClick={async () => {
                   setCreateDirOpen(true);
                 }}
               >
                 Create Dir
-              </Button>
-              <Button
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary flex-1"
                 onClick={async () => {
-                  const files = await open({
-                    multiple: true,
-                    directory: false,
-                  });
-                  console.log(files);
-                  await Promise.all(
-                    files?.map(async (f) => {
-                      if (f.name) {
-                        const destination = await resolve(
-                          projectDir,
-                          "data",
-                          currentPath.replace(/^\//, ""),
-                          f.name,
-                        );
-                        return copyFile(f.path, destination);
-                      }
-                    }) ?? [],
-                  );
-                  await getFiles();
+                  addFile();
                 }}
               >
                 Add File
-              </Button>
-            </HStack>
+              </button>
+            </div>
           )}
-          <Modal
-            isOpen={createDirOpen}
-            onClose={() => {
-              setCreateDirOpen(false);
-            }}
-          >
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Create Directory</ModalHeader>
-              <ModalBody>
-                <Input
-                  onChange={(e) => {
-                    setNewDirectoryName(e.target.value);
-                  }}
-                  value={newDirectoryName}
-                  placeholder={"directory name"}
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button
+          <div class="modal" classList={{ "modal-open": createDirOpen() }}>
+            <div
+              class="modal-backdrop"
+              onClick={() => {
+                setCreateDirOpen(false);
+              }}
+            />
+
+            <div class="modal-box">
+              <h3 class="font-bold text-lg">Create Directory</h3>
+              <input
+                type="text"
+                class="input input-bordered w-full"
+                placeholder={"directory name"}
+                onInput={(e) => {
+                  setNewDirectoryName(e.currentTarget.value);
+                }}
+                value={newDirectoryName()}
+              />
+              <div class="modal-action">
+                <button
+                  type="button"
+                  class="btn btn-primary"
                   onClick={async () => {
+                    const openPath = storyState.openPath;
+                    if (!openPath) {
+                      throw new Error("No open path");
+                    }
                     setCreateDirOpen(false);
 
                     const newDir = await resolve(
-                      projectDir,
+                      openPath,
                       "data",
-                      currentPath.replace(/^\//, ""),
-                      newDirectoryName,
+                      currentPath().replace(/^\//, ""),
+                      newDirectoryName(),
                     );
                     await mkdir(newDir);
-                    await getFiles();
+                    getFiles();
                   }}
                 >
                   Create
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        </VStack>
-        <Box overflow={"auto"} h={"100%"} w={"100%"} textAlign={"center"}>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="overflow-auto h-full w-full text-center">
           {["png", "jpg", "jpeg", "webp"].includes(
-            openedFile
-              ?.substring(openedFile?.lastIndexOf(".") + 1)
+            openedFile()
+              ?.substring(openedFile()?.lastIndexOf(".") + 1)
               .toLowerCase(),
           ) ? (
-            <img src={openedFile} alt={"preview"} />
+            <img src={openedFile()} alt={"preview"} />
           ) : (
-            openedFile
+            openedFile()
           )}
-        </Box>
-      </HStack>
-    </Flex>
+        </div>
+      </div>
+      <div class="modal" classList={{ "modal-open": renameDialogOpen() }}>
+        <div
+          class="modal-backdrop"
+          onClick={() => {
+            setRenameDialogOpen(false);
+          }}
+        />
+        <div class="modal-box">
+          <h3 class="font-bold text-lg">Rename File</h3>
+          <input
+            type="text"
+            class="input input-bordered w-full"
+            placeholder={"new file name"}
+            onInput={(e) => {
+              setNewFileName(e.currentTarget.value);
+            }}
+            value={newFileName()}
+          />
+          <div class="modal-action">
+            <button
+              type="button"
+              class="btn btn-primary"
+              onClick={async () => {
+                renameFile();
+              }}
+            >
+              Rename
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <NoItems
+      itemKind="story"
+      explanation="You must be in a story to view files."
+      suggestion="You can open a story by clicking the menu button."
+    />
   );
 };

@@ -14,6 +14,7 @@ import {
 import { uploadStory } from "../lib/persistence/upload-story";
 import { importRoyalRoad } from "../lib/persistence/import-royal-road";
 import { setSetting } from "../lib/stores/settings";
+import { saveStory } from "../lib/persistence/save-story";
 
 export const WriteHeaderMenu = () => {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export const WriteHeaderMenu = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    alert("save");
+                    saveStory();
                   }}
                 >
                   Save Story
@@ -99,7 +100,7 @@ export const WriteHeaderMenu = () => {
             </button>
           </A>
         </div>
-        <div class="px-2 py-1 flex gap-1 justify-end items-center">
+        <div class="px-2 py-1 flex gap-2 justify-end items-center">
           <Show when={saving}>
             <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-green-300" />
           </Show>
@@ -141,12 +142,19 @@ export const WriteHeaderMenu = () => {
             classList={{ "dropdown-open": isOpen() }}
           >
             <div
-              class="avatar"
+              class="avatar online"
               role="button"
               onClick={() => setIsOpen(!isOpen())}
             >
-              <div class="w-10 rounded-full">
-                <img src="" alt={isSignedIn?.name ?? "Avatar"} />
+              <div class="w-10 rounded-full ring-primary ring-1 ring-offset-base-200 w-10rounded-full ring ring-offset-1">
+                {isSignedIn?.picture ? (
+                  <img
+                    src={isSignedIn.picture}
+                    alt={isSignedIn.name ?? "Avatar"}
+                  />
+                ) : (
+                  <img src="/disappointed2.png" alt="Avatar" />
+                )}
               </div>
             </div>
 
@@ -156,24 +164,10 @@ export const WriteHeaderMenu = () => {
                 fallback={
                   <>
                     <li>
-                      <button
-                        class="btn btn-ghost"
-                        type="button"
-                        onClick={() => navigate("/global-settings")}
-                      >
-                        App settings
-                      </button>
+                      <A href={"/global-settings"}>App settings</A>
                     </li>
                     <li>
-                      <button
-                        class="btn btn-ghost"
-                        type="button"
-                        onClick={() => {
-                          setSigninPopupOpen(true);
-                        }}
-                      >
-                        Sign in
-                      </button>
+                      <A href={"/profile"}>Sign in</A>
                     </li>
                   </>
                 }

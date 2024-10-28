@@ -132,6 +132,9 @@ export const loadProject = async (projectPath: string) => {
   setCharactersState({
     characters: savedStory.story.characters,
   });
+  setLanguageStore({
+    languages: savedStory.language,
+  });
   setTree(savedStory.story.structure);
   setStory(savedStory.story);
   setOpenPath(projectPath);

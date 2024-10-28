@@ -1,33 +1,15 @@
-import {
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Heading,
-  Input,
-  Textarea,
-} from "@chakra-ui/react";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { NoStory } from "../components/NoStory";
 import { WriteHeaderMenu } from "../components/WriteHeaderMenu";
-import { storySettingsSelector } from "../lib/selectors/storySettings";
-import { storyActions } from "../lib/slices/story";
-import type { RootState } from "../lib/store";
+import { NotImplementedYet } from "../components/NotImplementedYet";
 
-const Home = () => {
-  const storyLoaded = useSelector((store: RootState) => store.story.name);
-  const settings = useSelector(storySettingsSelector);
-  const dispatch = useDispatch();
-
+const ProfilePage = () => {
   return (
-    <Flex flexDirection={"column"} height={"100%"}>
+    <div class="flex flex-col h-full">
       <WriteHeaderMenu />
-      <Flex flex={1} direction={"column"} p={4} gap={2} overflow={"hidden"}>
-        <Heading size={"lg"}>Profile</Heading>
-      </Flex>
-    </Flex>
+      <div class="flex flex-1 overflow-hidden">
+        <NotImplementedYet />
+      </div>
+    </div>
   );
 };
 
-export default Home;
+export default ProfilePage;

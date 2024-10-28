@@ -2,6 +2,7 @@ import {
   charactersState,
   updateCharacterProperty,
 } from "../lib/stores/characters";
+import { FileSelector } from "./FileSelector";
 
 export const CharacterModal = (props: {
   onClose: () => void;
@@ -10,7 +11,9 @@ export const CharacterModal = (props: {
     <div class="modal modal-open">
       <div class="modal-box">
         <h3 class="font-bold text-lg">
-          Character {charactersState.selectedCharacter?.id}
+          Character{" "}
+          {charactersState.selectedCharacter?.name ??
+            charactersState.selectedCharacter?.id}
         </h3>
         <div class="py-4">
           <div class="form-control">
@@ -34,15 +37,14 @@ export const CharacterModal = (props: {
             <label class="label">
               <span class="label-text">Picture</span>
             </label>
-            <input
-              type="text"
-              class="input input-bordered"
+            <FileSelector
+              name={charactersState.selectedCharacter?.name ?? ""}
               value={charactersState.selectedCharacter?.picture ?? ""}
-              onInput={(e) => {
+              onChange={(file) => {
                 updateCharacterProperty(
                   charactersState.selectedCharacterId,
                   "picture",
-                  e.currentTarget.value,
+                  file,
                 );
               }}
             />

@@ -11,7 +11,7 @@ export const FormField = ({
 }) => {
   return (
     <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium">{label}</label>
+      <label class="text-sm font-medium text-primary">{label}</label>
       {children}
       {helpText && <p class="text-sm text-gray-500">{helpText}</p>}
     </div>

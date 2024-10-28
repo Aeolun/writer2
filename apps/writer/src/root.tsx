@@ -7,6 +7,8 @@ import {
 } from "./lib/stores/settings";
 import { setSignedInUser } from "./lib/stores/user";
 import { trpc } from "./lib/trpc";
+import { AiPopup } from "./components/AiPopup";
+import { Autosave } from "./components/Autosave";
 // import { AiPopup } from "./components/AiPopup.tsx";
 // import { Autosave } from "./components/Autosave.tsx";
 // import { SigninPopup } from "./components/SigninPopup.tsx";
@@ -39,9 +41,7 @@ export const Root = (props: ParentProps) => {
 
   return (
     <div data-theme={colorMode === "light" ? "fantasy" : "forest"}>
-      {/* <Autosave />
       <AiPopup />
-      <SigninPopup /> */}
       {props.children}
     </div>
   );

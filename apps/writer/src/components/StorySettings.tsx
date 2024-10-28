@@ -1,17 +1,14 @@
-import { createSignal } from "solid-js";
-import { FormField } from "./styled/FormField";
 import {
-  setStory,
   setStoryProperty,
   setStorySetting,
   storyState,
 } from "../lib/stores/story";
 import { FileSelector } from "./FileSelector";
-import StoryStatus from "./StoryStatus";
+import { FormField } from "./styled/FormField";
 
 export const StorySettings = () => {
   return (
-    <div class="flex flex-col p-4 w-full gap-2 overflow-hidden">
+    <div class="flex flex-col p-4 w-full gap-2 overflow-y-auto h-full">
       <FormField
         label="Story Name"
         helpText="This is the name of the story that will be displayed in the reader (if you upload it)."
@@ -29,20 +26,18 @@ export const StorySettings = () => {
         <FileSelector
           value={storyState.story?.settings?.headerImage}
           showOnlyUploaded={true}
-          onChange={(file) => {
-            setStorySetting("headerImage", file);
-          }}
+          onChange={(file) => setStorySetting("headerImage", file)}
         />
       </FormField>
       {/* <StoryStatus storyId={storyState.story?.id} /> */}
       <FormField
         label="Instructions to give AI"
-        helpText="You can use this to give specific instructions to the AI for this story, beyond the instructions already given as part of every command."
+        helpText="You can use this to give specific instructions to the AI for this story, beyond the instructions already given as part of every command. E.g. 'All writing should be in present tense.'"
       >
         <textarea
-          rows={8}
+          rows={4}
           placeholder="Instructions"
-          value={storyState.story?.settings?.aiInstructions}
+          value={storyState.story?.settings?.aiInstructions ?? ""}
           onInput={(e) =>
             setStorySetting("aiInstructions", e.currentTarget.value)
           }
@@ -55,7 +50,7 @@ export const StorySettings = () => {
       >
         <input
           placeholder="Royal Road ID"
-          value={storyState.story?.settings?.royalRoadId}
+          value={storyState.story?.settings?.royalRoadId ?? ""}
           onInput={(e) => setStorySetting("royalRoadId", e.currentTarget.value)}
           class="input input-bordered"
         />
