@@ -1,6 +1,7 @@
 import { Book } from "../components/book";
 import { trpc } from "../utils/trpc";
 import "../book.css";
+import { useSignIn } from "../hooks/use-sign-in";
 
 type BookType = {
   title: string;
@@ -16,6 +17,8 @@ export const BookshelfPage = () => {
   const stories = trpc.listStories.useQuery({
     limit: 500,
   });
+
+  const { user } = useSignIn();
 
   const pagesPerShelf = Math.round(2200 * (window.innerWidth / 1440));
   const shelves: BookType[][] = [];

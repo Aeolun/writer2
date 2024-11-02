@@ -26,9 +26,9 @@ export const Layout = (props: PropsWithChildren) => {
       <nav className="sticky navbar top-0 bg-base-100 text-base-content dark:bg-gray-900 dark:text-gray-300 shadow-md z-50">
         <div className="container m-auto">
           <div>
-            <a href="/" className="btn btn-ghost text-xl">
+            <Navitem to="/" className="btn btn-ghost text-xl">
               Reader
-            </a>
+            </Navitem>
           </div>
           <div className="flex-none">
             <ul className="menu menu-horizontal px-1">

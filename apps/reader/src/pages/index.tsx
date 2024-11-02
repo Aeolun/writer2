@@ -3,7 +3,7 @@ import { trpc } from "../utils/trpc";
 import { Helmet } from "react-helmet";
 import { version } from "../version";
 import { useColorMode } from "../hooks/use-color-mode";
-
+import { useSignIn } from "../hooks/use-sign-in";
 export const IndexPage = () => {
   const {
     data: storiesData,
@@ -12,7 +12,7 @@ export const IndexPage = () => {
     refetch,
   } = trpc.listRandomStories.useQuery({ limit: 8 });
   const colorScheme = useColorMode();
-
+  const { user } = useSignIn();
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -28,7 +28,12 @@ export const IndexPage = () => {
       </Helmet>
 
       <img
-        src={colorScheme === "dark" ? "/service-dark.png" : "/service.png"}
+        className="max-h-[400px]"
+        src={
+          colorScheme === "dark"
+            ? "/service-dark-small.png"
+            : "/service-small.png"
+        }
         alt="Banner"
       />
 
@@ -46,6 +51,7 @@ export const IndexPage = () => {
             textColor={story.coverTextColor}
             royalRoadId={story.royalRoadId ?? undefined}
             isCompleted={story.status === "COMPLETED"}
+            canAddToLibrary={user ? true : false}
           />
         ))}
       </div>
@@ -56,7 +62,7 @@ export const IndexPage = () => {
           refetch();
         }}
       >
-        More!
+        More! Show me more stories!
       </button>
 
       {/* Announcement Section */}

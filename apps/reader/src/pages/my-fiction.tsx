@@ -2,8 +2,10 @@ import React from "react";
 import { trpc } from "../utils/trpc";
 import StoryCard from "../components/storycard";
 import { Helmet } from "react-helmet";
+import { useSignIn } from "../hooks/use-sign-in";
 
 export const MyFictionPage = () => {
+  const { user } = useSignIn();
   const { data: myFictionData, isLoading, error } = trpc.myFiction.useQuery();
 
   if (isLoading) {
@@ -35,8 +37,9 @@ export const MyFictionPage = () => {
             pages={story.pages ?? 0}
             summary={story.summary ?? ""}
             color={story.color ?? ""}
-            textColor={story.textColor ?? ""}
+            textColor={story.coverTextColor ?? ""}
             royalRoadId={story.royalRoadId ?? undefined}
+            canAddToLibrary={user ? true : false}
           />
         ))}
       </div>

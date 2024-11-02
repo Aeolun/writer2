@@ -3,8 +3,10 @@ import StoryCard from "../components/storycard";
 import { SavedType } from "@writer/server";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
+import { useSignIn } from "../hooks/use-sign-in";
 
 export const ListsPage = () => {
+  const { user } = useSignIn();
   const [selectedTab, setSelectedTab] = useState<SavedType>("FAVORITE");
   const {
     data: bookshelfStories,
@@ -84,8 +86,9 @@ export const ListsPage = () => {
                     pages={story.pages ?? 0}
                     summary={story.summary ?? ""}
                     color={story.color ?? ""}
-                    textColor={story.textColor ?? ""}
+                    textColor={story.coverTextColor ?? ""}
                     royalRoadId={story.royalRoadId ?? undefined}
+                    canAddToLibrary={user ? true : false}
                   />
                 ))}
               </div>

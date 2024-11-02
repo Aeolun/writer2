@@ -17,6 +17,7 @@ interface StoryCardProps {
   textColor: string;
   royalRoadId?: number;
   isCompleted?: boolean;
+  canAddToLibrary?: boolean;
 }
 
 const StoryCard: React.FC<StoryCardProps> = ({
@@ -29,6 +30,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
   pages,
   royalRoadId,
   isCompleted,
+  canAddToLibrary,
 }) => {
   const [location, navigate] = useLocation();
   const dispatch = useAppDispatch();
@@ -98,13 +100,15 @@ const StoryCard: React.FC<StoryCardProps> = ({
           />
 
           <div className="flex flex-row gap-2 justify-around">
-            <button
-              type="button"
-              className="btn btn-accent btn-sm"
-              onClick={handleAddToLibraryClick} // Attach the event handler
-            >
-              + Library
-            </button>
+            {canAddToLibrary && (
+              <button
+                type="button"
+                className="btn btn-accent btn-sm"
+                onClick={handleAddToLibraryClick} // Attach the event handler
+              >
+                + Library
+              </button>
+            )}
             <a
               className="btn btn-primary btn-sm"
               href={

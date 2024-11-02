@@ -5,10 +5,12 @@ import { useLocation, useParams } from "wouter";
 import { useSearchParams } from "../hooks/use-search-params";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
+import { useSignIn } from "../hooks/use-sign-in";
 
 export const StoriesPage = () => {
   const searchParams = useSearchParams();
   const params = useParams();
+  const { user } = useSignIn();
   const {
     data: storiesData,
     isLoading,
@@ -81,6 +83,7 @@ export const StoriesPage = () => {
             textColor={story.coverTextColor}
             royalRoadId={story.royalRoadId ?? undefined}
             isCompleted={story.status === "COMPLETED"}
+            canAddToLibrary={user ? true : false}
           />
         ))}
       </div>
