@@ -29,7 +29,7 @@ import { checkBookshelfState } from "./procedures/check-bookshelf-state";
 import { updateStoryReadStatus } from "./procedures/update-story-read-status";
 import { getUserStories } from "./procedures/my-fiction";
 import { publishToRoyalRoad } from "./procedures/publish-to-royal-road";
-
+import { updatePassword } from "./procedures/update-password";
 export const appRouter = router({
   userList: userList,
   importRoyalroad: importRoyalRoad,
@@ -61,6 +61,7 @@ export const appRouter = router({
   updateStoryReadStatus: updateStoryReadStatus,
   myFiction: getUserStories,
   publishToRoyalRoad: publishToRoyalRoad,
+  updatePassword: updatePassword,
 });
 
 // Export type router type signature,

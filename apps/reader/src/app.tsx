@@ -18,6 +18,7 @@ import { BookshelfPage } from "./pages/bookshelf";
 import { DownloadPage } from "./pages/download";
 import { AdminPage } from "./pages/admin";
 import { MyFictionPage } from "./pages/my-fiction";
+import { UserSettingsPage } from "./pages/settings";
 import store from "./store";
 export const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -56,6 +57,7 @@ export const App = () => {
               <Route path="/my-fiction" component={MyFictionPage} />
               <Route path="/story/:storyId" component={StoryPage} />
               <Route path="/login" component={LoginPage} />
+              <Route path="/settings" component={UserSettingsPage} />
               <Route
                 path="/story/:storyId/book/:bookId/chapter/:chapterId"
                 component={ChapterPage}

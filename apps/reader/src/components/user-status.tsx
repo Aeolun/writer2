@@ -62,10 +62,10 @@ const UserStatus = () => {
                 </li>
               )}
               <li>
-                <a>Profile</a>
+                <Navitem to="/profile">Profile</Navitem>
               </li>
               <li>
-                <a>Settings</a>
+                <Navitem to="/settings">Settings</Navitem>
               </li>
               <li>
                 <button
