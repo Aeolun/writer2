@@ -1,15 +1,17 @@
 import { setTreeItemOpen, treeState } from "../lib/stores/tree";
 import { Node } from "@writer/shared";
 import {
+  AiFillPlusCircle,
   AiOutlineClockCircle,
   AiOutlineCloudUpload,
   AiOutlineMinus,
   AiOutlinePlus,
 } from "solid-icons/ai";
-import { chaptersState } from "../lib/stores/chapters";
-import { scenesState } from "../lib/stores/scenes";
+import { chaptersState, createChapter } from "../lib/stores/chapters";
+import { createScene, scenesState } from "../lib/stores/scenes";
 import { Show } from "solid-js";
 import { setSelectedEntity, uiState } from "../lib/stores/ui";
+import { createArc } from "../lib/stores/arcs";
 
 const renderNode = (node: Node) => {
   const chapter = chaptersState.chapters[node.id];
@@ -75,6 +77,25 @@ const renderNode = (node: Node) => {
             </span>
           </>
         ) : null}
+        {["book", "chapter", "arc"].includes(node.type) ? (
+          <button
+            class={
+              node.type !== "chapter" || !chapter.visibleFrom ? "ml-auto" : ""
+            }
+            type="button"
+            onClick={() => {
+              if (node.type === "chapter") {
+                createScene(node.id);
+              } else if (node.type === "arc") {
+                createChapter(node.id);
+              } else if (node.type === "book") {
+                createArc(node.id);
+              }
+            }}
+          >
+            <AiFillPlusCircle />
+          </button>
+        ) : null}
       </div>
       <Show when={node.isOpen}>
         <div class="flex flex-col">{node.children?.map(renderNode)}</div>
@@ -87,7 +108,7 @@ export const StoryNavigation = () => {
   const structure = treeState.structure;
 
   return (
-    <div class="w-1/5 min-w-[350px] flex flex-col z-40 overflow-y-auto border-r border-gray-200">
+    <div class="w-1/5 min-w-[350px] flex flex-col z-10 overflow-y-auto border-r border-gray-200">
       {structure.map(renderNode)}
     </div>
   );

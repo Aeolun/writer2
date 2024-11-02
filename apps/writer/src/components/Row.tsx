@@ -7,10 +7,12 @@ export const Row = (props: {
   selected: boolean;
   borderColor?: string;
   onClick?: () => void;
+  onMouseDown?: () => void;
 }) => {
   return (
     <div
       onClick={props.onClick}
+      onMouseDown={props.onMouseDown}
       class={`relative flex flex-row justify-between w-full max-w-6xl ${
         props.selected ? "bg-gray-100" : "bg-gray-200"
       }`}

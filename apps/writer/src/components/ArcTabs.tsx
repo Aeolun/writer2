@@ -1,106 +1,91 @@
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Textarea,
-} from "@chakra-ui/react";
-import axios from "axios";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
-import { storyActions } from "../lib/slices/story";
-import type { RootState } from "../lib/store";
+import { createSignal } from "solid-js";
+import { updateArc } from "../lib/stores/arcs";
+import { currentArc } from "../lib/stores/retrieval/current-arc";
+import { FormField } from "./styled/FormField";
 
 export const ArcTabs = () => {
-  const arcObj = useSelector(selectedObjectSelector);
-  const bookObjs = useSelector((store: RootState) => store.story.book);
-  const chapters = useSelector((store: RootState) => store.story.chapter);
-  const dispatch = useDispatch();
+  const [openTab, setOpenTab] = createSignal("overview");
 
-  return arcObj && arcObj.type === "arc" ? (
-    <Tabs>
-      <TabList>
-        <Tab>Overview</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel>
-          <FormControl>
-            <FormLabel>Title</FormLabel>
-            <Input
-              placeholder={"title"}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateArc({
-                    id: arcObj.id,
-                    title: e.target.value,
-                  }),
-                );
+  return (
+    <div class="flex flex-col flex-1 overflow-hidden">
+      <div class="tabs tabs-bordered">
+        <button
+          type="button"
+          class={`tab ${openTab() === "overview" ? "tab-active" : ""}`}
+          onClick={() => setOpenTab("overview")}
+        >
+          Overview
+        </button>
+      </div>
+
+      {openTab() === "overview" && (
+        <div class="flex flex-1 flex-col overflow-y-auto p-4 gap-2">
+          <FormField label="Title">
+            <input
+              class="input input-bordered"
+              placeholder="title"
+              onInput={(e) => {
+                const id = currentArc()?.id;
+                if (id) {
+                  updateArc(id, { title: e.target.value });
+                }
               }}
-              value={arcObj?.data.title}
+              value={currentArc()?.title}
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Summary</FormLabel>
-            <Textarea
-              mt={2}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateArc({
-                    id: arcObj.id,
-                    summary: e.target.value,
-                  }),
-                );
+          </FormField>
+          <FormField label="Summary">
+            <textarea
+              class="textarea textarea-bordered mt-2"
+              onInput={(e) => {
+                const id = currentArc()?.id;
+                if (id) {
+                  updateArc(id, { summary: e.target.value });
+                }
               }}
               placeholder="summary"
-              height={"300px"}
-              value={arcObj.data.summary}
+              style={{ height: "300px" }}
+              value={currentArc()?.summary}
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Start date</FormLabel>
-            <Input
-              mt={2}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateArc({
-                    id: arcObj.id,
-                    start_date: e.target.value,
-                  }),
-                );
+          </FormField>
+          <FormField label="Start date">
+            <input
+              class="input input-bordered mt-2"
+              onInput={(e) => {
+                const id = currentArc()?.id;
+                if (id) {
+                  updateArc(id, { start_date: e.target.value });
+                }
               }}
-              placeholder={"start date"}
-              value={arcObj.data.start_date}
+              placeholder="start date"
+              value={currentArc()?.start_date}
             />
-          </FormControl>
-          {arcObj.data.extra ? (
-            <Textarea
-              value={arcObj.data.extra}
-              height={"300px"}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateArc({
-                    id: arcObj.id,
-                    extra: e.target.value,
-                  }),
-                );
-              }}
-            />
-          ) : null}
-          <Button
+          </FormField>
+          {currentArc()?.extra && (
+            <FormField label="Extra">
+              <textarea
+                class="textarea textarea-bordered"
+                value={currentArc()?.extra}
+                style={{ height: "300px" }}
+                onInput={(e) => {
+                  const id = currentArc()?.id;
+                  if (id) {
+                    updateArc(id, { extra: e.target.value });
+                  }
+                }}
+              />
+            </FormField>
+          )}
+          <button
+            type="button"
+            class="btn btn-primary"
             onClick={() => {
-              alert("not implementeed");
+              alert("not implemented");
             }}
           >
             [AI] Critique storyline
-          </Button>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
-  ) : null;
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };

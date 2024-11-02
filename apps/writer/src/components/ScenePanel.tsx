@@ -1,138 +1,123 @@
-import { Box, Button, Checkbox, Input, Textarea } from "@chakra-ui/react";
-import React, { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { aiHelp } from "../lib/actions/aiHelp";
+import { Show } from "solid-js";
 import type { HelpKind } from "../lib/ai-instructions";
-import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
-import { storyActions } from "../lib/slices/story";
-import type { RootState } from "../lib/store";
+import { currentScene } from "../lib/stores/retrieval/current-scene";
+import { deleteScene, updateSceneData } from "../lib/stores/scenes";
 import { useAi } from "../lib/use-ai";
-import { selectedSceneSelector } from "../lib/selectors/selectedSceneSelector";
+import { FormField } from "./styled/FormField";
+import { findNode } from "../lib/stores/tree";
 
 export const ScenePanel = () => {
-  const selectedScene = useSelector(selectedSceneSelector);
-  const protagonist = useSelector((store: RootState) =>
-    Object.values(store.story.characters).find((char) => char.isProtagonist),
-  );
-  const dispatch = useDispatch();
+  const help = (helpKind: HelpKind, extra = false) => {
+    const text = `Scene text:\n\n${currentScene()
+      ?.paragraphs.map((p) => p.text)
+      .join("\n\n")}\n\nOutput only the summary.`;
+    useAi(helpKind, text).then((res) => {
+      const sceneId = currentScene()?.id;
+      if (sceneId && extra) {
+        updateSceneData(sceneId, { extra: res ?? undefined });
+      } else if (sceneId) {
+        updateSceneData(sceneId, { summary: res ?? undefined });
+      }
+    });
+  };
 
-  const help = useCallback(
-    (helpKind: HelpKind, extra = false) => {
-      const text =
-        "Protagonist: " +
-        protagonist?.name +
-        "\n\nScene text:\n\n" +
-        selectedScene?.paragraphs.map((p) => p.text).join("\n\n") +
-        "\n\nOutput only the summary.";
-      useAi(helpKind, text).then((res) => {
-        if (extra) {
-          dispatch(
-            storyActions.updateScene({
-              id: selectedScene?.id,
-              extra: res ?? undefined,
-            }),
-          );
-        } else {
-          dispatch(
-            storyActions.updateScene({
-              id: selectedScene?.id,
-              summary: res ?? undefined,
-            }),
-          );
-        }
-      });
-    },
-    [selectedScene],
-  );
-
-  return selectedScene ? (
-    <Box flex={1} p={4} height="100%" overflow="auto">
-      <div>
-        Id: {selectedScene.id}
-        <Input
-          placeholder={"title"}
-          onChange={(e) => {
-            dispatch(
-              storyActions.updateScene({
-                id: selectedScene.id,
+  return (
+    <Show when={currentScene()} fallback={<div class="p-4">No data</div>}>
+      <div class="flex flex-col flex-1 p-4 h-full overflow-auto">
+        <FormField label="Id">
+          <input
+            class="input input-bordered"
+            value={currentScene()?.id ?? ""}
+            disabled
+          />
+        </FormField>
+        <FormField label="Title">
+          <input
+            class="input input-bordered"
+            placeholder={"title"}
+            onChange={(e) => {
+              updateSceneData(currentScene()?.id ?? "", {
                 title: e.target.value,
-              }),
-            );
-          }}
-          value={selectedScene.title}
-        />
+              });
+            }}
+            value={currentScene()?.title ?? ""}
+          />
+        </FormField>
+        <FormField label="Summary">
+          <textarea
+            class="textarea textarea-bordered"
+            onChange={(e) => {
+              updateSceneData(currentScene()?.id ?? "", {
+                summary: e.target.value,
+              });
+            }}
+            rows={6}
+            placeholder="summary"
+            style={{ width: "100%" }}
+            value={currentScene()?.summary ?? ""}
+          />
+        </FormField>
+        {currentScene()?.extra && (
+          <FormField label="Extra">
+            <textarea
+              class="textarea textarea-bordered"
+              onChange={(e) => {
+                updateSceneData(currentScene()?.id ?? "", {
+                  extra: e.target.value,
+                });
+              }}
+              rows={18}
+              placeholder="extra"
+              style={{ width: "100%" }}
+              value={currentScene()?.extra ?? ""}
+            />
+          </FormField>
+        )}
+        <FormField label="Uploaded">
+          <label class="label cursor-pointer max-w-40">
+            <input
+              type="checkbox"
+              checked={currentScene()?.posted ?? false}
+              onChange={() => {
+                updateSceneData(currentScene()?.id ?? "", {
+                  posted: !currentScene()?.posted,
+                });
+              }}
+              class="checkbox"
+            />
+            <span class="label-text">Uploaded</span>
+          </label>
+        </FormField>
+        <div class="flex gap-2">
+          <button
+            type="button"
+            class="btn btn-primary"
+            onClick={() => {
+              help("summarize");
+            }}
+          >
+            [AI] Summarize
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            onClick={() => {
+              help("improvements", true);
+            }}
+          >
+            [AI] Improvements
+          </button>
+          <button
+            type="button"
+            class="btn btn-error"
+            onClick={() => {
+              deleteScene(currentScene()?.id ?? "");
+            }}
+          >
+            Delete
+          </button>
+        </div>
       </div>
-      <Textarea
-        mt={2}
-        onChange={(e) => {
-          dispatch(
-            storyActions.updateScene({
-              id: selectedScene.id,
-              summary: e.target.value,
-            }),
-          );
-        }}
-        rows={6}
-        placeholder="summary"
-        style={{ width: "100%" }}
-        value={selectedScene.summary}
-      />
-      {selectedScene.extra && (
-        <Textarea
-          mt={2}
-          onChange={(e) => {
-            dispatch(
-              storyActions.updateScene({
-                id: selectedScene.id,
-                extra: e.target.value,
-              }),
-            );
-          }}
-          rows={18}
-          placeholder="extra"
-          style={{ width: "100%" }}
-          value={selectedScene.extra}
-        />
-      )}
-      <Box>
-        <Checkbox
-          isChecked={selectedScene.posted ?? false}
-          onChange={() => {
-            dispatch(
-              storyActions.updateScene({
-                id: selectedScene.id,
-                posted: !selectedScene.posted,
-              }),
-            );
-          }}
-        >
-          Uploaded
-        </Checkbox>
-      </Box>
-      <Button
-        colorScheme={"blue"}
-        onClick={() => {
-          help("summarize");
-        }}
-      >
-        [AI] Summarize
-      </Button>
-      <Button
-        colorScheme={"blue"}
-        onClick={() => {
-          help("improvements", true);
-        }}
-      >
-        [AI] Improvements
-      </Button>
-      <Button
-        colorScheme={"red"}
-        onClick={() => {
-          dispatch(storyActions.deleteScene({ sceneId: selectedScene.id }));
-        }}
-      >
-        Delete
-      </Button>
-    </Box>
-  ) : null;
+    </Show>
+  );
 };

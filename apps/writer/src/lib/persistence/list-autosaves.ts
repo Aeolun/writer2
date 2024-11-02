@@ -44,7 +44,6 @@ export const listAutosaves = async (
 
   //sort by date
   data.sort((a, b) => b.savedDate.getTime() - a.savedDate.getTime());
-  data.reverse();
 
   return data;
 };

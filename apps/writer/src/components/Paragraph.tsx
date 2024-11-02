@@ -3,8 +3,6 @@ import type { SceneParagraph } from "../../../shared/src/schema.ts";
 import { currentScene } from "../lib/stores/retrieval/current-scene.ts";
 import {
   scenesState,
-  updateSceneCursor,
-  updateSceneData,
   updateSceneParagraphData,
   updateSceneSelectedParagraph,
 } from "../lib/stores/scenes.ts";
@@ -13,6 +11,7 @@ import { Row } from "./Row";
 import { StoryParagraphButtons } from "./StoryParagraphButtons";
 import { ParagraphDetails } from "./ParagraphDetails.tsx";
 import { findPathToNode } from "../lib/stores/tree.ts";
+import { Editor } from "./editor/Editor.tsx";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "border-yellow-500",
@@ -45,54 +44,169 @@ export const Paragraph = (props: {
         </div>
       ) : null}
       <Row
-        onClick={() => {
+        selected={currentScene()?.selectedParagraph === props.paragraph.id}
+        onMouseDown={() => {
           updateSceneSelectedParagraph(props.sceneId, props.paragraph.id);
         }}
-        selected={currentScene()?.selectedParagraph === props.paragraph.id}
         borderColor={statusColor[props.paragraph.state] ?? undefined}
         main={
           <>
-            <AutoResizeTextarea
-              id={`p_${props.paragraph.id}`}
-              value={props.paragraph.text}
-              onInput={(e) => {
+            <Editor
+              onChange={(data) => {
+                console.log("editor onChange", data);
                 updateSceneParagraphData(props.sceneId, props.paragraph.id, {
-                  text: e.currentTarget.value,
+                  text: data,
                 });
               }}
+              defaultValue={props.paragraph.text}
+            />
+            {/* <AutoResizeTextarea
+              id={`p_${props.paragraph.id}`}
+              value={props.paragraph.text}
+              onMouseUp={(e) => {
+                updateSceneCursor(
+                  props.sceneId,
+                  (e.target as HTMLTextAreaElement).selectionStart,
+                );
+              }}
+              onInput={(e, selectionStart) => {
+                console.log("input", e.target?.value);
+                updateSceneParagraphData(props.sceneId, props.paragraph.id, {
+                  text: e.target?.value ?? "",
+                });
+                updateSceneCursor(props.sceneId, selectionStart);
+                console.log("input", selectionStart);
+              }}
               onFocus={(e) => {
-                console.log("selectionstart on focus", e.target.selectionStart);
-                updateSceneCursor(props.sceneId, e.target.selectionStart);
+                updateSceneSelectedParagraph(props.sceneId, props.paragraph.id);
+                setTimeout(() => {
+                  console.log(
+                    "focus",
+                    e.target.selectionStart,
+                    props.paragraph.id,
+                  );
+                  updateSceneCursor(
+                    props.sceneId,
+                    (e.target as HTMLTextAreaElement).selectionStart,
+                  );
+                }, 0);
               }}
               onKeyDown={(e) => {
                 const pe = document.getElementById(
                   `p_${props.paragraph.id}`,
                 ) as HTMLTextAreaElement;
                 if (e.key === "Enter" && e.ctrlKey) {
+                  const newId = splitParagraphFromCursor(props.sceneId);
+
+                  setTimeout(() => {
+                    const newElement = document.getElementById(
+                      `p_${newId}`,
+                    ) as HTMLTextAreaElement;
+                    newElement?.focus();
+                  }, 0);
+                  e.preventDefault();
+                } else if (e.key === "Backspace" && e.altKey) {
+                  //focus previous paragraph
+                  const previousParagraph =
+                    scenesState.scenes[props.sceneId].paragraphs[
+                      scenesState.scenes[props.sceneId].paragraphs.findIndex(
+                        (p) => p.id === props.paragraph.id,
+                      ) - 1
+                    ];
+                  if (previousParagraph) {
+                    const previousElement = document.getElementById(
+                      `p_${previousParagraph.id}`,
+                    ) as HTMLTextAreaElement;
+
+                    previousElement.scrollIntoView({
+                      behavior: "instant",
+                      block: "center",
+                    });
+                    previousElement?.focus();
+                  }
+                  removeSceneParagraph(props.sceneId, props.paragraph.id);
+
                   e.preventDefault();
                   e.stopPropagation();
                 } else if (e.key === "Backspace" && e.ctrlKey) {
+                  console.log("join backwards");
+                  //focus previous paragraph
+                  const previousParagraph =
+                    scenesState.scenes[props.sceneId].paragraphs[
+                      scenesState.scenes[props.sceneId].paragraphs.findIndex(
+                        (p) => p.id === props.paragraph.id,
+                      ) - 1
+                    ];
+                  joinBackwards(props.sceneId);
+                  if (previousParagraph) {
+                    const previousElement = document.getElementById(
+                      `p_${previousParagraph.id}`,
+                    ) as HTMLTextAreaElement;
+                    previousElement?.focus();
+                    previousElement.scrollIntoView({
+                      behavior: "instant",
+                      block: "center",
+                    });
+                  }
                   e.preventDefault();
                   e.stopPropagation();
                 } else if (e.key === "ArrowUp" && e.shiftKey && e.ctrlKey) {
+                  moveParagraphUp(props.sceneId, props.paragraph.id);
                   e.preventDefault();
                   e.stopPropagation();
                 } else if (e.key === "ArrowDown" && e.shiftKey && e.ctrlKey) {
+                  moveParagraphDown(props.sceneId, props.paragraph.id);
                   e.preventDefault();
                   e.stopPropagation();
                 } else if (
                   e.key === "ArrowDown" &&
                   pe.selectionStart === pe.value.length
                 ) {
+                  const currentParagraphIndex = scenesState.scenes[
+                    props.sceneId
+                  ].paragraphs.findIndex((p) => p.id === props.paragraph.id);
+                  const nextParagraph =
+                    scenesState.scenes[props.sceneId].paragraphs[
+                      currentParagraphIndex + 1
+                    ];
+                  if (nextParagraph) {
+                    const nextElement = document.getElementById(
+                      `p_${nextParagraph.id}`,
+                    ) as HTMLTextAreaElement;
+                    if (nextElement) {
+                      nextElement.setSelectionRange(0, 0);
+                      nextElement.focus();
+                    }
+                  }
+                  e.preventDefault();
+                  e.stopPropagation();
                   // Handle ArrowDown logic
                 } else if (e.key === "ArrowUp" && pe.selectionStart === 0) {
+                  const currentParagraphIndex = scenesState.scenes[
+                    props.sceneId
+                  ].paragraphs.findIndex((p) => p.id === props.paragraph.id);
+                  const previousParagraph =
+                    scenesState.scenes[props.sceneId].paragraphs[
+                      currentParagraphIndex - 1
+                    ];
+                  if (previousParagraph) {
+                    const previousElement = document.getElementById(
+                      `p_${previousParagraph.id}`,
+                    ) as HTMLTextAreaElement;
+                    if (previousElement) {
+                      previousElement.setSelectionRange(
+                        previousElement.value.length,
+                        previousElement.value.length,
+                      );
+                      previousElement.focus();
+                    }
+                  }
+                  e.preventDefault();
+                  e.stopPropagation();
                   // Handle ArrowUp logic
-                } else {
-                  updateSceneCursor(props.sceneId, pe.selectionStart);
-                  console.log(e.key);
                 }
               }}
-            />
+            /> */}
             {props.paragraph.translation ? (
               <div class="px-8 text-indent-1em font-noteworthy">
                 {props.paragraph.translation}

@@ -1,4 +1,4 @@
-import { createSignal, JSX } from "solid-js";
+import { createEffect, createSignal, JSX } from "solid-js";
 import { LanguageForm } from "./LanguageForm";
 import { SceneButtons } from "./SceneButtons";
 import { ParagraphsList } from "./ParagraphsList";
@@ -7,12 +7,47 @@ import { InventoryActions } from "./InventoryActions";
 import { PlotpointActions } from "./PlotPointActions";
 import { getItemsAtParagraph } from "../lib/stores/retrieval/get-items-at-paragraph";
 import { uiState } from "../lib/stores/ui";
-import { scenesState, updateSceneParagraphData } from "../lib/stores/scenes";
+import {
+  createSceneParagraph,
+  removeSceneParagraph,
+  scenesState,
+  updateSceneParagraphData,
+} from "../lib/stores/scenes";
 import { currentScene } from "../lib/stores/retrieval/current-scene";
 import { CurrentInventory } from "./CurrentInventory";
+import { Editor } from "./editor/Editor";
+import { createShortcut } from "@solid-primitives/keyboard";
+import { SceneParagraph } from "@writer/shared";
+import shortUUID from "short-uuid";
 
 export const StoryPanel = () => {
   const [showCurrentInventory, setShowCurrentInventory] = createSignal(false);
+  createShortcut(
+    ["Control", "Enter"],
+    () => {
+      createSceneParagraph(
+        currentScene()?.id ?? "",
+        {
+          id: shortUUID.generate(),
+          text: "New",
+          state: "draft",
+          comments: [],
+        } satisfies SceneParagraph,
+        currentScene()?.selectedParagraph,
+      );
+    },
+    { preventDefault: false, requireReset: true },
+  );
+  createShortcut(
+    ["Control", "Backspace"],
+    () => {
+      removeSceneParagraph(
+        currentScene()?.id ?? "",
+        currentScene()?.selectedParagraph ?? "",
+      );
+    },
+    { preventDefault: false, requireReset: true },
+  );
 
   return currentScene() ? (
     <div class="flex flex-col h-full overflow-hidden">
@@ -25,6 +60,7 @@ export const StoryPanel = () => {
       <div class="flex flex-row flex-1 gap-4 h-full overflow-hidden justify-around">
         <div class="flex-1 overflow-auto flex flex-col items-start pb-48 p-4">
           <ParagraphsList />
+          {/* <Editor onChange={() => {}} /> */}
           <GenerateNext />
           <div class="min-h-96 w-full" />
         </div>

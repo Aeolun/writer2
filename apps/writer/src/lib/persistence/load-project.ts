@@ -17,9 +17,11 @@ import {
 import { setCharactersState } from "../stores/characters";
 import { setTree } from "../stores/tree";
 import { setChaptersState } from "../stores/chapters";
-import { setScenesState } from "../stores/scenes";
+import { getWordCount, setScenesState } from "../stores/scenes";
 import { setPlotpoints } from "../stores/plot-points";
 import { setItems } from "../stores/items";
+import { setLanguageStore } from "../stores/language-store";
+import { setBooksStore } from "../stores/books";
 
 export const loadProject = async (projectPath: string) => {
   const indexPath = await path.join(projectPath, "index.json");
@@ -120,8 +122,20 @@ export const loadProject = async (projectPath: string) => {
   setChaptersState({
     chapters: savedStory.story.chapter,
   });
+  const scenesToSet = { ...savedStory.story.scene };
+  for (const sceneId of Object.keys(scenesToSet)) {
+    let sceneWords = 0;
+    for (const paragraph of scenesToSet[sceneId].paragraphs) {
+      paragraph.words = getWordCount(paragraph.text);
+      sceneWords += paragraph.words;
+    }
+    scenesToSet[sceneId].words = sceneWords;
+  }
   setScenesState({
-    scenes: savedStory.story.scene,
+    scenes: scenesToSet,
+  });
+  setBooksStore({
+    books: savedStory.story.book,
   });
   setItems({
     items: savedStory.story.item,

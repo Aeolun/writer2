@@ -25,7 +25,9 @@ export const App = () => {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:2022/trpc",
+          url: window.location.host.includes("localhost")
+            ? "http://localhost:2022/trpc"
+            : "https://writer.serial-experiments.com/trpc",
           // You can pass any HTTP headers you wish here
           async headers() {
             return {

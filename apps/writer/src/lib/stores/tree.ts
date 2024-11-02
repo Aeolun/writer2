@@ -89,7 +89,7 @@ const pathToNode = (id: string) => {
   return pathToNode;
 };
 
-export const updateItemInStructure = (id: string, updates: Partial<Node>) => {
+export const updateNode = (id: string, updates: Partial<Node>) => {
   const pathTo = pathToNode(id);
 
   // Update the node
@@ -173,5 +173,5 @@ export const getItemsInOrder = (type: Node["type"]) => {
 };
 
 export const setTreeItemOpen = (id: string, isOpen: boolean) => {
-  updateItemInStructure(id, { isOpen });
+  updateNode(id, { isOpen });
 };

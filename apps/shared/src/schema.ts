@@ -68,8 +68,40 @@ const plotpointActionSchema = z.object({
 
 export type PlotpointAction = z.infer<typeof plotpointActionSchema>;
 
-const sceneParagraphSchema = entitySchema.extend({
+export const textNodeSchema = z.object({
+  type: z.literal("text"),
   text: z.string(),
+  marks: z
+    .array(
+      z.object({
+        type: z.literal("translation"),
+        attrs: z.object({
+          title: z.string(),
+          from: z.string(),
+          to: z.string(),
+        }),
+      }),
+    )
+    .optional(),
+});
+
+export const blockNodeSchema = z.object({
+  type: z.literal("paragraph"),
+  content: z.array(textNodeSchema).optional(),
+});
+
+export const contentNodeSchema = z
+  .object({
+    type: z.literal("doc"),
+    content: z.array(blockNodeSchema),
+  })
+  .passthrough();
+
+export type ContentNode = z.infer<typeof contentNodeSchema>;
+
+const sceneParagraphSchema = entitySchema.extend({
+  text: z.string().or(contentNodeSchema),
+  words: z.number().optional(),
   extra: z.string().optional(),
   translation: z.string().optional(),
   extraLoading: z.boolean().optional(),
@@ -93,6 +125,7 @@ const sceneSchema = treeDataSchema.extend({
   text: z.string(),
   selectedParagraph: z.string().optional(),
   words: z.number().optional(),
+  generateNextText: z.string().optional(),
   hasAI: z.boolean().optional(),
   posted: z.boolean().optional(),
   cursor: z.number().optional(),

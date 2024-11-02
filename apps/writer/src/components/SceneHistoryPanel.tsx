@@ -1,103 +1,89 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  HStack,
-  Input,
-  Table,
-  Tbody,
-  Td,
-  Textarea,
-  Th,
-  Thead,
-  Tr,
-  VStack,
-} from "@chakra-ui/react";
-import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { aiHelp } from "../lib/actions/aiHelp";
-import type { HelpKind } from "../lib/ai-instructions";
-import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
-import { storyActions } from "../lib/slices/story";
-import type { RootState } from "../lib/store";
-import { useAi } from "../lib/use-ai";
+import { createSignal, createEffect } from "solid-js";
 import { AutoSaveFile, listAutosaves } from "../lib/persistence/list-autosaves";
-import { DirEntry } from "@tauri-apps/plugin-fs";
+import { updateSceneData } from "../lib/stores/scenes";
+import { currentScene } from "../lib/stores/retrieval/current-scene";
+import { storyState } from "../lib/stores/story";
 
 const Entry = (props: { v: AutoSaveFile }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = createSignal(false);
   const v = props.v;
 
   return (
-    <Tr>
-      <Td>{v.savedDate.toLocaleString()}</Td>
-      <Td>{v.name}</Td>
-      <Td>{v.words}</Td>
-      <Td>
-        <HStack>
-          <Button
-            size="xs"
-            onClick={() => {
-              dispatch(storyActions.updateScene(v.object));
-            }}
-          >
-            Restore
-          </Button>
-          <Button
-            size="xs"
-            onClick={() => {
-              setIsOpen(!isOpen);
-            }}
-          >
-            {isOpen ? "Close" : "Open"}
-          </Button>
-        </HStack>
-      </Td>
-      {isOpen ? (
-        <Box>
-          <pre>{JSON.stringify(v.object, null, 2)}</pre>
-        </Box>
+    <>
+      <tr>
+        <td class="px-4 py-2">{v.savedDate.toLocaleString()}</td>
+        <td class="px-4 py-2">{v.name}</td>
+        <td class="px-4 py-2">{v.words}</td>
+        <td class="px-4 py-2">
+          <div class="flex space-x-2">
+            <button
+              type="button"
+              class="text-xs bg-blue-500 text-white px-2 py-1 rounded"
+              onClick={() => {
+                updateSceneData(currentScene()?.id ?? "", v.object);
+              }}
+            >
+              Restore
+            </button>
+            <button
+              type="button"
+              class="text-xs bg-gray-500 text-white px-2 py-1 rounded"
+              onClick={() => {
+                setIsOpen(!isOpen());
+              }}
+            >
+              {isOpen() ? "Close" : "Open"}
+            </button>
+          </div>
+        </td>
+      </tr>
+      {isOpen() ? (
+        <tr>
+          <td colSpan={4} class="px-4 py-2">
+            <pre>{JSON.stringify(v.object, null, 2)}</pre>
+          </td>
+        </tr>
       ) : null}
-    </Tr>
+    </>
   );
 };
 
 export const SceneHistoryPanel = () => {
-  const selectedScene = useSelector(selectedObjectSelector);
-  const projectPath = useSelector((store: RootState) => store.base.openPath);
+  const [historicalVersions, setHistoricalVersions] = createSignal<
+    AutoSaveFile[]
+  >([]);
 
-  const [historicalVersions, setHistoricalVersions] =
-    useState<AutoSaveFile[]>();
-
-  useEffect(() => {
-    if (projectPath && selectedScene?.id) {
+  createEffect(() => {
+    if (storyState.openPath && currentScene()?.id) {
       setHistoricalVersions([]);
-      listAutosaves(projectPath, "scene", selectedScene.id).then((result) => {
-        setHistoricalVersions(result);
-      });
+      const id = currentScene()?.id;
+      if (id) {
+        listAutosaves(storyState.openPath, "scene", id).then((result) => {
+          setHistoricalVersions(result);
+        });
+      }
     }
-  }, [selectedScene, projectPath]);
+  });
 
-  return selectedScene && selectedScene.type === "scene" ? (
-    <Box flex={1} p={4} height="100%" overflow="auto">
-      <VStack gap={2} alignItems={"flex-start"}>
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>Date</Th>
-              <Th>Name</Th>
-              <Th>Words</Th>
-              <Th>Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {historicalVersions?.map((v) => {
-              return <Entry v={v} key={v.name} />;
+  return currentScene()?.id ? (
+    <div class="flex-1 p-4 h-full overflow-auto">
+      <div class="space-y-2">
+        <table class="min-w-full">
+          <thead>
+            <tr>
+              <th class="px-4 py-2">Date</th>
+              <th class="px-4 py-2">Name</th>
+              <th class="px-4 py-2">Words</th>
+              <th class="px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {historicalVersions()?.map((v) => {
+              return <Entry v={v} />;
             })}
-          </Tbody>
-        </Table>
-      </VStack>
-    </Box>
+          </tbody>
+        </table>
+      </div>
+    </div>
   ) : null;
 };

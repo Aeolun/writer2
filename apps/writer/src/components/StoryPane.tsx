@@ -1,6 +1,8 @@
 import { SceneTabs } from "../components/SceneTabs";
 import { ErrorBoundary, For } from "solid-js";
 import { uiState } from "../lib/stores/ui";
+import { ArcTabs } from "./ArcTabs";
+import { ChapterTabs } from "./ChapterTabs";
 
 export const StoryPane = () => {
   return (
@@ -16,9 +18,9 @@ export const StoryPane = () => {
             </For>
           </ul>
         </div>
-        {/* {selectedEntity === "book" ? <BookTabs /> : null}
-        {selectedEntity === "arc" ? <ArcTabs /> : null}
-        {selectedEntity === "chapter" ? <ChapterTabs /> : null} */}
+        {/* {selectedEntity === "book" ? <BookTabs /> : null} */}
+        {uiState.selectedEntity === "arc" ? <ArcTabs /> : null}
+        {uiState.selectedEntity === "chapter" ? <ChapterTabs /> : null}
         {uiState.selectedEntity === "scene" ? <SceneTabs /> : null}
       </div>
     </ErrorBoundary>

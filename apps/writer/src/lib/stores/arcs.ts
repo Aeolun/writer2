@@ -1,7 +1,7 @@
 import { Arc } from "@writer/shared";
 import { createStore } from "solid-js/store";
 import short from "short-uuid";
-import { updateItemInStructure } from "./tree"; // Import functions from tree.ts
+import { appendNode, findNode, removeNode, updateNode } from "./tree"; // Import functions from tree.ts
 
 export const [arcsStore, setArcsStore] = createStore<{
   arcs: Record<string, Arc>;
@@ -19,13 +19,16 @@ export function createArc(bookId: string) {
     summary: "",
     start_date: "",
   });
-  addItemToStructure(bookId, {
-    id: newId,
-    name: "New Arc",
-    type: "arc",
-    isOpen: false,
-    children: [],
-  });
+  appendNode(
+    {
+      id: newId,
+      name: "New Arc",
+      type: "arc",
+      isOpen: false,
+      children: [],
+    },
+    bookId,
+  );
 }
 
 // Function to update an existing arc
@@ -35,21 +38,21 @@ export function updateArc(arcId: string, updatedData: Partial<Arc>) {
     ...updatedData,
     modifiedAt: Date.now(),
   }));
-  updateItemInStructure(treeState.structure, arcId, {
+  updateNode(arcId, {
     name: updatedData.title,
   });
 }
 
 // Function to delete an arc
 export function deleteArc(arcId: string) {
-  const arcNode = findNodeInStructure(treeState.structure, arcId);
+  const arcNode = findNode(arcId);
   if (arcNode && (!arcNode.children || arcNode.children.length === 0)) {
     setArcsStore("arcs", (arcs) => {
       const { [arcId]: _, ...rest } = arcs;
       return rest;
     });
-    removeItemFromStructure(arcId);
+    removeNode(arcId);
   } else {
-    alert(`Remove children ${arcNode?.children?.length} first`);
+    alert(`Remove ${arcNode?.children?.length} chapters first`);
   }
 }

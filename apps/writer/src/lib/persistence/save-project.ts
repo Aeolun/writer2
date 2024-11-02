@@ -14,12 +14,15 @@ import {
   languageEntities,
   saveSchema,
 } from "@writer/shared";
+import { setExpectedLastModified } from "../stores/story";
+import { setSaving } from "../stores/ui";
 
 const writeStoryPath = async (
   validatedBody: PersistedStory,
   projectPath: string,
   options?: {
     saveChangedSince?: number;
+    autosave?: boolean;
   },
 ) => {
   const storyFile = await path.join(projectPath, "index.json");
@@ -41,7 +44,7 @@ const writeStoryPath = async (
           continue;
         }
 
-        if (options?.saveChangedSince) {
+        if (options?.autosave) {
           const entityPathSpecific = await path.join(
             projectPath,
             entity,
@@ -51,7 +54,7 @@ const writeStoryPath = async (
           creatableFolders.add(entityPathSpecific);
           const entityFile = await path.join(
             entityPathSpecific,
-            entityData.modifiedAt + ".json",
+            `${entityData.modifiedAt}.json`,
           );
           writableFiles[entityFile] = JSON.stringify(entityData, null, 2);
         } else {
@@ -66,7 +69,7 @@ const writeStoryPath = async (
         }
       }
     }
-    if (!options?.saveChangedSince) {
+    if (!options?.autosave) {
       try {
         // remove entities that do not exist any more
         const entitiesPath = await path.join(projectPath, entity);
@@ -98,7 +101,7 @@ const writeStoryPath = async (
     }
   }
 
-  if (!options?.saveChangedSince) {
+  if (!options?.autosave) {
     for (const languageEntity of languageEntities) {
       const languagePath = await path.join(projectPath, languageEntity);
       await mkdir(languagePath, { recursive: true });
@@ -141,9 +144,8 @@ const writeStoryPath = async (
 
 export const saveProject = async (projectPath: string, data: SavePayload) => {
   try {
-    store.dispatch(globalActions.setSaving(true));
-
     const validatedBody = saveSchema.parse(data);
+    setSaving(true);
 
     const storyFile = await path.join(projectPath, "index.json");
 
@@ -177,22 +179,23 @@ export const saveProject = async (projectPath: string, data: SavePayload) => {
       await mkdir(storyAutoSavePath, { recursive: true });
       await writeStoryPath(validatedBody, storyAutoSavePath, {
         saveChangedSince: data.changesSince ?? data.expectedLastModified,
+        autosave: true,
       });
     }
 
-    await writeStoryPath(validatedBody, projectPath);
+    await writeStoryPath(validatedBody, projectPath, {
+      saveChangedSince: data.changesSince ?? data.expectedLastModified,
+    });
 
     const newFileStat = await stat(storyFile);
     // console.log("new last modified", newFileStat.mtime?.getTime());
 
     if (newFileStat.mtime) {
-      store.dispatch(
-        globalActions.setExpectedLastModified(newFileStat.mtime.getTime()),
-      );
+      setExpectedLastModified(newFileStat.mtime.getTime());
     }
   } catch (error) {
     console.error(error);
   } finally {
-    store.dispatch(globalActions.setSaving(false));
+    setSaving(false);
   }
 };

@@ -4,15 +4,20 @@ import {
 } from "../lib/stores/notifications";
 import { For } from "solid-js";
 
-export const NotificationManager = () => {
-  const notifications = notificationsState.notifications;
+const alertClass = {
+  info: "alert-info",
+  success: "alert-success",
+  warning: "alert-warning",
+  error: "alert-error",
+};
 
+export const NotificationManager = () => {
   return (
-    <div class="fixed top-4 right-4 z-50">
+    <div class="fixed z-50 top-4 right-4">
       <div class="flex flex-col space-y-2">
-        <For each={notifications}>
+        <For each={notificationsState.notifications}>
           {(notification) => (
-            <div class={`alert alert-${notification.type} relative pr-8`}>
+            <div class={`alert ${alertClass[notification.type]} relative pr-8`}>
               <div class="flex-1 mr-2">
                 <span>{notification.message}</span>
                 {notification.details &&

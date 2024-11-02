@@ -5,6 +5,8 @@ on:
     branches:
       - release
       - main
+    paths:
+      - apps/writer/**
 
 jobs:
   build-ubuntu-windows:

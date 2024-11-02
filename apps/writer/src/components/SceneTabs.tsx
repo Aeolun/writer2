@@ -1,5 +1,7 @@
 import { createSignal, ErrorBoundary } from "solid-js";
 import { StoryPanel } from "./StoryPanel";
+import { ScenePanel } from "./ScenePanel";
+import { SceneHistoryPanel } from "./SceneHistoryPanel";
 // import { ScenePanel } from "../components/ScenePanel";
 // import { StoryPanel } from "./StoryPanel.tsx";
 // import { SceneHistoryPanel } from "./SceneHistoryPanel.tsx";
@@ -44,14 +46,14 @@ export const SceneTabs = () => {
         {activeTab() === 1 && (
           <div class="flex-1 p-0 overflow-hidden">
             <ErrorBoundary fallback={<div>Something went terribly wrong</div>}>
-              {/* <ScenePanel /> */}
+              <ScenePanel />
             </ErrorBoundary>
           </div>
         )}
         {activeTab() === 2 && (
           <div class="flex-1 p-0 overflow-hidden">
             <ErrorBoundary fallback={<div>Something went terribly wrong</div>}>
-              {/* <SceneHistoryPanel /> */}
+              <SceneHistoryPanel />
             </ErrorBoundary>
           </div>
         )}

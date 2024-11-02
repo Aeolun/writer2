@@ -1,22 +1,21 @@
 import { writeTextFile } from "@tauri-apps/plugin-fs";
 import markdownit from "markdown-it";
-import Markdown from "markdown-to-jsx";
 import { open } from "@tauri-apps/plugin-dialog";
 import { sortedObjects } from "../lib/stores/retrieval/sorted-objects";
 import { uiState } from "../lib/stores/ui";
 import { createEffect, createSignal } from "solid-js";
-import {
-  updateSceneParagraph,
-  updateSceneParagraphData,
-} from "../lib/stores/scenes";
+import { updateSceneParagraphData } from "../lib/stores/scenes";
 
-const md = markdownit();
+const md = markdownit({
+  html: true,
+  typographer: true,
+});
 
 export const Preview = () => {
   const text = sortedObjects(uiState.currentId)
     .map((item) => {
       if (item.type === "paragraph") {
-        return `${md.render(item.text.replaceAll("--", "—").trim())}`;
+        return `${md.render(item.text.trim())}`;
       }
       if (item.type === "chapter_header") {
         return `<h1>${item.text}</h1>`;
@@ -108,6 +107,7 @@ export const Preview = () => {
             <textarea
               class="textarea textarea-bordered"
               id={"preview"}
+              rows={10}
               value={text}
               onClick={() => {
                 //select all
@@ -130,6 +130,7 @@ export const Preview = () => {
             <textarea
               class="textarea textarea-bordered"
               id={"preview_typst"}
+              rows={10}
               value={typstText()}
               onClick={() => {
                 //select all

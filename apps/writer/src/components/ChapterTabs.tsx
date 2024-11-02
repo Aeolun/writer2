@@ -1,239 +1,225 @@
+import { createSignal } from "solid-js";
 import moment from "moment";
-import React, { useCallback } from "react";
-import { storyActions } from "../lib/slices/story";
-
-import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
-import { sortedBookObjects } from "../lib/selectors/sortedBookObjects";
 import { HelpKind } from "../lib/ai-instructions";
 import { useAi } from "../lib/use-ai";
-import "react-datetime/css/react-datetime.css";
-import { useAppSelector } from "../lib/store";
+import { currentChapter } from "../lib/stores/retrieval/current-chapter";
+import { updateChapter } from "../lib/stores/chapters";
+import { sortedObjects } from "../lib/stores/retrieval/sorted-objects";
+import { publishToRoyalRoad } from "@writer/server/src/procedures/publish-to-royal-road";
+import { trpc } from "../lib/trpc";
+import { updateNode } from "../lib/stores/tree";
 
 export const ChapterTabs = () => {
-  const chapterObj = useSelector(selectedObjectSelector);
-  const dispatch = useDispatch();
-  const sortedBook = useSelector(sortedBookObjects);
-  const globalSettings = useAppSelector((state) => state.base.settings);
-  const publishToRoyalRoad = trpcReact.publishToRoyalRoad.useMutation();
-  const signedInUser = useAppSelector((state) => state.base.signedInUser);
+  const [selectedTab, setSelectedTab] = createSignal("overview");
+  const help = (helpKind: HelpKind, extra = false) => {
+    const chapterId = currentChapter()?.id;
+    if (!chapterId) {
+      return;
+    }
+    const paragraphs = sortedObjects(chapterId)
+      ?.filter((i) => i.type === "paragraph")
+      .map((i) => i.text)
+      .join("\n\n");
 
-  const help = useCallback(
-    (helpKind: HelpKind, extra = false) => {
-      if (chapterObj?.type === "chapter") {
-        const paragraphs = sortedBook
-          ?.filter((i) => i.type === "paragraph")
-          .map((i) => i.text)
-          .join("\n\n");
-
-        useAi(helpKind, paragraphs ?? "", false).then((res) => {
-          if (helpKind === "suggest_title") {
-            dispatch(
-              storyActions.updateChapter({
-                id: chapterObj?.id,
-                title: res ?? undefined,
-              }),
-            );
-          } else {
-            dispatch(
-              storyActions.updateChapter({
-                id: chapterObj?.id,
-                extra: res,
-              }),
-            );
-          }
+    useAi(helpKind, paragraphs ?? "", false).then((res) => {
+      if (helpKind === "suggest_title") {
+        updateChapter(chapterId, {
+          title: res ?? undefined,
+        });
+        updateNode(chapterId, {
+          name: res ?? undefined,
+        });
+      } else {
+        updateChapter(chapterId, {
+          extra: res,
         });
       }
-    },
-    [chapterObj],
-  );
+    });
+  };
 
-  return chapterObj && chapterObj.data && chapterObj.type === "chapter" ? (
-    <Tabs
-      display={"flex"}
-      overflow={"hidden"}
-      flexDirection={"column"}
-      flex={1}
-    >
-      <TabList>
-        <Tab>Overview</Tab>
-        <Tab>Publishing</Tab>
-      </TabList>
-      <TabPanels
-        flex={1}
-        overflow={"hidden"}
-        display={"flex"}
-        flexDirection={"column"}
-      >
-        <TabPanel flex={1} p={0} overflow={"hidden"}>
-          <Box flex={1} p={4} height="100%" overflow="auto">
-            <Box>ID: {chapterObj.id}</Box>
-            <FormControl>
-              <FormLabel>Title</FormLabel>
-              <Input
-                placeholder={"title"}
-                onChange={(e) => {
-                  dispatch(
-                    storyActions.updateChapter({
-                      id: chapterObj.id,
+  return currentChapter() ? (
+    <div class="flex flex-col flex-1 overflow-hidden">
+      <div class="tabs">
+        <button
+          type="button"
+          class={`tab tab-bordered ${
+            selectedTab() === "overview" ? "tab-active" : ""
+          }`}
+          onClick={() => setSelectedTab("overview")}
+        >
+          Overview
+        </button>
+        <button
+          type="button"
+          class={`tab tab-bordered ${
+            selectedTab() === "publishing" ? "tab-active" : ""
+          }`}
+          onClick={() => setSelectedTab("publishing")}
+        >
+          Publishing
+        </button>
+      </div>
+      {selectedTab() === "overview" && (
+        <div class="flex flex-col flex-1 overflow-hidden">
+          <div class="flex-1 p-0 overflow-hidden">
+            <div class="flex-1 p-4 h-full overflow-auto">
+              <div>ID: {currentChapter()?.id}</div>
+              <div class="form-control">
+                <label class="label">Title</label>
+                <input
+                  class="input input-bordered"
+                  placeholder="title"
+                  onInput={(e) => {
+                    updateChapter(currentChapter()?.id, {
                       title: e.target.value,
-                    }),
-                  );
-                }}
-                value={chapterObj.data.title}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Summary</FormLabel>
-              <Textarea
-                mt={2}
-                onChange={(e) => {
-                  dispatch(
-                    storyActions.updateChapter({
-                      id: chapterObj.id,
+                    });
+                    updateNode(currentChapter()?.id, {
+                      name: e.target.value,
+                    });
+                  }}
+                  value={currentChapter()?.title}
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">Summary</label>
+                <textarea
+                  class="textarea textarea-bordered mt-2"
+                  onInput={(e) => {
+                    updateChapter(currentChapter()?.id, {
                       summary: e.target.value,
-                    }),
-                  );
-                }}
-                placeholder="summary"
-                height={"300px"}
-                value={chapterObj.data.summary}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Start date</FormLabel>
-              <Input
-                mt={2}
-                onChange={(e) => {
-                  dispatch(
-                    storyActions.updateChapter({
-                      id: chapterObj.id,
+                    });
+                  }}
+                  placeholder="summary"
+                  style={{ height: "300px" }}
+                  value={currentChapter()?.summary}
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">Start date</label>
+                <input
+                  class="input input-bordered mt-2"
+                  onInput={(e) => {
+                    updateChapter(currentChapter()?.id, {
                       start_date: e.target.value,
-                    }),
-                  );
+                    });
+                  }}
+                  placeholder="start date"
+                  value={currentChapter()?.start_date}
+                />
+                <p class="text-sm text-gray-500">
+                  This is the date the chapter starts in story time.
+                </p>
+              </div>
+              <pre>{currentChapter()?.extra}</pre>
+              <button
+                type="button"
+                class="btn btn-blue"
+                onClick={() => {
+                  help("suggest_title");
                 }}
-                placeholder={"start date"}
-                value={chapterObj.data.start_date}
-              />
-              <FormHelperText>
-                This is the date the chapter starts in story time.
-              </FormHelperText>
-            </FormControl>
-            <pre>{chapterObj.data.extra}</pre>
-            <Button
-              colorScheme={"blue"}
-              onClick={() => {
-                help("suggest_title");
-              }}
-            >
-              [AI] Suggest title
-            </Button>
-            <Button
-              colorScheme={"blue"}
-              onClick={() => {
-                help("spelling");
-              }}
-            >
-              [AI] Spelling
-            </Button>
-            <Button
-              colorScheme={"red"}
-              onClick={() => {
-                dispatch(
-                  storyActions.deleteChapter({ chapterId: chapterObj.id }),
-                );
-              }}
-            >
-              Delete
-            </Button>
-          </Box>
-        </TabPanel>
-        <TabPanel flex={1} p={0} overflow={"hidden"}>
-          <Box flex={1} p={4} height="100%" overflow="auto">
-            <FormControl>
-              <FormLabel>Published At</FormLabel>
-              <HStack>
-                <Datetime
-                  renderInput={(props) => <Input {...props} />}
-                  onChange={(e) => {
+              >
+                [AI] Suggest title
+              </button>
+              <button
+                type="button"
+                class="btn btn-blue"
+                onClick={() => {
+                  help("spelling");
+                }}
+              >
+                [AI] Spelling
+              </button>
+              <button
+                type="button"
+                class="btn btn-red"
+                onClick={() => {
+                  deleteChapter(currentChapter()?.id);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {selectedTab() === "publishing" && (
+        <div class="flex-1 p-0 overflow-hidden">
+          <div class="flex-1 p-4 h-full overflow-auto">
+            <div class="form-control">
+              <label class="label">Published At</label>
+              <div class="flex items-center">
+                <input
+                  class="input input-bordered"
+                  onInput={(e) => {
                     if (e instanceof moment) {
-                      dispatch(
-                        storyActions.updateChapter({
-                          id: chapterObj.id,
-                          visibleFrom: e.toISOString(),
-                        }),
-                      );
+                      updateChapter(currentChapter()?.id, {
+                        visibleFrom: e.toISOString(),
+                      });
                     }
                   }}
                   value={
-                    chapterObj.data.visibleFrom
-                      ? new Date(chapterObj.data.visibleFrom)
+                    currentChapter()?.visibleFrom
+                      ? new Date(currentChapter()?.visibleFrom).toISOString()
                       : undefined
                   }
                 />
-                <Button
+                <button
+                  type="button"
+                  class="btn btn-primary"
                   onClick={() => {
-                    dispatch(
-                      storyActions.updateChapter({
-                        id: chapterObj.id,
-                        visibleFrom: new Date().toISOString(),
-                      }),
-                    );
+                    updateChapter(currentChapter()?.id, {
+                      visibleFrom: new Date().toISOString(),
+                    });
                   }}
                 >
                   Set to now
-                </Button>
-              </HStack>
-              <FormHelperText>
+                </button>
+              </div>
+              <p class="text-sm text-gray-500">
                 This is the date the chapter will be visible in the reader
                 application (or RoyalRoad, if published there).
-              </FormHelperText>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Royal Road ID</FormLabel>
-              <Input
-                onChange={(e) => {
-                  dispatch(
-                    storyActions.updateChapter({
-                      id: chapterObj.id,
-                      royalRoadId: parseInt(e.target.value),
-                    }),
-                  );
+              </p>
+            </div>
+            <div class="form-control">
+              <label class="label">Royal Road ID</label>
+              <input
+                class="input input-bordered"
+                onInput={(e) => {
+                  updateChapter(currentChapter()?.id, {
+                    royalRoadId: parseInt(e.target.value),
+                  });
                 }}
-                value={chapterObj.data.royalRoadId}
+                value={currentChapter()?.royalRoadId?.toString()}
               />
-
-              <FormHelperText>
+              <p class="text-sm text-gray-500">
                 If you've already published this chapter on RoyalRoad, you can
                 enter the ID here.
-              </FormHelperText>
-            </FormControl>
-            <FormControl>
-              <Button
-                isDisabled={
-                  !globalSettings.royalRoadEmail ||
-                  !globalSettings.royalRoadPassword ||
-                  !chapterObj.data.royalRoadId ||
-                  !signedInUser
-                }
+              </p>
+            </div>
+            <div class="form-control">
+              <button
+                type="button"
+                disabled={!currentChapter()?.royalRoadId}
+                class="btn btn-primary"
                 onClick={() => {
-                  publishToRoyalRoad.mutate({
-                    chapterId: chapterObj.id,
+                  trpc.publishToRoyalRoad.mutate({
+                    chapterId: currentChapter()?.id,
                   });
                 }}
               >
                 Publish to RoyalRoad
-              </Button>
-              <FormHelperText>
+              </button>
+              <p class="text-sm text-gray-500">
                 This will publish the chapter to Royal Road.{" "}
-                <span style={{ color: "red" }}>
+                <span class="text-red-500">
                   WARNING: This will send your Royal Road email and password to
                   the server. It won't be stored.
                 </span>
-              </FormHelperText>
-            </FormControl>
-          </Box>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   ) : null;
 };

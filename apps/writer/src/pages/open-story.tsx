@@ -67,7 +67,7 @@ const Home = () => {
                     .filter((r) => r.path !== projectPath)
                     .slice(0, 9),
                 ]);
-                setLocation("/");
+                nav("/write");
               } catch (error) {
                 if (error instanceof Error) {
                   alert(error.message);

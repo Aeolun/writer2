@@ -1,0 +1,30 @@
+services:
+  server:
+    image: aeolun/writer-server:latest
+    ports:
+      - 2022:2022
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - CLOUDFLARE_S3_ENDPOINT=${CLOUDFLARE_S3_ENDPOINT}
+      - CLOUDFLARE_S3_ACCESS_KEY=${CLOUDFLARE_S3_ACCESS_KEY}
+      - CLOUDFLARE_S3_SECRET_ACCESS_KEY=${CLOUDFLARE_S3_SECRET_ACCESS_KEY}
+      - CLOUDFLARE_R2_API_TOKEN=${CLOUDFLARE_R2_API_TOKEN}
+    networks:
+      - default
+      - caddy
+    labels:
+      caddy: writer.serial-experiments.com
+      caddy.reverse_proxy: "{{upstreams 2022}}"
+  reader:
+    image: aeolun/writer-reader:latest
+    ports:
+      - 3001:3001
+    networks:
+      - default
+      - caddy
+    labels:
+      caddy: reader.serial-experiments.com
+      caddy.reverse_proxy: "{{upstreams 3001}}"
+networks:
+  caddy:
+    external: true

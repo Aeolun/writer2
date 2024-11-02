@@ -21,6 +21,7 @@ export interface UIState {
   showInventory: boolean;
   signinPopupOpen: boolean;
   saving: boolean;
+  lastSaveAt?: number;
   stories?: StorySummary[];
   syncing: boolean;
 }
@@ -32,6 +33,7 @@ const initialState: UIState = {
   showInventory: false,
   saving: false,
   syncing: false,
+  lastSaveAt: undefined,
 };
 
 export const [uiState, setUIState] = createStore(initialState);
@@ -62,6 +64,8 @@ export const setSelectedLanguage = (language?: string) =>
   setUIState("selectedLanguage", language);
 export const setSaving = (saving: boolean) => setUIState("saving", saving);
 export const setSyncing = (syncing: boolean) => setUIState("syncing", syncing);
+export const setLastSaveAt = (lastSaveAt?: number) =>
+  setUIState("lastSaveAt", lastSaveAt);
 export const setSelectedImageChapter = (chapter: string) =>
   setUIState("selectedImageChapter", chapter);
 export const setImagePath = (path: string) => setUIState("imagePath", path);

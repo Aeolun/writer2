@@ -1,5 +1,6 @@
 import { treeState } from "../tree";
-import { scenesState } from "../scenes";
+import { getWordCount, scenesState } from "../scenes";
+import { contentSchemaToHtml } from "../../persistence/content-schema-to-html";
 
 export type SortedChapterHeaderObject = {
   type: "chapter_header";
@@ -102,12 +103,15 @@ export const sortedObjects = (rootId?: string) => {
             const sceneData = scenesState.scenes[scene.id];
             for (const paragraph of sceneData.paragraphs) {
               stats.words +=
-                paragraph.state === "ai" ? 0 : paragraph.text.split(" ").length;
+                paragraph.state === "ai" ? 0 : getWordCount(paragraph.text);
               stats.aiWords +=
-                paragraph.state === "ai" ? paragraph.text.split(" ").length : 0;
+                paragraph.state === "ai" ? getWordCount(paragraph.text) : 0;
               objects.push({
                 type: "paragraph",
-                text: paragraph.text,
+                text:
+                  typeof paragraph.text === "string"
+                    ? paragraph.text
+                    : contentSchemaToHtml(paragraph.text),
                 sceneId: scene.id,
                 state: paragraph.state,
                 posted: sceneData.posted ?? false,

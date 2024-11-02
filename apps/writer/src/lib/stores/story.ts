@@ -6,13 +6,18 @@ import { readTextFile, stat, writeTextFile } from "@tauri-apps/plugin-fs";
 
 type StoryStateProperties = Pick<
   Story,
-  "id" | "name" | "modifiedTime" | "settings"
+  | "id"
+  | "name"
+  | "modifiedTime"
+  | "settings"
+  | "uploadedFiles"
+  | "lastPublishTime"
 >;
 
 export const [storyState, setStoryState] = createStore<{
   story: StoryStateProperties | undefined;
   openPath?: string;
-  expectedLastModified?: number;
+  expectedLastModified: number;
   storyLoaded: boolean;
 }>({
   story: {
@@ -20,17 +25,24 @@ export const [storyState, setStoryState] = createStore<{
     name: "",
     modifiedTime: 0,
     settings: {},
+    uploadedFiles: {},
+    lastPublishTime: 0,
   },
+  expectedLastModified: 0,
   storyLoaded: false,
 });
 
-export const setStory = (story: StoryStateProperties) =>
+export const setStory = (story: StoryStateProperties) => {
   setStoryState("story", {
     id: story.id,
     name: story.name,
     modifiedTime: story.modifiedTime,
     settings: story.settings,
+    uploadedFiles: story.uploadedFiles,
+    lastPublishTime: story.lastPublishTime,
   });
+  setStoryState("storyLoaded", true);
+};
 
 // New functions to update the moved properties
 export const newStory = async (opts: { name: string; projectPath: string }) => {
@@ -72,7 +84,7 @@ export const setStoryLoaded = (loaded: boolean) =>
 export const unloadStory = () => {
   setStoryState("story", undefined);
   setStoryState("openPath", undefined);
-  setStoryState("expectedLastModified", undefined);
+  setStoryState("expectedLastModified", 0);
   setStoryState("storyLoaded", false);
 };
 

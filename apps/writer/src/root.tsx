@@ -1,4 +1,4 @@
-import { createEffect, type ParentProps } from "solid-js";
+import { createEffect, onCleanup, type ParentProps } from "solid-js";
 import {
   tauriSettingsStore,
   setSettings,
@@ -8,10 +8,10 @@ import {
 import { setSignedInUser } from "./lib/stores/user";
 import { trpc } from "./lib/trpc";
 import { AiPopup } from "./components/AiPopup";
-import { Autosave } from "./components/Autosave";
-// import { AiPopup } from "./components/AiPopup.tsx";
-// import { Autosave } from "./components/Autosave.tsx";
-// import { SigninPopup } from "./components/SigninPopup.tsx";
+import { NotificationManager } from "./components/NotificationManager";
+import { saveStory } from "./lib/persistence/save-story";
+import { addNotification } from "./lib/stores/notifications";
+import { storyState } from "./lib/stores/story";
 
 export const Root = (props: ParentProps) => {
   const colorMode = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -39,9 +39,30 @@ export const Root = (props: ParentProps) => {
     }
   });
 
+  let saveCount = 0;
+  const autosaveTimeout = setInterval(() => {
+    if (storyState.storyLoaded) {
+      console.log("autosaving", saveCount);
+      saveStory(saveCount % 4 === 0).catch((error) => {
+        console.error("Error autosaving:", error);
+        addNotification({
+          title: "Autosave failed",
+          message: error.message,
+          type: "error",
+        });
+      });
+      saveCount++;
+    }
+  }, 30000);
+
+  onCleanup(() => {
+    clearInterval(autosaveTimeout);
+  });
+
   return (
     <div data-theme={colorMode === "light" ? "fantasy" : "forest"}>
       <AiPopup />
+      <NotificationManager />
       {props.children}
     </div>
   );

@@ -7,6 +7,7 @@ import { A, useNavigate } from "@solidjs/router";
 import { storyState, unloadStory } from "../lib/stores/story";
 import {
   setAiPopupOpen,
+  setSaving,
   setSigninPopupOpen,
   store,
   uiState,
@@ -15,18 +16,18 @@ import { uploadStory } from "../lib/persistence/upload-story";
 import { importRoyalRoad } from "../lib/persistence/import-royal-road";
 import { setSetting } from "../lib/stores/settings";
 import { saveStory } from "../lib/persistence/save-story";
+import { addNotification } from "../lib/stores/notifications";
 
 export const WriteHeaderMenu = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = createSignal(false);
   const isSignedIn = userState.signedInUser;
-  const saving = uiState.saving;
   const rrStoryId = storyState.story?.id;
 
   return (
     <>
       <NotificationManager />
-      <div class="bg-white flex justify-between shadow-lg z-50">
+      <div class="bg-white flex justify-between shadow-lg z-20">
         <div class="px-2 py-1 flex items-center gap-1">
           <div class="dropdown">
             <button type="button" class="btn btn-ghost">
@@ -51,9 +52,18 @@ export const WriteHeaderMenu = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    saveStory();
+                    saveStory(true).catch((error) => {
+                      addNotification({
+                        type: "error",
+                        title: "Save failed",
+                        message: error.message,
+                      });
+                    });
                   }}
                 >
+                  {uiState.saving ? (
+                    <span class="loading loading-spinner" />
+                  ) : null}
                   Save Story
                 </button>
               </li>
@@ -101,8 +111,8 @@ export const WriteHeaderMenu = () => {
           </A>
         </div>
         <div class="px-2 py-1 flex gap-2 justify-end items-center">
-          <Show when={saving}>
-            <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-green-300" />
+          <Show when={uiState.saving}>
+            <div class="loading loading-spinner" />
           </Show>
           <button
             class="btn btn-ghost"

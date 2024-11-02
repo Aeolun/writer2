@@ -2,6 +2,7 @@ import { createStore } from "solid-js/store";
 import { generate } from "short-uuid";
 export interface Notification {
   id: string;
+  title: string;
   message: string;
   type: "info" | "success" | "warning" | "error";
   details?: Record<string, string[]>;
