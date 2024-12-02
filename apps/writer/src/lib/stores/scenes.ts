@@ -27,6 +27,7 @@ export const createScene = (parentId: string) => {
     plot_point_actions: [],
     text: "",
     summary: "",
+    modifiedAt: Date.now(),
   } satisfies Scene);
   appendNode({ id, type: "scene", name: "New scene", isOpen: true }, parentId);
 };
@@ -41,7 +42,10 @@ export const updateSceneData = (sceneId: string, data: Partial<Scene>) => {
       name: data.title,
     });
   }
-  setScenesState("scenes", sceneId, data);
+  setScenesState("scenes", sceneId, {
+    ...data,
+    modifiedAt: Date.now(),
+  });
 };
 
 export const updateSceneCursor = (sceneId: string, cursor: number) => {
@@ -172,7 +176,12 @@ export const moveParagraphUp = (sceneId: string, paragraphId: string) => {
   setScenesState("scenes", sceneId, "paragraphs", (p) => {
     const index = p.findIndex((p) => p.id === paragraphId);
     if (index === -1) return p;
-    return [...p.slice(0, index - 1), p[index], ...p.slice(index + 1)];
+    return [
+      ...p.slice(0, index - 1),
+      p[index],
+      p[index - 1],
+      ...p.slice(index + 1),
+    ];
   });
 };
 
@@ -180,7 +189,12 @@ export const moveParagraphDown = (sceneId: string, paragraphId: string) => {
   setScenesState("scenes", sceneId, "paragraphs", (p) => {
     const index = p.findIndex((p) => p.id === paragraphId);
     if (index === -1) return p;
-    return [...p.slice(0, index), p[index + 1], ...p.slice(index + 2)];
+    return [
+      ...p.slice(0, index),
+      p[index + 1],
+      p[index],
+      ...p.slice(index + 2),
+    ];
   });
 };
 

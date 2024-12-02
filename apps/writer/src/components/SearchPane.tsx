@@ -97,7 +97,7 @@ export const SearchPane = () => {
                   o.type === "paragraph" &&
                   (search().length === 0 ||
                     o.text.toLowerCase().includes(search().toLowerCase())) &&
-                  o.plotpointIds.includes(plotpoint() ?? ""),
+                  (!plotpoint() || o.plotpointIds.includes(plotpoint() ?? "")),
               )
               .map((o) => {
                 return o.type === "paragraph"

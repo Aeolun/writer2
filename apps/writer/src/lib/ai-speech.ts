@@ -5,11 +5,9 @@ import {
   readFile,
   writeFile,
 } from "@tauri-apps/plugin-fs";
-import { Store } from "@tauri-apps/plugin-store";
 
 import OpenAI from "openai";
-
-const store = new Store("global-settings.bin");
+import { settingsState } from "./stores/settings";
 
 const createHash = (val: string) =>
   crypto.subtle.digest("SHA-256", new TextEncoder().encode(val)).then((h) => {
@@ -22,7 +20,7 @@ const createHash = (val: string) =>
 
 export const aiSpeech = async (text: string) => {
   const openai = new OpenAI({
-    apiKey: (await store.get("openai-key")) ?? undefined,
+    apiKey: settingsState.openaiKey ?? undefined,
     dangerouslyAllowBrowser: true,
   });
 

@@ -1,4 +1,4 @@
-import { createEffect, createSignal, JSX } from "solid-js";
+import { createEffect, createSignal, JSX, onCleanup } from "solid-js";
 import { LanguageForm } from "./LanguageForm";
 import { SceneButtons } from "./SceneButtons";
 import { ParagraphsList } from "./ParagraphsList";
@@ -6,7 +6,7 @@ import { GenerateNext } from "./GenerateNext";
 import { InventoryActions } from "./InventoryActions";
 import { PlotpointActions } from "./PlotPointActions";
 import { getItemsAtParagraph } from "../lib/stores/retrieval/get-items-at-paragraph";
-import { uiState } from "../lib/stores/ui";
+import { setShowInventory, uiState } from "../lib/stores/ui";
 import {
   createSceneParagraph,
   removeSceneParagraph,
@@ -17,14 +17,21 @@ import { currentScene } from "../lib/stores/retrieval/current-scene";
 import { CurrentInventory } from "./CurrentInventory";
 import { Editor } from "./editor/Editor";
 import { createShortcut } from "@solid-primitives/keyboard";
-import { SceneParagraph } from "@writer/shared";
+import type { SceneParagraph } from "@writer/shared";
 import shortUUID from "short-uuid";
 
 export const StoryPanel = () => {
-  const [showCurrentInventory, setShowCurrentInventory] = createSignal(false);
+  const listener = (e) => {
+    // pass
+  };
+  window.addEventListener("keydown", listener);
+  onCleanup(() => {
+    window.removeEventListener("keydown", listener);
+  });
   createShortcut(
     ["Control", "Enter"],
     () => {
+      console.log("new paragraph createshortcut");
       createSceneParagraph(
         currentScene()?.id ?? "",
         {
@@ -36,7 +43,7 @@ export const StoryPanel = () => {
         currentScene()?.selectedParagraph,
       );
     },
-    { preventDefault: false, requireReset: true },
+    { preventDefault: false },
   );
   createShortcut(
     ["Control", "Backspace"],
@@ -46,15 +53,15 @@ export const StoryPanel = () => {
         currentScene()?.selectedParagraph ?? "",
       );
     },
-    { preventDefault: false, requireReset: true },
+    { preventDefault: false },
   );
 
   return currentScene() ? (
     <div class="flex flex-col h-full overflow-hidden">
-      {showCurrentInventory() && currentScene()?.selectedParagraph ? (
+      {uiState.showInventory && currentScene()?.selectedParagraph ? (
         <CurrentInventory
           currentParagraphId={currentScene()?.selectedParagraph ?? ""}
-          onClose={() => setShowCurrentInventory(false)}
+          onClose={() => setShowInventory(false)}
         />
       ) : null}
       <div class="flex flex-row flex-1 gap-4 h-full overflow-hidden justify-around">

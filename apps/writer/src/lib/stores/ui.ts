@@ -24,6 +24,16 @@ export interface UIState {
   lastSaveAt?: number;
   stories?: StorySummary[];
   syncing: boolean;
+  importDialog: {
+    running: boolean;
+    open: boolean;
+    chapters?: {
+      id: number;
+      title: string;
+      imported: boolean;
+    }[];
+    completed: boolean;
+  };
 }
 
 const initialState: UIState = {
@@ -34,6 +44,11 @@ const initialState: UIState = {
   saving: false,
   syncing: false,
   lastSaveAt: undefined,
+  importDialog: {
+    running: false,
+    open: false,
+    completed: false,
+  },
 };
 
 export const [uiState, setUIState] = createStore(initialState);
@@ -45,7 +60,7 @@ export const setSelectedEntity = (
   id: string,
 ) => {
   const path = findPathToNode(id);
-  console.log("path", path);
+  console.log("path", path, entity, id);
   setUIState(() => ({
     selectedEntity: entity,
     currentId: id,
@@ -77,3 +92,18 @@ export const addAiResponse = (response: string) =>
   ]);
 export const setAiPrompt = (prompt: string) => setUIState("aiPrompt", prompt);
 export const setAiOpenTab = (tab: number) => setUIState("aiOpenTab", tab);
+export const setImportDialogOpen = (open: boolean) =>
+  setUIState("importDialog", "open", open);
+export const setImportDialogChapters = (
+  chapters: {
+    id: number;
+    title: string;
+    imported: boolean;
+  }[],
+) => setUIState("importDialog", "chapters", chapters);
+export const setImportDialogChapterImported = (id: number) =>
+  setUIState("importDialog", "chapters", (i) => i?.id === id, "imported", true);
+export const setImportDialogRunning = (running: boolean) =>
+  setUIState("importDialog", "running", running);
+export const setImportDialogComplete = (complete: boolean) =>
+  setUIState("importDialog", "completed", complete);

@@ -1,6 +1,6 @@
 import { createStore } from "solid-js/store";
 import short from "short-uuid";
-import { Story, StorySettings } from "@writer/shared";
+import { PersistedStory, Story, StorySettings } from "@writer/shared";
 import { join } from "@tauri-apps/api/path";
 import { readTextFile, stat, writeTextFile } from "@tauri-apps/plugin-fs";
 
@@ -49,26 +49,36 @@ export const newStory = async (opts: { name: string; projectPath: string }) => {
   const id = short.generate();
   setStoryState("openPath", opts.projectPath);
   const storyFile = await join(opts.projectPath, "index.json");
+  const story = {
+    name: opts.name,
+    id,
+    settings: {},
+    structure: [],
+    book: {},
+    arc: {},
+    chapter: {},
+    scene: {},
+    characters: {},
+    plotPoints: {},
+    modifiedTime: 0,
+  };
   writeTextFile(
     storyFile,
     JSON.stringify(
       {
-        story: {
-          name: opts.name,
-          id,
-          settings: {},
+        story,
+        language: {
+          languages: {},
         },
-      },
+      } satisfies PersistedStory,
       null,
       2,
     ),
   );
   const newFileStat = await stat(storyFile);
   setStoryState("story", {
-    id,
-    name: opts.name,
+    ...story,
     modifiedTime: newFileStat.mtime ? newFileStat.mtime.getTime() : 0,
-    settings: {},
   });
   setExpectedLastModified(newFileStat.mtime ? newFileStat.mtime.getTime() : 0);
   setStoryLoaded(true);

@@ -45,12 +45,14 @@ export const saveStory = async (withAutosave = false) => {
   const persisted = saveSchema.parse(storyData);
 
   if (
+    Object.keys(treeState.structure).length > 0 &&
     Object.keys(scenesState.scenes).length === 0 &&
     Object.keys(booksStore.books).length === 0
   ) {
     addNotification({
       title: "No scenes or books",
-      message: "You must create at least one scene or one book before saving.",
+      message:
+        "Maybe something went wrong, tree has items, but books and scenes do not.",
       type: "error",
     });
     return;

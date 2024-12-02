@@ -1,6 +1,21 @@
 import { treeState } from "../tree";
 import { getWordCount, scenesState } from "../scenes";
-import { contentSchemaToHtml } from "../../persistence/content-schema-to-html";
+import {
+  contentSchemaToHtml,
+  contentSchemaToText,
+} from "../../persistence/content-schema-to-html";
+import { booksStore } from "../books";
+import { chaptersState } from "../chapters";
+
+export type SortedBookCoverObject = {
+  type: "book_cover";
+  title: string;
+  author: string;
+  editor: string;
+  coverArtist: string;
+  coverImage: string;
+  separatorImage: string;
+};
 
 export type SortedChapterHeaderObject = {
   type: "chapter_header";
@@ -15,6 +30,7 @@ export type SortedBreakObject = {
 export type SortedParagraphObject = {
   type: "paragraph";
   text: string;
+  plainText: string;
   sceneId: string;
   posted: boolean;
   state: string;
@@ -32,12 +48,13 @@ export type SortedSummaryObject = {
 };
 
 export type SortedBookObject =
+  | SortedBookCoverObject
   | SortedChapterHeaderObject
   | SortedBreakObject
   | SortedParagraphObject
   | SortedSummaryObject;
 
-export const sortedObjects = (rootId?: string) => {
+export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
   const stats = {
     words: 0,
     aiWords: 0,
@@ -58,6 +75,21 @@ export const sortedObjects = (rootId?: string) => {
     if (currentlySelected > 0) {
       stats.books++;
     }
+
+    if (currentlySelected > 0) {
+      const book = booksStore.books[bookNode.id];
+      if (book?.coverImage) {
+        objects.push({
+          type: "book_cover",
+          title: book.title,
+          author: book.author ?? "",
+          editor: book.editor ?? "",
+          coverArtist: book.coverArtist ?? "",
+          coverImage: book.coverImage,
+          separatorImage: book.separatorImage ?? "",
+        });
+      }
+    }
     for (const arcNode of bookNode.children ?? []) {
       if (
         arcNode.id === rootId ||
@@ -68,6 +100,15 @@ export const sortedObjects = (rootId?: string) => {
       }
 
       for (const chapterNode of arcNode.children ?? []) {
+        const chapter = chaptersState.chapters[chapterNode.id];
+        if (
+          chapterNode.id !== rootId &&
+          !includeUnpublished &&
+          (!chapter.visibleFrom ||
+            new Date(chapter.visibleFrom).getTime() > new Date().getTime())
+        ) {
+          continue;
+        }
         if (
           chapterNode.id === rootId ||
           rootId === undefined ||
@@ -112,6 +153,10 @@ export const sortedObjects = (rootId?: string) => {
                   typeof paragraph.text === "string"
                     ? paragraph.text
                     : contentSchemaToHtml(paragraph.text),
+                plainText:
+                  typeof paragraph.text === "string"
+                    ? paragraph.text
+                    : contentSchemaToText(paragraph.text),
                 sceneId: scene.id,
                 state: paragraph.state,
                 posted: sceneData.posted ?? false,

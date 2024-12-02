@@ -1,109 +1,160 @@
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Textarea,
-} from "@chakra-ui/react";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { createSignal, Show } from "solid-js";
 import { selectedObjectSelector } from "../lib/selectors/selectedObjectSelector";
 import { storyActions } from "../lib/slices/story";
 import { nodeInTree } from "../lib/selectors/nodeInTree";
+import { FormField } from "./styled/FormField";
+import { currentBook } from "../lib/stores/retrieval/current-book";
+import {
+  deleteBook,
+  setBooksStore,
+  updateBookValue,
+} from "../lib/stores/books";
+import { findNode, findPathToNode } from "../lib/stores/tree";
+import { FileSelector } from "./FileSelector";
 
 export const BookTabs = () => {
-  const bookObj = useSelector(selectedObjectSelector);
-  const node = useSelector(nodeInTree);
-  const dispatch = useDispatch();
-
-  return bookObj && bookObj.type === "book" ? (
-    <Tabs display={"flex"} flexDirection={"column"} overflow={"hidden"}>
-      <TabList>
-        <Tab>Overview</Tab>
-      </TabList>
-      <TabPanels overflow={"auto"}>
-        <TabPanel>
-          <FormControl>
-            <FormLabel>Title</FormLabel>
-            <Input
-              placeholder={"title"}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateBook({
-                    id: bookObj.id,
-                    title: e.target.value,
-                  }),
+  return (
+    <Show when={currentBook()}>
+      <div class="flex flex-col overflow-hidden">
+        <div class="tabs tabs-bordered">
+          <button class="tab" type="button">
+            Overview
+          </button>
+        </div>
+        <div class="overflow-auto p-4">
+          <FormField label="Title">
+            <input
+              type="text"
+              placeholder="title"
+              class="input input-bordered"
+              onInput={(e) => {
+                updateBookValue(
+                  currentBook()!.id,
+                  "title",
+                  e.currentTarget.value,
                 );
               }}
-              value={bookObj.data.title}
+              value={currentBook()?.title}
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Summary</FormLabel>
-            <Textarea
-              mt={2}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateBook({
-                    id: bookObj.id,
-                    summary: e.target.value,
-                  }),
+          </FormField>
+          <FormField label="Author">
+            <input
+              type="text"
+              placeholder="author"
+              class="input input-bordered"
+              onInput={(e) => {
+                updateBookValue(
+                  currentBook()!.id,
+                  "author",
+                  e.currentTarget.value,
                 );
               }}
+              value={currentBook()?.author ?? ""}
+            />
+          </FormField>
+          <FormField label="Editor">
+            <input
+              type="text"
+              placeholder="editor"
+              class="input input-bordered"
+              onInput={(e) => {
+                updateBookValue(
+                  currentBook()!.id,
+                  "editor",
+                  e.currentTarget.value,
+                );
+              }}
+              value={currentBook()?.editor ?? ""}
+            />
+          </FormField>
+          <FormField label="Cover artist">
+            <input
+              type="text"
+              placeholder="cover artist"
+              class="input input-bordered"
+              onInput={(e) => {
+                updateBookValue(
+                  currentBook()!.id,
+                  "coverArtist",
+                  e.currentTarget.value,
+                );
+              }}
+              value={currentBook()?.coverArtist ?? ""}
+            />
+          </FormField>
+          <FormField label="Summary">
+            <textarea
+              class="textarea textarea-bordered mt-2"
               placeholder="summary"
-              height={"300px"}
-              value={bookObj.data.summary}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Start date</FormLabel>
-            <Input
-              mt={2}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateBook({
-                    id: bookObj.id,
-                    start_date: e.target.value,
-                  }),
+              style={{ height: "300px" }}
+              onInput={(e) => {
+                updateBookValue(
+                  currentBook()!.id,
+                  "summary",
+                  e.currentTarget.value,
                 );
               }}
-              placeholder={"start date"}
-              value={bookObj.data.start_date}
+              value={currentBook()?.summary}
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>AI Response</FormLabel>
-            <Textarea
-              mt={2}
-              onChange={(e) => {
-                dispatch(
-                  storyActions.updateBook({
-                    id: bookObj.id,
-                    critique: e.target.value,
-                  }),
+          </FormField>
+          <FormField label="Cover image">
+            <FileSelector
+              value={currentBook()?.coverImage ?? ""}
+              onChange={(file) => {
+                updateBookValue(currentBook()!.id, "coverImage", file);
+              }}
+            />
+          </FormField>
+          <FormField label="Separator image">
+            <FileSelector
+              value={currentBook()?.separatorImage ?? ""}
+              onChange={(file) => {
+                updateBookValue(currentBook()!.id, "separatorImage", file);
+              }}
+            />
+          </FormField>
+          <FormField label="Start date">
+            <input
+              type="text"
+              class="input input-bordered mt-2"
+              placeholder="start date"
+              onInput={(e) => {
+                updateBookValue(
+                  currentBook()!.id,
+                  "start_date",
+                  e.currentTarget.value,
                 );
               }}
+              value={currentBook()?.start_date ?? ""}
+            />
+          </FormField>
+          <FormField label="AI Response">
+            <textarea
+              class="textarea textarea-bordered mt-2"
               placeholder="critique"
-              height={"300px"}
-              value={bookObj.data.critique}
+              style={{ height: "300px" }}
+              onInput={(e) => {
+                updateBookValue(
+                  currentBook()!.id,
+                  "critique",
+                  e.currentTarget.value,
+                );
+              }}
+              value={currentBook()?.critique ?? ""}
             />
-          </FormControl>
-          <Button
-            colorScheme="red"
-            isDisabled={node?.children && node.children.length > 0}
+          </FormField>
+          <button
+            type="button"
+            class="btn btn-error"
+            disabled={(findNode(currentBook()!.id)?.children?.length ?? 0) > 0}
             onClick={() => {
-              dispatch(storyActions.deleteBook({ bookId: bookObj.id }));
+              deleteBook(currentBook()!.id);
             }}
           >
             Delete
-          </Button>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
-  ) : null;
+          </button>
+        </div>
+      </div>
+    </Show>
+  );
 };

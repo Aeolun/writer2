@@ -1,5 +1,10 @@
-import { setTreeItemOpen, treeState } from "../lib/stores/tree";
-import { Node } from "@writer/shared";
+import {
+  setTreeItemOpen,
+  setTreeState,
+  treeState,
+  updateNode,
+} from "../lib/stores/tree";
+import type { Node } from "@writer/shared";
 import {
   AiFillPlusCircle,
   AiOutlineClockCircle,
@@ -12,10 +17,19 @@ import { createScene, scenesState } from "../lib/stores/scenes";
 import { Show } from "solid-js";
 import { setSelectedEntity, uiState } from "../lib/stores/ui";
 import { createArc } from "../lib/stores/arcs";
-
-const renderNode = (node: Node) => {
+import { dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME } from "solid-dnd-directive";
+const renderNode = (node: Node & { isDndShadowItem?: boolean }) => {
   const chapter = chaptersState.chapters[node.id];
   const scene = scenesState.scenes[node.id];
+
+  const dndEvent = (e) => {
+    console.log(e);
+    updateNode(node.id, {
+      children: e.detail.items.filter(
+        (i) => e.detail.info.trigger !== "finalize" || !i.isDndShadowItem,
+      ),
+    });
+  };
 
   return (
     <div class="flex flex-col">
@@ -28,6 +42,7 @@ const renderNode = (node: Node) => {
           "pl-6": node.type === "arc",
           "pl-12": node.type === "chapter",
           "pl-18": node.type === "scene",
+          "opacity-50": node.isDndShadowItem === true,
         }}
         onClick={() => {
           setSelectedEntity(node.type, node.id);
@@ -80,7 +95,7 @@ const renderNode = (node: Node) => {
         {["book", "chapter", "arc"].includes(node.type) ? (
           <button
             class={
-              node.type !== "chapter" || !chapter.visibleFrom ? "ml-auto" : ""
+              node.type !== "chapter" || !chapter?.visibleFrom ? "ml-auto" : ""
             }
             type="button"
             onClick={() => {
@@ -97,19 +112,117 @@ const renderNode = (node: Node) => {
           </button>
         ) : null}
       </div>
-      <Show when={node.isOpen}>
-        <div class="flex flex-col">{node.children?.map(renderNode)}</div>
+      <Show when={node.isOpen && node.children}>
+        <div
+          class="flex flex-col"
+          use:dndzone={{
+            items: () => node.children,
+            type: node.type,
+            flipDurationMs: 0,
+          }}
+          on:consider={dndEvent}
+          on:finalize={dndEvent}
+        >
+          {node.children?.map(renderNode)}
+        </div>
       </Show>
     </div>
   );
 };
 
 export const StoryNavigation = () => {
-  const structure = treeState.structure;
+  // const closestContainerOrItem = (draggable, droppables, context) => {
+  //   const closestContainer = closestCenter(
+  //     draggable,
+  //     droppables.filter((droppable) => isContainer(droppable.id)),
+  //     context,
+  //   );
+  //   if (closestContainer) {
+  //     const containerItemIds = containers[closestContainer.id];
+  //     const closestItem = closestCenter(
+  //       draggable,
+  //       droppables.filter((droppable) =>
+  //         containerItemIds.includes(droppable.id),
+  //       ),
+  //       context,
+  //     );
+  //     if (!closestItem) {
+  //       return closestContainer;
+  //     }
+
+  //     if (getContainer(draggable.id) !== closestContainer.id) {
+  //       const isLastItem =
+  //         containerItemIds.indexOf(closestItem.id as number) ===
+  //         containerItemIds.length - 1;
+
+  //       if (isLastItem) {
+  //         const belowLastItem =
+  //           draggable.transformed.center.y > closestItem.transformed.center.y;
+
+  //         if (belowLastItem) {
+  //           return closestContainer;
+  //         }
+  //       }
+  //     }
+  //     return closestItem;
+  //   }
+  // };
+
+  // const move = (draggable, droppable, onlyWhenChangingContainer = true) => {
+  //   const draggableContainer = getContainer(draggable.id);
+  //   const droppableContainer = isContainer(droppable.id)
+  //     ? droppable.id
+  //     : getContainer(droppable.id);
+
+  //   if (
+  //     draggableContainer != droppableContainer ||
+  //     !onlyWhenChangingContainer
+  //   ) {
+  //     const containerItemIds = containers[droppableContainer];
+  //     let index = containerItemIds.indexOf(droppable.id);
+  //     if (index === -1) index = containerItemIds.length;
+
+  //     batch(() => {
+  //       setContainers(draggableContainer, (items) =>
+  //         items.filter((item) => item !== draggable.id),
+  //       );
+  //       setContainers(droppableContainer, (items) => [
+  //         ...items.slice(0, index),
+  //         draggable.id,
+  //         ...items.slice(index),
+  //       ]);
+  //     });
+  //   }
+  // };
+
+  // const onDragOver = ({ draggable, droppable }) => {
+  // if (draggable && droppable) {
+  //   move(draggable, droppable);
+  // }
+  // };
+
+  // const onDragEnd = ({ draggable, droppable }) => {
+  // if (draggable && droppable) {
+  //   move(draggable, droppable, false);
+  // }
+  // };
+  const dndEvent = (e) => {
+    console.log(e);
+    //setTreeState("structure", e.items);
+  };
 
   return (
-    <div class="w-1/5 min-w-[350px] flex flex-col z-10 overflow-y-auto border-r border-gray-200">
-      {structure.map(renderNode)}
+    <div
+      class="w-1/5 min-w-[350px] flex flex-col z-10 overflow-y-auto border-r border-gray-200"
+      use:dndzone={{
+        items: () => treeState.structure,
+        type: "book",
+        flipDurationMs: 0,
+      }}
+      on:consider={dndEvent}
+      on:finalize={dndEvent}
+    >
+      {treeState.structure.map(renderNode)}
     </div>
   );
 };

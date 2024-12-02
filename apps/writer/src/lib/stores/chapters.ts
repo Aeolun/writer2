@@ -1,4 +1,4 @@
-import { Chapter } from "@writer/shared";
+import type { Chapter } from "@writer/shared";
 import { createStore } from "solid-js/store";
 import { appendNode, findNode, removeNode } from "./tree";
 import shortUUID from "short-uuid";
@@ -14,7 +14,9 @@ export const createChapter = (parentId: string) => {
   setChaptersState("chapters", id, {
     id,
     title: "New chapter",
-  });
+    summary: "",
+    modifiedAt: Date.now(),
+  } satisfies Chapter);
   appendNode(
     { id, type: "chapter", name: "New chapter", isOpen: true },
     parentId,
@@ -34,5 +36,8 @@ export const deleteChapter = (id: string) => {
 };
 
 export const updateChapter = (id: string, chapter: Partial<Chapter>) => {
-  setChaptersState("chapters", id, chapter);
+  setChaptersState("chapters", id, {
+    ...chapter,
+    modifiedAt: Date.now(),
+  });
 };

@@ -13,7 +13,7 @@
     "active": true,
     "category": "DeveloperTool",
     "copyright": "",
-    "externalBin": [],
+    "externalBin": ["binaries/typst"],
     "resources": ["migrations/*"],
     "icon": [
       "icons/128x128@2x.png",
@@ -53,6 +53,8 @@
           "permissions": [
             "fs:allow-app-write-recursive",
             "fs:allow-app-read-recursive",
+            "fs:allow-appcache-read-recursive",
+            "fs:allow-appcache-write-recursive",
             "fs:allow-home-write-recursive",
             "fs:allow-home-read-recursive",
             "dialog:allow-open",
@@ -62,16 +64,32 @@
             "sql:allow-select",
             "sql:allow-execute",
             "sql:allow-close",
-            "path:default",
-            "window:default",
-            "window:allow-set-title",
+            "core:path:default",
+            "core:window:default",
+            "core:window:allow-set-title",
             "store:allow-get",
             "store:allow-delete",
             "store:allow-set",
             "store:allow-entries",
             "store:allow-save",
             "store:allow-load",
-            "clipboard-manager:allow-write"
+            "clipboard-manager:allow-write",
+            {
+              "identifier": "shell:allow-execute",
+              "allow": [
+                {
+                  "args": [
+                    "compile",
+                    {
+                      "validator": "\\S+"
+                    }
+                  ],
+                  "name": "binaries/typst",
+                  "sidecar": true
+                }
+              ]
+            },
+            "shell:allow-open"
           ]
         }
       ]

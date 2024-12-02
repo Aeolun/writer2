@@ -6,12 +6,13 @@ import {
   settingsState,
 } from "./lib/stores/settings";
 import { setSignedInUser } from "./lib/stores/user";
-import { trpc } from "./lib/trpc";
+import { reloadTrpc, trpc } from "./lib/trpc";
 import { AiPopup } from "./components/AiPopup";
 import { NotificationManager } from "./components/NotificationManager";
 import { saveStory } from "./lib/persistence/save-story";
 import { addNotification } from "./lib/stores/notifications";
 import { storyState } from "./lib/stores/story";
+import { ImportDialog } from "./components/ImportDialog";
 
 export const Root = (props: ParentProps) => {
   const colorMode = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -23,6 +24,7 @@ export const Root = (props: ParentProps) => {
     const settings = Object.fromEntries(await tauriSettingsStore.entries());
     console.log("settings", settings);
     setSettings(settings as unknown as SettingsState);
+    reloadTrpc();
   });
 
   createEffect(async () => {
@@ -63,6 +65,7 @@ export const Root = (props: ParentProps) => {
     <div data-theme={colorMode === "light" ? "fantasy" : "forest"}>
       <AiPopup />
       <NotificationManager />
+      <ImportDialog />
       {props.children}
     </div>
   );

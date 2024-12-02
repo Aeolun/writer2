@@ -105,12 +105,12 @@ export const appendNode = (node: Node, parentId?: string, afterId?: string) => {
       if (afterId) {
         const index = children.findIndex((child: Node) => child.id === afterId);
         return [
-          ...children.slice(0, index + 1),
+          ...(children.slice(0, index + 1) ?? []),
           node,
-          ...children.slice(index + 1),
+          ...(children.slice(index + 1) ?? []),
         ];
       }
-      return [...children, node];
+      return [...(children ?? []), node];
     });
   } else {
     setTreeState("structure", (structure) => [...structure, node]);

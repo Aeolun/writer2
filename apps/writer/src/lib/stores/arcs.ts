@@ -1,4 +1,4 @@
-import { Arc } from "@writer/shared";
+import type { Arc } from "@writer/shared";
 import { createStore } from "solid-js/store";
 import short from "short-uuid";
 import { appendNode, findNode, removeNode, updateNode } from "./tree"; // Import functions from tree.ts
@@ -18,7 +18,7 @@ export function createArc(bookId: string) {
     modifiedAt: Date.now(),
     summary: "",
     start_date: "",
-  });
+  } satisfies Arc);
   appendNode(
     {
       id: newId,

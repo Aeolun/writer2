@@ -3,6 +3,7 @@ import { ErrorBoundary, For } from "solid-js";
 import { uiState } from "../lib/stores/ui";
 import { ArcTabs } from "./ArcTabs";
 import { ChapterTabs } from "./ChapterTabs";
+import { BookTabs } from "./BookTabs";
 
 export const StoryPane = () => {
   return (
@@ -18,7 +19,7 @@ export const StoryPane = () => {
             </For>
           </ul>
         </div>
-        {/* {selectedEntity === "book" ? <BookTabs /> : null} */}
+        {uiState.selectedEntity === "book" ? <BookTabs /> : null}
         {uiState.selectedEntity === "arc" ? <ArcTabs /> : null}
         {uiState.selectedEntity === "chapter" ? <ChapterTabs /> : null}
         {uiState.selectedEntity === "scene" ? <SceneTabs /> : null}

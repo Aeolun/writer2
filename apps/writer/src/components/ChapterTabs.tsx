@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
 import moment from "moment";
-import { HelpKind } from "../lib/ai-instructions";
+import type { HelpKind } from "../lib/ai-instructions";
 import { useAi } from "../lib/use-ai";
 import { currentChapter } from "../lib/stores/retrieval/current-chapter";
 import { updateChapter } from "../lib/stores/chapters";
@@ -8,6 +8,9 @@ import { sortedObjects } from "../lib/stores/retrieval/sorted-objects";
 import { publishToRoyalRoad } from "@writer/server/src/procedures/publish-to-royal-road";
 import { trpc } from "../lib/trpc";
 import { updateNode } from "../lib/stores/tree";
+import { settingsState } from "../lib/stores/settings";
+import { storyState } from "../lib/stores/story";
+import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
 
 export const ChapterTabs = () => {
   const [selectedTab, setSelectedTab] = createSignal("overview");
@@ -16,11 +19,12 @@ export const ChapterTabs = () => {
     if (!chapterId) {
       return;
     }
-    const paragraphs = sortedObjects(chapterId)
+    const paragraphs = sortedObjects(chapterId, true)
       ?.filter((i) => i.type === "paragraph")
-      .map((i) => i.text)
+      .map((i) => i.plainText)
       .join("\n\n");
 
+    console.log("paragraphs", paragraphs);
     useAi(helpKind, paragraphs ?? "", false).then((res) => {
       if (helpKind === "suggest_title") {
         updateChapter(chapterId, {
@@ -36,24 +40,21 @@ export const ChapterTabs = () => {
       }
     });
   };
+  console.log("curerntChapter", currentChapter());
 
   return currentChapter() ? (
     <div class="flex flex-col flex-1 overflow-hidden">
-      <div class="tabs">
+      <div class="tabs tabs-bordered">
         <button
           type="button"
-          class={`tab tab-bordered ${
-            selectedTab() === "overview" ? "tab-active" : ""
-          }`}
+          class={`tab ${selectedTab() === "overview" ? "tab-active" : ""}`}
           onClick={() => setSelectedTab("overview")}
         >
           Overview
         </button>
         <button
           type="button"
-          class={`tab tab-bordered ${
-            selectedTab() === "publishing" ? "tab-active" : ""
-          }`}
+          class={`tab ${selectedTab() === "publishing" ? "tab-active" : ""}`}
           onClick={() => setSelectedTab("publishing")}
         >
           Publishing
@@ -110,7 +111,7 @@ export const ChapterTabs = () => {
                   This is the date the chapter starts in story time.
                 </p>
               </div>
-              <pre>{currentChapter()?.extra}</pre>
+              <div class="break-all">{currentChapter()?.extra}</div>
               <button
                 type="button"
                 class="btn btn-blue"
@@ -199,7 +200,10 @@ export const ChapterTabs = () => {
             <div class="form-control">
               <button
                 type="button"
-                disabled={!currentChapter()?.royalRoadId}
+                disabled={
+                  !currentChapter()?.royalRoadId ||
+                  !storyState.story?.settings?.royalRoadId
+                }
                 class="btn btn-primary"
                 onClick={() => {
                   trpc.publishToRoyalRoad.mutate({

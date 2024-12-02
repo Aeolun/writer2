@@ -35,6 +35,10 @@ export const whoAmI = publicProcedure.query(async (opts) => {
   const owner = accessToken?.owner ?? session?.owner;
 
   const sha256Email = createHash("sha256").update(owner?.email).digest("hex");
+
+  if (!owner) {
+    return null;
+  }
   return {
     ...owner,
     avatarUrl: `https://gravatar.com/avatar/${sha256Email}`,

@@ -1,4 +1,4 @@
-import { InventoryAction } from "@writer/shared";
+import type { InventoryAction } from "@writer/shared";
 import { currentScene } from "../lib/stores/retrieval/current-scene";
 import { setShowInventory } from "../lib/stores/ui";
 import { createSignal } from "solid-js";

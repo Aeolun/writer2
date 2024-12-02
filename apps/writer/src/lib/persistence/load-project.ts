@@ -1,5 +1,5 @@
 import { path } from "@tauri-apps/api";
-import { readDir, readTextFile, stat } from "@tauri-apps/plugin-fs";
+import { readDir, readTextFile, stat, exists } from "@tauri-apps/plugin-fs";
 import {
   type Node,
   type PersistedStory,
@@ -22,6 +22,7 @@ import { setPlotpoints } from "../stores/plot-points";
 import { setItems } from "../stores/items";
 import { setLanguageStore } from "../stores/language-store";
 import { setBooksStore } from "../stores/books";
+import { loadToState } from "./load-to-state";
 
 export const loadProject = async (projectPath: string) => {
   const indexPath = await path.join(projectPath, "index.json");
@@ -39,13 +40,15 @@ export const loadProject = async (projectPath: string) => {
     try {
       storyData.story[entity] = {};
       const entityPath = await path.join(projectPath, entity);
-      const entityFiles = await readDir(entityPath);
-      for (const entityId of entityFiles
-        .filter((file) => !file.name.startsWith("."))
-        .map((file) => file.name.replace(".json", ""))) {
-        const entityFile = await path.join(entityPath, `${entityId}.json`);
-        const entityData = await readTextFile(entityFile);
-        storyData.story[entity][entityId] = JSON.parse(entityData.toString());
+      if (await exists(entityPath)) {
+        const entityFiles = await readDir(entityPath);
+        for (const entityId of entityFiles
+          .filter((file) => !file.name.startsWith("."))
+          .map((file) => file.name.replace(".json", ""))) {
+          const entityFile = await path.join(entityPath, `${entityId}.json`);
+          const entityData = await readTextFile(entityFile);
+          storyData.story[entity][entityId] = JSON.parse(entityData.toString());
+        }
       }
     } catch (error) {
       console.error(error);
@@ -53,21 +56,25 @@ export const loadProject = async (projectPath: string) => {
   }
 
   for (const languageEntity of languageEntities) {
-    delete storyData.language[languageEntity];
-    storyData.language[languageEntity] = {};
-    const languageEntityPath = await path.join(projectPath, languageEntity);
-    const languageEntityFiles = await readDir(languageEntityPath);
-    for (const languageEntityId of languageEntityFiles.map((name) =>
-      name.name.replace(".json", ""),
-    )) {
-      const entityPath = await path.join(
-        languageEntityPath,
-        `${languageEntityId}.json`,
-      );
-      const languageEntityData = await readTextFile(entityPath);
-      storyData.language[languageEntity][languageEntityId] = JSON.parse(
-        languageEntityData.toString(),
-      );
+    if (storyData.language) {
+      delete storyData.language[languageEntity];
+      storyData.language[languageEntity] = {};
+      const languageEntityPath = await path.join(projectPath, languageEntity);
+      if (await exists(languageEntityPath)) {
+        const languageEntityFiles = await readDir(languageEntityPath);
+        for (const languageEntityId of languageEntityFiles.map((name) =>
+          name.name.replace(".json", ""),
+        )) {
+          const entityPath = await path.join(
+            languageEntityPath,
+            `${languageEntityId}.json`,
+          );
+          const languageEntityData = await readTextFile(entityPath);
+          storyData.language[languageEntity][languageEntityId] = JSON.parse(
+            languageEntityData.toString(),
+          );
+        }
+      }
     }
   }
 
@@ -112,45 +119,7 @@ export const loadProject = async (projectPath: string) => {
   //   });
   // }
 
-  setArcsStore({
-    arcs: savedStory.story.arc,
-  });
-  console.log(savedStory.story.characters);
-  setCharactersState({
-    characters: savedStory.story.characters,
-  });
-  setChaptersState({
-    chapters: savedStory.story.chapter,
-  });
-  const scenesToSet = { ...savedStory.story.scene };
-  for (const sceneId of Object.keys(scenesToSet)) {
-    let sceneWords = 0;
-    for (const paragraph of scenesToSet[sceneId].paragraphs) {
-      paragraph.words = getWordCount(paragraph.text);
-      sceneWords += paragraph.words;
-    }
-    scenesToSet[sceneId].words = sceneWords;
-  }
-  setScenesState({
-    scenes: scenesToSet,
-  });
-  setBooksStore({
-    books: savedStory.story.book,
-  });
-  setItems({
-    items: savedStory.story.item,
-  });
-  setPlotpoints({
-    plotPoints: savedStory.story.plotPoints,
-  });
-  setCharactersState({
-    characters: savedStory.story.characters,
-  });
-  setLanguageStore({
-    languages: savedStory.language,
-  });
-  setTree(savedStory.story.structure);
-  setStory(savedStory.story);
+  loadToState(savedStory);
   setOpenPath(projectPath);
   setExpectedLastModified(storyStat.mtime?.getTime() ?? 0);
 

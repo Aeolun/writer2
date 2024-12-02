@@ -14,8 +14,22 @@ export const createBook = () => {
   setBooksStore("books", id, {
     id,
     title: "New book",
-  });
+    summary: "",
+    modifiedAt: Date.now(),
+  } satisfies Book);
   appendNode({ id, type: "book", name: "New book", isOpen: true });
+};
+
+export const updateBookValue = <K extends keyof Book>(
+  id: string,
+  key: K,
+  value: Book[K],
+) => {
+  setBooksStore("books", id, {
+    ...booksStore.books[id],
+    [key]: value,
+    modifiedAt: Date.now(),
+  });
 };
 
 export const deleteBook = (id: string) => {

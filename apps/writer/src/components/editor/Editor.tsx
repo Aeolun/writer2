@@ -56,6 +56,10 @@ export const Editor = (props: {
           "Mod-z": undo,
           "Mod-y": redo,
           "Mod-i": italic,
+          "Control-Enter": () => {
+            console.log("new paragraph editor shortcut");
+            return true;
+          },
         }),
         keymap(baseKeymap),
         inlineMenuPlugin,
@@ -66,12 +70,6 @@ export const Editor = (props: {
     const view = new EditorView(editor() ?? null, {
       state,
       dispatchTransaction(transaction) {
-        console.log(
-          "Document size went from",
-          transaction.before.content.size,
-          "to",
-          transaction.doc.content.size,
-        );
         const newState = view.state.apply(transaction);
         view.updateState(newState);
 

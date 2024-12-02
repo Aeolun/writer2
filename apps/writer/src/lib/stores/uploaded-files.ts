@@ -1,10 +1,10 @@
 import { UploadedFile } from "@writer/shared";
 import { createStore } from "solid-js/store";
 
-export const [uploadedFiles, setUploadedFiles] = createStore<
-  Record<string, UploadedFile>
->({});
+export const [uploadedFiles, setUploadedFiles] = createStore<{
+  files: Record<string, UploadedFile>;
+}>({ files: {} });
 
 export const addUploadedFile = (path: string, file: UploadedFile) => {
-  setUploadedFiles((prev) => ({ ...prev, [path]: file }));
+  setUploadedFiles("files", (prev) => ({ ...prev, [path]: file }));
 };

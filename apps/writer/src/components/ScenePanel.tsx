@@ -5,11 +5,14 @@ import { deleteScene, updateSceneData } from "../lib/stores/scenes";
 import { useAi } from "../lib/use-ai";
 import { FormField } from "./styled/FormField";
 import { findNode } from "../lib/stores/tree";
+import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
 
 export const ScenePanel = () => {
   const help = (helpKind: HelpKind, extra = false) => {
     const text = `Scene text:\n\n${currentScene()
-      ?.paragraphs.map((p) => p.text)
+      ?.paragraphs.map((p) =>
+        typeof p.text === "string" ? p.text : contentSchemaToText(p.text),
+      )
       .join("\n\n")}\n\nOutput only the summary.`;
     useAi(helpKind, text).then((res) => {
       const sceneId = currentScene()?.id;

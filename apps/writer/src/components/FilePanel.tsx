@@ -22,7 +22,7 @@ import {
 import { userState } from "../lib/stores/user.ts";
 import { addNotification } from "../lib/stores/notifications.ts";
 import { NoItems } from "./NoItems.tsx";
-
+import { uploadedFile } from "../lib/stores/retrieval/uploaded-file.ts";
 export interface File {
   name: string;
   isDir: boolean;
@@ -208,12 +208,14 @@ export const FilePanel = ({
     await Promise.all(
       files?.map(async (f) => {
         if (f.name) {
-          const destination = await resolve(
+          const destinationFolder = await resolve(
             openPath,
             "data",
             currentPath().replace(/^\//, ""),
-            f.name,
           );
+          await mkdir(destinationFolder, { recursive: true });
+
+          const destination = await resolve(destinationFolder, f.name);
           return copyFile(f.path, destination);
         }
       }) ?? [],
@@ -246,6 +248,7 @@ export const FilePanel = ({
     } else if (action === "upload") {
       if (!userState.signedInUser) {
         addNotification({
+          title: "Not signed in",
           message: "You must be signed in to upload files",
           type: "error",
         });
@@ -273,7 +276,7 @@ export const FilePanel = ({
             storyId,
           })
           .then((res) => {
-            console.log("uploaded");
+            console.log("uploaded", res);
             addUploadedFile(newPath, {
               hash: res.sha256,
               publicUrl: res.fullUrl,
@@ -369,13 +372,13 @@ export const FilePanel = ({
                 (file: File) =>
                   !showOnlyUploaded ||
                   file.isDir ||
-                  uploadedFiles?.[`${currentPath}/${file.name}`],
+                  uploadedFile(`${currentPath()}/${file.name}`),
               )
               .map((file: File) => (
                 <Item
                   signedIn={!!userState.signedInUser}
                   handleAction={handleAction}
-                  uploadData={uploadedFiles?.[`${currentPath()}/${file.name}`]}
+                  uploadData={uploadedFile(`${currentPath()}/${file.name}`)}
                   handleClick={handleClick}
                   file={file}
                   selectFile={selectFile}

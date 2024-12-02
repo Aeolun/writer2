@@ -5,13 +5,7 @@ import { FiMenu } from "solid-icons/fi";
 import { NotificationManager } from "./NotificationManager";
 import { A, useNavigate } from "@solidjs/router";
 import { storyState, unloadStory } from "../lib/stores/story";
-import {
-  setAiPopupOpen,
-  setSaving,
-  setSigninPopupOpen,
-  store,
-  uiState,
-} from "../lib/stores/ui";
+import { setAiPopupOpen, uiState } from "../lib/stores/ui";
 import { uploadStory } from "../lib/persistence/upload-story";
 import { importRoyalRoad } from "../lib/persistence/import-royal-road";
 import { setSetting } from "../lib/stores/settings";
@@ -21,8 +15,6 @@ import { addNotification } from "../lib/stores/notifications";
 export const WriteHeaderMenu = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = createSignal(false);
-  const isSignedIn = userState.signedInUser;
-  const rrStoryId = storyState.story?.id;
 
   return (
     <>
@@ -127,14 +119,20 @@ export const WriteHeaderMenu = () => {
           <button
             class="btn btn-ghost"
             type="button"
-            disabled={!rrStoryId || !isSignedIn?.name}
+            disabled={
+              !storyState.story?.settings?.royalRoadId ||
+              !userState.signedInUser?.name
+            }
             onClick={() => {
-              if (rrStoryId) {
-                importRoyalRoad(rrStoryId);
+              if (storyState.story?.settings?.royalRoadId) {
+                importRoyalRoad(storyState.story?.settings?.royalRoadId);
               }
             }}
           >
-            Import
+            {uiState.importDialog.running ? (
+              <span class="loading loading-spinner" />
+            ) : null}
+            {uiState.importDialog.running ? "Importing..." : "Import"}
           </button>
           <button
             class="btn btn-ghost"
@@ -142,7 +140,7 @@ export const WriteHeaderMenu = () => {
             onClick={() => {
               uploadStory();
             }}
-            disabled={!isSignedIn?.name}
+            disabled={!userState.signedInUser?.name}
           >
             Upload
           </button>
@@ -151,26 +149,26 @@ export const WriteHeaderMenu = () => {
             class="dropdown dropdown-end"
             classList={{ "dropdown-open": isOpen() }}
           >
-            <div
+            <button
               class="avatar online"
-              role="button"
+              type="button"
               onClick={() => setIsOpen(!isOpen())}
             >
-              <div class="w-10 rounded-full ring-primary ring-1 ring-offset-base-200 w-10rounded-full ring ring-offset-1">
-                {isSignedIn?.picture ? (
+              <div class="w-10 rounded-full ring-primary ring-1 ring-offset-base-200 rounded-full ring ring-offset-1">
+                {userState.signedInUser?.avatarUrl ? (
                   <img
-                    src={isSignedIn.picture}
-                    alt={isSignedIn.name ?? "Avatar"}
+                    src={userState.signedInUser.avatarUrl}
+                    alt={userState.signedInUser.name ?? "Avatar"}
                   />
                 ) : (
                   <img src="/disappointed2.png" alt="Avatar" />
                 )}
               </div>
-            </div>
+            </button>
 
             <ul class="dropdown-content menu p-2 shadow bg-base-100 z-[1] rounded-box w-52">
               <Show
-                when={isSignedIn?.name}
+                when={userState.signedInUser?.name}
                 fallback={
                   <>
                     <li>
@@ -191,7 +189,6 @@ export const WriteHeaderMenu = () => {
                   </li>
                   <li>
                     <button
-                      class="btn btn-ghost"
                       type="button"
                       onClick={() => {
                         trpc.logout.mutate().then(() => {

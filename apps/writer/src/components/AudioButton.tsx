@@ -1,41 +1,45 @@
-import { IconButton, type IconButtonProps } from "@chakra-ui/react";
-import axios from "axios";
-import { Pause, Play } from "iconoir-react";
-import React, { useEffect, useRef, useState } from "react";
+import { createSignal, onCleanup, onMount } from "solid-js";
+import { FiPlay, FiPause } from "solid-icons/fi";
 import { aiSpeech } from "../lib/ai-speech.ts";
+import { convertFileSrc } from "@tauri-apps/api/core";
 
-export const AudioButton = (props: { text: string } & IconButtonProps) => {
-  const [audioFile, setAudioFile] = useState<string | undefined>(undefined);
-  const ref = useRef<HTMLAudioElement>(null);
-  const { text, ...rest } = props;
-  const [audioState, setAudioState] = useState<
+export const AudioButton = (props: { text: string }) => {
+  const [audioFile, setAudioFile] = createSignal<string | undefined>(undefined);
+  let audioRef: HTMLAudioElement | undefined;
+  const [audioState, setAudioState] = createSignal<
     "loading" | "playing" | "stopped"
   >("stopped");
 
-  useEffect(() => {
-    if (ref.current) {
-      ref.current?.addEventListener("ended", () => {
+  onMount(() => {
+    if (audioRef) {
+      const handleEnded = () => {
         setAudioFile(undefined);
         setAudioState("stopped");
+      };
+      audioRef.addEventListener("ended", handleEnded);
+      onCleanup(() => {
+        audioRef?.removeEventListener("ended", handleEnded);
       });
     }
-  }, [audioFile]);
+  });
 
   return (
     <>
-      {audioFile ? (
+      {audioFile() && (
         <audio
           style={{ display: "none" }}
-          ref={ref}
+          ref={audioRef}
           controls
-          autoPlay={true}
-          src={audioFile}
+          autoplay={true}
+          src={audioFile()}
         />
-      ) : null}
-      <IconButton
+      )}
+      <button
+        type="button"
+        class={`btn btn-xs ${audioState() === "loading" ? "loading" : ""}`}
         onClick={(e) => {
           e.stopPropagation();
-          if (audioState === "playing") {
+          if (audioState() === "playing") {
             setAudioState("stopped");
             setAudioFile(undefined);
           } else {
@@ -47,12 +51,9 @@ export const AudioButton = (props: { text: string } & IconButtonProps) => {
             });
           }
         }}
-        icon={audioState === "stopped" ? <Play /> : <Pause />}
-        isLoading={audioState === "loading"}
-        {...rest}
       >
-        Speak
-      </IconButton>
+        {audioState() === "stopped" ? <FiPlay /> : <FiPause />}
+      </button>
     </>
   );
 };

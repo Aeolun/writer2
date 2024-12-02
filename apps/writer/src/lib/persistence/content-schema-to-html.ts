@@ -1,4 +1,4 @@
-import { ContentNode } from "@writer/shared";
+import type { ContentNode } from "@writer/shared";
 import { encode } from "html-entities";
 
 export const contentSchemaToHtml = (content: ContentNode): string => {
@@ -17,8 +17,16 @@ export const contentSchemaToHtml = (content: ContentNode): string => {
             }
             return textNode.text;
           })
-          .join(" ");
+          .join("");
       }
     })
     .join("");
+};
+
+export const contentSchemaToText = (content: ContentNode): string => {
+  return (
+    content.content
+      ?.map((node) => node.content?.map((textNode) => textNode.text).join(""))
+      .join("") ?? ""
+  );
 };

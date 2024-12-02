@@ -17,6 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "../solid-ui/dropdown-menu.tsx";
 import { FiMenu } from "solid-icons/fi";
+import { contentSchemaToText } from "../lib/persistence/content-schema-to-html.ts";
+import { AudioButton } from "./AudioButton.tsx";
 
 export const StoryParagraphButtons = (props: {
   scene?: Scene;
@@ -34,19 +36,25 @@ export const StoryParagraphButtons = (props: {
     if (!currentParagraph) {
       return;
     }
-    return useAi(helpKind, `${currentParagraph.text}`, addInstructions).then(
-      (res) => {
-        if (extra) {
-          updateSceneParagraphData(scene.id, currentParagraph.id, {
-            extra: res ?? undefined,
-          });
-        } else {
-          updateSceneParagraphData(scene.id, currentParagraph.id, {
-            extra: res ?? undefined,
-          });
-        }
-      },
-    );
+    return useAi(
+      helpKind,
+      `${
+        typeof currentParagraph.text === "string"
+          ? currentParagraph.text
+          : contentSchemaToText(currentParagraph.text)
+      }`,
+      addInstructions,
+    ).then((res) => {
+      if (extra) {
+        updateSceneParagraphData(scene.id, currentParagraph.id, {
+          extra: res ?? undefined,
+        });
+      } else {
+        updateSceneParagraphData(scene.id, currentParagraph.id, {
+          extra: res ?? undefined,
+        });
+      }
+    });
   };
   const [translationModalOpen, setTranslationModalOpen] = createSignal(false);
   const [translationText, setTranslationText] = createSignal(
@@ -91,15 +99,13 @@ export const StoryParagraphButtons = (props: {
       >
         <RiBuildingsAncientGateLine />
       </button>
-      <button
-        type="button"
-        class="btn btn-xs"
-        disabled={!currentParagraph?.text}
-        aria-label="read paragraph out loud"
-        title="Read paragraph out loud"
-      >
-        <ImPlay2 />
-      </button>
+      <AudioButton
+        text={
+          typeof currentParagraph.text === "string"
+            ? currentParagraph.text
+            : contentSchemaToText(currentParagraph.text)
+        }
+      />
       <button
         type="button"
         aria-label="rewrite"

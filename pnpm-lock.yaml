@@ -346,6 +346,9 @@ importers:
       simple-git:
         specifier: ^3.27.0
         version: 3.27.0
+      solid-dnd-directive:
+        specifier: ^0.2.0
+        version: 0.2.0(solid-js@1.9.3)
       solid-icons:
         specifier: ^1.1.0
         version: 1.1.0(solid-js@1.9.3)
@@ -3944,6 +3947,12 @@ packages:
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
 
+  solid-dnd-directive@0.2.0:
+    resolution: {integrity: sha512-4aPKidTrwSVBHqeiUPPe218t+HyRp0S4iYNJw7nDsWqP33HHYhAwvAyWVfqlqHBlnA/+A5jdevRvbCOiLV5Qew==}
+    engines: {node: '>=14.16.0', npm: '>=6.14.8'}
+    peerDependencies:
+      solid-js: ^1.0.0
+
   solid-icons@1.1.0:
     resolution: {integrity: sha512-IesTfr/F1ElVwH2E1110s2RPXH4pujKfSs+koT8rwuTAdleO5s26lNSpqJV7D1+QHooJj18mcOiz2PIKs0ic+A==}
     peerDependencies:
@@ -4025,6 +4034,9 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  svelte-dnd-action@0.9.11:
+    resolution: {integrity: sha512-hkuBs8rT0yVD0Xq9p9GxeHN1zYD8r7oZO872VQHg7DJe3cAYwus4WXpx3DNYZiTcLcIOmDw3BVNdKvAl/B6VPg==}
 
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
@@ -8729,6 +8741,11 @@ snapshots:
     dependencies:
       is-arrayish: 0.3.2
 
+  solid-dnd-directive@0.2.0(solid-js@1.9.3):
+    dependencies:
+      solid-js: 1.9.3
+      svelte-dnd-action: 0.9.11
+
   solid-icons@1.1.0(solid-js@1.9.3):
     dependencies:
       solid-js: 1.9.3
@@ -8815,6 +8832,8 @@ snapshots:
       has-flag: 3.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  svelte-dnd-action@0.9.11: {}
 
   symbol-tree@3.2.4: {}
 

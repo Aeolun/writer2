@@ -25,6 +25,7 @@ export const createCharacter = () => {
       picture: "",
       isProtagonist: false,
       summary: "",
+      modifiedAt: Date.now(),
     },
   }));
 };
@@ -37,6 +38,7 @@ export const updateCharacterProperty = <T extends keyof Character>(
   setCharactersState("characters", characterId, (character) => ({
     ...character,
     [property]: value,
+    modifiedAt: Date.now(),
   }));
 };
 

@@ -1,10 +1,16 @@
-import { writeTextFile } from "@tauri-apps/plugin-fs";
+import { copyFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import markdownit from "markdown-it";
 import { open } from "@tauri-apps/plugin-dialog";
 import { sortedObjects } from "../lib/stores/retrieval/sorted-objects";
 import { uiState } from "../lib/stores/ui";
 import { createEffect, createSignal } from "solid-js";
 import { updateSceneParagraphData } from "../lib/stores/scenes";
+import { Command, open as shellOpen } from "@tauri-apps/plugin-shell";
+import { storyState } from "../lib/stores/story";
+import { appDataDir, join, resolve } from "@tauri-apps/api/path";
+import { addNotification } from "../lib/stores/notifications";
+import { findPathToNodeIds } from "../lib/stores/tree";
+import { booksStore } from "../lib/stores/books";
 
 const md = markdownit({
   html: true,
@@ -31,22 +37,81 @@ export const Preview = () => {
   const [typstText, setTypstText] = createSignal("");
   createEffect(() => {
     const process = async () => {
+      let title = "";
+      let author = "";
+      let editor = "";
+      let coverArtist = "";
+      let titleText = "";
+      let separatorImage = "";
+      const contentPath = findPathToNodeIds(uiState.currentId ?? "");
+      const book = booksStore.books[contentPath[0]];
+
+      if (!book) {
+        addNotification({
+          title: "Book not found",
+          message: `Book ${contentPath[0]} not found`,
+          type: "error",
+        });
+        return;
+      }
+      title = book.title;
+      author = book.author ?? "";
+      editor = book.editor ?? "";
+      coverArtist = book.coverArtist ?? "";
+      separatorImage = book.separatorImage ?? "";
+
       const contentText = await Promise.all(
         sortedObjects(uiState.currentId).map(async (item) => {
+          if (item.type === "book_cover") {
+            titleText = `#page(
+              margin: (x: 0cm, y: 0cm),
+            )[
+              #align(center)[\n  #image("data${item.coverImage}", width: 100%, height: 100%)\n]\n#pagebreak()\n
+            ]\n#align(center)[\n= ${title}\n\n== ${author}\n]\n#pagebreak()\n
+            #set text(8pt)\n#align(left + bottom)[\n#block(width: 95%)[
+            Copyright ${new Date().getFullYear()} ${author}
+            
+            All rights reserved. No part of this publication may be reproduced, stored or transmitted in any form or by any means, electronic, mechanical, photocopying, recording, scanning, or otherwise without prior written permission from the author. It is illegal to copy this book, post it to a website, or distribute it by any other means without permission.
+            
+            This novel is entirely a work of fiction. The names, characters and incidents portrayed in it are the work of the author's imagination. Any resemblance to actual persons, living or dead, events or localities is entirely coincidental.
+            
+            ISBN: xxxx
+            
+            reader.serial-experiments.com
+            
+            First Edition
+            
+            Editing by ${editor}
+            
+            Book cover design by ${coverArtist}
+            ]\n]\n#pagebreak()\n#counter(page).update(1) \n`;
+          }
           if (item.type === "paragraph") {
-            return `${item.text
-              .replace("* * *", "#line(length: 100%)")
+            return `${item.plainText
               .replaceAll("#", "\\#")
               .replaceAll("$", "\\$")
+              .replaceAll("<", "\\<")
+              .replaceAll(">", "\\>")
               .replaceAll("@", "\\@")
+              .replace(/\s*\*\*([\w ]+)\*\*$/g, (match, p1) => {
+                return `=== ${p1}`;
+              })
+              .replaceAll(
+                "----- * * * -----",
+                `#align(center)[\n #block(above: 1cm, below: 1cm)[\n  #image("data${separatorImage}", width: 50%)\n]\n]\n`,
+              )
+              .replaceAll(
+                "* * *",
+                `#align(center)[\n #block(above: 1cm, below: 1cm)[\n  #image("data${separatorImage}", width: 50%)\n]\n]\n`,
+              )
               .replace(/^\* /gm, "- ")
               .replace(/_{2,}/g, "`--`")}\n`;
           }
           if (item.type === "chapter_header") {
-            return `= ${item.text}\n`;
+            return `#align(center)[\n= ${item.text}\n]\n`;
           }
           if (item.type === "break") {
-            return `#align(center)[\n  #image("public/Group.png", width: 50%)\n]\n`;
+            return `#align(center)[\n #block(above: 1cm, below: 1cm)[\n  #image("data${separatorImage}", width: 50%)\n]\n]\n`;
           }
           return undefined;
         }),
@@ -54,20 +119,50 @@ export const Preview = () => {
         return i.filter((i) => i).join("\n");
       });
       const newTypstText = `#import "@preview/cmarker:0.1.0"
+#import "@preview/hydra:0.5.1": hydra
 #set text(
-  font: "New Computer Modern",
+  font: ("Libertinus Serif", "New Computer Modern"),
   size: 10pt
 )
 #set page(
-  paper: "a5",
-  margin: (x: 1.8cm, y: 1.5cm),
+  paper: "us-digest",
+  margin: (x: 12.7mm, y: 14.7mm),
 )
-#set heading(numbering: "1.a)")
+#show heading.where(level: 1): set block(below: 3cm)
+#show heading.where(level: 3): set block(below: 1cm)
+#show heading.where(level: 1): it => {
+  pagebreak(to: "odd", weak: true)
+  pad(top: 3cm, smallcaps(it))
+}
+#show heading.where(level: 1): it => { pagebreak(weak: true); it }
+
 #set par(
+  justify: false,
+  leading: 0.65em,
+  spacing: 1.22em,
+)\n\n${titleText}\n\n
+#set page(
+  header: context {
+    let curr_page = here().page()
+    let header1s = query(selector(heading.where(level: 1)))
+    let anchor = header1s.map(it => {it.location().page()})
+    if curr_page not in anchor {
+      if calc.odd(curr_page) {
+        align(center, smallcaps("${title}"))
+      } else {
+        align(center, smallcaps("${author}"))
+      }
+    }
+  },
+  numbering: "1",
+)
+  #set par(
   justify: true,
-  leading: 0.52em,
-  first-line-indent: 1em,
-)\n\n${contentText}`;
+  first-line-indent: 1.2em,
+  spacing: 0.82em,
+  )
+  #set text(10pt)
+\n${contentText}`;
       setTypstText(newTypstText);
     };
     process();
@@ -159,6 +254,41 @@ export const Preview = () => {
               }}
             >
               Save
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onClick={async () => {
+                if (!storyState.openPath) {
+                  console.log("no open path");
+                  return;
+                }
+                await writeTextFile(
+                  await join(storyState.openPath, `${uiState.currentId}.typ`),
+                  typstText(),
+                );
+                console.log("typst out");
+                const command = Command.sidecar("binaries/typst", [
+                  "compile",
+                  await join(storyState.openPath, `${uiState.currentId}.typ`),
+                ]);
+                console.log("typst command", command);
+                const output = await command.execute();
+                console.log("typst output", output);
+                if (output.code === 0) {
+                  await shellOpen(
+                    await join(storyState.openPath, `${uiState.currentId}.pdf`),
+                  );
+                } else {
+                  addNotification({
+                    title: "Typst Error",
+                    message: output.stderr,
+                    type: "error",
+                  });
+                }
+              }}
+            >
+              Render
             </button>
           </div>
         )}

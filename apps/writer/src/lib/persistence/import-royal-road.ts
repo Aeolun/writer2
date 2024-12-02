@@ -1,3 +1,15 @@
+import { setStoryState } from "../stores/story";
+import {
+  setImportDialogChapterImported,
+  setImportDialogChapters,
+  setImportDialogComplete,
+  setImportDialogOpen,
+  setImportDialogRunning,
+  setLastSaveAt,
+} from "../stores/ui";
+import { trpc } from "../trpc";
+import { loadToState } from "./load-to-state";
+
 export const importRoyalRoad = async (storyId: string) => {
   const numericStoryId = Number(storyId);
 
@@ -6,17 +18,36 @@ export const importRoyalRoad = async (storyId: string) => {
     return;
   }
 
-  trpc.importRoyalroad
-    .mutate({
+  setImportDialogRunning(true);
+  try {
+    const iterable = await trpc.importRoyalroad.mutate({
       storyId: numericStoryId,
-    })
-    .then((result) => {
-      console.log("imported");
-      if (result?.story) {
-        openStory(result);
-      }
-    })
-    .catch((error) => {
-      console.error(error);
     });
+    for await (const result of iterable) {
+      console.log("result", result);
+      if (result.kind === "storyInfo") {
+        setImportDialogChapters(
+          result.data.chapters.map((chapter) => ({
+            id: Number(chapter.id),
+            title: chapter.title ?? "",
+            imported: false,
+          })),
+        );
+        setImportDialogOpen(true);
+      }
+
+      if (result.kind === "chapterImported") {
+        setImportDialogChapterImported(result.data);
+      }
+      if (result.kind === "storyImported") {
+        loadToState(result.data);
+        setLastSaveAt(0);
+        setImportDialogComplete(true);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setImportDialogRunning(false);
+  }
 };

@@ -138,6 +138,7 @@ const GlobalSettings = () => {
             value={settingsState.serverUrl}
             onChange={(e) => {
               setSetting("serverUrl", e.target.value);
+              reloadTrpc();
             }}
           />
         </FormField>
