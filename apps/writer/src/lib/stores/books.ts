@@ -1,6 +1,6 @@
 import { Book } from "@writer/shared";
 import { createStore } from "solid-js/store";
-import { appendNode, findNode, removeNode } from "./tree";
+import { appendNode, findNode, removeNode, updateNode } from "./tree";
 import shortUUID from "short-uuid";
 
 export const [booksStore, setBooksStore] = createStore<{
@@ -18,6 +18,7 @@ export const createBook = () => {
     modifiedAt: Date.now(),
   } satisfies Book);
   appendNode({ id, type: "book", name: "New book", isOpen: true });
+  return id;
 };
 
 export const updateBookValue = <K extends keyof Book>(
@@ -25,11 +26,17 @@ export const updateBookValue = <K extends keyof Book>(
   key: K,
   value: Book[K],
 ) => {
+  const currentValue = booksStore.books[id];
   setBooksStore("books", id, {
-    ...booksStore.books[id],
+    summary: "",
+    id: id,
+    ...currentValue,
     [key]: value,
     modifiedAt: Date.now(),
   });
+  if (key === "title") {
+    updateNode(id, { name: value as string });
+  }
 };
 
 export const deleteBook = (id: string) => {

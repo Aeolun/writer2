@@ -10,6 +10,7 @@ import { setItems } from "../stores/items";
 import { setPlotpoints } from "../stores/plot-points";
 import { setLanguageStore } from "../stores/language-store";
 import { setTree } from "../stores/tree";
+import { setLocationsState } from "../stores/locations";
 
 export const loadToState = async (savedStory: PersistedStory) => {
   setArcsStore({
@@ -40,12 +41,15 @@ export const loadToState = async (savedStory: PersistedStory) => {
   setPlotpoints({
     plotPoints: savedStory.story.plotPoints,
   });
+  setLocationsState({
+    locations: savedStory.story.locations ?? {},
+  });
   setCharactersState({
     characters: savedStory.story.characters,
   });
   setLanguageStore({
     languages: savedStory.language,
   });
-  setTree(savedStory.story.structure);
+  setTree(savedStory.story.structure ?? {});
   setStory(savedStory.story);
 };

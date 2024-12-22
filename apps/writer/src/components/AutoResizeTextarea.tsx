@@ -26,13 +26,13 @@ const createGhostTextarea = (textArea: HTMLTextAreaElement) => {
 const resize = (textArea: HTMLTextAreaElement, ghost: HTMLTextAreaElement) => {
   ghost.value = textArea.value;
   ghost.style.width = `${textArea.clientWidth}px`;
-  console.log(ghost.scrollHeight);
   textArea.style.height = `${ghost.scrollHeight}px`;
 };
 
 export const AutoResizeTextarea = (
   props: Omit<JSX.TextareaHTMLAttributes<HTMLTextAreaElement>, "onInput"> & {
     onInput?: (e: InputEvent, selectionStart: number) => void;
+    value?: string;
   },
 ) => {
   const [textarea, setTextarea] = createSignal<HTMLTextAreaElement>();
@@ -44,6 +44,13 @@ export const AutoResizeTextarea = (
       if (!ghostTextarea) {
         ghostTextarea = createGhostTextarea(ta);
       }
+      resize(ta, ghostTextarea);
+    }
+  });
+
+  createEffect(() => {
+    const ta = textarea();
+    if (ta && ghostTextarea && props.value !== undefined) {
       resize(ta, ghostTextarea);
     }
   });
@@ -64,7 +71,6 @@ export const AutoResizeTextarea = (
         if (ta) {
           resize(ta, ghostTextarea);
         }
-
         props.onInput?.(e, ta?.selectionStart);
       }}
     />

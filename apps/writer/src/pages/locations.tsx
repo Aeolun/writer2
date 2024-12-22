@@ -1,4 +1,4 @@
-import { NotImplementedYet } from "../components/NotImplementedYet";
+import { LocationPanel } from "../components/LocationPanel";
 import { WriteHeaderMenu } from "../components/WriteHeaderMenu";
 
 const Locations = () => {
@@ -6,7 +6,7 @@ const Locations = () => {
     <div class="flex flex-col h-full">
       <WriteHeaderMenu />
       <div class="flex flex-1 overflow-hidden">
-        <NotImplementedYet />
+        <LocationPanel />
       </div>
     </div>
   );

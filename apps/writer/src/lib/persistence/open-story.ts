@@ -22,6 +22,7 @@ export const openStory = async (projectPath: string) => {
     ]);
   } catch (error) {
     if (error instanceof Error) {
+      console.error(error);
       alert(error.message);
     } else {
       console.error(error);

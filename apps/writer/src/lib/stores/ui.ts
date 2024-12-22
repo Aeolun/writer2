@@ -19,6 +19,7 @@ export interface UIState {
   aiOpenTab?: number;
   aiResponseHistory?: string[];
   showInventory: boolean;
+  lastGenerationUsage?: Record<string, number>;
   signinPopupOpen: boolean;
   saving: boolean;
   lastSaveAt?: number;
@@ -43,6 +44,7 @@ const initialState: UIState = {
   showInventory: false,
   saving: false,
   syncing: false,
+  lastGenerationUsage: undefined,
   lastSaveAt: undefined,
   importDialog: {
     running: false,
@@ -67,6 +69,9 @@ export const setSelectedEntity = (
     selectionPath: path,
   }));
 };
+
+export const setLastGenerationUsage = (usage: Record<string, number>) =>
+  setUIState("lastGenerationUsage", usage);
 export const setStories = (stories: StorySummary[]) =>
   setUIState("stories", stories);
 export const setShowInventory = (show: boolean) =>

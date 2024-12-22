@@ -175,3 +175,22 @@ export const getItemsInOrder = (type: Node["type"]) => {
 export const setTreeItemOpen = (id: string, isOpen: boolean) => {
   updateNode(id, { isOpen });
 };
+
+export const insertNode = (node: Node, parentId: string, beforeId?: string) => {
+  // Remove parentId from node if it exists to avoid redundancy
+  const { parentId: _, ...nodeWithoutParentId } = node;
+
+  if (beforeId) {
+    const parent = findNode(parentId);
+    if (!parent) return;
+
+    const insertIndex =
+      parent.children?.findIndex((child) => child.id === beforeId) ?? 0;
+    const newChildren = [...(parent.children ?? [])];
+    newChildren.splice(insertIndex, 0, nodeWithoutParentId);
+
+    updateNode(parentId, { children: newChildren });
+  } else {
+    appendNode(nodeWithoutParentId, parentId);
+  }
+};

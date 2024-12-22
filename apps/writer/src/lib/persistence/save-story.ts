@@ -13,6 +13,7 @@ import { languageStore } from "../stores/language-store";
 import { setLastSaveAt, uiState } from "../stores/ui";
 import { addNotification } from "../stores/notifications";
 import { unwrap } from "solid-js/store";
+import { locationsState } from "../stores/locations";
 
 export const saveStory = async (withAutosave = false) => {
   if (!storyState.story || !storyState.openPath) {
@@ -24,14 +25,20 @@ export const saveStory = async (withAutosave = false) => {
     return;
   }
 
+  const story = unwrap(storyState).story;
+  console.log("story", story);
+  if (!story?.id) {
+    throw new Error("Story has no id");
+  }
   const storyData: SavePayload = {
     story: {
-      ...unwrap(storyState).story,
+      ...story,
       characters: unwrap(charactersState).characters,
       plotPoints: unwrap(plotpoints).plotPoints,
       scene: unwrap(scenesState).scenes,
       book: unwrap(booksStore).books,
       arc: unwrap(arcsStore).arcs,
+      locations: unwrap(locationsState).locations,
       chapter: unwrap(chaptersState).chapters,
       item: unwrap(items).items,
       structure: unwrap(treeState).structure,

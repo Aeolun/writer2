@@ -132,8 +132,18 @@ const writeStoryPath = async (
         2,
       ),
     );
+  } else {
+    const indexFile = await path.join(projectPath, `${Date.now()}.json`);
+    writableFiles[indexFile] = JSON.stringify(
+      {
+        story: validatedBody.story,
+        language: validatedBody.language,
+      },
+      null,
+      2,
+    );
   }
-  console.log(creatableFolders);
+
   for (const folderPath of creatableFolders) {
     await mkdir(folderPath, { recursive: true });
   }

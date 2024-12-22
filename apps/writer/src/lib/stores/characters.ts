@@ -25,9 +25,16 @@ export const createCharacter = () => {
       picture: "",
       isProtagonist: false,
       summary: "",
+      gender: "",
+      sexualOrientation: "",
+      height: 170,
+      hairColor: "",
+      eyeColor: "",
+      distinguishingFeatures: "",
       modifiedAt: Date.now(),
     },
   }));
+  return id;
 };
 
 export const updateCharacterProperty = <T extends keyof Character>(

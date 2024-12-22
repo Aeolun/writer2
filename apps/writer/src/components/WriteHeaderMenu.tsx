@@ -11,6 +11,7 @@ import { importRoyalRoad } from "../lib/persistence/import-royal-road";
 import { setSetting } from "../lib/stores/settings";
 import { saveStory } from "../lib/persistence/save-story";
 import { addNotification } from "../lib/stores/notifications";
+import { unloadState } from "../lib/persistence/unload-state";
 
 export const WriteHeaderMenu = () => {
   const navigate = useNavigate();
@@ -27,13 +28,20 @@ export const WriteHeaderMenu = () => {
             </button>
             <ul class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
               <li>
-                <A href="/new-story">New Story</A>
+                <A
+                  href="/new-story"
+                  onClick={() => {
+                    unloadState();
+                  }}
+                >
+                  New Story
+                </A>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => {
-                    unloadStory();
+                    unloadState();
                     navigate("/open-story");
                   }}
                 >
@@ -64,6 +72,11 @@ export const WriteHeaderMenu = () => {
           <A href={"/write"}>
             <button class="btn btn-ghost btn-xs" type="button">
               Story
+            </button>
+          </A>
+          <A href={"/snowflake"}>
+            <button class="btn btn-ghost btn-xs" type="button">
+              Snowflake
             </button>
           </A>
           <A href={"/characters"}>

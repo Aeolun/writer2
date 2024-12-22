@@ -1,4 +1,5 @@
 import "./lib/App.css";
+import Snowflake from "./pages/snowflake.tsx";
 import { Root } from "./root.tsx";
 import { Route, Router } from "@solidjs/router";
 import { lazy } from "solid-js";
@@ -31,6 +32,7 @@ function WriterRouter() {
       <Route path={"/settings"} component={Settings} />
       <Route path={"/search"} component={Search} />
       <Route path={"/profile"} component={Profile} />
+      <Route path={"/snowflake"} component={Snowflake} />
       <Route path={"/new-story"} component={NewStory} />
       <Route path={"/open-story"} component={OpenStory} />
       <Route path={"/global-settings"} component={GlobalSettings} />

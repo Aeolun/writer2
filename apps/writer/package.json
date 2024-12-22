@@ -12,7 +12,7 @@
     "convert": "ts-node convert.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.30.1",
+    "@anthropic-ai/sdk": "^0.32.1",
     "@ark-ui/solid": "^4.3.0",
     "@chakra-ui/utils": "2.0.8",
     "@google/generative-ai": "^0.2.1",
@@ -33,12 +33,14 @@
     "@textlint/kernel": "^14.3.0",
     "@textlint/module-interop": "^14.3.0",
     "@thisbeyond/solid-dnd": "^0.7.5",
+    "@thisbeyond/solid-select": "^0.15.0",
     "@trpc/client": "11.0.0-rc.561",
     "@trpc/react-query": "11.0.0-rc.561",
     "@writer/shared": "workspace:*",
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
     "daisyui": "^4.12.13",
+    "date-fns": "^4.1.0",
     "debounce": "^2.2.0",
     "directory-tree": "^3.5.2",
     "drizzle-orm": "^0.32.2",

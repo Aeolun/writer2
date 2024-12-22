@@ -1,6 +1,6 @@
 import { createStore } from "solid-js/store";
 import short from "short-uuid";
-import { PersistedStory, Story, StorySettings } from "@writer/shared";
+import type { PersistedStory, Story, StorySettings } from "@writer/shared";
 import { join } from "@tauri-apps/api/path";
 import { readTextFile, stat, writeTextFile } from "@tauri-apps/plugin-fs";
 
@@ -12,6 +12,7 @@ type StoryStateProperties = Pick<
   | "settings"
   | "uploadedFiles"
   | "lastPublishTime"
+  | "oneliner"
 >;
 
 export const [storyState, setStoryState] = createStore<{
@@ -24,7 +25,9 @@ export const [storyState, setStoryState] = createStore<{
     id: short.generate(),
     name: "",
     modifiedTime: 0,
-    settings: {},
+    settings: {
+      defaultPerspective: "first",
+    },
     uploadedFiles: {},
     lastPublishTime: 0,
   },
@@ -40,6 +43,7 @@ export const setStory = (story: StoryStateProperties) => {
     settings: story.settings,
     uploadedFiles: story.uploadedFiles,
     lastPublishTime: story.lastPublishTime,
+    oneliner: story.oneliner,
   });
   setStoryState("storyLoaded", true);
 };
@@ -52,7 +56,10 @@ export const newStory = async (opts: { name: string; projectPath: string }) => {
   const story = {
     name: opts.name,
     id,
-    settings: {},
+    oneliner: "",
+    settings: {
+      defaultPerspective: "first" as const,
+    },
     structure: [],
     book: {},
     arc: {},
@@ -60,6 +67,7 @@ export const newStory = async (opts: { name: string; projectPath: string }) => {
     scene: {},
     characters: {},
     plotPoints: {},
+    locations: {},
     modifiedTime: 0,
   };
   writeTextFile(

@@ -4,8 +4,15 @@ import short from "short-uuid";
 import turndown from "turndown";
 import fs from "node:fs/promises";
 import { chromium, devices } from "playwright";
-import { PersistedStory, Node, SceneParagraph } from "@writer/shared";
+import type {
+  PersistedStory,
+  Node,
+  SceneParagraph,
+  Chapter,
+} from "@writer/shared";
 import { isRoyalRoadWarning } from "../util/is-royal-road-warning";
+
+type MaybeString = string | null | undefined;
 
 export const importRoyalRoad = protectedProcedure
   .input(
@@ -13,7 +20,26 @@ export const importRoyalRoad = protectedProcedure
       storyId: z.number(),
     }),
   )
-  .mutation(async ({ input, ctx }) => {
+  .mutation(async function* ({ input, ctx }): AsyncGenerator<
+    | {
+        kind: "storyInfo";
+        data: {
+          title: MaybeString;
+          chapters: {
+            id: number;
+            title: MaybeString;
+          }[];
+          volumes: {
+            id: number;
+            title: MaybeString;
+          }[];
+        };
+      }
+    | { kind: "chapterImported"; data: number }
+    | { kind: "storyImported"; data: PersistedStory },
+    void,
+    unknown
+  > {
     await fs.mkdir("cache", { recursive: true });
     const possibleCache = async <T>(
       key: string,
@@ -32,229 +58,243 @@ export const importRoyalRoad = protectedProcedure
       }
     };
     try {
-      return chromium.launch().then(async (browser) => {
-        const page = await browser.newPage();
+      const browser = await chromium.launch();
+      const page = await browser.newPage();
 
-        const chapterInfo = await possibleCache(
-          `fiction-${input.storyId}`,
+      const chapterInfo = await possibleCache(
+        `fiction-${input.storyId}`,
+        async () => {
+          await page.goto(`https://www.royalroad.com/fiction/${input.storyId}`);
+          await page.waitForSelector(".fiction-info");
+
+          const chapters = (await page.evaluate("window.chapters")) as {
+            id: number;
+            volumeId: number;
+            title: string;
+            slug: string;
+            date: string;
+            order: number;
+            visible: number;
+            subscriptionTiers: unknown;
+            doesNotRollOver: boolean;
+            isUnlocked: boolean;
+            url: string;
+          }[];
+          const volumes = (await page.evaluate("window.volumes")) as {
+            id: number;
+            title: string;
+            cover: string;
+            order: number;
+          }[];
+          const fictionCover = await page.evaluate("window.fictionCover");
+          const title = await (await page.$("h1"))?.textContent();
+
+          return {
+            title,
+            chapters,
+            volumes,
+            fictionCover,
+          };
+        },
+      );
+
+      yield {
+        kind: "storyInfo",
+        data: chapterInfo,
+      };
+
+      console.log(chapterInfo.chapters);
+      const storyData: PersistedStory = {
+        story: {
+          id: short.generate().toString(),
+          book: {},
+          arc: {},
+          chapter: {},
+          scene: {},
+          characters: {},
+          plotPoints: {},
+          structure: [],
+          name: chapterInfo.title ?? "Unknown",
+          modifiedTime: Date.now(),
+          settings: {
+            mangaChapterPath: "",
+            aiInstructions: "",
+            royalRoadId: input.storyId.toString(),
+          },
+        },
+        language: {
+          languages: {},
+        },
+      };
+
+      if (chapterInfo.volumes.length === 0) {
+        chapterInfo.volumes = [
+          {
+            id: 0,
+            title: "Volume 1",
+            cover: "",
+            order: 0,
+          },
+        ];
+      }
+      const volumeMapping = new Map<number, Node>();
+      for (const books of chapterInfo.volumes) {
+        const newId = short.generate().toString();
+        storyData.story.book[newId] = {
+          id: newId,
+          title: books.title,
+          summary: "",
+        };
+        const arcId = short.generate().toString();
+        storyData.story.arc[arcId] = {
+          id: arcId,
+          title: books.title,
+          summary: "",
+        };
+        const arcStructure = {
+          id: arcId,
+          type: "arc" as const,
+          name: books.title,
+          isOpen: true,
+          children: [],
+        };
+        volumeMapping.set(books.id, arcStructure);
+        storyData.story.structure.push({
+          id: newId,
+          type: "book",
+          name: books.title,
+          isOpen: true,
+          children: [arcStructure],
+        });
+      }
+      const turndownService = new turndown();
+      turndownService.escape = (text: string) => {
+        return text;
+      };
+      for (const chapter of chapterInfo.chapters) {
+        const chapterContent = await possibleCache(
+          `chapter-${chapter.id}`,
           async () => {
-            await page.goto(
-              `https://www.royalroad.com/fiction/${input.storyId}`,
+            // delay a bit
+            await new Promise((resolve) =>
+              setTimeout(resolve, 1000 + Math.random() * 1000),
             );
-            await page.waitForSelector(".fiction-info");
+            await page.goto(`https://www.royalroad.com${chapter.url}`);
+            await page.waitForSelector(".chapter-content");
+            const firstAuthorNote = await page.$(
+              ".author-note-portlet:nth-child(3) .author-note",
+            );
+            let preChapterNote = "";
+            if (firstAuthorNote) {
+              preChapterNote = await firstAuthorNote.innerHTML();
+            }
 
-            const chapters = (await page.evaluate("window.chapters")) as {
-              id: number;
-              volumeId: number;
-              title: string;
-              slug: string;
-              date: string;
-              order: number;
-              visible: number;
-              subscriptionTiers: unknown;
-              doesNotRollOver: boolean;
-              isUnlocked: boolean;
-              url: string;
-            }[];
-            const volumes = (await page.evaluate("window.volumes")) as {
-              id: number;
-              title: string;
-              cover: string;
-              order: number;
-            }[];
-            const fictionCover = await page.evaluate("window.fictionCover");
-            const title = await (await page.$("h1"))?.textContent();
+            const secondAuthorNote = await page.$(
+              ".author-note-portlet:nth-child(7) .author-note",
+            );
+            let postChapterNote = "";
+            if (secondAuthorNote) {
+              postChapterNote = await secondAuthorNote.innerHTML();
+            }
+
+            const contentObject = await page.$(".chapter-content");
+            const invisibleParagraph = await page.$(
+              ".chapter-content p:not(:visible)",
+            );
+
+            if (!contentObject) {
+              throw new Error("No content object found");
+            }
+            const chapterContent = await contentObject.innerHTML();
+            const invisibleParagraphContent =
+              await invisibleParagraph?.innerText();
 
             return {
-              title,
-              chapters,
-              volumes,
-              fictionCover,
+              preChapterNote,
+              postChapterNote,
+              chapterContent,
+              invisibleParagraphContent,
             };
           },
         );
 
-        console.log(chapterInfo.chapters);
-        const storyData: PersistedStory = {
-          story: {
-            id: short.generate().toString(),
-            book: {},
-            arc: {},
-            chapter: {},
-            scene: {},
-            characters: {},
-            plotPoints: {},
-            structure: [],
-            name: chapterInfo.title ?? "Unknown",
-            modifiedTime: Date.now(),
-            settings: {
-              mangaChapterPath: "",
-              aiInstructions: "",
-            },
-          },
-          language: {
-            languages: {},
-          },
+        const markdown = turndownService.turndown(
+          chapterContent.chapterContent,
+        );
+        const chapterId = short.generate().toString();
+        storyData.story.chapter[chapterId] = {
+          id: chapterId,
+          title: chapter.title,
+          summary: "",
+          royalRoadId: chapter.id,
+          visibleFrom: chapter.date
+            ? new Date(chapter.date).toISOString()
+            : undefined,
+        } satisfies Chapter;
+        const sceneId = short.generate().toString();
+        let wordCount = 0;
+        const paragraphs: SceneParagraph[] = markdown
+          .split("\n\n")
+          .filter((text) => {
+            return (
+              text !== chapterContent.invisibleParagraphContent &&
+              !isRoyalRoadWarning(text)
+            );
+          })
+          .map((text) => {
+            wordCount += text.split(" ").length;
+            return {
+              id: short.generate().toString(),
+              text: text,
+              state: "draft",
+              modifiedAt: new Date().toISOString(),
+              comments: [],
+              plot_point_actions: [],
+            };
+          });
+        storyData.story.scene[sceneId] = {
+          id: sceneId,
+          title: chapter.title,
+          summary: "",
+          paragraphs,
+          words: wordCount,
+          cursor: 0,
+          selectedParagraph: undefined,
+          text: "",
+          plot_point_actions: [],
         };
-
-        if (chapterInfo.volumes.length === 0) {
-          chapterInfo.volumes = [
+        const arcStructure = volumeMapping.get(chapter.volumeId ?? 0);
+        if (!arcStructure) {
+          throw new Error("No arc structure found");
+        }
+        if (!arcStructure.children) {
+          throw new Error("No children property in arcstructure");
+        }
+        arcStructure.children.push({
+          id: chapterId,
+          type: "chapter",
+          name: chapter.title,
+          isOpen: true,
+          children: [
             {
-              id: 0,
-              title: "Volume 1",
-              cover: "",
-              order: 0,
+              id: sceneId,
+              type: "scene",
+              name: chapter.title,
+              isOpen: true,
             },
-          ];
-        }
-        const volumeMapping = new Map<number, Node>();
-        for (const books of chapterInfo.volumes) {
-          const newId = short.generate().toString();
-          storyData.story.book[newId] = {
-            id: newId,
-            title: books.title,
-            summary: "",
-          };
-          const arcId = short.generate().toString();
-          storyData.story.arc[arcId] = {
-            id: arcId,
-            title: books.title,
-            summary: "",
-          };
-          const arcStructure = {
-            id: arcId,
-            type: "arc" as const,
-            name: books.title,
-            isOpen: true,
-            children: [],
-          };
-          volumeMapping.set(books.id, arcStructure);
-          storyData.story.structure.push({
-            id: newId,
-            type: "book",
-            name: books.title,
-            isOpen: true,
-            children: [arcStructure],
-          });
-        }
-        const turndownService = new turndown();
-        turndownService.escape = (text: string) => {
-          return text;
+          ],
+        });
+        yield {
+          kind: "chapterImported",
+          data: chapter.id,
         };
-        for (const chapter of chapterInfo.chapters) {
-          const chapterContent = await possibleCache(
-            `chapter-${chapter.id}`,
-            async () => {
-              // delay a bit
-              await new Promise((resolve) =>
-                setTimeout(resolve, 1000 + Math.random() * 1000),
-              );
-              await page.goto(`https://www.royalroad.com${chapter.url}`);
-              await page.waitForSelector(".chapter-content");
-              const firstAuthorNote = await page.$(
-                ".author-note-portlet:nth-child(3) .author-note",
-              );
-              let preChapterNote = "";
-              if (firstAuthorNote) {
-                preChapterNote = await firstAuthorNote.innerHTML();
-              }
-
-              const secondAuthorNote = await page.$(
-                ".author-note-portlet:nth-child(7) .author-note",
-              );
-              let postChapterNote = "";
-              if (secondAuthorNote) {
-                postChapterNote = await secondAuthorNote.innerHTML();
-              }
-
-              const contentObject = await page.$(".chapter-content");
-              const invisibleParagraph = await page.$(
-                ".chapter-content p:not(:visible)",
-              );
-
-              if (!contentObject) {
-                throw new Error("No content object found");
-              }
-              const chapterContent = await contentObject.innerHTML();
-              const invisibleParagraphContent =
-                await invisibleParagraph?.innerText();
-
-              return {
-                preChapterNote,
-                postChapterNote,
-                chapterContent,
-                invisibleParagraphContent,
-              };
-            },
-          );
-
-          const markdown = turndownService.turndown(
-            chapterContent.chapterContent,
-          );
-          const chapterId = short.generate().toString();
-          storyData.story.chapter[chapterId] = {
-            id: chapterId,
-            title: chapter.title,
-            summary: "",
-          };
-          const sceneId = short.generate().toString();
-          let wordCount = 0;
-          const paragraphs: SceneParagraph[] = markdown
-            .split("\n\n")
-            .filter((text) => {
-              return (
-                text !== chapterContent.invisibleParagraphContent &&
-                !isRoyalRoadWarning(text)
-              );
-            })
-            .map((text) => {
-              wordCount += text.split(" ").length;
-              return {
-                id: short.generate().toString(),
-                text: text,
-                state: "draft",
-                modifiedAt: new Date().toISOString(),
-                comments: [],
-                plot_point_actions: [],
-              };
-            });
-          storyData.story.scene[sceneId] = {
-            id: sceneId,
-            title: chapter.title,
-            summary: "",
-            paragraphs,
-            words: wordCount,
-            cursor: 0,
-            selectedParagraph: undefined,
-            text: "",
-            plot_point_actions: [],
-          };
-          const arcStructure = volumeMapping.get(chapter.volumeId ?? 0);
-          if (!arcStructure) {
-            throw new Error("No arc structure found");
-          }
-          if (!arcStructure.children) {
-            throw new Error("No children property in arcstructure");
-          }
-          arcStructure.children.push({
-            id: chapterId,
-            type: "chapter",
-            name: chapter.title,
-            isOpen: true,
-            children: [
-              {
-                id: sceneId,
-                type: "scene",
-                name: chapter.title,
-                isOpen: true,
-              },
-            ],
-          });
-        }
-        console.log("Done!");
-        await browser.close();
-        return storyData;
-      });
+      }
+      console.log("Done!");
+      await browser.close();
+      yield {
+        kind: "storyImported",
+        data: storyData,
+      };
     } catch (e) {
       console.error(e);
     }

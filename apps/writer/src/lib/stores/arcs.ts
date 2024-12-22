@@ -1,7 +1,13 @@
 import type { Arc } from "@writer/shared";
 import { createStore } from "solid-js/store";
 import short from "short-uuid";
-import { appendNode, findNode, removeNode, updateNode } from "./tree"; // Import functions from tree.ts
+import {
+  appendNode,
+  findNode,
+  removeNode,
+  updateNode,
+  insertNode,
+} from "./tree"; // Import functions from tree.ts
 
 export const [arcsStore, setArcsStore] = createStore<{
   arcs: Record<string, Arc>;
@@ -10,34 +16,36 @@ export const [arcsStore, setArcsStore] = createStore<{
 });
 
 // Function to create a new arc
-export function createArc(bookId: string) {
-  const newId = short.generate().toString();
-  setArcsStore("arcs", newId, {
-    id: newId,
-    title: "New Arc",
-    modifiedAt: Date.now(),
+export function createArc(bookId: string, beforeId?: string) {
+  const newArc = {
+    id: short.generate(),
+    type: "arc" as const,
+    name: "New Arc",
+    children: [],
+    isOpen: true,
+  };
+
+  setArcsStore("arcs", newArc.id, {
+    id: newArc.id,
+    title: newArc.name,
     summary: "",
-    start_date: "",
+    modifiedAt: Date.now(),
   } satisfies Arc);
-  appendNode(
-    {
-      id: newId,
-      name: "New Arc",
-      type: "arc",
-      isOpen: false,
-      children: [],
-    },
-    bookId,
-  );
+  insertNode(newArc, bookId, beforeId);
+  return newArc;
 }
 
 // Function to update an existing arc
 export function updateArc(arcId: string, updatedData: Partial<Arc>) {
-  setArcsStore("arcs", arcId, (arc) => ({
-    ...arc,
+  const currentValue = arcsStore.arcs[arcId];
+  setArcsStore("arcs", arcId, {
+    summary: "",
+    id: arcId,
+    ...currentValue,
     ...updatedData,
     modifiedAt: Date.now(),
-  }));
+  });
+  console.log(arcsStore.arcs[arcId]);
   updateNode(arcId, {
     name: updatedData.title,
   });

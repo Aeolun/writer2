@@ -2,6 +2,7 @@ import type { Document } from "@langchain/core/documents";
 import { addDocuments, removeDocuments } from "./embedding-store.ts";
 import { scenesState } from "../stores/scenes.ts";
 import { charactersState } from "../stores/characters.ts";
+import { locationsState } from "../stores/locations.ts";
 import { storyState } from "../stores/story.ts";
 
 const addCache = new Set<string>();
@@ -22,6 +23,12 @@ export type ParagraphEmbeddingMetadata = {
 
 export type CharacterEmbeddingMetadata = {
   characterId: string;
+  storyId: string;
+  kind: "context";
+};
+
+export type LocationEmbeddingMetadata = {
+  locationId: string;
   storyId: string;
   kind: "context";
 };
@@ -61,7 +68,13 @@ export const loadStoryToEmbeddings = async () => {
     if (!addCache.has(`character/${characterId}`)) {
       documents.push({
         id: `character/${characterId}`,
-        pageContent: `${character.name} (${character.age} years old): ${character.summary}`,
+        pageContent: `${character.name} (${character.age} years old, ${character.height}cm tall): ${
+          character.summary
+        }. ${character.distinguishingFeatures ? `Notable features: ${character.distinguishingFeatures}.` : ""} ${
+          character.hairColor
+            ? `Has ${character.hairColor.toLowerCase()} hair`
+            : ""
+        }${character.eyeColor ? ` and ${character.eyeColor.toLowerCase()} eyes` : ""}.`,
         metadata: {
           characterId,
           storyId: storyId ?? "",
@@ -69,6 +82,24 @@ export const loadStoryToEmbeddings = async () => {
         } satisfies CharacterEmbeddingMetadata,
       });
       addCache.add(`character/${characterId}`);
+      nr++;
+    }
+  }
+
+  for (const [locationId, location] of Object.entries(
+    locationsState.locations,
+  )) {
+    if (!addCache.has(`location/${locationId}`)) {
+      documents.push({
+        id: `location/${locationId}`,
+        pageContent: `${location.name}: ${location.description}`,
+        metadata: {
+          locationId,
+          storyId: storyId ?? "",
+          kind: "context",
+        } satisfies LocationEmbeddingMetadata,
+      });
+      addCache.add(`location/${locationId}`);
       nr++;
     }
   }

@@ -3,6 +3,7 @@ import { instructions } from "../ai-instructions.ts";
 import type { LlmInterface } from "./llm-interface";
 import { settingsState } from "../stores/settings.ts";
 import { unwrap } from "solid-js/store";
+import { setLastGenerationUsage } from "../stores/ui.ts";
 
 export class Anthropic implements LlmInterface {
   api?: AnthropicAPI;
@@ -41,7 +42,7 @@ export class Anthropic implements LlmInterface {
   }
   async chat(
     kind: keyof typeof instructions,
-    text: string,
+    text: string | { text: string; canCache: boolean }[],
     options?: {
       additionalInstructions?: string;
     },
@@ -50,24 +51,66 @@ export class Anthropic implements LlmInterface {
     if (!this.api) {
       throw new Error("Not initialized yet");
     }
-    const result = await this.api.messages.create({
-      messages: [
-        {
-          role: "user",
-          content: instructions[kind],
-        },
-        {
-          role: "user",
-          content: options?.additionalInstructions
-            ? `${options?.additionalInstructions}\n\n${text}`
-            : text,
-        },
-      ],
+    const result = await this.api.beta.promptCaching.messages.create({
+      system: options?.additionalInstructions
+        ? [
+            {
+              type: "text",
+              text: instructions[kind],
+            },
+            {
+              type: "text",
+              text: options?.additionalInstructions ?? "",
+            },
+          ]
+        : [
+            {
+              type: "text",
+              text: instructions[kind],
+            },
+          ],
+      messages: Array.isArray(text)
+        ? text.map((t) =>
+            t.canCache
+              ? {
+                  role: "user",
+                  content: [
+                    {
+                      type: "text",
+                      text: t.text,
+                      cache_control: { type: "ephemeral" },
+                    },
+                  ],
+                }
+              : {
+                  role: "user",
+                  content: [
+                    {
+                      type: "text",
+                      text: t.text,
+                    },
+                  ],
+                },
+          )
+        : [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text,
+                },
+              ],
+            },
+          ],
       max_tokens: 2000,
       temperature: 1.0,
+
       model: this.model ?? "",
     });
 
+    console.log("anthropic result usage", result.usage);
+    setLastGenerationUsage(result.usage as unknown as Record<string, number>);
     return result.content[0].type === "text" ? result.content[0].text : "";
   }
 }

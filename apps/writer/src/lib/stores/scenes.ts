@@ -1,4 +1,4 @@
-import {
+import type {
   ContentNode,
   InventoryAction,
   PlotpointAction,
@@ -7,7 +7,7 @@ import {
 } from "@writer/shared";
 import shortUUID from "short-uuid";
 import { createStore } from "solid-js/store";
-import { appendNode, removeNode, updateNode } from "./tree";
+import { appendNode, removeNode, updateNode, insertNode } from "./tree";
 import { removeEntityFromEmbeddingsCache } from "../embeddings/load-story-to-embeddings";
 
 export const [scenesState, setScenesState] = createStore<{
@@ -16,20 +16,29 @@ export const [scenesState, setScenesState] = createStore<{
   scenes: {},
 });
 
-export const createScene = (parentId: string) => {
-  const id = shortUUID.generate();
-  setScenesState("scenes", id, {
-    id,
-    title: "New scene",
+export const createScene = (chapterId: string, beforeId?: string) => {
+  const newScene = {
+    id: shortUUID.generate(),
+    type: "scene" as const,
+    name: "New Scene",
+    children: [],
+    isOpen: true,
+  };
+
+  setScenesState("scenes", newScene.id, {
+    id: newScene.id,
+    title: newScene.name,
+    summary: "",
+    modifiedAt: Date.now(),
+    characterIds: [],
     words: 0,
-    hasAI: false,
     paragraphs: [],
     plot_point_actions: [],
     text: "",
-    summary: "",
-    modifiedAt: Date.now(),
   } satisfies Scene);
-  appendNode({ id, type: "scene", name: "New scene", isOpen: true }, parentId);
+  insertNode(newScene, chapterId, beforeId);
+
+  return newScene;
 };
 
 export const updateSceneParagraph = (sceneId: string, paragraphId: string) => {
@@ -173,6 +182,7 @@ export const addInventoryActionToSceneParagraph = (
 };
 
 export const moveParagraphUp = (sceneId: string, paragraphId: string) => {
+  removeEntityFromEmbeddingsCache(`paragraph/${paragraphId}`);
   setScenesState("scenes", sceneId, "paragraphs", (p) => {
     const index = p.findIndex((p) => p.id === paragraphId);
     if (index === -1) return p;
@@ -186,6 +196,7 @@ export const moveParagraphUp = (sceneId: string, paragraphId: string) => {
 };
 
 export const moveParagraphDown = (sceneId: string, paragraphId: string) => {
+  removeEntityFromEmbeddingsCache(`paragraph/${paragraphId}`);
   setScenesState("scenes", sceneId, "paragraphs", (p) => {
     const index = p.findIndex((p) => p.id === paragraphId);
     if (index === -1) return p;
@@ -199,6 +210,7 @@ export const moveParagraphDown = (sceneId: string, paragraphId: string) => {
 };
 
 export const removeSceneParagraph = (sceneId: string, paragraphId: string) => {
+  removeEntityFromEmbeddingsCache(`paragraph/${paragraphId}`);
   setScenesState("scenes", sceneId, "paragraphs", (p) => {
     return p.filter((p) => p.id !== paragraphId);
   });
@@ -225,16 +237,58 @@ export const createSceneParagraph = (
     paragraph,
     ...(p ?? []).slice(insertIndex),
   ]);
+  const words = getWordCount(paragraph.text);
   setScenesState("scenes", sceneId, (s) => {
     return {
       cursor: 0,
+      words: (s.words ?? 0) + (words ?? 0),
       selectedParagraph: paragraph.id,
     };
   });
 };
 
 export const deleteScene = (sceneId: string) => {
+  // Remove all paragraphs from the embeddings cache
+  for (const paragraph of scenesState.scenes[sceneId]?.paragraphs ?? []) {
+    removeEntityFromEmbeddingsCache(`paragraph/${paragraph.id}`);
+  }
   // @ts-expect-error: this is a valid way to delete
   setScenesState("scenes", sceneId, undefined);
   removeNode(sceneId);
+};
+
+export const splitScene = (sceneId: string, paragraphId: string) => {
+  const scene = scenesState.scenes[sceneId];
+  const paragraphIndex = scene.paragraphs.findIndex(
+    (p) => p.id === paragraphId,
+  );
+  if (paragraphIndex === -1) return;
+
+  const newSceneId = shortUUID.generate();
+  const newParagraphs = scene.paragraphs.slice(paragraphIndex);
+  const remainingParagraphs = scene.paragraphs.slice(0, paragraphIndex);
+
+  // Remove embeddings for all paragraphs that will be in the new scene
+  // since their sceneId will change
+  for (const paragraph of newParagraphs) {
+    removeEntityFromEmbeddingsCache(`paragraph/${paragraph.id}`);
+  }
+
+  setScenesState("scenes", sceneId, "paragraphs", remainingParagraphs);
+  setScenesState("scenes", newSceneId, {
+    id: newSceneId,
+    title: "Split scene",
+    words: newParagraphs.reduce((acc, p) => acc + (p.words ?? 0), 0),
+    hasAI: newParagraphs.some((p) => p.state === "ai"),
+    paragraphs: newParagraphs,
+    plot_point_actions: [],
+    text: "",
+    summary: "",
+    modifiedAt: Date.now(),
+  } satisfies Scene);
+
+  appendNode(
+    { id: newSceneId, type: "scene", name: "Split scene", isOpen: true },
+    sceneId,
+  );
 };

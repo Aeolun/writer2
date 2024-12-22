@@ -8,21 +8,38 @@ import {
   persistedSchema,
 } from "@writer/shared";
 import short from "short-uuid";
-import { setArcsStore } from "../stores/arcs";
-import {
-  setExpectedLastModified,
-  setOpenPath,
-  setStory,
-} from "../stores/story";
-import { setCharactersState } from "../stores/characters";
-import { setTree } from "../stores/tree";
-import { setChaptersState } from "../stores/chapters";
-import { getWordCount, setScenesState } from "../stores/scenes";
-import { setPlotpoints } from "../stores/plot-points";
-import { setItems } from "../stores/items";
-import { setLanguageStore } from "../stores/language-store";
-import { setBooksStore } from "../stores/books";
+import { setExpectedLastModified, setOpenPath } from "../stores/story";
+
 import { loadToState } from "./load-to-state";
+
+const migrateCharacterNames = (storyData: any) => {
+  if (storyData.story.characters) {
+    for (const characterId of Object.keys(storyData.story.characters)) {
+      const character = storyData.story.characters[characterId];
+      if (character.name && !character.firstName) {
+        // Split the full name into parts
+        const nameParts = character.name.trim().split(/\s+/);
+
+        // Handle the name parts
+        if (nameParts.length === 1) {
+          character.firstName = nameParts[0];
+        } else if (nameParts.length === 2) {
+          character.firstName = nameParts[0];
+          character.lastName = nameParts[1];
+        } else if (nameParts.length > 2) {
+          character.firstName = nameParts[0];
+          character.lastName = nameParts[nameParts.length - 1];
+          character.middleName = nameParts.slice(1, -1).join(" ");
+        }
+
+        // Remove the old name field
+        delete character.name;
+      } else if (!character.firstName) {
+        character.firstName = "unknown";
+      }
+    }
+  }
+};
 
 export const loadProject = async (projectPath: string) => {
   const indexPath = await path.join(projectPath, "index.json");
@@ -54,6 +71,9 @@ export const loadProject = async (projectPath: string) => {
       console.error(error);
     }
   }
+
+  // Migrate character names after loading all entities
+  migrateCharacterNames(storyData);
 
   for (const languageEntity of languageEntities) {
     if (storyData.language) {

@@ -4,6 +4,7 @@ import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { settingsState } from "../stores/settings";
 import {
   CharacterEmbeddingMetadata,
+  LocationEmbeddingMetadata,
   ParagraphEmbeddingMetadata,
 } from "./load-story-to-embeddings";
 
@@ -48,13 +49,24 @@ export const searchEmbeddings = async (
   numResults: number,
   filter?: (doc: Document) => boolean,
 ): Promise<
-  [Document<CharacterEmbeddingMetadata | ParagraphEmbeddingMetadata>, number][]
+  [
+    Document<
+      | CharacterEmbeddingMetadata
+      | LocationEmbeddingMetadata
+      | ParagraphEmbeddingMetadata
+    >,
+    number,
+  ][]
 > => {
   const store = await getVectorStore();
   console.log("searching embeddings", store.memoryVectors.length);
   return store.similaritySearchWithScore(query, numResults, filter) as Promise<
     [
-      Document<CharacterEmbeddingMetadata | ParagraphEmbeddingMetadata>,
+      Document<
+        | CharacterEmbeddingMetadata
+        | LocationEmbeddingMetadata
+        | ParagraphEmbeddingMetadata
+      >,
       number,
     ][]
   >;

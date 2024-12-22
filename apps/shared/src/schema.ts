@@ -14,11 +14,20 @@ const plotPointSchema = entitySchema.extend({
 export type PlotPoint = z.infer<typeof plotPointSchema>;
 
 const characterSchema = entitySchema.extend({
-  isProtagonist: z.boolean(),
   picture: z.string(),
-  name: z.string(),
+  firstName: z.string(),
+  middleName: z.string().optional(),
+  lastName: z.string().optional(),
+  nickname: z.string().optional(),
   summary: z.string(),
   age: z.string(),
+  gender: z.string().optional(),
+  sexualOrientation: z.string().optional(),
+  height: z.number().optional().default(170),
+  hairColor: z.string().optional(),
+  eyeColor: z.string().optional(),
+  distinguishingFeatures: z.string().optional(),
+  isMainCharacter: z.boolean().default(true),
 });
 export type Character = z.infer<typeof characterSchema>;
 
@@ -31,7 +40,12 @@ export type TreeData = z.infer<typeof treeDataSchema>;
 
 const bookSchema = treeDataSchema.extend({
   summary: z.string(),
+  author: z.string().optional(),
+  editor: z.string().optional(),
+  coverArtist: z.string().optional(),
   critique: z.string().optional(),
+  coverImage: z.string().optional(),
+  separatorImage: z.string().optional(),
   start_date: z.string().optional(),
 });
 
@@ -135,6 +149,19 @@ const sceneSchema = treeDataSchema.extend({
       action: z.string(),
     }),
   ),
+  perspective: z.enum(["first", "third"]).optional(),
+  protagonistId: z.string().optional(),
+  characterIds: z.array(z.string()).optional(),
+  referredCharacterIds: z.array(z.string()).optional(),
+  generationApproaches: z
+    .array(
+      z.object({
+        name: z.string(),
+        content: z.string(),
+        timestamp: z.number(),
+      }),
+    )
+    .optional(),
 });
 
 export type Scene = z.infer<typeof sceneSchema>;
@@ -144,6 +171,16 @@ const baseNodeSchema = z.object({
   name: z.string(),
   type: z.enum(["book", "arc", "chapter", "scene"]),
   isOpen: z.boolean(),
+  oneliner: z.string().optional(),
+  summaries: z
+    .array(
+      z.object({
+        level: z.number(),
+        text: z.string(),
+        timestamp: z.number(),
+      }),
+    )
+    .optional(),
 });
 
 export type Node = z.infer<typeof baseNodeSchema> & {
@@ -205,6 +242,8 @@ export const storySettingsSchema = z.object({
   mangaChapterPath: z.string().optional(),
   aiInstructions: z.string().optional(),
   royalRoadId: z.string().optional(),
+  defaultPerspective: z.enum(["first", "third"]).default("third"),
+  defaultProtagonistId: z.string().optional(),
 });
 
 export type StorySettings = z.infer<typeof storySettingsSchema>;
@@ -215,6 +254,13 @@ export const uploadedFileSchema = z.object({
 });
 
 export type UploadedFile = z.infer<typeof uploadedFileSchema>;
+
+const locationSchema = entitySchema.extend({
+  name: z.string(),
+  picture: z.string(),
+  description: z.string(),
+});
+export type Location = z.infer<typeof locationSchema>;
 
 export const storySchema = z.object({
   id: z.string(),
@@ -229,8 +275,10 @@ export const storySchema = z.object({
   book: z.record(bookSchema),
   arc: z.record(arcSchema),
   characters: z.record(characterSchema),
+  locations: z.record(locationSchema),
   plotPoints: z.record(plotPointSchema),
   scene: z.record(sceneSchema),
+  oneliner: z.string().optional(),
 });
 export type Story = z.infer<typeof storySchema>;
 
@@ -255,6 +303,7 @@ export const entities = [
   "arc",
   "chapter",
   "characters",
+  "locations",
   "plotPoints",
 ] as const;
 
