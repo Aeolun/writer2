@@ -116,6 +116,8 @@ export type ContentNode = z.infer<typeof contentNodeSchema>;
 const sceneParagraphSchema = entitySchema.extend({
   text: z.string().or(contentNodeSchema),
   words: z.number().optional(),
+  aiCharacters: z.number().optional(),
+  humanCharacters: z.number().optional(),
   extra: z.string().optional(),
   translation: z.string().optional(),
   extraLoading: z.boolean().optional(),

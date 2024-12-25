@@ -83,6 +83,7 @@ model Story {
   published         Boolean           @default(false)
   status            StoryStatus       @default(ONGOING)
   type              StoryType         @default(ORIGINAL)
+  wordsPerWeek      Int?
   coverArtAsset     String
   coverColor        String            @default("#000000")
   coverTextColor    String            @default("#FFFFFF")

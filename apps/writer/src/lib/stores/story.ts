@@ -15,12 +15,7 @@ type StoryStateProperties = Pick<
   | "oneliner"
 >;
 
-export const [storyState, setStoryState] = createStore<{
-  story: StoryStateProperties | undefined;
-  openPath?: string;
-  expectedLastModified: number;
-  storyLoaded: boolean;
-}>({
+const storyStateDefault = {
   story: {
     id: short.generate(),
     name: "",
@@ -33,7 +28,28 @@ export const [storyState, setStoryState] = createStore<{
   },
   expectedLastModified: 0,
   storyLoaded: false,
-});
+};
+export const [storyState, setStoryState] = createStore<{
+  story: StoryStateProperties | undefined;
+  openPath?: string;
+  expectedLastModified: number;
+  storyLoaded: boolean;
+}>(storyStateDefault);
+
+export const resetStoryState = () => {
+  setStoryState({
+    story: {
+      id: short.generate(),
+      name: "",
+      modifiedTime: 0,
+      settings: {},
+      uploadedFiles: {},
+      lastPublishTime: 0,
+    },
+    expectedLastModified: 0,
+    storyLoaded: false,
+  });
+};
 
 export const setStory = (story: StoryStateProperties) => {
   setStoryState("story", {

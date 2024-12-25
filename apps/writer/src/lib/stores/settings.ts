@@ -23,7 +23,7 @@ const initialSettings: SettingsState = {
   groqKey: "",
   cerebrasKey: "",
   anthropicKey: "",
-  serverUrl: "",
+  serverUrl: "https://writer.serial-experiments.com/trpc",
   aiSource: "",
   aiModel: "",
   royalRoadEmail: "",
@@ -32,6 +32,10 @@ const initialSettings: SettingsState = {
 };
 
 export const [settingsState, setSettingsState] = createStore(initialSettings);
+
+export const resetSettingsState = () => {
+  setSettingsState({ ...initialSettings });
+};
 
 export const tauriSettingsStore = new Store("global-settings.bin");
 

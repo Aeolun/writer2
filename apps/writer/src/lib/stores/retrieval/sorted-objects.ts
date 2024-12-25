@@ -144,9 +144,13 @@ export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
             const sceneData = scenesState.scenes[scene.id];
             for (const paragraph of sceneData.paragraphs) {
               stats.words +=
-                paragraph.state === "ai" ? 0 : getWordCount(paragraph.text);
+                paragraph.state === "ai"
+                  ? 0
+                  : getWordCount(paragraph.text).words;
               stats.aiWords +=
-                paragraph.state === "ai" ? getWordCount(paragraph.text) : 0;
+                paragraph.state === "ai"
+                  ? getWordCount(paragraph.text).words
+                  : 0;
               objects.push({
                 type: "paragraph",
                 text:

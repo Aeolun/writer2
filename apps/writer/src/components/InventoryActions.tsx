@@ -29,8 +29,6 @@ export const InventoryActions = () => {
     item_amount: 1,
   });
 
-  const currentSceneData = currentScene();
-
   return (
     <div class="flex flex-row items-center gap-2">
       <div class="min-w-[6em]">Inventory</div>
@@ -103,6 +101,7 @@ export const InventoryActions = () => {
         type="button"
         class="btn btn-primary"
         onClick={() => {
+          const currentSceneData = currentScene();
           if (
             currentSceneData &&
             inventory() &&

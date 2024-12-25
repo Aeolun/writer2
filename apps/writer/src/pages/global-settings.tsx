@@ -10,15 +10,8 @@ let lastSetAvailableModels: any = undefined;
 const GlobalSettings = () => {
   const [availableModels, setAvailableModels] = createSignal<string[]>([]);
 
-  createEffect(async () => {
+  const updateModels = async () => {
     const source = settingsState.aiSource;
-    console.log(
-      "aiSource",
-      source,
-      lastSource === source,
-      lastSetAvailableModels === setAvailableModels,
-    );
-
     if (source && source in llms) {
       console.log("updating models");
       const models = await llms[source]?.listModels();
@@ -27,6 +20,16 @@ const GlobalSettings = () => {
         setSetting("aiModel", "");
       }
     }
+  };
+  createEffect(async () => {
+    const source = settingsState.aiSource;
+    console.log(
+      "aiSource",
+      source,
+      lastSource === source,
+      lastSetAvailableModels === setAvailableModels,
+    );
+    await updateModels();
     lastSource = source;
     lastSetAvailableModels = setAvailableModels;
   });
@@ -91,6 +94,9 @@ const GlobalSettings = () => {
             onChange={(e) => {
               setSetting("openaiKey", e.target.value);
             }}
+            onBlur={() => {
+              updateModels();
+            }}
           />
         </FormField>
         <FormField
@@ -102,6 +108,9 @@ const GlobalSettings = () => {
             value={settingsState.anthropicKey}
             onChange={(e) => {
               setSetting("anthropicKey", e.target.value);
+            }}
+            onBlur={() => {
+              updateModels();
             }}
           />
         </FormField>
@@ -115,6 +124,9 @@ const GlobalSettings = () => {
             onChange={(e) => {
               setSetting("groqKey", e.target.value);
             }}
+            onBlur={() => {
+              updateModels();
+            }}
           />
         </FormField>
         <FormField
@@ -126,6 +138,9 @@ const GlobalSettings = () => {
             value={settingsState.cerebrasKey}
             onChange={(e) => {
               setSetting("cerebrasKey", e.target.value);
+            }}
+            onBlur={() => {
+              updateModels();
             }}
           />
         </FormField>

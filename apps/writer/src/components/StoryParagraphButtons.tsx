@@ -1,7 +1,7 @@
 import type { HelpKind } from "../lib/ai-instructions";
 import type { Scene } from "../../../shared/src/schema.ts";
 import { useAi } from "../lib/use-ai.ts";
-import { updateSceneParagraphData } from "../lib/stores/scenes.ts";
+import { splitScene, updateSceneParagraphData } from "../lib/stores/scenes.ts";
 import { createSignal } from "solid-js";
 import { BsSpellcheck } from "solid-icons/bs";
 import { RiBuildingsAncientGateLine } from "solid-icons/ri";
@@ -30,31 +30,82 @@ export const StoryParagraphButtons = (props: {
     (p) => p.id === scene.selectedParagraph,
   );
   const [menuOpen, setMenuOpen] = createSignal(false);
+  const [rewriteOpen, setRewriteOpen] = createSignal(false);
+  const [manualRewriteText, setManualRewriteText] = createSignal("");
 
+  const manualRewrite = async (rewriteInstruction: string) => {
+    if (!scene) return;
+    if (!currentParagraph) {
+      return;
+    }
+    updateSceneParagraphData(scene.id, currentParagraph.id, {
+      extraLoading: true,
+    });
+    return useAi(
+      "rewrite",
+      `Instruction:\n${rewriteInstruction}\n\nParagraph:\n\n${
+        typeof currentParagraph.text === "string"
+          ? currentParagraph.text
+          : contentSchemaToText(currentParagraph.text)
+      }`,
+    ).then((res) => {
+      updateSceneParagraphData(scene.id, currentParagraph.id, {
+        extra: res,
+        extraLoading: false,
+      });
+    });
+  };
   const help = (helpKind: HelpKind, extra = false, addInstructions = true) => {
     if (!scene) return;
     if (!currentParagraph) {
       return;
     }
+
+    updateSceneParagraphData(scene.id, currentParagraph.id, {
+      extraLoading: true,
+    });
+
+    const currentParagraphIndex = scene.paragraphs.findIndex(
+      (p) => p.id === currentParagraph.id,
+    );
+    const lastParagraphs = scene.paragraphs.slice(
+      Math.max(0, currentParagraphIndex - 6),
+      currentParagraphIndex,
+    );
+    const nextParagraph = scene.paragraphs[currentParagraphIndex + 1];
+
     return useAi(
       helpKind,
-      `${
+      `Previous paragraphs:
+      ${lastParagraphs
+        .map((lastParagraph) =>
+          typeof lastParagraph.text === "string"
+            ? lastParagraph.text
+            : contentSchemaToText(lastParagraph.text),
+        )
+        .join("\n\n")}\n\n<paragraph>${
         typeof currentParagraph.text === "string"
           ? currentParagraph.text
           : contentSchemaToText(currentParagraph.text)
-      }`,
+      }</paragraph>`,
       addInstructions,
-    ).then((res) => {
-      if (extra) {
+    )
+      .then((res) => {
+        if (extra) {
+          updateSceneParagraphData(scene.id, currentParagraph.id, {
+            extra: res ?? undefined,
+          });
+        } else {
+          updateSceneParagraphData(scene.id, currentParagraph.id, {
+            extra: res ?? undefined,
+          });
+        }
+      })
+      .finally(() => {
         updateSceneParagraphData(scene.id, currentParagraph.id, {
-          extra: res ?? undefined,
+          extraLoading: false,
         });
-      } else {
-        updateSceneParagraphData(scene.id, currentParagraph.id, {
-          extra: res ?? undefined,
-        });
-      }
-    });
+      });
   };
   const [translationModalOpen, setTranslationModalOpen] = createSignal(false);
   const [translationText, setTranslationText] = createSignal(
@@ -69,14 +120,7 @@ export const StoryParagraphButtons = (props: {
         class="btn btn-xs"
         title="Rewrite the paragraph with AI, with a focus on spelling. This will show the suggestion next to the existing paragraph."
         onClick={() => {
-          updateSceneParagraphData(scene.id, currentParagraph.id, {
-            extraLoading: true,
-          });
-          help("rewrite_spelling")?.then(() => {
-            updateSceneParagraphData(scene.id, currentParagraph.id, {
-              extraLoading: false,
-            });
-          });
+          help("rewrite_spelling");
         }}
       >
         <ImMagicWand />
@@ -87,14 +131,7 @@ export const StoryParagraphButtons = (props: {
         class="btn btn-xs"
         title="Rewrite the paragraph with AI. This will show the suggestion next to the existing paragraph."
         onClick={() => {
-          updateSceneParagraphData(scene.id, currentParagraph.id, {
-            extraLoading: true,
-          });
-          help("rewrite")?.then(() => {
-            updateSceneParagraphData(scene.id, currentParagraph.id, {
-              extraLoading: false,
-            });
-          });
+          help("rewrite");
         }}
       >
         <RiBuildingsAncientGateLine />
@@ -112,17 +149,21 @@ export const StoryParagraphButtons = (props: {
         class="btn btn-xs"
         title="Fix the grammar with AI, and keep as close to the original as possible. This will show the suggestion next to the existing paragraph."
         onClick={() => {
-          updateSceneParagraphData(scene.id, currentParagraph.id, {
-            extraLoading: true,
-          });
-          help("rewrite_similar", true, false)?.then(() => {
-            updateSceneParagraphData(scene.id, currentParagraph.id, {
-              extraLoading: false,
-            });
-          });
+          help("rewrite_similar", true, false);
         }}
       >
         <BsSpellcheck />
+      </button>
+      <button
+        type="button"
+        aria-label="rewrite"
+        class="btn btn-xs"
+        title="Fix the grammar with AI, and keep as close to the original as possible. This will show the suggestion next to the existing paragraph."
+        onClick={() => {
+          setRewriteOpen(true);
+        }}
+      >
+        <RiBuildingsAncientGateLine />
       </button>
       <DropdownMenu>
         <DropdownMenuTrigger
@@ -137,9 +178,7 @@ export const StoryParagraphButtons = (props: {
           <DropdownMenuContent class="dropdown-content menu flex-col bg-base-100 rounded-box">
             <DropdownMenuItem
               onClick={() => {
-                updateSceneParagraphData(scene.id, currentParagraph.id, {
-                  state: "draft",
-                });
+                splitScene(scene.id, currentParagraph.id);
               }}
             >
               <span class="font-bold">Split into new scene from here</span>
@@ -186,6 +225,39 @@ export const StoryParagraphButtons = (props: {
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
+
+      {rewriteOpen() && (
+        <div class="modal modal-open">
+          <div class="modal-box">
+            <h3 class="font-bold text-lg">Manual Rewrite</h3>
+            <input
+              type="text"
+              value={manualRewriteText()}
+              onInput={(e) => setManualRewriteText(e.currentTarget.value)}
+              class="input input-bordered w-full"
+            />
+            <div class="modal-action">
+              <button
+                type="button"
+                class="btn btn-success"
+                onClick={() => {
+                  manualRewrite(manualRewriteText());
+                  setRewriteOpen(false);
+                }}
+              >
+                Submit
+              </button>
+              <button
+                type="button"
+                class="btn"
+                onClick={() => setRewriteOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {translationModalOpen() && (
         <div class="modal">
           <div class="modal-box">

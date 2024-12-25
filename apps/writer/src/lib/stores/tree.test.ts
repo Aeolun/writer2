@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   findPathToNode,
   setTree,
+  findParent,
   findIndexesToNode,
   appendNode,
   treeState,
@@ -333,5 +334,67 @@ describe("getItemsInOrder", () => {
 
     const chapters = getItemsInOrder("chapter");
     expect(chapters).toEqual([]);
+  });
+});
+
+describe("findParent", () => {
+  const defaultNodeProps: Node = {
+    id: "",
+    name: "",
+    type: "book",
+    isOpen: false,
+  };
+
+  it("should return the parent node of a given node id", () => {
+    const tree: Node[] = [
+      {
+        ...defaultNodeProps,
+        id: "1",
+        children: [
+          {
+            ...defaultNodeProps,
+            id: "2",
+            children: [
+              { ...defaultNodeProps, id: "3" },
+              { ...defaultNodeProps, id: "4" },
+            ],
+          },
+        ],
+      },
+      {
+        ...defaultNodeProps,
+        id: "5",
+        children: [{ ...defaultNodeProps, id: "6" }],
+      },
+    ];
+
+    setTree(tree);
+
+    expect(findParent("3")?.id).toBe("2");
+    expect(findParent("4")?.id).toBe("2");
+    expect(findParent("6")?.id).toBe("5");
+  });
+
+  it("should return undefined if the node is a root node", () => {
+    const tree: Node[] = [
+      { ...defaultNodeProps, id: "1" },
+      { ...defaultNodeProps, id: "2" },
+    ];
+
+    setTree(tree);
+
+    expect(findParent("1")).toBeUndefined();
+    expect(findParent("2")).toBeUndefined();
+  });
+
+  it("should return undefined if the node is not found", () => {
+    const tree: Node[] = [
+      { ...defaultNodeProps, id: "1" },
+      { ...defaultNodeProps, id: "2" },
+    ];
+
+    setTree(tree);
+
+    expect(findParent("3")).toBeUndefined();
   });
 });

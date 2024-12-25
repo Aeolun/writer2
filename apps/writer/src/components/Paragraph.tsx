@@ -5,6 +5,7 @@ import {
   createSceneParagraph,
   moveParagraphDown,
   moveParagraphUp,
+  removeSceneParagraph,
   scenesState,
   updateSceneParagraphData,
   updateSceneSelectedParagraph,
@@ -16,7 +17,7 @@ import { ParagraphDetails } from "./ParagraphDetails.tsx";
 import { findPathToNode } from "../lib/stores/tree.ts";
 import { Editor } from "./editor/Editor.tsx";
 import shortUUID from "short-uuid";
-import { FiArrowDown, FiArrowUp, FiPlus } from "solid-icons/fi";
+import { FiArrowDown, FiArrowUp, FiPlus, FiTrash } from "solid-icons/fi";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "border-yellow-500",
@@ -62,6 +63,15 @@ export const Paragraph = (props: {
                   type="button"
                   class="btn btn-xs py-0 px-1"
                   onClick={() => {
+                    moveParagraphUp(props.sceneId, props.paragraph.id);
+                  }}
+                >
+                  <FiArrowUp />
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-xs py-0 px-1"
+                  onClick={() => {
                     createSceneParagraph(
                       props.sceneId,
                       {
@@ -80,11 +90,13 @@ export const Paragraph = (props: {
                   type="button"
                   class="btn btn-xs py-0 px-1"
                   onClick={() => {
-                    moveParagraphUp(props.sceneId, props.paragraph.id);
+                    removeSceneParagraph(props.sceneId, props.paragraph.id);
                   }}
                 >
-                  <FiArrowUp />
+                  <FiTrash />
                 </button>
+                AI {props.paragraph.aiCharacters} H{" "}
+                {props.paragraph.humanCharacters}
               </div>
               <div class="absolute bottom-[-0.5em] right-0 z-10">
                 <button
@@ -162,7 +174,7 @@ export const Paragraph = (props: {
                     ) as HTMLTextAreaElement;
                     if (e.key === "Enter" && e.ctrlKey) {
                       const newId = splitParagraphFromCursor(props.sceneId);
-    
+
                       setTimeout(() => {
                         const newElement = document.getElementById(
                           `p_${newId}`,
@@ -182,7 +194,7 @@ export const Paragraph = (props: {
                         const previousElement = document.getElementById(
                           `p_${previousParagraph.id}`,
                         ) as HTMLTextAreaElement;
-    
+
                         previousElement.scrollIntoView({
                           behavior: "instant",
                           block: "center",
@@ -190,7 +202,7 @@ export const Paragraph = (props: {
                         previousElement?.focus();
                       }
                       removeSceneParagraph(props.sceneId, props.paragraph.id);
-    
+
                       e.preventDefault();
                       e.stopPropagation();
                     } else if (e.key === "Backspace" && e.ctrlKey) {

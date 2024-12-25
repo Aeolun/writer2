@@ -3,11 +3,16 @@ import { createStore } from "solid-js/store";
 import { appendNode, findNode, removeNode, updateNode } from "./tree";
 import shortUUID from "short-uuid";
 
+const booksStoreDefault = {
+  books: {},
+};
 export const [booksStore, setBooksStore] = createStore<{
   books: Record<string, Book>;
-}>({
-  books: {},
-});
+}>(booksStoreDefault);
+
+export const resetBooksStore = () => {
+  setBooksStore("books", {});
+};
 
 export const createBook = () => {
   const id = shortUUID.generate();

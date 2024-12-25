@@ -73,7 +73,7 @@ export const StoryPanel = () => {
         </div>
         {currentScene()?.extra ? (
           <textarea
-            class="flex-0.5 overflow-auto flex flex-col items-start whitespace-pre-wrap h-full bg-gray-100 p-4"
+            class="flex-0.5 overflow-auto flex flex-col items-start whitespace-pre-wrap h-full bg-gray-100 p-4 max-w-80"
             onInput={(e) => {
               const thisScene = currentScene();
               if (thisScene?.selectedParagraph) {

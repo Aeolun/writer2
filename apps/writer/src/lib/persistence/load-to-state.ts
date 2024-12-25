@@ -26,8 +26,19 @@ export const loadToState = async (savedStory: PersistedStory) => {
   for (const sceneId of Object.keys(scenesToSet)) {
     let sceneWords = 0;
     for (const paragraph of scenesToSet[sceneId].paragraphs) {
-      paragraph.words = getWordCount(paragraph.text);
+      const counts = getWordCount(paragraph.text);
+      paragraph.words = counts.words;
       sceneWords += paragraph.words;
+
+      if (
+        paragraph.aiCharacters === undefined ||
+        paragraph.humanCharacters === undefined
+      ) {
+        paragraph.aiCharacters =
+          paragraph.state === "ai" ? counts.characters : 0;
+        paragraph.humanCharacters =
+          paragraph.state !== "ai" ? counts.characters : 0;
+      }
     }
     scenesToSet[sceneId].words = sceneWords;
   }

@@ -9,11 +9,16 @@ import {
   insertNode,
 } from "./tree"; // Import functions from tree.ts
 
+const arcsStoreDefault = {
+  arcs: {},
+};
 export const [arcsStore, setArcsStore] = createStore<{
   arcs: Record<string, Arc>;
-}>({
-  arcs: {},
-});
+}>(arcsStoreDefault);
+
+export const resetArcsStore = () => {
+  setArcsStore("arcs", {});
+};
 
 // Function to create a new arc
 export function createArc(bookId: string, beforeId?: string) {

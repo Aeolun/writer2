@@ -4,6 +4,7 @@ import { scenesState } from "../stores/scenes.ts";
 import { charactersState } from "../stores/characters.ts";
 import { locationsState } from "../stores/locations.ts";
 import { storyState } from "../stores/story.ts";
+import { contentSchemaToText } from "../persistence/content-schema-to-html.ts";
 
 const addCache = new Set<string>();
 
@@ -42,13 +43,17 @@ export const loadStoryToEmbeddings = async () => {
 
   for (const [sceneId, scene] of Object.entries(scenes)) {
     for (const paragraph of scene.paragraphs) {
+      const paragraphText =
+        typeof paragraph.text === "string"
+          ? paragraph.text
+          : contentSchemaToText(paragraph.text);
       if (
-        paragraph.text.length > 0 &&
+        paragraphText.length > 0 &&
         !addCache.has(`paragraph/${paragraph.id}`)
       ) {
         documents.push({
           id: `paragraph/${paragraph.id}`,
-          pageContent: paragraph.text,
+          pageContent: paragraphText,
           metadata: {
             sceneId,
             paragraphId: paragraph.id,

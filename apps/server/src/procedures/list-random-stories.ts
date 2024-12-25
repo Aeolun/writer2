@@ -27,6 +27,7 @@ export const listRandomStories = publicProcedure
         coverColor: true,
         coverTextColor: true,
         royalRoadId: true,
+        wordsPerWeek: true,
         pages: true,
         status: true,
         ownerId: true,

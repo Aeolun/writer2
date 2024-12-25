@@ -1,18 +1,28 @@
 import { createStore } from "solid-js/store";
 import { generate as short } from "short-uuid";
-import { Character } from "@writer/shared";
+import type { Character } from "@writer/shared";
 
-export const [charactersState, setCharactersState] = createStore<{
+export type CharactersState = {
   characters: Record<string, Character>;
   selectedCharacterId: string;
   selectedCharacter?: Character;
-}>({
+};
+const charactersStateDefault: CharactersState = {
   selectedCharacterId: "",
   characters: {},
   get selectedCharacter() {
     return this.characters[this.selectedCharacterId];
   },
-});
+};
+export const [charactersState, setCharactersState] =
+  createStore<CharactersState>(charactersStateDefault);
+
+export const resetCharactersState = () => {
+  setCharactersState({
+    characters: {},
+    selectedCharacterId: "",
+  });
+};
 
 export const createCharacter = () => {
   const id = short();

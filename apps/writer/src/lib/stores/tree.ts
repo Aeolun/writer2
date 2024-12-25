@@ -1,11 +1,16 @@
 import { createStore } from "solid-js/store";
 import type { Node } from "@writer/shared";
 
+const treeStateDefault = {
+  structure: [],
+};
 export const [treeState, setTreeState] = createStore<{
   structure: Node[];
-}>({
-  structure: [],
-});
+}>(treeStateDefault);
+
+export const resetTreeState = () => {
+  setTreeState("structure", []);
+};
 
 export const findPathToNode = (nodeId: string): Node[] => {
   const path: Node[] = [];
@@ -87,6 +92,13 @@ const pathToNode = (id: string) => {
   pathToNode.pop();
 
   return pathToNode;
+};
+
+export const findParent = (id: string): Node | undefined => {
+  const pathTo = findPathToNode(id);
+  if (!pathTo || pathTo.length < 2) return;
+
+  return pathTo[pathTo.length - 2];
 };
 
 export const updateNode = (id: string, updates: Partial<Node>) => {

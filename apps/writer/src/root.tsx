@@ -2,7 +2,7 @@ import { createEffect, onCleanup, type ParentProps } from "solid-js";
 import {
   tauriSettingsStore,
   setSettings,
-  SettingsState,
+  type SettingsState,
   settingsState,
 } from "./lib/stores/settings";
 import { setSignedInUser } from "./lib/stores/user";
@@ -11,13 +11,26 @@ import { AiPopup } from "./components/AiPopup";
 import { NotificationManager } from "./components/NotificationManager";
 import { saveStory } from "./lib/persistence/save-story";
 import { addNotification } from "./lib/stores/notifications";
-import { storyState } from "./lib/stores/story";
+import { storyState, unloadStory } from "./lib/stores/story";
 import { ImportDialog } from "./components/ImportDialog";
+import { unloadFromState } from "./lib/persistence/unload-from-state";
+import { unwrap } from "solid-js/store";
+import { useNavigate } from "@solidjs/router";
+
+let saveCount = 0;
+let autosaveTimeout: number;
 
 export const Root = (props: ParentProps) => {
+  const navigate = useNavigate();
   const colorMode = window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";
+
+  onCleanup(() => {
+    console.log("unloading state when root gets cleaned up");
+    unloadFromState();
+    navigate("/");
+  });
 
   createEffect(async () => {
     await tauriSettingsStore.load();
@@ -41,21 +54,31 @@ export const Root = (props: ParentProps) => {
     }
   });
 
-  let saveCount = 0;
-  const autosaveTimeout = setInterval(() => {
-    if (storyState.storyLoaded) {
-      console.log("autosaving", saveCount);
-      saveStory(saveCount % 4 === 0).catch((error) => {
-        console.error("Error autosaving:", error);
-        addNotification({
-          title: "Autosave failed",
-          message: error.message,
-          type: "error",
-        });
-      });
-      saveCount++;
+  createEffect(() => {
+    if (autosaveTimeout) {
+      clearInterval(autosaveTimeout);
     }
-  }, 30000);
+    console.log("recreate autosave interval");
+    autosaveTimeout = window.setInterval(() => {
+      const storyLoaded = storyState.storyLoaded;
+      console.log("is story loaded", unwrap(storyState));
+      if (storyLoaded) {
+        console.log("autosaving", saveCount);
+        saveStory(saveCount % 4 === 0).catch((error) => {
+          console.error("Error autosaving:", error);
+
+          addNotification({
+            title: "Autosave failed",
+            message: error.message,
+            type: "error",
+          });
+        });
+        saveCount++;
+      } else {
+        console.log("not autosaving, no story loaded");
+      }
+    }, 30000);
+  });
 
   onCleanup(() => {
     clearInterval(autosaveTimeout);

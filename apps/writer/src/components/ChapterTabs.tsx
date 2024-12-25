@@ -11,11 +11,13 @@ import { updateNode } from "../lib/stores/tree";
 import { settingsState } from "../lib/stores/settings";
 import { storyState } from "../lib/stores/story";
 import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
+import { FormField } from "./styled/FormField";
 
 export const ChapterTabs = () => {
   const [selectedTab, setSelectedTab] = createSignal("overview");
   const help = (helpKind: HelpKind, extra = false) => {
     const chapterId = currentChapter()?.id;
+
     if (!chapterId) {
       return;
     }
@@ -111,7 +113,22 @@ export const ChapterTabs = () => {
                   This is the date the chapter starts in story time.
                 </p>
               </div>
-              <div class="break-all">{currentChapter()?.extra}</div>
+              {currentChapter()?.extra ? (
+                <FormField label="Extra">
+                  <textarea
+                    class="textarea textarea-bordered"
+                    onChange={(e) => {
+                      updateChapter(currentChapter()?.id ?? "", {
+                        extra: e.target.value,
+                      });
+                    }}
+                    rows={18}
+                    placeholder="extra"
+                    style={{ width: "100%" }}
+                    value={currentChapter()?.extra ?? ""}
+                  />
+                </FormField>
+              ) : null}
               <button
                 type="button"
                 class="btn btn-blue"

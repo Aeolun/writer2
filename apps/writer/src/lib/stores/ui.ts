@@ -37,7 +37,7 @@ export interface UIState {
   };
 }
 
-const initialState: UIState = {
+export const uiStateDefault: UIState = {
   stories: [],
   aiPopupOpen: false,
   signinPopupOpen: false,
@@ -53,7 +53,7 @@ const initialState: UIState = {
   },
 };
 
-export const [uiState, setUIState] = createStore(initialState);
+export const [uiState, setUIState] = createStore(uiStateDefault);
 
 export const store = new Store("global-settings.bin");
 

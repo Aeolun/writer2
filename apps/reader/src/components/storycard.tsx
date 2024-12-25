@@ -17,6 +17,7 @@ interface StoryCardProps {
   textColor: string;
   royalRoadId?: number;
   isCompleted?: boolean;
+  wordsPerWeek?: number;
   canAddToLibrary?: boolean;
 }
 
@@ -30,8 +31,9 @@ const StoryCard: React.FC<StoryCardProps> = ({
   pages,
   royalRoadId,
   isCompleted,
+  wordsPerWeek,
   canAddToLibrary,
-}) => {
+}: StoryCardProps) => {
   const [location, navigate] = useLocation();
   const dispatch = useAppDispatch();
 
@@ -92,7 +94,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
             {name}
           </h2>
           <p className={"text-xs overflow-x-hidden w-full"}>
-            {pages} pages{isCompleted ? " ✅" : " 🔥"}
+            {pages} pages{isCompleted ? " ✅" : " 🔥"} {wordsPerWeek ?? "?"} W/W
           </p>
           <div
             className={"text-xs flex-1 overflow-x-hidden w-full"}

@@ -14,7 +14,7 @@ import {
 } from "solid-icons/ai";
 import { chaptersState, createChapter } from "../lib/stores/chapters";
 import { createScene, scenesState } from "../lib/stores/scenes";
-import { Show } from "solid-js";
+import { For, Show } from "solid-js";
 import { setSelectedEntity, uiState } from "../lib/stores/ui";
 import { createArc } from "../lib/stores/arcs";
 import { dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME } from "solid-dnd-directive";
@@ -123,7 +123,7 @@ const renderNode = (node: Node & { isDndShadowItem?: boolean }) => {
           on:consider={dndEvent}
           on:finalize={dndEvent}
         >
-          {node.children?.map(renderNode)}
+          <For each={node.children}>{renderNode}</For>
         </div>
       </Show>
     </div>
@@ -222,7 +222,7 @@ export const StoryNavigation = () => {
       on:consider={dndEvent}
       on:finalize={dndEvent}
     >
-      {treeState.structure.map(renderNode)}
+      <For each={treeState.structure}>{renderNode}</For>
     </div>
   );
 };

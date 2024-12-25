@@ -13,11 +13,11 @@ export interface UserState {
   } | null;
 }
 
-const initialUserState: UserState = {
+export const userStateDefault: UserState = {
   signedInUser: null,
 };
 
-export const [userState, setUserState] = createStore(initialUserState);
+export const [userState, setUserState] = createStore(userStateDefault);
 
 export const setSignedInUser = (user: UserState["signedInUser"]) =>
   setUserState("signedInUser", user);

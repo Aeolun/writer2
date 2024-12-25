@@ -9,11 +9,16 @@ import {
 } from "./tree";
 import shortUUID from "short-uuid";
 
+const chaptersStateDefault = {
+  chapters: {},
+};
 export const [chaptersState, setChaptersState] = createStore<{
   chapters: Record<string, Chapter>;
-}>({
-  chapters: {},
-});
+}>(chaptersStateDefault);
+
+export const resetChaptersState = () => {
+  setChaptersState("chapters", {});
+};
 
 export const createChapter = (arcId: string, beforeId?: string) => {
   const newChapter = {

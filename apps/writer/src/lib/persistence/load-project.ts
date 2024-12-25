@@ -8,8 +8,8 @@ import {
   persistedSchema,
 } from "@writer/shared";
 import short from "short-uuid";
-import { setExpectedLastModified, setOpenPath } from "../stores/story";
 
+import { setExpectedLastModified, setOpenPath } from "../stores/story";
 import { loadToState } from "./load-to-state";
 
 const migrateCharacterNames = (storyData: any) => {

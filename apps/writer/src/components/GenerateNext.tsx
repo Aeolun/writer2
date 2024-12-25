@@ -84,7 +84,6 @@ export const GenerateNext = () => {
               if (!scene) return;
 
               const allParagraphs = scene.paragraphs;
-
               const recentContentChunks: RecentContentSection[] = [];
               const startIndex = Math.max(0, allParagraphs.length - 4);
 
