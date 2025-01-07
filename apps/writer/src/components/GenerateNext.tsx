@@ -5,11 +5,16 @@ import { loadStoryToEmbeddings } from "../lib/embeddings/load-story-to-embedding
 import { contentSchemaToText } from "../lib/persistence/content-schema-to-html.ts";
 import { addNotification } from "../lib/stores/notifications";
 import { currentScene } from "../lib/stores/retrieval/current-scene";
-import { createSceneParagraph, updateSceneData } from "../lib/stores/scenes";
+import { createSceneParagraph, scenesState, updateSceneData } from "../lib/stores/scenes";
 import { settingsState } from "../lib/stores/settings";
 import { useAi } from "../lib/use-ai";
 import { For } from "solid-js";
 import { uiState } from "../lib/stores/ui.ts";
+import { charactersState } from "../lib/stores/characters";
+import { locationsState } from "../lib/stores/locations";
+import { findPathToNode } from "../lib/stores/tree.ts";
+import { SceneParagraph } from "@writer/shared";
+import { arcsStore } from "../lib/stores/arcs";
 
 type RecentContentSection = {
   text: string;
@@ -83,12 +88,73 @@ export const GenerateNext = () => {
               const scene = currentScene();
               if (!scene) return;
 
-              const allParagraphs = scene.paragraphs;
-              const recentContentChunks: RecentContentSection[] = [];
-              const startIndex = Math.max(0, allParagraphs.length - 4);
+              const [bookNode, arcNode, chapterNode, sceneNode] = findPathToNode(scene.id);
 
-              for (let i = startIndex; i < allParagraphs.length; i++) {
+              // Get all scenes from current chapter
+              const currentChapterScenes = chapterNode.children?.map(scene => {
+                return scenesState.scenes[scene.id]
+              }) ?? [];
+
+              // Get all scenes from previous chapters and arcs
+              const arcs = bookNode.children ?? [];
+              const currentArcIndex = arcs.findIndex(a => a.id === arcNode.id);
+              const chapters = arcNode.children ?? [];
+              const currentChapterIndex = chapters.findIndex(c => c.id === chapterNode.id);
+              
+              // Gather highlights from previous arcs and current arc
+              const highlightLines: string[] = [];
+              for (let i = 0; i <= currentArcIndex; i++) {
+                const arc = arcs[i];
+                const arcHighlights = arcsStore.arcs[arc.id]?.highlights;
+                if (arcHighlights?.length) {
+                  highlightLines.push(`<arc_highlights from="${arc.name}"${i === currentArcIndex ? ' current="true"' : ''}>`);
+                  for (const highlight of arcHighlights) {
+                    highlightLines.push(`<${highlight.category}>${highlight.text}</${highlight.category}>`);
+                  }
+                  highlightLines.push('</arc_highlights>');
+                }
+              }
+              
+              // Initialize array to store the last two chapters' worth of paragraphs
+              const allParagraphs: SceneParagraph[] = [];
+              
+              // If we're in the first chapter of current arc, get last chapter from previous arc
+              if (currentChapterIndex === 0 && currentArcIndex > 0) {
+                const previousArc = arcs[currentArcIndex - 1];
+                if (previousArc?.children?.length) {
+                  const lastChapter = previousArc.children[previousArc.children.length - 1];
+                  const chapterScenes = lastChapter.children?.map(scene => scenesState.scenes[scene.id]) ?? [];
+                  for (const scene of chapterScenes) {
+                    if (scene?.paragraphs) {
+                      allParagraphs.push(...scene.paragraphs);
+                    }
+                  }
+                }
+              }
+              
+              // Get content from previous chapter in current arc if it exists
+              if (currentChapterIndex > 0) {
+                const previousChapter = chapters[currentChapterIndex - 1];
+                const chapterScenes = previousChapter.children?.map(scene => scenesState.scenes[scene.id]) ?? [];
+                for (const scene of chapterScenes) {
+                  if (scene?.paragraphs) {
+                    allParagraphs.push(...scene.paragraphs);
+                  }
+                }
+              }
+              
+              // Add current chapter's content
+              for (const scene of currentChapterScenes) {
+                if (scene?.paragraphs) {
+                  allParagraphs.push(...scene.paragraphs);
+                }
+              }
+
+              const recentContentChunks: RecentContentSection[] = [];
+
+              for (let i = 0; i < allParagraphs.length; i++) {
                 const paragraph = allParagraphs[i];
+                const cachedIndexesEmpty = cachedIndexes().length === 0;
                 const isIndexCached = cachedIndexes().includes(i);
 
                 recentContentChunks.push({
@@ -97,27 +163,74 @@ export const GenerateNext = () => {
                       ? paragraph.text
                       : contentSchemaToText(paragraph.text)
                   }\n\`\`\`\n\n`,
-                  canCache: isIndexCached,
+                  canCache: isIndexCached || (cachedIndexesEmpty && allParagraphs.length - 1 === i),
                 });
               }
 
               const lastIndex = allParagraphs.length - 1;
               setCachedIndexes((prev) => {
                 const updated = [...prev, lastIndex];
-                return updated.slice(-4);
+                return updated.slice(-3);
               });
 
               let appropriateContext;
               let sceneContent;
               let storyContent;
 
-              const promptBase = {
-                text: `Write ${
-                  paragraphCount() === 1
-                    ? "a paragraph"
-                    : `${paragraphCount()} paragraphs`
-                } for the next scene in which the following happens: ${scene.generateNextText}. Do not output any other text than the paragraphs.`,
-                canCache: false,
+              // Build character and location context
+              const characterLines: string[] = [];
+              if (scene.protagonistId) {
+                const protagonist = charactersState.characters[scene.protagonistId];
+                if (protagonist) {
+                  characterLines.push(
+                    `<perspective>${protagonist.firstName}'s ${scene.perspective ?? "third"} person perspective - ${protagonist.summary}</perspective>`,
+                  );
+                }
+              }
+              for (const charId of scene?.characterIds ?? []) {
+                const char = charactersState.characters[charId];
+                if (!char) continue;
+                const charText = `${[char.firstName, char.middleName, char.lastName]
+                  .filter(Boolean)
+                  .join(" ")}: ${char.summary}`;
+                characterLines.push(`<present_character>${charText}</present_character>`);
+              }
+              for (const charId of scene?.referredCharacterIds ?? []) {
+                const char = charactersState.characters[charId];
+                if (!char) continue;
+                const charText = `${[char.firstName, char.middleName, char.lastName]
+                  .filter(Boolean)
+                  .join(" ")}: ${char.summary}`;
+                characterLines.push(
+                  `<referred_character>${charText}</referred_character>`,
+                );
+              }
+
+              const locationLines: string[] = [];
+              if (scene?.locationId) {
+                locationLines.push(
+                  `<current_location>${locationsState.locations[scene.locationId].description}</current_location>`
+                );
+              }
+
+              // Add chapter context
+              const chapterContext = [
+                `<chapter_info>`,
+                `<current_chapter>${chapterNode.name}</current_chapter>`,
+                currentChapterIndex > 0 ? `<previous_chapter>${chapters[currentChapterIndex - 1].name}</previous_chapter>` : '',
+                `</chapter_info>`,
+              ].filter(Boolean).join('\n');
+
+              const sceneContext = {
+                text: [
+                  chapterContext,
+                  "<scene_setup>",
+                  characterLines.join("\n"),
+                  locationLines.join("\n"),
+                  "</scene_setup>",
+                  highlightLines.length > 0 ? highlightLines.join("\n") : "",
+                ].filter(Boolean).join("\n"),
+                canCache: true,
               };
 
               let ragContent = "";
@@ -171,13 +284,21 @@ export const GenerateNext = () => {
                 canCache: false,
               };
 
+              const promptBase = {
+                text: `Write ${
+                  paragraphCount() === 1
+                    ? "a paragraph"
+                    : `${paragraphCount()} paragraphs`
+                } for the next scene in which the following happens: ${scene.generateNextText}. Do not output any other text than the paragraphs.`,
+                canCache: false,
+              };
+
               const inputSections = ragContent
-                ? [...recentContentChunks, ragSection, promptBase]
-                : [...recentContentChunks, promptBase];
+                ? [...recentContentChunks, sceneContext, ragSection, promptBase]
+                : [...recentContentChunks, sceneContext, promptBase];
 
               console.log("complete input sections", inputSections);
 
-              console.log("complete input", inputSections);
               const validId = shortUUID.generate();
               setValidGenerationId(validId);
               const result = await useAi(
@@ -191,7 +312,8 @@ export const GenerateNext = () => {
               for (const paragraph of paragraphs) {
                 createSceneParagraph(scene.id, {
                   id: shortUUID.generate(),
-                  text: paragraph,
+                  // replace with em dash
+                  text: paragraph.replaceAll(" - ", "—"),
                   state: "ai",
                   comments: [],
                 });

@@ -36,6 +36,12 @@ export type SortedParagraphObject = {
   state: string;
   paragraphId: string;
   plotpointIds: string[];
+  translations?: Array<{
+    original: string;
+    translation: string;
+    from: string;
+    to: string;
+  }>;
 };
 
 export type SortedSummaryObject = {
@@ -53,6 +59,36 @@ export type SortedBookObject =
   | SortedBreakObject
   | SortedParagraphObject
   | SortedSummaryObject;
+
+const extractTranslations = (text: any) => {
+  if (typeof text === 'string') return [];
+  
+  const translations: Array<{
+    original: string;
+    translation: string;
+    from: string;
+    to: string;
+  }> = [];
+
+  const processNode = (node: any) => {
+    if (node.marks?.some((mark: any) => mark.type === 'translation')) {
+      const translationMark = node.marks.find((mark: any) => mark.type === 'translation');
+      translations.push({
+        original: node.text,
+        translation: translationMark.attrs.title,
+        from: translationMark.attrs.from,
+        to: translationMark.attrs.to,
+      });
+    }
+    
+    if (node.content) {
+      node.content.forEach(processNode);
+    }
+  };
+
+  processNode(text);
+  return translations;
+};
 
 export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
   const stats = {
@@ -151,6 +187,11 @@ export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
                 paragraph.state === "ai"
                   ? getWordCount(paragraph.text).words
                   : 0;
+
+              const translations = typeof paragraph.text === "string" 
+                ? [] 
+                : extractTranslations(paragraph.text);
+
               objects.push({
                 type: "paragraph",
                 text:
@@ -168,6 +209,7 @@ export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
                 plotpointIds:
                   paragraph.plot_point_actions?.map((p) => p.plot_point_id) ??
                   [],
+                translations,
               });
             }
             if (index !== (chapterNode.children?.length ?? 0) - 1) {

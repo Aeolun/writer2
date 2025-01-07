@@ -15,18 +15,19 @@ export const [locationsState, setLocationsState] = createStore<{
   },
 });
 
-export const createLocation = () => {
+export const createLocation = (data?: Partial<Location>) => {
   const id = short();
   setLocationsState("locations", (locations) => ({
     ...locations,
     [id]: {
       id,
-      name: "",
-      picture: "",
-      description: "",
+      name: data?.name ?? "",
+      picture: data?.picture ?? "",
+      description: data?.description ?? "",
       modifiedAt: Date.now(),
     },
   }));
+  return id;
 };
 
 export const updateLocationProperty = <T extends keyof Location>(

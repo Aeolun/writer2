@@ -4,7 +4,7 @@ import { useAi } from "../lib/use-ai.ts";
 import { splitScene, updateSceneParagraphData } from "../lib/stores/scenes.ts";
 import { createSignal } from "solid-js";
 import { BsSpellcheck } from "solid-icons/bs";
-import { RiBuildingsAncientGateLine } from "solid-icons/ri";
+import { RiBuildingsAncientGateLine, RiSystemStarFill } from "solid-icons/ri";
 import { ImMagicWand, ImMenu, ImPlay2 } from "solid-icons/im";
 import { Popover } from "@ark-ui/solid/popover";
 import { Portal } from "solid-js/web";
@@ -55,6 +55,37 @@ export const StoryParagraphButtons = (props: {
       });
     });
   };
+
+  const refineParagraph = async () => {
+    if (!scene || !currentParagraph) return;
+
+    updateSceneParagraphData(scene.id, currentParagraph.id, {
+      extraLoading: true,
+    });
+
+    try {
+      const paragraphText = typeof currentParagraph.text === "string"
+        ? currentParagraph.text
+        : contentSchemaToText(currentParagraph.text);
+
+      const critique = await useAi("snowflake_critique_scene", paragraphText);
+      const refinedContent = await useAi("snowflake_refine_scene_style", [
+        { text: paragraphText, canCache: true },
+        { text: critique, canCache: false },
+      ]);
+
+      updateSceneParagraphData(scene.id, currentParagraph.id, {
+        extra: refinedContent,
+        extraLoading: false,
+      });
+    } catch (error) {
+      console.error("Failed to refine paragraph:", error);
+      updateSceneParagraphData(scene.id, currentParagraph.id, {
+        extraLoading: false,
+      });
+    }
+  };
+
   const help = (helpKind: HelpKind, extra = false, addInstructions = true) => {
     if (!scene) return;
     if (!currentParagraph) {
@@ -164,6 +195,20 @@ export const StoryParagraphButtons = (props: {
         }}
       >
         <RiBuildingsAncientGateLine />
+      </button>
+      <button
+        type="button"
+        aria-label="refine"
+        class="btn btn-xs"
+        title="Critique and refine the paragraph to improve its style and flow."
+        onClick={refineParagraph}
+        disabled={currentParagraph.extraLoading}
+      >
+        {currentParagraph.extraLoading ? (
+          <span class="loading loading-spinner loading-xs" />
+        ) : (
+          <RiSystemStarFill />
+        )}
       </button>
       <DropdownMenu>
         <DropdownMenuTrigger

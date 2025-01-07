@@ -42,15 +42,10 @@ export function createArc(bookId: string, beforeId?: string) {
 
 // Function to update an existing arc
 export function updateArc(arcId: string, updatedData: Partial<Arc>) {
-  const currentValue = arcsStore.arcs[arcId];
   setArcsStore("arcs", arcId, {
-    summary: "",
-    id: arcId,
-    ...currentValue,
     ...updatedData,
     modifiedAt: Date.now(),
   });
-  console.log(arcsStore.arcs[arcId]);
   updateNode(arcId, {
     name: updatedData.title,
   });

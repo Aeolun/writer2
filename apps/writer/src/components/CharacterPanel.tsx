@@ -192,6 +192,14 @@ export const CharacterPanel = () => {
                         </span>
                       </div>
                     )}
+                    {(char.significantActions?.length ?? 0) > 0 && (
+                      <div
+                        class="badge badge-sm badge-accent"
+                        title={`${char.significantActions?.length ?? 0} significant actions`}
+                      >
+                        {char.significantActions?.length ?? 0}
+                      </div>
+                    )}
                   </div>
 
                   <button

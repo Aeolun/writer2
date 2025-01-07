@@ -181,9 +181,47 @@ export const SceneVersions = (props: Props) => {
   const customEdit = async (content: string, instructions: string) => {
     setLoadingStates({ [`${props.node.id}_custom_edit`]: true });
     try {
+      // Get the previous scenes in the chapter
+      const scene = scenesState.scenes[props.node.id];
+      const [bookNode, arcNode, chapterNode, sceneNode ] = findPathToNode(props.node.id);
+      const scenesInChapter = chapterNode.children?.map(
+        (c) => scenesState.scenes[c.id],
+      );
+
+      if (!scenesInChapter) {
+        addNotification({
+          title: "No scenes found in chapter",
+          message: "No child scenes found",
+          type: "error"
+        })
+        return;
+      };
+
+      const sceneNodeIndex = scenesInChapter.findIndex(s => s.id === props.node.id);
+      console.log('scenesinchapter', scenesInChapter, props.node.id, sceneNodeIndex)
+      if (sceneNodeIndex === undefined || sceneNodeIndex === -1) {
+        addNotification({
+          title: "Current scene not found in chapter",
+          message: "Current scene not found",
+          type: "error"
+        })
+        return;
+      };
+
+      // Get previous scenes' content
+      const previousScenes = scenesInChapter
+        .slice(0, sceneNodeIndex)
+        .map((scene) =>
+          scene.paragraphs
+            .map((p) =>
+              typeof p.text === "string" ? p.text : contentSchemaToText(p.text),
+            )
+            .join("\n\n"),
+        );
+
       const editedContent = await useAi(
         "snowflake_custom_scene_edit",
-        `${customEditSelection() ? customEditSelection()?.text : content}\n\nINSTRUCTIONS:\n${instructions}`,
+        `PREVIOUS SCENES IN CHAPTER:\n${previousScenes.map((scene, i) => `Scene ${i + 1}:\n${scene}`).join("\n\n")}\n\nCURRENT SCENE:\n${customEditSelection() ? customEditSelection()?.text : content}\n\nINSTRUCTIONS:\n${instructions}`,
       );
 
       if (customEditSelection()) {

@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, onCleanup } from "solid-js";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { undo, redo, history } from "prosemirror-history";
@@ -18,10 +18,12 @@ import {
   ellipsis,
 } from "prosemirror-inputrules";
 import { ContentNode } from "@writer/shared";
+import { registerEditor, unregisterEditor } from "../../lib/stores/editor";
 
 const italic = toggleMark(contentSchema.marks.em);
 
 export const Editor = (props: {
+  paragraphId?: string;
   defaultValue: object | string;
   onChange: (data: ContentNode) => void;
 }) => {
@@ -75,6 +77,16 @@ export const Editor = (props: {
 
         props.onChange(newState.doc.toJSON());
       },
+    });
+
+    if (props.paragraphId) {
+      registerEditor(props.paragraphId, view);      
+    }
+
+    onCleanup(() => {
+      if (props.paragraphId) {
+        unregisterEditor(props.paragraphId);
+      }
     });
   });
 

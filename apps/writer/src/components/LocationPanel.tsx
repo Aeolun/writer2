@@ -69,7 +69,9 @@ export const LocationPanel = () => {
         type="button"
         class="btn btn-primary"
         onClick={() => {
-          createLocation();
+          const locationId = createLocation();
+          setSelectedLocationId(locationId);
+          setLocationModal(true);
         }}
       >
         Add location

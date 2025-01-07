@@ -32,6 +32,20 @@ export const getVectorStore = async () => {
   return memoryStore;
 };
 
+export const resetVectorStore = () => {
+  memoryStore = new MemoryVectorStore(
+    new OpenAIEmbeddings({
+      model: "text-embedding-3-small",
+      apiKey: settingsState.openaiKey,
+      batchSize: 500,
+      onFailedAttempt: (error) => {
+        console.error("Failed attempt", error);
+      },
+      maxConcurrency: 5,
+    }),
+  );
+};
+
 export const addDocuments = async (documents: Document[]) => {
   const store = await getVectorStore();
   return store.addDocuments(documents);

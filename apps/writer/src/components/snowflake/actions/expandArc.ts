@@ -2,11 +2,12 @@ import { createChapter } from "../../../lib/stores/chapters";
 import { charactersState } from "../../../lib/stores/characters";
 import { addNotification } from "../../../lib/stores/notifications";
 import { storyState } from "../../../lib/stores/story";
-import { updateNode } from "../../../lib/stores/tree";
+import { findPathToNode, updateNode } from "../../../lib/stores/tree";
 import { useAi } from "../../../lib/use-ai";
 import { getNodeContext } from "./getNodeContext";
 import { setLoadingStates } from "../store";
 import type { Node } from "@writer/shared";
+import { arcsStore } from "../../../lib/stores/arcs";
 
 export const expandArc = async (node: Node, chapterCount: number) => {
   if (!node.oneliner) {
@@ -27,6 +28,26 @@ export const expandArc = async (node: Node, chapterCount: number) => {
       .map((char) => `${char.firstName} ${char.lastName}: ${char.summary}`)
       .join("\n");
 
+    // Get highlights from the previous arc if it exists
+    let previousArcHighlights = "";
+    const path = findPathToNode(node.id);
+    const book = path.find((n: Node) => n.type === "book");
+    if (book?.children) {
+      const arcIndex = book.children.findIndex((a: Node) => a.id === node.id);
+      if (arcIndex > 0) {
+        const prevArcNode = book.children[arcIndex - 1];
+        const prevArc = arcsStore.arcs[prevArcNode.id];
+        if (prevArc?.highlights?.length) {
+          previousArcHighlights = [
+            "",
+            "Important elements from the previous arc:",
+            ...prevArc.highlights.map((h) => `- [${h.category}] ${h.text} (${h.importance})`),
+            ""
+          ].join("\n");
+        }
+      }
+    }
+
     // Group previous arcs with their chapters
     const previousArcsWithChapters = (context.prevArcs || []).map(
       (arc, arcIndex) => {
@@ -43,31 +64,40 @@ export const expandArc = async (node: Node, chapterCount: number) => {
     );
 
     const prompt = [
-      "Story Context:",
-      `Overall Story: ${storyState.story?.oneliner ?? ""}`,
+      "<story_context>",
+      `${storyState.story?.oneliner ?? ""}`,
+      "</story_context>",
       "",
-      "Previous Books:",
+      "<previous_arcs>",
       ...previousArcsWithChapters,
-      `Current Arc: ${node.oneliner}`,
-      context.nextArcSummary && `Next Arc: ${context.nextArcSummary}`,
+      "</previous_arcs>",
       "",
-      `Generate ${chapterCount} chapters for the current arc. Each chapter should follow naturally from the previous story events and build towards this arc's resolution.`,
+      previousArcHighlights ? [
+        "<previous_arc_highlights>",
+        previousArcHighlights,
+        "</previous_arc_highlights>",
+        ""
+      ].join("\n") : "",
+      "<current_arc>",
+      `${node.oneliner}`,
+      "</current_arc>",
+      "",
+      context.nextArcSummary ? [
+        "<next_arc>",
+        context.nextArcSummary,
+        "</next_arc>",
+        ""
+      ].join("\n") : "",
+      "<instructions>",
+      `Generate ${chapterCount} chapters for this arc.`,
+      "</instructions>"
     ]
       .filter(Boolean)
       .join("\n");
 
     console.log(prompt);
     const summaries = await useAi("snowflake_expand_arc", prompt);
-    const chapterSummaries = summaries.split("\n").filter((s) => s.trim());
-
-    if (chapterSummaries.length !== chapterCount) {
-      addNotification({
-        type: "error",
-        title: "Invalid AI Response",
-        message: `Expected ${chapterCount} chapter summaries but received ${chapterSummaries.length}`,
-      });
-      return;
-    }
+    const chapterSummaries = summaries.split("\n").filter((s: string) => s.trim());
 
     // Create the chapters without character extraction
     for (const summary of chapterSummaries) {

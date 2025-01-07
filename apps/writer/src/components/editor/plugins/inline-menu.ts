@@ -7,6 +7,9 @@ import {
 import { EditorView } from "prosemirror-view";
 import { toggleTranslationMark } from "../functions/toggle-title-mark";
 import { Node } from "prosemirror-model";
+import { charactersState } from "../../../lib/stores/characters";
+import { currentScene } from "../../../lib/stores/retrieval/current-scene";
+import { updateSceneData } from "../../../lib/stores/scenes";
 
 const menuPluginKey = new PluginKey("menuPlugin");
 
@@ -46,6 +49,12 @@ function createInlineMenu(
     state.schema.marks.translation,
   );
 
+  // Get selected text and check if it matches any character names
+  const selectedText = state.doc.textBetween(from, to);
+  const matchingCharacter = Object.values(charactersState.characters).find(
+    char => char.firstName.toLowerCase() === selectedText.toLowerCase()
+  );
+
   const englishButton = document.createElement("button");
   englishButton.textContent = "English To Gaelic";
   englishButton.onclick = () => {
@@ -59,6 +68,22 @@ function createInlineMenu(
   gaelicButton.onclick = () => {
     const { state, dispatch } = view;
     toggleTranslationMark({ from: "gd", to: "en" }, state, dispatch);
+    closeMenu();
+  };
+
+  const englishDutchButton = document.createElement("button");
+  englishDutchButton.textContent = "English To Dutch";
+  englishDutchButton.onclick = () => {
+    const { state, dispatch } = view;
+    toggleTranslationMark({ from: "en", to: "nl" }, state, dispatch);
+    closeMenu();
+  };
+
+  const dutchEnglishButton = document.createElement("button");
+  dutchEnglishButton.textContent = "Dutch To English";
+  dutchEnglishButton.onclick = () => {
+    const { state, dispatch } = view;
+    toggleTranslationMark({ from: "nl", to: "en" }, state, dispatch);
     closeMenu();
   };
 
@@ -92,7 +117,48 @@ function createInlineMenu(
   } else {
     menu.appendChild(englishButton);
     menu.appendChild(gaelicButton);
+    menu.appendChild(englishDutchButton);
+    menu.appendChild(dutchEnglishButton);
   }
+
+  // Add character-related buttons if there's a match
+  if (matchingCharacter) {
+    const scene = currentScene();
+    if (scene) {
+      const addToPresentButton = document.createElement("button");
+      addToPresentButton.textContent = "Mark as Present";
+      addToPresentButton.onclick = () => {
+        const currentCharacterIds = new Set(scene.characterIds ?? []);
+        if (!currentCharacterIds.has(matchingCharacter.id)) {
+          updateSceneData(scene.id, {
+            characterIds: [...currentCharacterIds, matchingCharacter.id],
+          });
+        }
+        closeMenu();
+      };
+
+      const addToMentionedButton = document.createElement("button");
+      addToMentionedButton.textContent = "Mark as Mentioned";
+      addToMentionedButton.onclick = () => {
+        const currentReferredIds = new Set(scene.referredCharacterIds ?? []);
+        if (!currentReferredIds.has(matchingCharacter.id)) {
+          updateSceneData(scene.id, {
+            referredCharacterIds: [...currentReferredIds, matchingCharacter.id],
+          });
+        }
+        closeMenu();
+      };
+
+      // Only show buttons if character isn't already in respective lists
+      if (!scene.characterIds?.includes(matchingCharacter.id)) {
+        menu.appendChild(addToPresentButton);
+      }
+      if (!scene.referredCharacterIds?.includes(matchingCharacter.id)) {
+        menu.appendChild(addToMentionedButton);
+      }
+    }
+  }
+
   document.body.appendChild(menu);
 
   updateButtonStyle();

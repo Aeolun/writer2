@@ -28,6 +28,12 @@ const characterSchema = entitySchema.extend({
   eyeColor: z.string().optional(),
   distinguishingFeatures: z.string().optional(),
   isMainCharacter: z.boolean().default(true),
+  laterVersionOf: z.string().optional(),
+  significantActions: z.array(z.object({
+    action: z.string(),
+    sceneId: z.string(),
+    timestamp: z.number(),
+  })).optional(),
 });
 export type Character = z.infer<typeof characterSchema>;
 
@@ -54,6 +60,16 @@ export type Book = z.infer<typeof bookSchema>;
 const arcSchema = treeDataSchema.extend({
   summary: z.string(),
   start_date: z.string().optional(),
+  highlights: z
+    .array(
+      z.object({
+        text: z.string(),
+        importance: z.string(),
+        category: z.enum(["character", "plot", "setting", "theme"]),
+        timestamp: z.number(),
+      })
+    )
+    .optional(),
 });
 
 export type Arc = z.infer<typeof arcSchema>;
@@ -155,6 +171,7 @@ const sceneSchema = treeDataSchema.extend({
   protagonistId: z.string().optional(),
   characterIds: z.array(z.string()).optional(),
   referredCharacterIds: z.array(z.string()).optional(),
+  locationId: z.string().optional(),
   generationApproaches: z
     .array(
       z.object({

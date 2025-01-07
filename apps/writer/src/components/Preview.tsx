@@ -1,7 +1,7 @@
 import { copyFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import markdownit from "markdown-it";
 import { open } from "@tauri-apps/plugin-dialog";
-import { sortedObjects } from "../lib/stores/retrieval/sorted-objects";
+import { sortedObjects, SortedParagraphObject } from "../lib/stores/retrieval/sorted-objects";
 import { uiState } from "../lib/stores/ui";
 import { createEffect, createSignal } from "solid-js";
 import { updateSceneParagraphData } from "../lib/stores/scenes";
@@ -217,6 +217,37 @@ export const Preview = () => {
                 }, 0);
               }}
             />
+            <div class="mt-4">
+              <h3 class="text-lg font-bold mb-2">Translations</h3>
+              <textarea
+                class="textarea textarea-bordered w-full"
+                id={"translations"}
+                rows={10}
+                value={`<table>
+  <tr>
+    <th>English</th>
+    <th>Original</th>
+  </tr>
+${sortedObjects(uiState.currentId)
+  .filter((obj): obj is SortedParagraphObject => obj.type === "paragraph")
+  .flatMap(obj => obj.translations ?? [])
+  .map(translation => `  <tr>
+    <td>${translation.original}</td>
+    <td>${translation.translation}</td>
+  </tr>`).join("\n")}\n</table>`}
+                onClick={() => {
+                  setTimeout(() => {
+                    const textarea: HTMLTextAreaElement | null =
+                      document.querySelector("#translations");
+                    if (textarea) {
+                      textarea.select();
+                      textarea.setSelectionRange(0, 99999);
+                      navigator.clipboard.writeText(textarea.value);
+                    }
+                  }, 0);
+                }}
+              />
+            </div>
           </div>
         )}
         {tab() === 1 && (
@@ -330,7 +361,7 @@ export const Preview = () => {
                 if (scene.type === "paragraph") {
                   return (
                     <div
-                      class={`relative font-serif font-medium indent-4 my-2 ${
+                      class={`relative font-serif indent-4 my-2 group ${
                         scene.state === "sdt"
                           ? "text-purple-500"
                           : scene.state === "revise"
@@ -341,7 +372,7 @@ export const Preview = () => {
                       }`}
                     >
                       {scene.text ? scene.text.replaceAll("--", "—") : null}
-                      <div class="absolute flex gap-2 items-center select-none hidden group-hover:flex">
+                      <div class="absolute right-[-30px] bottom-[0px] flex gap-2 items-center select-none hidden group-hover:flex">
                         <button
                           type="button"
                           class="btn btn-xs"

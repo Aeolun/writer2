@@ -11,6 +11,9 @@ import { useAi } from "../../../lib/use-ai";
 import { addNotification } from "../../../lib/stores/notifications";
 import { setLoadingStates } from "../store";
 import shortUUID from "short-uuid";
+import { gatherContext } from "../../../lib/embeddings/gather-context";
+import { locationsState } from "../../../lib/stores/locations";
+import { arcsStore } from "../../../lib/stores/arcs";
 
 const getChapterContent = async (chapter: Node): Promise<string[]> => {
   if (!chapter.children?.length) return [];
@@ -48,6 +51,9 @@ export const generateSceneContent = async (node: Node) => {
     const [bookNode, arcNode, chapterNode] = path;
     const book = treeState.structure.find((b) => b.id === bookNode.id);
     const arc = book?.children?.find((a) => a.id === arcNode.id);
+    const currentArcIndex = bookNode.children?.findIndex(c => c.id === arcNode.id)
+    const lastArcNode = currentArcIndex ? bookNode.children?.[currentArcIndex-1] : undefined
+    const lastArc = lastArcNode?.id ? arcsStore.arcs[lastArcNode.id] : undefined
     const chapters = arc?.children ?? [];
     const currentChapterIndex = chapters.findIndex(
       (c) => c.id === chapterNode.id,
@@ -90,6 +96,18 @@ export const generateSceneContent = async (node: Node) => {
     // Get character information
     const scene = scenesState.scenes[node.id];
 
+    // Build initial context
+    const initialContext = [
+      `Book: ${book?.oneliner}`,
+      `Arc: ${arc?.oneliner}`,
+      `Chapter: ${currentChapter?.oneliner}`,
+      `Scene: ${node.oneliner}`,
+      scene.locationId && locationsState.locations[scene.locationId] ? `Location: ${locationsState.locations[scene.locationId].description}` : undefined
+    ].filter(Boolean).join('\n')
+    // Gather additional context
+    const task = `Generate a scene where: ${node.oneliner}`;
+    const additionalContext = await gatherContext(task, initialContext, node.id);
+
     // Build up the context prompt
     const contextLines: string[] = [];
 
@@ -98,6 +116,40 @@ export const generateSceneContent = async (node: Node) => {
       contextLines.push(
         `<chapter_summary>${currentChapter.oneliner}</chapter_summary>`,
       );
+    }
+
+    // Add arc highlights if they exist
+    if (lastArc?.highlights?.length) {
+      contextLines.push("<arc_highlights>");
+      for (const highlight of lastArc.highlights) {
+        contextLines.push(`<highlight category="${highlight.category}">${highlight.text}</highlight>`);
+      }
+      contextLines.push("</arc_highlights>");
+    }
+
+    // Add gathered context
+    if (additionalContext.characters.length) {
+      contextLines.push("<relevant_characters>");
+      for (const char of additionalContext.characters) {
+        contextLines.push(`<character reason="${char.reason}">${char.content}</character>`);
+      }
+      contextLines.push("</relevant_characters>");
+    }
+
+    if (additionalContext.locations.length) {
+      contextLines.push("<relevant_locations>");
+      for (const loc of additionalContext.locations) {
+        contextLines.push(`<location reason="${loc.reason}">${loc.content}</location>`);
+      }
+      contextLines.push("</relevant_locations>");
+    }
+
+    if (additionalContext.scenes.length) {
+      contextLines.push("<relevant_scenes>");
+      for (const scene of additionalContext.scenes) {
+        contextLines.push(`<scene reason="${scene.reason}">${scene.content}</scene>`);
+      }
+      contextLines.push("</relevant_scenes>");
     }
 
     // Add second previous chapter if it exists
@@ -153,11 +205,19 @@ export const generateSceneContent = async (node: Node) => {
       );
     }
 
+    const locationLines: string[] = [];
+    if (scene?.locationId) {
+      locationLines.push(
+        `<current_location>${locationsState.locations[scene.locationId].description}</current_location>`
+      )
+    }
+
     const prompt = [
       {
         text: [
           "<story_context>",
           contextLines.join("\n"),
+          `<next_scene>${nextScene?.oneliner ?? "Last scene in chapter"}</next_scene>`,
           "</story_context>",
         ].join("\n"),
         canCache: true,
@@ -167,6 +227,7 @@ export const generateSceneContent = async (node: Node) => {
           "<scene_setup>",
           characterLines.join("\n"),
           currentSceneLines.join("\n"),
+          locationLines.join("\n"),
           "</scene_setup>",
         ].join("\n"),
         canCache: true,
@@ -175,7 +236,6 @@ export const generateSceneContent = async (node: Node) => {
         text: [
           "<scene_to_write>",
           `<summary>${node.oneliner}</summary>`,
-          `<next_scene>${nextScene?.oneliner ?? "Last scene in chapter"}</next_scene>`,
           "</scene_to_write>",
         ].join("\n"),
         canCache: false,
@@ -232,7 +292,7 @@ export const generateSceneContent = async (node: Node) => {
     });
 
     // Use the refined version as the default content
-    const paragraphs = refinedContent.split("\n\n").filter((p) => p.trim());
+    const paragraphs = refinedContent.split("\n\n").filter((p: string) => p.trim());
 
     if (scenesState.scenes[node.id]?.paragraphs?.length === 0) {
       // Clear existing paragraphs

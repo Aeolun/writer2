@@ -1,3 +1,4 @@
+import { resetVectorStore } from "../embeddings/embedding-store";
 import { arcsStore, resetArcsStore, setArcsStore } from "../stores/arcs";
 import { resetBooksStore, setBooksStore } from "../stores/books";
 import { resetChaptersState, setChaptersState } from "../stores/chapters";
@@ -29,4 +30,7 @@ export const unloadFromState = () => {
   resetLanguageStore();
   resetTreeState();
   resetStoryState();
+
+  // clean up the embeddings store too
+  resetVectorStore();
 };

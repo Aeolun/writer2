@@ -3,6 +3,9 @@ import { contentSchema } from "../schema";
 import { EditorState, Transaction } from "prosemirror-state";
 import { useAi } from "../../../lib/use-ai";
 
+const TRANSLATION_LANGUAGES = ["en", "nl", "gd"];
+const TRANSLATION_LANGUAGES_NAMES = ["English", "Dutch", "Scots Gaelic"];
+
 export function toggleTranslationMark(
   options: {
     from: string;
@@ -19,8 +22,8 @@ export function toggleTranslationMark(
     return toggleMark(translationMarkType)(state, dispatch);
   }
 
-  const fromLanguage = options.from === "en" ? "English" : "Scots Gaelic";
-  const toLanguage = options.to === "en" ? "English" : "Scots Gaelic";
+  const fromLanguage = TRANSLATION_LANGUAGES_NAMES[TRANSLATION_LANGUAGES.indexOf(options.from)];
+  const toLanguage = TRANSLATION_LANGUAGES_NAMES[TRANSLATION_LANGUAGES.indexOf(options.to)];
   useAi(
     "free",
     `Translate the following text from ${fromLanguage} to ${toLanguage}. Output only the translation, nothing else:\n\n${state.doc.textBetween(

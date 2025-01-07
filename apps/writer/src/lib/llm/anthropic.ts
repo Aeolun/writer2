@@ -21,7 +21,7 @@ export class Anthropic implements LlmInterface {
     }
     this.api = new AnthropicAPI({
       apiKey: key,
-      timeout: 20000,
+      timeout: 60000,
       dangerouslyAllowBrowser: true,
     });
   }

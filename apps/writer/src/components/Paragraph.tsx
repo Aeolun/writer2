@@ -18,6 +18,12 @@ import { findPathToNode } from "../lib/stores/tree.ts";
 import { Editor } from "./editor/Editor.tsx";
 import shortUUID from "short-uuid";
 import { FiArrowDown, FiArrowUp, FiPlus, FiTrash } from "solid-icons/fi";
+import { updateEditorContent } from "../lib/stores/editor.ts";
+import { createSignal } from "solid-js";
+import { useAi } from "../lib/use-ai";
+import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
+import { charactersState } from "../lib/stores/characters.ts";
+import { locationsState } from "../lib/stores/locations.ts";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "border-yellow-500",
@@ -31,328 +37,350 @@ export const Paragraph = (props: {
   sceneId: string;
   paragraph: SceneParagraph;
   identifyLocation?: boolean;
-}) => (
-  <>
-    {props.identifyLocation ? (
-      <div class="px-4 w-full breadcrumbs">
-        <ul>
-          {findPathToNode(props.sceneId).map((n) => (
-            <li>{n.name}</li>
-          ))}
-          <li>
-            Paragraph{" "}
-            {scenesState.scenes[props.sceneId].paragraphs.findIndex(
-              (p) => p.id === props.paragraph.id,
-            ) + 1}
-          </li>
-        </ul>
-      </div>
-    ) : null}
-    <Row
-      selected={currentScene()?.selectedParagraph === props.paragraph.id}
-      onMouseDown={() => {
-        updateSceneSelectedParagraph(props.sceneId, props.paragraph.id);
-      }}
-      borderColor={statusColor[props.paragraph.state] ?? undefined}
-      main={
-        <>
-          {currentScene()?.selectedParagraph === props.paragraph.id ? (
-            <>
-              <div class="absolute top-[-0.5em] right-0">
-                <button
-                  type="button"
-                  class="btn btn-xs py-0 px-1"
-                  onClick={() => {
-                    moveParagraphUp(props.sceneId, props.paragraph.id);
-                  }}
-                >
-                  <FiArrowUp />
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-xs py-0 px-1"
-                  onClick={() => {
-                    createSceneParagraph(
-                      props.sceneId,
-                      {
-                        id: shortUUID.generate(),
-                        text: "",
-                        state: "draft",
-                        comments: [],
-                      },
-                      props.paragraph.id,
-                    );
-                  }}
-                >
-                  <FiPlus />
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-xs py-0 px-1"
-                  onClick={() => {
-                    removeSceneParagraph(props.sceneId, props.paragraph.id);
-                  }}
-                >
-                  <FiTrash />
-                </button>
-                AI {props.paragraph.aiCharacters} H{" "}
-                {props.paragraph.humanCharacters}
-              </div>
-              <div class="absolute bottom-[-0.5em] right-0 z-10">
-                <button
-                  type="button"
-                  class="btn btn-xs py-0 px-1"
-                  onClick={() => {
-                    moveParagraphDown(props.sceneId, props.paragraph.id);
-                  }}
-                >
-                  <FiArrowDown />
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-xs py-0 px-1"
-                  onClick={() => {
-                    createSceneParagraph(
-                      props.sceneId,
-                      {
-                        id: shortUUID.generate(),
-                        text: "",
-                        state: "draft",
-                        comments: [],
-                      },
-                      props.paragraph.id,
-                    );
-                  }}
-                >
-                  <FiPlus />
-                </button>
-              </div>
-            </>
-          ) : null}
-          <Editor
-            onChange={(data) => {
-              updateSceneParagraphData(props.sceneId, props.paragraph.id, {
-                text: data,
-              });
-            }}
-            defaultValue={props.paragraph.text}
-          />
-          {/* <AutoResizeTextarea
-                  id={`p_${props.paragraph.id}`}
-                  value={props.paragraph.text}
-                  onMouseUp={(e) => {
-                    updateSceneCursor(
-                      props.sceneId,
-                      (e.target as HTMLTextAreaElement).selectionStart,
-                    );
-                  }}
-                  onInput={(e, selectionStart) => {
-                    console.log("input", e.target?.value);
-                    updateSceneParagraphData(props.sceneId, props.paragraph.id, {
-                      text: e.target?.value ?? "",
-                    });
-                    updateSceneCursor(props.sceneId, selectionStart);
-                    console.log("input", selectionStart);
-                  }}
-                  onFocus={(e) => {
-                    updateSceneSelectedParagraph(props.sceneId, props.paragraph.id);
-                    setTimeout(() => {
-                      console.log(
-                        "focus",
-                        e.target.selectionStart,
+}) => {
+  const [generateBetweenOpen, setGenerateBetweenOpen] = createSignal(false);
+  const [generateBetweenText, setGenerateBetweenText] = createSignal("");
+  const [isGenerating, setIsGenerating] = createSignal(false);
+
+  const generateBetween = async () => {
+    const scene = scenesState.scenes[props.sceneId];
+    if (!scene) return;
+
+    const paragraphIndex = scene.paragraphs.findIndex(p => p.id === props.paragraph.id);
+    
+    // Get context from surrounding paragraphs
+    const previousParagraphs = scene.paragraphs.slice(0, paragraphIndex + 1);
+    const nextParagraphs = scene.paragraphs.slice(paragraphIndex + 1, paragraphIndex + 4);
+
+    // Build character and location context
+    const characterLines: string[] = [];
+    if (scene.protagonistId) {
+      const protagonist = charactersState.characters[scene.protagonistId];
+      if (protagonist) {
+        characterLines.push(
+          `<perspective>${protagonist.firstName}'s ${scene.perspective ?? "third"} person perspective - ${protagonist.summary}</perspective>`,
+        );
+      }
+    }
+    for (const charId of scene?.characterIds ?? []) {
+      const char = charactersState.characters[charId];
+      if (!char) continue;
+      const charText = `${[char.firstName, char.middleName, char.lastName]
+        .filter(Boolean)
+        .join(" ")}: ${char.summary}`;
+      characterLines.push(`<present_character>${charText}</present_character>`);
+    }
+    for (const charId of scene?.referredCharacterIds ?? []) {
+      const char = charactersState.characters[charId];
+      if (!char) continue;
+      const charText = `${[char.firstName, char.middleName, char.lastName]
+        .filter(Boolean)
+        .join(" ")}: ${char.summary}`;
+      characterLines.push(
+        `<referred_character>${charText}</referred_character>`,
+      );
+    }
+
+    const locationLines: string[] = [];
+    if (scene?.locationId) {
+      locationLines.push(
+        `<current_location>${locationsState.locations[scene.locationId].description}</current_location>`
+      );
+    }
+
+    // Get chapter context
+    const [bookNode, arcNode, chapterNode] = findPathToNode(props.sceneId);
+    const previousChapter = chapterNode?.children?.[0]?.id === scene.id
+      ? arcNode?.children?.[arcNode.children.findIndex(c => c.id === chapterNode.id) - 1]
+      : null;
+
+    const chapterContext = [
+      `<chapter_info>`,
+      `<current_chapter>${chapterNode.name}</current_chapter>`,
+      previousChapter ? `<previous_chapter>${previousChapter.name}</previous_chapter>` : '',
+      `</chapter_info>`,
+    ].filter(Boolean).join('\n');
+
+    const sceneContext = {
+      text: [
+        chapterContext,
+        "<scene_setup>",
+        characterLines.join("\n"),
+        locationLines.join("\n"),
+        "</scene_setup>",
+      ].join("\n"),
+      canCache: true,
+    };
+
+    setIsGenerating(true);
+    try {
+      const result = await useAi("generate_between", [
+        sceneContext,
+        {
+          text: [
+            "<previous_content>",
+            previousParagraphs.map(p => 
+              typeof p.text === "string" ? p.text : contentSchemaToText(p.text)
+            ).join("\n\n"),
+            "</previous_content>",
+            "<next_content>",
+            nextParagraphs.map(p => 
+              typeof p.text === "string" ? p.text : contentSchemaToText(p.text)
+            ).join("\n\n"),
+            "</next_content>"
+          ].join("\n"),
+          canCache: false
+        },
+        {
+          text: `<instructions>Write content that bridges these sections with the following happening: ${generateBetweenText()}</instructions>`,
+          canCache: false
+        }
+      ]);
+
+      const paragraphs = result.split("\n\n");
+      let afterId = props.paragraph.id;
+      for (const paragraph of paragraphs) {
+        const newId = shortUUID.generate();
+        createSceneParagraph(props.sceneId, {
+          id: newId,
+          text: paragraph,
+          state: "ai",
+          comments: [],
+        }, afterId);
+        afterId = newId;
+      }
+      setGenerateBetweenOpen(false);
+      setGenerateBetweenText("");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <>
+      {props.identifyLocation ? (
+        <div class="px-4 w-full breadcrumbs">
+          <ul>
+            {findPathToNode(props.sceneId).map((n) => (
+              <li>{n.name}</li>
+            ))}
+            <li>
+              Paragraph{" "}
+              {scenesState.scenes[props.sceneId].paragraphs.findIndex(
+                (p) => p.id === props.paragraph.id,
+              ) + 1}
+            </li>
+          </ul>
+        </div>
+      ) : null}
+      <Row
+        selected={currentScene()?.selectedParagraph === props.paragraph.id}
+        onMouseDown={() => {
+          updateSceneSelectedParagraph(props.sceneId, props.paragraph.id);
+        }}
+        borderColor={statusColor[props.paragraph.state] ?? undefined}
+        main={
+          <>
+            {currentScene()?.selectedParagraph === props.paragraph.id ? (
+              <>
+                <div class="absolute top-[-0.5em] right-0">
+                  <button
+                    type="button"
+                    class="btn btn-xs py-0 px-1"
+                    onClick={() => {
+                      moveParagraphUp(props.sceneId, props.paragraph.id);
+                    }}
+                  >
+                    <FiArrowUp />
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-xs py-0 px-1"
+                    onClick={() => {
+                      createSceneParagraph(
+                        props.sceneId,
+                        {
+                          id: shortUUID.generate(),
+                          text: "",
+                          state: "draft",
+                          comments: [],
+                        },
                         props.paragraph.id,
                       );
-                      updateSceneCursor(
-                        props.sceneId,
-                        (e.target as HTMLTextAreaElement).selectionStart,
-                      );
-                    }, 0);
-                  }}
-                  onKeyDown={(e) => {
-                    const pe = document.getElementById(
-                      `p_${props.paragraph.id}`,
-                    ) as HTMLTextAreaElement;
-                    if (e.key === "Enter" && e.ctrlKey) {
-                      const newId = splitParagraphFromCursor(props.sceneId);
-
-                      setTimeout(() => {
-                        const newElement = document.getElementById(
-                          `p_${newId}`,
-                        ) as HTMLTextAreaElement;
-                        newElement?.focus();
-                      }, 0);
-                      e.preventDefault();
-                    } else if (e.key === "Backspace" && e.altKey) {
-                      //focus previous paragraph
-                      const previousParagraph =
-                        scenesState.scenes[props.sceneId].paragraphs[
-                          scenesState.scenes[props.sceneId].paragraphs.findIndex(
-                            (p) => p.id === props.paragraph.id,
-                          ) - 1
-                        ];
-                      if (previousParagraph) {
-                        const previousElement = document.getElementById(
-                          `p_${previousParagraph.id}`,
-                        ) as HTMLTextAreaElement;
-
-                        previousElement.scrollIntoView({
-                          behavior: "instant",
-                          block: "center",
-                        });
-                        previousElement?.focus();
-                      }
+                    }}
+                  >
+                    <FiPlus />
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-xs py-0 px-1"
+                    onClick={() => {
                       removeSceneParagraph(props.sceneId, props.paragraph.id);
-
-                      e.preventDefault();
-                      e.stopPropagation();
-                    } else if (e.key === "Backspace" && e.ctrlKey) {
-                      console.log("join backwards");
-                      //focus previous paragraph
-                      const previousParagraph =
-                        scenesState.scenes[props.sceneId].paragraphs[
-                          scenesState.scenes[props.sceneId].paragraphs.findIndex(
-                            (p) => p.id === props.paragraph.id,
-                          ) - 1
-                        ];
-                      joinBackwards(props.sceneId);
-                      if (previousParagraph) {
-                        const previousElement = document.getElementById(
-                          `p_${previousParagraph.id}`,
-                        ) as HTMLTextAreaElement;
-                        previousElement?.focus();
-                        previousElement.scrollIntoView({
-                          behavior: "instant",
-                          block: "center",
-                        });
-                      }
-                      e.preventDefault();
-                      e.stopPropagation();
-                    } else if (e.key === "ArrowUp" && e.shiftKey && e.ctrlKey) {
-                      moveParagraphUp(props.sceneId, props.paragraph.id);
-                      e.preventDefault();
-                      e.stopPropagation();
-                    } else if (e.key === "ArrowDown" && e.shiftKey && e.ctrlKey) {
+                    }}
+                  >
+                    <FiTrash />
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-xs py-0 px-1"
+                    onClick={() => setGenerateBetweenOpen(true)}
+                    title="Generate content after this paragraph"
+                  >
+                    🪄
+                  </button>
+                  AI {props.paragraph.aiCharacters} H{" "}
+                  {props.paragraph.humanCharacters}
+                </div>
+                <div class="absolute bottom-[-0.5em] right-0 z-10">
+                  <button
+                    type="button"
+                    class="btn btn-xs py-0 px-1"
+                    onClick={() => {
                       moveParagraphDown(props.sceneId, props.paragraph.id);
-                      e.preventDefault();
-                      e.stopPropagation();
-                    } else if (
-                      e.key === "ArrowDown" &&
-                      pe.selectionStart === pe.value.length
-                    ) {
-                      const currentParagraphIndex = scenesState.scenes[
-                        props.sceneId
-                      ].paragraphs.findIndex((p) => p.id === props.paragraph.id);
-                      const nextParagraph =
-                        scenesState.scenes[props.sceneId].paragraphs[
-                          currentParagraphIndex + 1
-                        ];
-                      if (nextParagraph) {
-                        const nextElement = document.getElementById(
-                          `p_${nextParagraph.id}`,
-                        ) as HTMLTextAreaElement;
-                        if (nextElement) {
-                          nextElement.setSelectionRange(0, 0);
-                          nextElement.focus();
-                        }
-                      }
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // Handle ArrowDown logic
-                    } else if (e.key === "ArrowUp" && pe.selectionStart === 0) {
-                      const currentParagraphIndex = scenesState.scenes[
-                        props.sceneId
-                      ].paragraphs.findIndex((p) => p.id === props.paragraph.id);
-                      const previousParagraph =
-                        scenesState.scenes[props.sceneId].paragraphs[
-                          currentParagraphIndex - 1
-                        ];
-                      if (previousParagraph) {
-                        const previousElement = document.getElementById(
-                          `p_${previousParagraph.id}`,
-                        ) as HTMLTextAreaElement;
-                        if (previousElement) {
-                          previousElement.setSelectionRange(
-                            previousElement.value.length,
-                            previousElement.value.length,
-                          );
-                          previousElement.focus();
-                        }
-                      }
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // Handle ArrowUp logic
-                    }
-                  }}
-                /> */}
-          {props.paragraph.translation ? (
-            <div class="px-8 text-indent-1em font-noteworthy">
-              {props.paragraph.translation}
-            </div>
-          ) : null}
-        </>
-      }
-      buttons={
-        props.paragraph.id === currentScene()?.selectedParagraph ? (
-          <StoryParagraphButtons
-            paragraphId={props.paragraph.id}
-            scene={currentScene()}
-          />
-        ) : (
-          <div class="min-h-18 w-32" />
-        )
-      }
-      extra={
-        props.paragraph.extraLoading ? (
-          <div class="flex flex-col p-2 gap-2 items-center justify-start h-full">
-            <div class="skeleton h-4 w-full" />
-            <div class="skeleton h-4 w-full" />
-            <div class="skeleton h-4 w-full" />
-          </div>
-        ) : props.paragraph.extra ? (
-          <>
-            <div class="absolute top-4 right-2 flex gap-2 bg-opacity-80 border border-gray-200 bg-white p-2 rounded-full">
-              <button
-                type="button"
-                class="hover:text-green-500"
-                onClick={() => {
-                  updateSceneParagraphData(props.sceneId, props.paragraph.id, {
-                    text: props.paragraph.extra,
-                    extra: "",
-                  });
-                }}
-              >
-                <AiOutlineCheck />
-              </button>
-              <button
-                type="button"
-                class="hover:text-red-500"
-                onClick={() => {
-                  updateSceneParagraphData(props.sceneId, props.paragraph.id, {
-                    extra: "",
-                  });
-                }}
-              >
-                <AiOutlineDelete />
-              </button>
-            </div>
-            <AutoResizeTextarea
-              onInput={(e) => {
+                    }}
+                  >
+                    <FiArrowDown />
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-xs py-0 px-1"
+                    onClick={() => {
+                      createSceneParagraph(
+                        props.sceneId,
+                        {
+                          id: shortUUID.generate(),
+                          text: "",
+                          state: "draft",
+                          comments: [],
+                        },
+                        props.paragraph.id,
+                      );
+                    }}
+                  >
+                    <FiPlus />
+                  </button>
+                </div>
+              </>
+            ) : null}
+            <Editor
+              paragraphId={props.paragraph.id}
+              onChange={(data) => {
                 updateSceneParagraphData(props.sceneId, props.paragraph.id, {
-                  extra: e.currentTarget.value,
+                  text: data,
                 });
               }}
-              value={props.paragraph.extra}
+              defaultValue={props.paragraph.text}
             />
+            {props.paragraph.translation ? (
+              <div class="px-8 text-indent-1em font-noteworthy">
+                {props.paragraph.translation}
+              </div>
+            ) : null}
           </>
-        ) : null
-      }
-    />
-    <Row
-      borderColor={statusColor[props.paragraph.state] ?? undefined}
-      selected={currentScene()?.selectedParagraph === props.paragraph.id}
-      main={
-        <ParagraphDetails sceneId={props.sceneId} paragraph={props.paragraph} />
-      }
-    />
-  </>
-);
+        }
+        buttons={
+          props.paragraph.id === currentScene()?.selectedParagraph ? (
+            <StoryParagraphButtons
+              paragraphId={props.paragraph.id}
+              scene={currentScene()}
+            />
+          ) : (
+            <div class="min-h-18 w-32" />
+          )
+        }
+        extra={
+          props.paragraph.extraLoading ? (
+            <div class="flex flex-col p-2 gap-2 items-center justify-start h-full">
+              <div class="skeleton h-4 w-full" />
+              <div class="skeleton h-4 w-full" />
+              <div class="skeleton h-4 w-full" />
+            </div>
+          ) : props.paragraph.extra ? (
+            <>
+              <div class="absolute top-4 right-2 flex gap-2 bg-opacity-80 border border-gray-200 bg-white p-2 rounded-full">
+                <button
+                  type="button"
+                  class="hover:text-green-500"
+                  onClick={() => {
+                    updateSceneParagraphData(props.sceneId, props.paragraph.id, {
+                      text: props.paragraph.extra,
+                      extra: "",
+                    });
+                    if (props.paragraph.extra) {
+                      updateEditorContent(props.paragraph.id, props.paragraph.extra);
+                    }
+                  }}
+                >
+                  <AiOutlineCheck />
+                </button>
+                <button
+                  type="button"
+                  class="hover:text-red-500"
+                  onClick={() => {
+                    updateSceneParagraphData(props.sceneId, props.paragraph.id, {
+                      extra: "",
+                    });
+                  }}
+                >
+                  <AiOutlineDelete />
+                </button>
+              </div>
+              <AutoResizeTextarea
+                onInput={(e) => {
+                  updateSceneParagraphData(props.sceneId, props.paragraph.id, {
+                    extra: e.currentTarget.value,
+                  });
+                }}
+                value={props.paragraph.extra}
+              />
+            </>
+          ) : null
+        }
+      />
+      <Row
+        borderColor={statusColor[props.paragraph.state] ?? undefined}
+        selected={currentScene()?.selectedParagraph === props.paragraph.id}
+        main={
+          <ParagraphDetails sceneId={props.sceneId} paragraph={props.paragraph} />
+        }
+      />
+
+      {/* Generate Between Modal */}
+      {generateBetweenOpen() && (
+        <div class="modal modal-open">
+          <div class="modal-box">
+            <h3 class="font-bold text-lg">Generate Content</h3>
+            <p class="py-4">What should happen in the generated content?</p>
+            <textarea
+              class="textarea textarea-bordered w-full"
+              rows={5}
+              value={generateBetweenText()}
+              onChange={(e: { currentTarget: HTMLTextAreaElement }) => setGenerateBetweenText(e.currentTarget.value)}
+              placeholder="Describe what should happen in this section..."
+            />
+            <div class="modal-action">
+              <button
+                type="button"
+                class="btn btn-primary"
+                onClick={generateBetween}
+                disabled={isGenerating() || !generateBetweenText().trim()}
+              >
+                {isGenerating() ? <span class="loading loading-spinner" /> : "Generate"}
+              </button>
+              <button
+                type="button"
+                class="btn"
+                onClick={() => {
+                  setGenerateBetweenOpen(false);
+                  setGenerateBetweenText("");
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};

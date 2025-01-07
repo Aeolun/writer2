@@ -38,6 +38,8 @@ import { SnowflakeItemActions } from "./SnowflakeItemActions";
 import { updateBookValue } from "../../lib/stores/books.js";
 import { updateArc } from "../../lib/stores/arcs.js";
 import { updateChapter } from "../../lib/stores/chapters.js";
+import { determineRefinementLevel } from "./actions/determineRefinementLevel";
+import { LocationList } from "./LocationList.jsx";
 
 type SnowflakeItemProps = {
   node: Node;
@@ -46,6 +48,7 @@ type SnowflakeItemProps = {
 export const SnowflakeItem = (props: SnowflakeItemProps) => {
   const [isEditing, setIsEditing] = createSignal(false);
   const [editValue, setEditValue] = createSignal("");
+  const [showHistory, setShowHistory] = createSignal(false);
 
   const handleSaveEdit = () => {
     const newTitle = editValue().trim();
@@ -69,6 +72,7 @@ export const SnowflakeItem = (props: SnowflakeItemProps) => {
 
     setIsEditing(false);
   };
+
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -77,31 +81,30 @@ export const SnowflakeItem = (props: SnowflakeItemProps) => {
       setIsEditing(false);
     }
   };
+
   const handleStartEdit = () => {
     setEditValue(props.node.name);
     setIsEditing(true);
   };
-  const [showHistory, setShowHistory] = createSignal(false);
 
   const getCurrentLevel = () => {
-    if (!props.node.summaries?.length)
-      return props.node.oneliner ? 0 : undefined;
-    return Math.max(...props.node.summaries.map((s) => s.level));
+    if (!props.node.oneliner) return undefined;
+    return determineRefinementLevel(props.node);
   };
 
   const getExpandStatus = () => {
-    const hasLevel3 = props.node.summaries?.some((s) => s.level === 3);
+    const currentLevel = getCurrentLevel();
+    if (!currentLevel) return "needs-summary";
 
     if (props.node.type === "book") {
       const hasChildren = props.node.children?.length;
       if (hasChildren) return null;
-      if (!props.node.oneliner) return "needs-summary";
-      if (!hasLevel3) return "needs-expansion";
+      if (currentLevel < 3) return "needs-expansion";
       return "ready";
     }
 
-    if (!props.node.oneliner) return "needs-summary";
-    if (!hasLevel3) return "needs-expansion";
+    if (props.node.type === "chapter" && currentLevel >= 2) return "ready";
+    if (currentLevel < 3) return "needs-expansion";
     return "ready";
   };
 
@@ -155,7 +158,6 @@ export const SnowflakeItem = (props: SnowflakeItemProps) => {
             <div
               class="badge badge-sm border"
               classList={{
-                "badge-ghost border-base-content/20": getCurrentLevel() === 0,
                 "badge-primary border-primary/20": getCurrentLevel() === 1,
                 "badge-secondary border-secondary/20": getCurrentLevel() === 2,
                 "badge-accent border-accent/20": getCurrentLevel() === 3,
@@ -195,12 +197,50 @@ export const SnowflakeItem = (props: SnowflakeItemProps) => {
           <div class="pl-4 border-l-2 border-gray-300 space-y-2">
             <For each={[...(props.node.summaries ?? [])].reverse()}>
               {(summary) => (
-                <div class="text-sm">
-                  <div class="text-xs text-gray-500">
-                    Level {summary.level} •{" "}
-                    {new Date(summary.timestamp).toLocaleString()}
+                <div class="text-sm flex justify-between items-start gap-2">
+                  <div class="flex-1">
+                    <div class="text-xs text-gray-500">
+                      Level {summary.level} •{" "}
+                      {new Date(summary.timestamp).toLocaleString()}
+                    </div>
+                    <div>{summary.text}</div>
                   </div>
-                  <div>{summary.text}</div>
+                  <div class="flex gap-1">
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-xs"
+                      title="Revert to this version"
+                      onClick={() => {
+                        updateNode(props.node.id, { oneliner: summary.text });
+                        addNotification({
+                          type: "success",
+                          title: "Summary Reverted",
+                          message: "Reverted to selected version.",
+                        });
+                      }}
+                    >
+                      ↺
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-xs text-error"
+                      title="Remove from history"
+                      onClick={() => {
+                        updateNode(props.node.id, {
+                          summaries: props.node.summaries?.filter(
+                            (s) => s.timestamp !== summary.timestamp
+                          ),
+                        });
+                        addNotification({
+                          type: "success",
+                          title: "Summary Removed",
+                          message: "Removed version from history.",
+                        });
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
                 </div>
               )}
             </For>
@@ -213,6 +253,7 @@ export const SnowflakeItem = (props: SnowflakeItemProps) => {
           {scenesState.scenes[props.node.id]?.words ?? 0} words
         </div>
         <CharacterList node={props.node} />
+        <LocationList node={props.node} />
       </Show>
 
       <Show when={bookRefinements[props.node.id]}>

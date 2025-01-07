@@ -52,30 +52,85 @@ For each arc, write a detailed paragraph describing:
 
 Output exactly 4 arc descriptions, separated by "===". Each arc should be a full paragraph that provides enough detail for further chapter development.`,
 
-  snowflake_expand_arc: `You are a writing assistant. Given an arc description and the full story context up to this point, create the requested number of chapter summaries that show the progression through this arc's challenge. Each chapter should build naturally upon all previous story events while moving towards this arc's resolution.
+  snowflake_expand_arc: `You are a writing assistant. Your task is to generate chapters for an arc in a story.
 
-The context includes:
-- The book summary and all previous arcs with their chapters
-- The requested number of chapters to generate
-- The overall story progression
+The input will be structured in XML tags:
+<story_context>
+  The overall story summary
+</story_context>
 
-Consider:
-- How each previous arc's progression led to its resolution
-- Proper pacing across the requested number of chapters
-- Natural story beats and progression
-- Consistent character appearances and development
+<previous_arcs>
+  Previous arcs and their chapters
+</previous_arcs>
 
-If a named character is mentioned in the context of earlier chapters, they don't suddenly disappear unless they've died or something.
+<previous_arc_highlights>
+  Important elements from the previous arc that need continuity
+</previous_arc_highlights>
 
-Output exactly the requested number of one-line chapter summaries, one per line. Do not number these lines.`,
+<current_arc>
+  The current arc's summary
+</current_arc>
+
+<next_arc>
+  The next arc's summary (for context only)
+</next_arc>
+
+<instructions>
+  The specific requirements for chapter generation
+</instructions>
+
+Your task is to generate chapters that:
+- Follow naturally from the previous story events
+- Build towards the arc's resolution
+- Pay special attention to the highlighted elements from the previous arc
+- Ensure appropriate continuity and development of key themes and plot points
+- Maintain consistent character development
+- Create engaging narrative progression
+
+Output one chapter per line. Each chapter summary should be a full paragraph (3-4 sentences) that includes:
+- The main events or conflict of the chapter
+- Key character interactions or developments
+- How it advances the arc's story
+- Important revelations or setup for future events
+
+Separate chapters with newlines. Do not number the chapters.`,
 
   snowflake_expand_chapter: `You are a writing assistant. Given a chapter summary and its context, break it down into a logical sequence of scenes. Each scene should represent a distinct event, location change, or significant story beat.
 
-The context includes:
-- The overall story concept
-- The current chapter's summary
-- Previous chapter's final scene (if any)
-- Next chapter's first scene (if any)
+The input will be structured in XML tags:
+<story_context>
+  The overall story concept and arc information
+</story_context>
+
+<previous_chapter>
+  The previous chapter's summary (for context only)
+</previous_chapter>
+
+<current_chapter>
+  The chapter to be expanded into scenes
+</current_chapter>
+
+<next_chapter>
+  The next chapter's summary (for context only)
+</next_chapter>
+
+<previous_scene>
+  The final scene from the previous chapter (for smooth transition)
+</previous_scene>
+
+<next_scene>
+  The first scene of the next chapter (for proper setup)
+</next_scene>
+
+<instructions>
+  The specific requirements for scene generation
+</instructions>
+
+Important:
+- Generate scenes ONLY for the events described in <current_chapter>
+- Use <previous_chapter> and <next_chapter> only to ensure proper story flow
+- Do not include events that belong in other chapters
+- Ensure smooth transitions from previous scene and into next scene
 
 Consider:
 - Natural flow from the previous chapter's ending
@@ -84,7 +139,13 @@ Consider:
 - Clear progression of events
 - Scene-level detail while maintaining chapter goals
 
-Output one scene summary per line. This line should contain about a paragraphs worth of content. Use as many scenes as needed to naturally tell this part of the story (typically 2-5 scenes). Do not number these lines.`,
+Output one scene summary per line. Each scene should be a full paragraph that includes:
+- The setting and atmosphere
+- Key character actions and interactions
+- Important dialogue points or revelations
+- How it advances the chapter's story
+
+Use as many scenes as needed to naturally tell this part of the story (typically 2-5 scenes). Do not number the scenes.`,
 
   snowflake_create_protagonist: `You are a writing assistant. Given a book summary, create a compelling protagonist that would fit this story. Output exactly three paragraphs in this order:
 
@@ -238,15 +299,33 @@ DO NOT:
 
 The goal is to subtly enhance the current synopsis with connections to established future events while keeping the original story completely intact. Output the enhanced synopsis that includes all original content plus subtle hints of what's to come.`,
 
-  snowflake_generate_scene: `You are a writing assistant. Generate a detailed scene based on the provided context. The content is organized in three sections:
+  snowflake_generate_scene: `You are a writing assistant. Generate a detailed scene based on the provided context. The content is organized in sections:
 
-<story_context> - Background information about the story, previous events, and the overall chapter. This is for understanding the setting and situation ONLY. Do not write about events mentioned here unless they are explicitly part of the current scene's summary.
+<story_context>
+  Background information about the story, previous events, and the overall chapter.
+  May include:
+  - <chapter_summary> - The current chapter's summary
+  - <arc_highlights> - Important elements from the previous arc that need continuity
+    Contains <highlight> elements with attributes:
+    - category: "character" | "plot" | "setting" | "theme"
+    - importance: Why this element matters for future scenes
+  - <relevant_characters> - Important characters with reasons for their relevance
+  - <relevant_locations> - Important locations with reasons for their relevance
+  - <relevant_scenes> - Related scenes with reasons for their relevance
+  - <next_scene> shows what needs to be set up for the next scene
+  This is for understanding the setting and situation ONLY.
+  Do not write about events mentioned here unless they are explicitly part of the current scene's summary.
+</story_context>
 
-<scene_setup> - Information about the characters and their relationships. Use this to understand who is present and how they relate to each other.
+<scene_setup>
+  Information about the characters and their relationships.
+  Use this to understand who is present and how they relate to each other.
+</scene_setup>
 
-<scene_to_write> - The specific content to be written:
-- <summary> contains what happens in THIS scene
-- <next_scene> shows what needs to be set up for the next scene
+<scene_to_write>
+  The specific content to be written:
+  - <summary> contains what happens in THIS scene
+</scene_to_write>
 
 IMPORTANT:
 - Write ONLY the events described in <summary>
@@ -254,6 +333,8 @@ IMPORTANT:
 - Previous events in <story_context> should inform the writing but NOT be included unless explicitly mentioned in <summary>
 - Future events mentioned in the chapter context should NOT appear in this scene
 - Focus on the immediate moment and the specific events of THIS scene
+- Use the additional context provided in <relevant_*> tags to ensure consistency and rich detail
+- Pay special attention to <arc_highlights> and weave in subtle references or continuity to those elements where appropriate, without forcing them
 
 Scene Requirements:
 - Write approximately 700-1000 words
@@ -262,14 +343,15 @@ Scene Requirements:
 - Provide clear sensory details
 - Maintain consistent perspective
 - Advance both plot and character development
-- End the scene in a way that naturally leads into <summary_of_next_scene>
+- End the scene in a way that naturally leads into <next_scene>
 - Avoid purple prose and melodramatic descriptions
 - Use fresh, evocative language instead of clichés
 - Keep dialogue natural and character-appropriate
 - Find unique ways to describe emotions and reactions
 - Maintain intensity without being edgy
+- Consider the highlighted elements from the previous arc for continuity
 
-[Rest of the instruction identical to snowflake_generate_scene...]`,
+Output only the scene text in natural paragraphs.`,
 
   snowflake_generate_title: `You are a writing assistant. Given a summary of a story element (arc, chapter, or scene), generate an appropriate title.
 
@@ -279,13 +361,14 @@ The title should:
 - Be clear and straightforward
 - Avoid overly dramatic or sensational language
 - Match the tone of the content
+- Not be surrounded by quotation marks
 - Be descriptive without being a complete summary
 
 Examples of good titles:
-- "The Market Deal" (not "A Fateful Bargain in Blood")
-- "Training Begins" (not "The Dawn of Power")
-- "River Crossing" (not "Waters of Destiny")
-- "The Captain's Decision" (not "Echoes of Command")
+- The Market Deal (not "A Fateful Bargain in Blood")
+- Training Begins (not "The Dawn of Power")
+- River Crossing (not "Waters of Destiny")
+- The Captain's Decision (not "Echoes of Command")
 
 Examples to avoid:
 - Overly poetic metaphors ("Whispers of Destiny")
@@ -498,6 +581,17 @@ Key requirements:
 - Maintain consistent character voices and personalities
 - Preserve the scene's overall tone and atmosphere
 - Integrate changes smoothly with existing content
+- Consider the previous scenes' context when making edits
+
+The input will be structured as:
+PREVIOUS SCENES IN CHAPTER:
+[Previous scenes' content, providing context for the current scene]
+
+CURRENT SCENE:
+[The scene content to be edited]
+
+INSTRUCTIONS:
+[The specific editing instructions to follow]
 
 OUTPUT FORMAT:
 You MUST output the ENTIRE scene as one complete piece, from beginning to end. Do not output:
@@ -518,6 +612,7 @@ Focus on:
 - Maintaining consistent pacing and flow
 - Preserving important character traits and relationships
 - Ensuring changes align with the scene's purpose
+- Maintaining continuity with previous scenes
 
 Avoid:
 - Changing the writing style
@@ -526,11 +621,9 @@ Avoid:
 - Adding content that doesn't match the scene's tone
 - Making characters act inconsistently
 - Adding any text that isn't part of the scene itself
+- Contradicting events from previous scenes
 
-CRITICAL: Your response must contain ONLY the complete scene text, with all modifications integrated. Do not include any other text, explanations, or formatting.
-
-INSTRUCTIONS:
-`,
+CRITICAL: Your response must contain ONLY the complete scene text, with all modifications integrated. Do not include any other text, explanations, or formatting.`,
 
   snowflake_smooth_transition: `You are a writing assistant. Your task is to improve the transition between the previous scene and the current scene. You will be provided with both the previous scene's content and the current scene's content.
 
@@ -576,6 +669,221 @@ PREVIOUS SCENE:
 
 CURRENT SCENE:
 [Current scene content will be here]`,
+
+  snowflake_extract_highlights: `You are a writing assistant. Your task is to analyze an arc's content and extract key elements that might be important for future chapters or scenes.
+
+The input will include:
+- The book's overall summary
+- The arc's summary
+- The full content of all scenes in the arc
+
+Your task is to identify and extract elements that:
+- Show character development or reveal important character traits
+- Establish plot points that might have future implications
+- Introduce setting details that could be relevant later
+- Develop thematic elements that should be consistent
+
+OUTPUT FORMAT:
+You must output a valid JSON array of highlight objects. Each highlight must have these exact fields:
+- text: The highlight content (string)
+- importance: Description of its future relevance (string)
+- category: One of: "character", "plot", "setting", "theme" (string)
+
+Example output:
+[
+  {
+    "text": "Sarah discovers her ability to see through illusions",
+    "importance": "This power will be crucial for uncovering future deceptions",
+    "category": "character"
+  },
+  {
+    "text": "The ancient temple contains a sealed door with strange markings",
+    "importance": "The door and its markings may hide important secrets",
+    "category": "setting"
+  },
+  {
+    "text": "The resistance movement begins to fracture",
+    "importance": "Internal conflicts will complicate future rebellion efforts",
+    "category": "plot"
+  },
+  {
+    "text": "Trust becomes increasingly difficult as deceptions multiply",
+    "importance": "The theme of eroding trust will affect future relationships",
+    "category": "theme"
+  }
+]
+
+Keep each highlight concise but specific. Focus on elements that are most likely to be relevant in future scenes or chapters.
+
+CRITICAL: Your response must be valid JSON that can be parsed. Do not include any other text or formatting.`,
+
+  snowflake_gather_context: `You are a writing assistant tasked with identifying what additional context would be helpful for the upcoming content generation task.
+
+Given a task description and initial context, analyze what additional information would be valuable and output specific search queries to gather that information.
+
+Your response must be valid JSON in this format:
+{
+  "queries": [
+    {
+      "query": "The actual search query text",
+      "type": "character" | "location" | "scene" | "character_actions",
+      "reason": "Brief explanation of why this information is needed"
+    }
+  ]
+}
+
+Example output:
+{
+  "queries": [
+    {
+      "query": "Sarah's relationship with her father",
+      "type": "character",
+      "reason": "Need to understand family dynamics for upcoming confrontation"
+    },
+    {
+      "query": "Sarah's recent actions",
+      "type": "character_actions",
+      "reason": "Need to understand her recent behavior patterns"
+    },
+    {
+      "query": "description of the ancient temple",
+      "type": "location",
+      "reason": "Scene takes place in this location"
+    },
+    {
+      "query": "previous interactions between Sarah and Marcus",
+      "type": "scene",
+      "reason": "Their past encounters will influence this conversation"
+    }
+  ]
+}
+
+Keep queries focused and specific. Limit to 3-5 most important queries.
+Do not include any other text in the output - just the JSON object.`,
+
+  snowflake_extract_location: `Extract a location from the scene content. The location should be a physical place where the scene takes place.
+    
+    Return a JSON object with the following structure:
+    {
+      "name": "A short, descriptive name for the location",
+      "description": "A detailed description of the location, including its physical characteristics, atmosphere, and any notable features"
+    }
+    
+    Example output:
+    {
+      "name": "The Rusty Anchor Tavern",
+      "description": "A dimly lit waterfront establishment with weathered wooden beams and salt-stained windows. The air is thick with the smell of stale beer and pipe smoke. Fishing nets and old anchors hang from the walls, while worn tables and mismatched chairs are scattered across the creaking floorboards."
+    }`,
+
+  snowflake_extract_character_actions: `Analyze the scene content and extract significant actions taken by each character present in the scene.
+
+A significant action should be:
+- A meaningful choice or decision
+- An important revelation or discovery
+- A notable interaction with another character
+- A change in their status or situation
+- An action that affects the plot or other characters
+
+Return a JSON array of character actions. Each action should have:
+- characterId: The ID of the character taking the action
+- action: A concise description of what they did (1-2 sentences)
+
+Example output:
+[
+  {
+    "characterId": "char_123",
+    "action": "Revealed the secret map to the resistance, choosing to betray the empire"
+  },
+  {
+    "characterId": "char_456",
+    "action": "Learned of their magical abilities after successfully casting their first spell"
+  }
+]
+
+Focus on actions that:
+- Show character development
+- Impact the story
+- Reveal personality traits
+- Affect relationships
+- Change the situation
+
+Do not include:
+- Minor or routine actions
+- Actions without story impact
+- Generic or vague descriptions
+- Actions by unnamed characters
+
+Output only the JSON array.`,
+
+  generate_between: `You are a writing assistant. When prompted with surrounding paragraphs and instructions, you will generate content that bridges the gap between them. This is for a novel, so take time to describe things and reflect for the characters.
+
+Consider:
+- The tone and style of the surrounding paragraphs
+- Character perspectives and emotions
+- The physical and temporal transition between paragraphs
+- Maintaining consistency with established details
+- Natural progression of events
+
+The context will be provided in XML tags:
+<chapter_info>
+  Information about the current chapter and previous chapter
+</chapter_info>
+
+<scene_setup>
+  - Character information (who is present, mentioned, or narrating)
+  - Location details
+</scene_setup>
+
+<previous_content>
+  The content that comes before the section to be generated
+</previous_content>
+
+<next_content>
+  The content that comes after the section to be generated
+</next_content>
+
+<instructions>
+  Specific requirements for what should happen in the generated content
+</instructions>
+
+Your task is to write content that:
+- Flows naturally from the previous content
+- Leads smoothly into the next content
+- Maintains consistent character voices
+- Respects the established setting
+- Advances the story at an appropriate pace
+- Fulfills the specific requirements provided in the instructions
+
+Output only the generated paragraphs, with no additional text or formatting.`,
 };
 
-export type HelpKind = keyof typeof instructions;
+export type HelpKind =
+  | "suggest_title"
+  | "next_paragraph"
+  | "write"
+  | "critique"
+  | "rewrite_spelling"
+  | "rewrite_similar"
+  | "rewrite"
+  | "synopsis"
+  | "critiqueStoryline"
+  | "improvements"
+  | "summarize"
+  | "snowflake_expand_book"
+  | "snowflake_expand_arc"
+  | "snowflake_expand_chapter"
+  | "snowflake_expand_scene"
+  | "snowflake_refine_book"
+  | "snowflake_refine_story"
+  | "snowflake_generate_protagonist"
+  | "snowflake_generate_title"
+  | "snowflake_generate_books"
+  | "snowflake_foreshadow_book"
+  | "snowflake_extract_characters"
+  | "snowflake_extract_location"
+  | "snowflake_extract_highlights"
+  | "snowflake_generate_scene_content"
+  | "snowflake_generate_scene_summary"
+  | "snowflake_gather_context"
+  | "snowflake_extract_character_actions"
+  | "generate_between";

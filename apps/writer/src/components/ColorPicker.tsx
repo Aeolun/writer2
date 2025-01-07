@@ -47,7 +47,8 @@ export const ColorPicker = (props: {
             style={{
               "background-color": color.value,
               "border-color":
-                props.value === color.name ? "#000" : "transparent",
+                props.value === color.name ? "#fff" : "transparent",
+              "outline": props.value === color.name ? "1px solid #888" : "none",
             }}
             title={color.name}
             onClick={() => props.onChange(color.name)}

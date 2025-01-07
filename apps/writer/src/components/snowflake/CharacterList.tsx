@@ -1,5 +1,5 @@
 import type { Node } from "@writer/shared";
-import { For } from "solid-js";
+import { createSignal, For } from "solid-js";
 import { scenesState, updateSceneData } from "../../lib/stores/scenes";
 import { treeState } from "../../lib/stores/tree";
 import { findPathToNode } from "../../lib/stores/tree";
@@ -12,6 +12,13 @@ export const CharacterList = (props: { node: Node }) => {
   const scene = scenesState.scenes[props.node.id];
   const characters = () => scene?.characterIds ?? [];
   const referredCharacters = () => scene?.referredCharacterIds ?? [];
+  const [openDropdowns, setOpenDropdowns] = createSignal<
+    Record<"perspective" | "present" | "referred", boolean>
+  >({
+    perspective: false,
+    present: false,
+    referred: false,
+  });
 
   const getPreviousScene = () => {
     const path = findPathToNode(props.node.id);
@@ -103,11 +110,24 @@ export const CharacterList = (props: { node: Node }) => {
       {/* Present Characters */}
       <div class="flex items-center gap-2">
         <span class="text-sm font-semibold">Characters Present:</span>
-        <div class="dropdown dropdown-end">
+        <div
+          class="dropdown dropdown-end"
+          classList={{
+            "dropdown-open": openDropdowns().present,
+          }}
+        >
           <button
             type="button"
             class="btn btn-ghost btn-xs"
             title="Add present character"
+            onClick={() => {
+              setOpenDropdowns((r) => {
+                return {
+                  ...r,
+                  present: !r.present,
+                };
+              });
+            }}
           >
             +
           </button>
@@ -122,6 +142,12 @@ export const CharacterList = (props: { node: Node }) => {
                 updateSceneData(props.node.id, {
                   characterIds: [...currentCharacters, characterId],
                 });
+                setOpenDropdowns((r) => {
+                  return {
+                    ...r,
+                    present: false,
+                  };
+                });
               }}
             />
           </div>
@@ -134,11 +160,24 @@ export const CharacterList = (props: { node: Node }) => {
         >
           ⬆️
         </button>
-        <div class="dropdown dropdown-end">
+        <div
+          class="dropdown dropdown-end"
+          classList={{
+            "dropdown-open": openDropdowns().perspective,
+          }}
+        >
           <button
             type="button"
             class="btn btn-ghost btn-xs"
             title="Set perspective character"
+            onClick={() => {
+              setOpenDropdowns((r) => {
+                return {
+                  ...r,
+                  perspective: !r.perspective,
+                };
+              });
+            }}
           >
             👁️
           </button>
@@ -150,35 +189,31 @@ export const CharacterList = (props: { node: Node }) => {
                 updateSceneData(props.node.id, {
                   protagonistId: characterId || undefined,
                 });
+                setOpenDropdowns((r) => {
+                  return {
+                    ...r,
+                    perspective: false,
+                  };
+                });
               }}
               characters={characters()}
               emptyMessage="Add characters to the scene first"
             />
           </div>
         </div>
-        <div class="dropdown dropdown-end">
-          <button
-            type="button"
-            class="btn btn-ghost btn-xs"
-            title="Set perspective type"
-          >
-            {scene.perspective === "first" ? "1st" : "3rd"}
-          </button>
-          <div class="dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-            <select
-              class="select select-bordered w-full"
-              value={scene.perspective ?? "third"}
-              onChange={(e) => {
-                updateSceneData(props.node.id, {
-                  perspective: e.currentTarget.value as "first" | "third",
-                });
-              }}
-            >
-              <option value="first">First Person</option>
-              <option value="third">Third Person</option>
-            </select>
-          </div>
-        </div>
+
+        <button
+          type="button"
+          class="btn btn-ghost btn-xs"
+          title="Set perspective type"
+          onClick={() => {
+            updateSceneData(props.node.id, {
+              perspective: scene.perspective === "first" ? "third" : "first",
+            });
+          }}
+        >
+          {scene.perspective === "first" ? "1st" : "3rd"}
+        </button>
       </div>
       <div class="flex flex-wrap gap-1">
         <For each={characters()}>
@@ -240,11 +275,24 @@ export const CharacterList = (props: { node: Node }) => {
       {/* Referred Characters */}
       <div class="flex items-center gap-2">
         <span class="text-sm font-semibold">Characters Referred To:</span>
-        <div class="dropdown dropdown-end">
+        <div
+          class="dropdown dropdown-end"
+          classList={{
+            "dropdown-open": openDropdowns().referred,
+          }}
+        >
           <button
             type="button"
             class="btn btn-ghost btn-xs"
             title="Add referred character"
+            onClick={() => {
+              setOpenDropdowns((r) => {
+                return {
+                  ...r,
+                  referred: !r.referred,
+                };
+              });
+            }}
           >
             +
           </button>
@@ -258,6 +306,12 @@ export const CharacterList = (props: { node: Node }) => {
 
                 updateSceneData(props.node.id, {
                   referredCharacterIds: [...currentReferred, characterId],
+                });
+                setOpenDropdowns((r) => {
+                  return {
+                    ...r,
+                    referred: false,
+                  };
                 });
               }}
             />

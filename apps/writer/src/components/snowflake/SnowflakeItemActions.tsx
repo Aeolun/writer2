@@ -1,5 +1,5 @@
 import { For, Show } from "solid-js";
-import type { Node } from "@writer/shared";
+import type { Node, Arc } from "@writer/shared";
 import { AiOutlineClose, AiOutlineRobot } from "solid-icons/ai";
 import { RiDesignMagicFill, RiDesignQuillPenFill } from "solid-icons/ri";
 import {
@@ -37,6 +37,19 @@ import { createChapter } from "../../lib/stores/chapters";
 import { createScene } from "../../lib/stores/scenes";
 import { BiSolidAddToQueue } from "solid-icons/bi";
 import { extractCharactersFromScene } from "./actions/extractCharactersFromScene";
+import { generateSceneSummary } from "./actions/generateSceneSummary";
+import { TbRefresh } from "solid-icons/tb";
+import { refinementPreview, setHighlightsPreview } from "./store";
+import { RefinementPreview } from "./RefinementPreview";
+import { extractArcHighlights } from "./actions/extractArcHighlights";
+import { TbBulb } from "solid-icons/tb";
+import { highlightsPreview } from "./store";
+import { HighlightsPreview } from "./HighlightsPreview";
+import { arcsStore } from "../../lib/stores/arcs";
+import { extractLocationFromScene } from "./actions/extractLocationFromScene";
+import { TbMapPin } from "solid-icons/tb";
+import { extractCharacterActions } from "./actions/extractCharacterActions";
+import { TbActivity } from "solid-icons/tb";
 
 type Props = {
   node: Node;
@@ -46,6 +59,12 @@ type Props = {
 
 export const SnowflakeItemActions = (props: Props) => {
   const [showVersions, setShowVersions] = createSignal(false);
+  const [openDropdowns, setOpenDropdowns] = createSignal<
+    Record<"expand" | "refine", boolean>
+  >({
+    refine: false,
+    expand: false,
+  });
 
   const handleSelectVersion = (content: string) => {
     const paragraphs = content.split("\n\n").filter((p) => p.trim());
@@ -106,7 +125,12 @@ export const SnowflakeItemActions = (props: Props) => {
           </ButtonTooltip>
         </Show>
 
-        <div class="dropdown dropdown-end">
+        <div
+          class="dropdown dropdown-end"
+          classList={{
+            "dropdown-open": openDropdowns().refine,
+          }}
+        >
           <ButtonTooltip
             title={
               props.node.oneliner
@@ -115,6 +139,12 @@ export const SnowflakeItemActions = (props: Props) => {
             }
             error={!props.node.oneliner}
             disabled={!props.node.oneliner}
+            onClick={() => {
+              setOpenDropdowns((c) => ({
+                ...c,
+                refine: !openDropdowns().refine,
+              }));
+            }}
           >
             {loadingStates[`${props.node.id}_refine`] ? (
               <span class="loading loading-spinner loading-xs" />
@@ -122,15 +152,16 @@ export const SnowflakeItemActions = (props: Props) => {
               <RiDesignMagicFill />
             )}
           </ButtonTooltip>
-          <ul class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-72">
+          <ul class="dropdown-content z-[5] menu p-2 shadow bg-base-100 rounded-box w-72">
             <For each={[1, 2, 3]}>
               {(level) => (
                 <li class="relative group">
                   <button
                     type="button"
-                    onClick={() =>
-                      refineBookSummary(props.node, level as RefinementLevel)
-                    }
+                    onClick={() => {
+                      refineBookSummary(props.node, level as RefinementLevel);
+                      setOpenDropdowns((c) => ({ ...c, refine: false }));
+                    }}
                     disabled={loadingStates[`${props.node.id}_refine`]}
                     class="flex flex-col items-start"
                   >
@@ -174,7 +205,7 @@ export const SnowflakeItemActions = (props: Props) => {
           </ButtonTooltip>
         </Show>
 
-        <Show when={props.node.type !== "scene"}>
+        <Show when={props.node.type !== "scene" && props.node.type !== "arc"}>
           <ButtonTooltip
             title={
               props.getExpandStatus() === "needs-summary"
@@ -194,6 +225,58 @@ export const SnowflakeItemActions = (props: Props) => {
             )}
           </ButtonTooltip>
         </Show>
+        <Show when={props.node.type === "arc"}>
+          <div
+            class="dropdown dropdown-end"
+            classList={{
+              "dropdown-open": openDropdowns().expand,
+            }}
+          >
+            <ButtonTooltip
+              title={
+                props.getExpandStatus() === "needs-summary"
+                  ? "Add a one-line summary first"
+                  : props.getExpandStatus() === "needs-expansion"
+                    ? "Expand to full page (Level 3) before generating"
+                    : `Generate ${props.node.type === "book" ? "arcs" : props.node.type === "arc" ? "chapters" : "scenes"}`
+              }
+              error={props.getExpandStatus() !== "ready"}
+              disabled={props.getExpandStatus() !== "ready"}
+              onClick={() =>
+                setOpenDropdowns((c) => ({
+                  ...c,
+                  expand: !openDropdowns().expand,
+                }))
+              }
+            >
+              {loadingStates[props.node.id] ? (
+                <span class="loading loading-spinner loading-xs" />
+              ) : (
+                <FaSolidChevronDown />
+              )}
+            </ButtonTooltip>
+            <ul class="dropdown-content z-[5] menu p-2 shadow bg-base-100 rounded-box w-72">
+              <For each={[8, 12, 16, 20]}>
+                {(level) => (
+                  <li class="relative group">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpenDropdowns((c) => ({ ...c, expand: false }));
+
+                        props.handleExpand(props.node, level);
+                      }}
+                      disabled={loadingStates[props.node.id]}
+                      class="flex flex-col items-start"
+                    >
+                      <span class="font-bold">Generate {level} chapters</span>
+                    </button>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
+        </Show>
 
         <ButtonTooltip
           title={
@@ -208,7 +291,7 @@ export const SnowflakeItemActions = (props: Props) => {
           {loadingStates[`${props.node.id}_summary`] ? (
             <span class="loading loading-spinner loading-xs" />
           ) : (
-            <AiOutlineRobot />
+            <TbRefresh />
           )}
         </ButtonTooltip>
 
@@ -244,13 +327,7 @@ export const SnowflakeItemActions = (props: Props) => {
 
         <Show when={props.node.type === "scene"}>
           <ButtonTooltip
-            title={
-              props.node.oneliner
-                ? "Extract characters from this scene"
-                : "Add a summary first"
-            }
-            error={!props.node.oneliner}
-            disabled={!props.node.oneliner}
+            title="Extract characters from scene content"
             onClick={() => extractCharactersFromScene(props.node)}
           >
             {loadingStates[`${props.node.id}_chars`] ? (
@@ -261,11 +338,49 @@ export const SnowflakeItemActions = (props: Props) => {
           </ButtonTooltip>
 
           <ButtonTooltip
+            title="Extract character actions from scene"
+            onClick={() => extractCharacterActions(props.node)}
+          >
+            {loadingStates[`${props.node.id}_actions`] ? (
+              <span class="loading loading-spinner loading-xs" />
+            ) : (
+              <TbActivity />
+            )}
+          </ButtonTooltip>
+
+          <ButtonTooltip
+            title="Extract location from scene content"
+            onClick={async () => {
+              const locationId = await extractLocationFromScene(props.node);
+              if (locationId) {
+                updateSceneData(props.node.id, { locationId });
+              }
+            }}
+          >
+            {loadingStates[`${props.node.id}_location`] ? (
+              <span class="loading loading-spinner loading-xs" />
+            ) : (
+              <TbMapPin />
+            )}
+          </ButtonTooltip>
+
+          <ButtonTooltip
+            title="Re-summarize scene from content"
+            onClick={() => generateSceneSummary(props.node)}
+          >
+            {loadingStates[`${props.node.id}_summary`] ? (
+              <span class="loading loading-spinner loading-xs" />
+            ) : (
+              <TbRefresh />
+            )}
+          </ButtonTooltip>
+
+          <ButtonTooltip
             title={
               !props.node.oneliner
                 ? "Add a summary first"
                 : scenesState.scenes[props.node.id]?.generationApproaches
-                      ?.length
+                    ?.length
                   ? "Compare generated versions"
                   : "Generate scene content"
             }
@@ -305,6 +420,30 @@ export const SnowflakeItemActions = (props: Props) => {
         >
           <AiOutlineClose />
         </ButtonTooltip>
+
+        <Show when={props.node.type === "arc"}>
+          <ButtonTooltip
+            title={
+              arcsStore.arcs[props.node.id]?.highlights?.length
+                ? "View arc highlights"
+                : "Extract key highlights from this arc"
+            }
+            onClick={() => {
+              if (arcsStore.arcs[props.node.id]?.highlights?.length) {
+                setHighlightsPreview(props.node.id);
+              } else {
+                // Extract new highlights
+                extractArcHighlights(props.node);
+              }
+            }}
+          >
+            {loadingStates[`${props.node.id}_highlights`] ? (
+              <span class="loading loading-spinner loading-xs" />
+            ) : (
+              <TbBulb />
+            )}
+          </ButtonTooltip>
+        </Show>
       </div>
 
       <Show when={showVersions()}>
@@ -313,6 +452,37 @@ export const SnowflakeItemActions = (props: Props) => {
           versions={scenesState.scenes[props.node.id]?.generationApproaches}
           onSelect={handleSelectVersion}
           onClose={() => setShowVersions(false)}
+        />
+      </Show>
+
+      <Show when={refinementPreview()}>
+        <div class="modal modal-open">
+          <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4">
+              Review Generated Summary (Level {refinementPreview()!.level})
+              <div class="text-sm font-normal opacity-75">
+                {refinementPreview()!.level === 1
+                  ? "One-line summary"
+                  : refinementPreview()!.level === 2
+                  ? "One-paragraph summary"
+                  : "Full-page summary"}
+              </div>
+            </h3>
+            <RefinementPreview
+              original={refinementPreview()!.original}
+              refined={refinementPreview()!.refined}
+              onAccept={refinementPreview()!.onAccept}
+              onReject={refinementPreview()!.onReject}
+            />
+          </div>
+        </div>
+      </Show>
+
+      <Show when={highlightsPreview()}>
+        <HighlightsPreview
+          arc={arcsStore.arcs[highlightsPreview()!]}
+          node={props.node}
+          onClose={() => setHighlightsPreview(null)}
         />
       </Show>
     </>

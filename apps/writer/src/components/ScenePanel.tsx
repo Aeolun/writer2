@@ -9,9 +9,12 @@ import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
 import { storyState } from "../lib/stores/story";
 import { charactersState } from "../lib/stores/characters";
 import { CharacterSelect } from "./CharacterSelect";
+import { LocationList } from "./snowflake/LocationList";
+import { CharacterList } from "./snowflake/CharacterList";
+import type { Node } from "@writer/shared";
 
 export const ScenePanel = () => {
-  const help = (helpKind: HelpKind, extra = false) => {
+  const help = (helpKind: "summarize" | "improvements", extra = false) => {
     const text = `Scene text:\n\n${currentScene()
       ?.paragraphs.map((p) =>
         typeof p.text === "string" ? p.text : contentSchemaToText(p.text),
@@ -25,6 +28,19 @@ export const ScenePanel = () => {
         updateSceneData(sceneId, { summary: res ?? undefined });
       }
     });
+  };
+
+  const sceneAsNode = (): Node | undefined => {
+    const scene = currentScene();
+    if (!scene) return undefined;
+    
+    return {
+      id: scene.id,
+      name: scene.title,
+      type: "scene",
+      isOpen: true,
+      oneliner: scene.summary
+    };
   };
 
   return currentScene() ? (
@@ -86,6 +102,20 @@ export const ScenePanel = () => {
           }}
           placeholder="Select protagonist..."
         />
+      </FormField>
+
+      <FormField label="Characters & Location">
+        <div class="flex flex-col gap-4 p-2 border rounded-lg">
+          {(() => {
+            const node = sceneAsNode();
+            return node ? (
+              <>
+                <CharacterList node={node} />
+                <LocationList node={node} />
+              </>
+            ) : null;
+          })()}
+        </div>
       </FormField>
 
       <FormField label="Summary">

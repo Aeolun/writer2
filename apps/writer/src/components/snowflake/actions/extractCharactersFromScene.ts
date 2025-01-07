@@ -19,7 +19,7 @@ export const extractCharactersFromScene = async (node: Node) => {
       .join("\n");
 
     const { presentCharacters, mentionedCharacters } =
-      await extractNewCharacters([sceneContent ?? node.oneliner]);
+      await extractNewCharacters([sceneContent && sceneContent.length > 0 ? sceneContent : node.oneliner]);
 
     // Update the scene with the new character IDs
     updateSceneData(node.id, {

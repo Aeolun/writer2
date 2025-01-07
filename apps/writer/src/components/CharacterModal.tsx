@@ -1,9 +1,18 @@
 import {
   charactersState,
   updateCharacterProperty,
+  setSelectedCharacterId,
 } from "../lib/stores/characters";
 import { FileSelector } from "./FileSelector";
-import { ColorPicker } from "./ColorPicker";
+import { ColorPicker, HAIR_COLORS } from "./ColorPicker";
+import { treeState } from "../lib/stores/tree";
+import { scenesState } from "../lib/stores/scenes";
+import { getOrderedSceneIds } from "../lib/selectors/orderedSceneIds";
+import { CharacterSelect } from "./CharacterSelect";
+import type { Character } from "@writer/shared";
+import { getAllCharacterVersions } from "../lib/utils/character-versions";
+import { CharacterTimeline } from "./CharacterTimeline";
+import { useAi } from "../lib/use-ai";
 
 const EYE_COLORS = [
   { name: "Brown", value: "#694731" },
@@ -189,7 +198,6 @@ export const CharacterModal = (props: {
                 <span class="label-text">Picture</span>
               </label>
               <FileSelector
-                id="picture"
                 name={charactersState.selectedCharacter?.firstName ?? ""}
                 value={charactersState.selectedCharacter?.picture ?? ""}
                 onChange={(file) => {
@@ -316,26 +324,6 @@ export const CharacterModal = (props: {
           <div class="space-y-4">
             <div class="form-control">
               <label class="label cursor-pointer">
-                <span class="label-text">Protagonist</span>
-                <input
-                  type="checkbox"
-                  class="checkbox"
-                  checked={
-                    charactersState.selectedCharacter?.isProtagonist ?? false
-                  }
-                  onChange={(e) => {
-                    updateCharacterProperty(
-                      charactersState.selectedCharacterId,
-                      "isProtagonist",
-                      e.currentTarget.checked,
-                    );
-                  }}
-                />
-              </label>
-            </div>
-
-            <div class="form-control">
-              <label class="label cursor-pointer">
                 <span class="label-text">Main Character</span>
                 <input
                   type="checkbox"
@@ -352,6 +340,29 @@ export const CharacterModal = (props: {
                   }}
                 />
               </label>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Later Version Of</span>
+              </label>
+              <CharacterSelect
+                placeholder="Select earlier version..."
+                value={charactersState.selectedCharacter?.laterVersionOf}
+                onChange={(characterId: string | null) => {
+                  updateCharacterProperty(
+                    charactersState.selectedCharacterId,
+                    "laterVersionOf",
+                    characterId || undefined,
+                  );
+                }}
+                filter={(char) => 
+                  // Don't show the current character
+                  char.id !== charactersState.selectedCharacterId &&
+                  // Don't show characters that are later versions of this character (to avoid cycles)
+                  char.laterVersionOf !== charactersState.selectedCharacterId
+                }
+              />
             </div>
 
             <div class="form-control">
@@ -448,7 +459,144 @@ export const CharacterModal = (props: {
             </div>
           </div>
         </div>
+
+        {/* Significant Actions Section */}
+        <CharacterTimeline
+          versions={getAllCharacterVersions(
+            charactersState.selectedCharacterId,
+            charactersState.characters
+          )}
+          onRemoveAction={(character, timestamp) => {
+            const significantActions = [
+              ...(character.significantActions || []),
+            ].filter(a => a.timestamp !== timestamp);
+            updateCharacterProperty(
+              character.id,
+              "significantActions",
+              significantActions,
+            );
+          }}
+        />
+
         <div class="modal-action">
+        <button 
+            type="button" 
+            class="btn btn-secondary"
+            onClick={async () => {
+              const character = charactersState.selectedCharacter;
+              if (!character || !character.firstName) {
+                alert("Please enter a first name first");
+                return;
+              }
+
+              // Random values for simple fields
+              if (!character.gender) {
+                updateCharacterProperty(
+                  charactersState.selectedCharacterId,
+                  "gender",
+                  GENDER_OPTIONS[Math.floor(Math.random() * GENDER_OPTIONS.length)]
+                );
+              }
+
+              if (!character.sexualOrientation) {
+                updateCharacterProperty(
+                  charactersState.selectedCharacterId,
+                  "sexualOrientation",
+                  ORIENTATION_OPTIONS[Math.floor(Math.random() * ORIENTATION_OPTIONS.length)].value
+                );
+              }
+
+              if (!character.height) {
+                updateCharacterProperty(
+                  charactersState.selectedCharacterId,
+                  "height",
+                  Math.floor(Math.random() * (190 - 150 + 1)) + 150
+                );
+              }
+
+              if (!character.age) {
+                updateCharacterProperty(
+                  charactersState.selectedCharacterId,
+                  "age",
+                  (Math.floor(Math.random() * (65 - 18 + 1)) + 18).toString()
+                );
+              }
+
+              if (!character.eyeColor) {
+                updateCharacterProperty(
+                  charactersState.selectedCharacterId,
+                  "eyeColor",
+                  EYE_COLORS[Math.floor(Math.random() * EYE_COLORS.length)].name
+                );
+              }
+
+              if (!character.hairColor) {
+                updateCharacterProperty(
+                  charactersState.selectedCharacterId,
+                  "hairColor",
+                  HAIR_COLORS[Math.floor(Math.random() * HAIR_COLORS.length)].name
+                );
+              }
+
+              // Use AI for complex fields
+              if (!character.summary || !character.distinguishingFeatures) {
+                try {
+                  const characterProperties = [];
+                  if (character.gender) characterProperties.push(`Gender: ${character.gender}`);
+                  if (character.age) characterProperties.push(`Age: ${character.age} years old`);
+                  if (character.height) characterProperties.push(`Height: ${character.height}cm`);
+                  if (character.hairColor) characterProperties.push(`Hair color: ${character.hairColor}`);
+                  if (character.eyeColor) {
+                    const eyeColor = EYE_COLORS.find(c => c.value === character.eyeColor)?.name || character.eyeColor;
+                    characterProperties.push(`Eye color: ${eyeColor}`);
+                  }
+                  if (character.sexualOrientation) characterProperties.push(`Sexual orientation: ${character.sexualOrientation}`);
+
+                  const prompt = `Create a character profile for ${character.firstName} ${character.lastName || ""}. 
+${characterProperties.length > 0 ? `\nExisting characteristics:\n${characterProperties.join('\n')}` : ''}
+
+Please provide:
+1. ${!character.summary ? "A brief summary of their personality and role in the story (2-3 sentences)" : "Skip summary as it already exists"}
+2. ${!character.distinguishingFeatures ? "Their distinguishing physical features (2-3 notable characteristics that match their existing physical traits)" : "Skip distinguishing features as they already exist"}
+
+Format the response as JSON with these fields:
+{
+  ${!character.summary ? '"summary": "...",' : ''}
+  ${!character.distinguishingFeatures ? '"distinguishingFeatures": "..."' : ''}
+}`;
+
+                  const result = await useAi("free", [{
+                    text: prompt,
+                    canCache: false
+                  }], true);
+
+                  try {
+                    const parsed = JSON.parse(result);
+                    if (!character.summary && parsed.summary) {
+                      updateCharacterProperty(
+                        charactersState.selectedCharacterId,
+                        "summary",
+                        parsed.summary
+                      );
+                    }
+                    if (!character.distinguishingFeatures && parsed.distinguishingFeatures) {
+                      updateCharacterProperty(
+                        charactersState.selectedCharacterId,
+                        "distinguishingFeatures",
+                        parsed.distinguishingFeatures
+                      );
+                    }
+                  } catch (e) {
+                    console.error("Failed to parse AI response", e);
+                  }
+                } catch (e) {
+                  console.error("Failed to generate character profile", e);
+                }
+              }
+            }}
+          >
+            Auto-fill Empty Fields
+          </button>
           <button type="button" class="btn" onClick={props.onClose}>
             Close
           </button>

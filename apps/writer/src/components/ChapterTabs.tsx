@@ -3,7 +3,7 @@ import moment from "moment";
 import type { HelpKind } from "../lib/ai-instructions";
 import { useAi } from "../lib/use-ai";
 import { currentChapter } from "../lib/stores/retrieval/current-chapter";
-import { updateChapter } from "../lib/stores/chapters";
+import { deleteChapter, updateChapter } from "../lib/stores/chapters";
 import { sortedObjects } from "../lib/stores/retrieval/sorted-objects";
 import { publishToRoyalRoad } from "@writer/server/src/procedures/publish-to-royal-road";
 import { trpc } from "../lib/trpc";
@@ -149,9 +149,9 @@ export const ChapterTabs = () => {
               </button>
               <button
                 type="button"
-                class="btn btn-red"
+                class="btn btn-error"
                 onClick={() => {
-                  deleteChapter(currentChapter()?.id);
+                  deleteChapter(currentChapter()?.id ?? "");
                 }}
               >
                 Delete

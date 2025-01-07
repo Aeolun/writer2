@@ -1,71 +1,56 @@
-import { Select } from "@thisbeyond/solid-select";
-import "@thisbeyond/solid-select/style.css";
-import { convertFileSrc } from "@tauri-apps/api/core";
-import { storyState } from "../lib/stores/story";
+import { For } from "solid-js";
 import { charactersState } from "../lib/stores/characters";
 import type { Character } from "@writer/shared";
 
-type CharacterSelectProps = {
-  placeholder: string;
+export type CharacterSelectProps = {
+  placeholder?: string;
   value?: string;
-  onChange: (characterId: string) => void;
+  onChange: (characterId: string | null) => void;
   characters?: string[];
   emptyMessage?: string;
-};
-
-const getFullName = (character: Character) => {
-  const parts = [character.firstName, character.middleName, character.lastName]
-    .filter(Boolean)
-    .join(" ");
-  return character.nickname ? `${parts} "${character.nickname}"` : parts;
+  filter?: (character: Character) => boolean;
 };
 
 export const CharacterSelect = (props: CharacterSelectProps) => {
-  const openPath = storyState.openPath;
-  const characters = () =>
-    Object.values(charactersState.characters)
-      .filter((char) => {
-        return !props.characters || props.characters.includes(char.id);
-      })
-      .sort((a, b) => getFullName(a).localeCompare(getFullName(b)));
+  const characters = () => {
+    let chars = props.characters
+      ? props.characters.map((id) => charactersState.characters[id])
+      : Object.values(charactersState.characters);
 
-  const getCharacterImage = (character: Character) => {
-    if (character.picture) {
-      return convertFileSrc(`${openPath}/data/${character.picture}`);
+    if (props.filter) {
+      chars = chars.filter(props.filter);
     }
 
-    // Fallback based on gender
-    const gender = character.gender?.toLowerCase();
-    if (gender === "female") {
-      return "/unknown-female.png";
-    }
-    // Default to male icon for any other gender or if gender is not specified
-    return "/unknown-male.jpg";
+    return chars;
   };
 
-  const formatOption = (character: Character) => (
-    <div class="flex items-center gap-3">
-      <div
-        class="w-8 h-8 rounded-full bg-cover bg-center border border-gray-300"
-        style={{
-          "background-image": `url(${getCharacterImage(character)})`,
-        }}
-      />
-      <span>{getFullName(character)}</span>
-    </div>
-  );
-
   return (
-    <Select
-      placeholder={props.placeholder}
-      options={characters()}
-      initialValue={
-        props.value ? charactersState.characters[props.value] : undefined
-      }
-      onChange={(character) => {
-        props.onChange(character ? character.id : "");
+    <select
+      class="select select-bordered w-full"
+      value={props.value ?? ""}
+      onChange={(e) => {
+        const value = e.currentTarget.value;
+        props.onChange(value || null);
       }}
-      format={formatOption}
-    />
+    >
+      <option value="">{props.placeholder ?? "Select character..."}</option>
+      <For each={characters()}>
+        {(character) => {
+          if (!character) return null;
+          const fullName = [
+            character.firstName,
+            character.middleName,
+            character.lastName,
+            character.nickname ? `"${character.nickname}"` : undefined
+          ]
+            .filter(Boolean)
+            .join(" ");
+          return <option value={character.id}>{fullName}</option>;
+        }}
+      </For>
+      {characters().length === 0 && props.emptyMessage && (
+        <option disabled>{props.emptyMessage}</option>
+      )}
+    </select>
   );
 };
