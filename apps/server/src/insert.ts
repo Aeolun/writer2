@@ -3,6 +3,7 @@ import { createHash } from "crypto";
 import fs from "fs";
 import { uploadFile } from "./util/file-storage";
 import sharp from "sharp";
+import { join } from "node:path";
 interface Chapter {
   id: string;
   title: string;
@@ -30,6 +31,7 @@ interface Story {
   slug: string;
   title: string;
   description: string;
+  wordsPerDay?: number;
   url: string;
   author: string;
   isFanfiction: boolean;
@@ -38,7 +40,7 @@ interface Story {
   color: string;
   textColor: string;
   pages: number;
-  cover: string;
+  cover?: string;
   chapters: Chapter[];
   volumes: Volume[];
 }
@@ -48,16 +50,23 @@ const cliProgress = require("cli-progress");
 // create a new progress bar instance and use shades_classic theme
 const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
-const royalroadData: Story[] = require("../../reader/royalroad.json");
+const royalroadData: Record<
+  string,
+  string
+> = require("../../reader/royalroad.json");
 
+const cacheFolder = join(__dirname, "..", "..", "reader", "cache", "royalroad");
 // start the progress bar with a total value of 200 and start value of 0
-bar1.start(royalroadData.length, 0);
+bar1.start(Object.keys(royalroadData).length, 0);
 
 const insert = async () => {
   const tags = await prisma.tag.findMany();
   const tagMap = new Map(tags.map((tag) => [tag.name, tag.id]));
 
-  for (const story of royalroadData) {
+  for (const storyFile of Object.values(royalroadData)) {
+    const story: Story = JSON.parse(
+      fs.readFileSync(join(cacheFolder, "stories", storyFile), "utf-8"),
+    );
     for (const tag of story.tags) {
       if (!tagMap.has(tag)) {
         const newTag = await prisma.tag.create({
@@ -68,9 +77,12 @@ const insert = async () => {
     }
   }
 
-  for (const story of royalroadData) {
+  for (const storyFile of Object.values(royalroadData)) {
+    const story: Story = JSON.parse(
+      fs.readFileSync(join(cacheFolder, "stories", storyFile), "utf-8"),
+    );
     if (!story.author) {
-      console.error("Story has no author", story);
+      console.error("Story has no author", story.author);
       continue;
     }
     const createdAuthor = await prisma.user.upsert({
@@ -85,27 +97,37 @@ const insert = async () => {
       .substring(0, 65000);
 
     const storyData = await prisma.story.upsert({
-      where: { royalRoadId: parseInt(story.id) },
+      where: { royalRoadId: Number.parseInt(story.id) },
       update: {
-        coverArtAsset: story.cover.includes("nocover") ? "" : "/cover.jpg",
+        wordsPerWeek: story.isCompleted
+          ? 0
+          : story.wordsPerDay && story.chapters.length > 5
+            ? story.wordsPerDay * 7
+            : 0,
+        coverArtAsset: story.cover?.includes("nocover") ? "" : "/cover.jpg",
         summary: fixedSummary,
         coverColor: story.color,
         coverTextColor: story.textColor,
         status: story.isCompleted ? "COMPLETED" : "ONGOING",
         type: story.isFanfiction ? "FANFICTION" : "ORIGINAL",
         pages: story.pages,
-        royalRoadId: parseInt(story.id),
+        royalRoadId: Number.parseInt(story.id),
       },
       create: {
         summary: fixedSummary,
         ownerId: createdAuthor.id,
         name: story.title,
-        royalRoadId: parseInt(story.id),
+        royalRoadId: Number.parseInt(story.id),
+        wordsPerWeek: story.isCompleted
+          ? 0
+          : story.wordsPerDay && story.chapters.length > 5
+            ? story.wordsPerDay * 7
+            : 0,
         status: story.isCompleted ? "COMPLETED" : "ONGOING",
         type: story.isFanfiction ? "FANFICTION" : "ORIGINAL",
         published: true,
         pages: story.pages,
-        coverArtAsset: story.cover.includes("nocover") ? "" : "/cover.jpg",
+        coverArtAsset: story.cover?.includes("nocover") ? "" : "/cover.jpg",
         coverColor: story.color,
         coverTextColor: story.textColor,
       },
@@ -133,7 +155,7 @@ const insert = async () => {
     });
 
     try {
-      if (!story.cover.includes("nocover")) {
+      if (story.cover && !story.cover.includes("nocover")) {
         const coverData = fs.readFileSync(
           `../reader/cache/royalroad/covers/${story.id}-${story.slug}.jpg`,
         );

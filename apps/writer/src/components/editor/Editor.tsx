@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onCleanup } from "solid-js";
+import { createEffect, onCleanup } from "solid-js";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { undo, redo, history } from "prosemirror-history";
@@ -6,18 +6,17 @@ import { keymap } from "prosemirror-keymap";
 import { baseKeymap, toggleMark } from "prosemirror-commands";
 import "./style.css";
 import { contentSchema } from "./schema";
-import { toggleTranslationMark } from "./functions/toggle-title-mark";
 import { blockMenuPlugin } from "./plugins/block-menu";
 import { assignIdPlugin } from "./plugins/assign-id";
 import { inlineMenuPlugin } from "./plugins/inline-menu";
-import { Node } from "prosemirror-model";
+import type { Node } from "prosemirror-model";
 import {
   inputRules,
   emDash,
   smartQuotes,
   ellipsis,
 } from "prosemirror-inputrules";
-import { ContentNode } from "@writer/shared";
+import type { ContentNode } from "@writer/shared";
 import { registerEditor, unregisterEditor } from "../../lib/stores/editor";
 
 const italic = toggleMark(contentSchema.marks.em);
@@ -27,18 +26,37 @@ export const Editor = (props: {
   defaultValue: object | string;
   onChange: (data: ContentNode) => void;
 }) => {
-  const [editor, setEditor] = createSignal<HTMLDivElement>();
+  let containerRef: HTMLDivElement | undefined;
+  let view: EditorView | undefined;
+
+  onCleanup(() => {
+    console.log("cleanup", props.paragraphId, view);
+    if (props.paragraphId) {
+      console.log("unregisterEditor", props.paragraphId);
+      unregisterEditor(props.paragraphId);
+    }
+    if (view) {
+      console.log("destroy view");
+      view.destroy();
+    }
+  });
 
   createEffect(() => {
-    const editorNode = editor();
-    if (editorNode && editorNode.childNodes.length > 0) return;
+    console.log("createEffect", props.paragraphId, view);
+    if (!props.paragraphId || view) return;
+
+    console.log("createEffect 2");
+
+    // Create a new div element for the editor
+    const editorNode = document.createElement("div");
+    editorNode.className = "editor";
+    containerRef?.appendChild(editorNode);
 
     let doc: Node;
     if (typeof props.defaultValue === "string") {
       doc = contentSchema.node(
         "doc",
         null,
-
         contentSchema.node(
           "paragraph",
           null,
@@ -69,26 +87,18 @@ export const Editor = (props: {
         inputRules({ rules: smartQuotes.concat([emDash, ellipsis]) }),
       ],
     });
-    const view = new EditorView(editor() ?? null, {
+
+    view = new EditorView(editorNode, {
       state,
       dispatchTransaction(transaction) {
-        const newState = view.state.apply(transaction);
-        view.updateState(newState);
-
+        const newState = view!.state.apply(transaction);
+        view!.updateState(newState);
         props.onChange(newState.doc.toJSON());
       },
     });
 
-    if (props.paragraphId) {
-      registerEditor(props.paragraphId, view);      
-    }
-
-    onCleanup(() => {
-      if (props.paragraphId) {
-        unregisterEditor(props.paragraphId);
-      }
-    });
+    registerEditor(props.paragraphId, view);
   });
 
-  return <div class="editor" ref={setEditor} />;
+  return <div ref={containerRef} />;
 };

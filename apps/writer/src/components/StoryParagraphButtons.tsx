@@ -64,9 +64,10 @@ export const StoryParagraphButtons = (props: {
     });
 
     try {
-      const paragraphText = typeof currentParagraph.text === "string"
-        ? currentParagraph.text
-        : contentSchemaToText(currentParagraph.text);
+      const paragraphText =
+        typeof currentParagraph.text === "string"
+          ? currentParagraph.text
+          : contentSchemaToText(currentParagraph.text);
 
       const critique = await useAi("snowflake_critique_scene", paragraphText);
       const refinedContent = await useAi("snowflake_refine_scene_style", [
@@ -142,6 +143,36 @@ export const StoryParagraphButtons = (props: {
   const [translationText, setTranslationText] = createSignal(
     currentParagraph?.translation ?? "",
   );
+
+  const convertPerspective = async () => {
+    if (!scene || !currentParagraph) return;
+
+    updateSceneParagraphData(scene.id, currentParagraph.id, {
+      extraLoading: true,
+    });
+
+    try {
+      const paragraphText =
+        typeof currentParagraph.text === "string"
+          ? currentParagraph.text
+          : contentSchemaToText(currentParagraph.text);
+
+      const convertedContent = await useAi(
+        "snowflake_convert_perspective",
+        paragraphText,
+      );
+
+      updateSceneParagraphData(scene.id, currentParagraph.id, {
+        extra: convertedContent,
+        extraLoading: false,
+      });
+    } catch (error) {
+      console.error("Failed to convert perspective:", error);
+      updateSceneParagraphData(scene.id, currentParagraph.id, {
+        extraLoading: false,
+      });
+    }
+  };
 
   return scene && currentParagraph ? (
     <div class="flex flex-wrap justify-end w-32 gap-2 p-2">
@@ -263,6 +294,9 @@ export const StoryParagraphButtons = (props: {
               }}
             >
               Finalized
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={convertPerspective}>
+              Convert to First Person
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setTranslationModalOpen(true)}>
               Translation

@@ -47,6 +47,9 @@ const StoryCard: React.FC<StoryCardProps> = ({
       style={{ "--color": color, "--textColor": textColor }}
     >
       <div className={styles.card}>
+        <div className={styles.cardGlow}>
+          <div className={styles.cardGlowInner} />
+        </div>
         <div className={styles.cardLeft} />
         <div
           className={classnames(
@@ -65,12 +68,15 @@ const StoryCard: React.FC<StoryCardProps> = ({
               {name}
             </p>
           )}
+          <div className="absolute bottom-0 right-6 w-8 h-8 text-lg text-gray-500">
+            {isCompleted ? " ✅" : " 🔥"}
+          </div>
           {royalRoadId && (
             <a
               href={`https://www.royalroad.com/fiction/${royalRoadId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="absolute bottom-0 right-0 w-16 h-16 text-xs text-gray-500"
+              className="absolute bottom-0 right-0 w-8 h-8 text-xs text-gray-500"
             >
               <img src="/rr-192x192.png" alt="External Link" />
             </a>

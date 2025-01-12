@@ -46,11 +46,16 @@ export const Paragraph = (props: {
     const scene = scenesState.scenes[props.sceneId];
     if (!scene) return;
 
-    const paragraphIndex = scene.paragraphs.findIndex(p => p.id === props.paragraph.id);
-    
+    const paragraphIndex = scene.paragraphs.findIndex(
+      (p) => p.id === props.paragraph.id,
+    );
+
     // Get context from surrounding paragraphs
     const previousParagraphs = scene.paragraphs.slice(0, paragraphIndex + 1);
-    const nextParagraphs = scene.paragraphs.slice(paragraphIndex + 1, paragraphIndex + 4);
+    const nextParagraphs = scene.paragraphs.slice(
+      paragraphIndex + 1,
+      paragraphIndex + 4,
+    );
 
     // Build character and location context
     const characterLines: string[] = [];
@@ -84,22 +89,29 @@ export const Paragraph = (props: {
     const locationLines: string[] = [];
     if (scene?.locationId) {
       locationLines.push(
-        `<current_location>${locationsState.locations[scene.locationId].description}</current_location>`
+        `<current_location>${locationsState.locations[scene.locationId].description}</current_location>`,
       );
     }
 
     // Get chapter context
     const [bookNode, arcNode, chapterNode] = findPathToNode(props.sceneId);
-    const previousChapter = chapterNode?.children?.[0]?.id === scene.id
-      ? arcNode?.children?.[arcNode.children.findIndex(c => c.id === chapterNode.id) - 1]
-      : null;
+    const previousChapter =
+      chapterNode?.children?.[0]?.id === scene.id
+        ? arcNode?.children?.[
+            arcNode.children.findIndex((c) => c.id === chapterNode.id) - 1
+          ]
+        : null;
 
     const chapterContext = [
       `<chapter_info>`,
       `<current_chapter>${chapterNode.name}</current_chapter>`,
-      previousChapter ? `<previous_chapter>${previousChapter.name}</previous_chapter>` : '',
+      previousChapter
+        ? `<previous_chapter>${previousChapter.name}</previous_chapter>`
+        : "",
       `</chapter_info>`,
-    ].filter(Boolean).join('\n');
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     const sceneContext = {
       text: [
@@ -119,34 +131,46 @@ export const Paragraph = (props: {
         {
           text: [
             "<previous_content>",
-            previousParagraphs.map(p => 
-              typeof p.text === "string" ? p.text : contentSchemaToText(p.text)
-            ).join("\n\n"),
+            previousParagraphs
+              .map((p) =>
+                typeof p.text === "string"
+                  ? p.text
+                  : contentSchemaToText(p.text),
+              )
+              .join("\n\n"),
             "</previous_content>",
             "<next_content>",
-            nextParagraphs.map(p => 
-              typeof p.text === "string" ? p.text : contentSchemaToText(p.text)
-            ).join("\n\n"),
-            "</next_content>"
+            nextParagraphs
+              .map((p) =>
+                typeof p.text === "string"
+                  ? p.text
+                  : contentSchemaToText(p.text),
+              )
+              .join("\n\n"),
+            "</next_content>",
           ].join("\n"),
-          canCache: false
+          canCache: false,
         },
         {
           text: `<instructions>Write content that bridges these sections with the following happening: ${generateBetweenText()}</instructions>`,
-          canCache: false
-        }
+          canCache: false,
+        },
       ]);
 
       const paragraphs = result.split("\n\n");
       let afterId = props.paragraph.id;
       for (const paragraph of paragraphs) {
         const newId = shortUUID.generate();
-        createSceneParagraph(props.sceneId, {
-          id: newId,
-          text: paragraph,
-          state: "ai",
-          comments: [],
-        }, afterId);
+        createSceneParagraph(
+          props.sceneId,
+          {
+            id: newId,
+            text: paragraph,
+            state: "ai",
+            comments: [],
+          },
+          afterId,
+        );
         afterId = newId;
       }
       setGenerateBetweenOpen(false);
@@ -302,13 +326,18 @@ export const Paragraph = (props: {
                   type="button"
                   class="hover:text-green-500"
                   onClick={() => {
-                    updateSceneParagraphData(props.sceneId, props.paragraph.id, {
-                      text: props.paragraph.extra,
-                      extra: "",
-                    });
-                    if (props.paragraph.extra) {
-                      updateEditorContent(props.paragraph.id, props.paragraph.extra);
+                    const newContent = props.paragraph.extra;
+                    if (newContent) {
+                      updateEditorContent(props.paragraph.id, newContent);
                     }
+                    updateSceneParagraphData(
+                      props.sceneId,
+                      props.paragraph.id,
+                      {
+                        text: newContent,
+                        extra: "",
+                      },
+                    );
                   }}
                 >
                   <AiOutlineCheck />
@@ -317,9 +346,13 @@ export const Paragraph = (props: {
                   type="button"
                   class="hover:text-red-500"
                   onClick={() => {
-                    updateSceneParagraphData(props.sceneId, props.paragraph.id, {
-                      extra: "",
-                    });
+                    updateSceneParagraphData(
+                      props.sceneId,
+                      props.paragraph.id,
+                      {
+                        extra: "",
+                      },
+                    );
                   }}
                 >
                   <AiOutlineDelete />
@@ -341,7 +374,10 @@ export const Paragraph = (props: {
         borderColor={statusColor[props.paragraph.state] ?? undefined}
         selected={currentScene()?.selectedParagraph === props.paragraph.id}
         main={
-          <ParagraphDetails sceneId={props.sceneId} paragraph={props.paragraph} />
+          <ParagraphDetails
+            sceneId={props.sceneId}
+            paragraph={props.paragraph}
+          />
         }
       />
 
@@ -355,7 +391,9 @@ export const Paragraph = (props: {
               class="textarea textarea-bordered w-full"
               rows={5}
               value={generateBetweenText()}
-              onChange={(e: { currentTarget: HTMLTextAreaElement }) => setGenerateBetweenText(e.currentTarget.value)}
+              onChange={(e: { currentTarget: HTMLTextAreaElement }) =>
+                setGenerateBetweenText(e.currentTarget.value)
+              }
               placeholder="Describe what should happen in this section..."
             />
             <div class="modal-action">
@@ -365,7 +403,11 @@ export const Paragraph = (props: {
                 onClick={generateBetween}
                 disabled={isGenerating() || !generateBetweenText().trim()}
               >
-                {isGenerating() ? <span class="loading loading-spinner" /> : "Generate"}
+                {isGenerating() ? (
+                  <span class="loading loading-spinner" />
+                ) : (
+                  "Generate"
+                )}
               </button>
               <button
                 type="button"

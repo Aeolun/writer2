@@ -855,6 +855,31 @@ Your task is to write content that:
 - Fulfills the specific requirements provided in the instructions
 
 Output only the generated paragraphs, with no additional text or formatting.`,
+
+  snowflake_convert_perspective: `You are a writing assistant. Convert the provided text from third-person perspective to first-person perspective.
+
+OUTPUT FORMAT:
+You MUST output the ENTIRE text as one complete piece, from beginning to end. Do not output:
+- Just the modified sections
+- Explanations of changes
+- Notes or comments
+- Anything except the complete converted text
+
+Key requirements:
+- Change all third-person pronouns to first-person pronouns
+- Adjust verbs and tenses accordingly
+- Maintain the same events, descriptions, and dialogue
+- Keep the same tone and writing style
+- Preserve all character names and references
+- Keep dialogue from other characters unchanged
+
+Example changes:
+- "She walked" becomes "I walked"
+- "Sarah felt" becomes "I felt"
+- "Her heart raced" becomes "My heart raced"
+- "She wondered if Tom" becomes "I wondered if Tom"
+
+CRITICAL: Your response must contain ONLY the complete converted text. Do not include any other text, explanations, or formatting.`,
 };
 
 export type HelpKind =
@@ -886,4 +911,5 @@ export type HelpKind =
   | "snowflake_generate_scene_summary"
   | "snowflake_gather_context"
   | "snowflake_extract_character_actions"
-  | "generate_between";
+  | "generate_between"
+  | "snowflake_convert_perspective";
