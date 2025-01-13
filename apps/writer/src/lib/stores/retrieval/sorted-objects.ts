@@ -104,6 +104,8 @@ export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
 
   // Use the structure from treeState
   for (const bookNode of treeState.structure) {
+    if (bookNode.nodeType !== "story") continue;
+    
     if (bookNode.id === rootId || rootId === undefined) {
       currentlySelected++;
     }
@@ -127,6 +129,8 @@ export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
       }
     }
     for (const arcNode of bookNode.children ?? []) {
+      if (arcNode.nodeType !== "story") continue;
+
       if (
         arcNode.id === rootId ||
         rootId === undefined ||
@@ -136,6 +140,8 @@ export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
       }
 
       for (const chapterNode of arcNode.children ?? []) {
+        if (chapterNode.nodeType !== "story") continue;
+
         const chapter = chaptersState.chapters[chapterNode.id];
         if (
           chapterNode.id !== rootId &&
@@ -165,7 +171,7 @@ export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
           index++
         ) {
           const scene = chapterNode.children?.[index];
-          if (!scene) continue;
+          if (!scene || scene.nodeType !== "story") continue;
 
           if (
             scene.id === rootId ||

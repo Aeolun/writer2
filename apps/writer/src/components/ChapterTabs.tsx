@@ -12,6 +12,8 @@ import { settingsState } from "../lib/stores/settings";
 import { storyState } from "../lib/stores/story";
 import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
 import { FormField } from "./styled/FormField";
+import { Show } from "solid-js";
+import { NodeTypeButtons } from "./NodeTypeButtons";
 
 export const ChapterTabs = () => {
   const [selectedTab, setSelectedTab] = createSignal("overview");
@@ -113,6 +115,9 @@ export const ChapterTabs = () => {
                   This is the date the chapter starts in story time.
                 </p>
               </div>
+              <Show when={currentChapter()?.id}>
+                {(id) => <NodeTypeButtons nodeId={id()} />}
+              </Show>
               {currentChapter()?.extra ? (
                 <FormField label="Extra">
                   <textarea

@@ -5,6 +5,7 @@ import { charactersState } from "../stores/characters.ts";
 import { locationsState } from "../stores/locations.ts";
 import { storyState } from "../stores/story.ts";
 import { contentSchemaToText } from "../persistence/content-schema-to-html.ts";
+import { findNode } from "../stores/tree.ts";
 
 const addCache = new Set<string>();
 
@@ -49,6 +50,10 @@ export const loadStoryToEmbeddings = async () => {
   const storyId = storyState.story?.id;
 
   for (const [sceneId, scene] of Object.entries(scenes)) {
+    // Skip if scene node is marked as non-story
+    const sceneNode = findNode(sceneId);
+    if (sceneNode?.nodeType !== "story") continue;
+
     for (const paragraph of scene.paragraphs) {
       const paragraphText =
         typeof paragraph.text === "string"
@@ -163,6 +168,10 @@ export const loadStoryToEmbeddings = async () => {
     // Significant actions
     if (character.significantActions) {
       for (const action of character.significantActions) {
+        // Skip if the scene this action is from is marked as non-story
+        const actionSceneNode = findNode(action.sceneId);
+        if (actionSceneNode?.nodeType !== "story") continue;
+
         const actionId = `character/${characterId}/action/${action.timestamp}`;
         if (!addCache.has(actionId)) {
           documents.push({
@@ -206,12 +215,12 @@ export const loadStoryToEmbeddings = async () => {
 
 export async function removeEntityIdsFromEmbeddings(entityIdPattern: RegExp) {
   const removableIds: string[] = [];
-  addCache.forEach(value => {
+  for (const value of addCache) {
     if (value.match(entityIdPattern)) {
       removableIds.push(value);
     }
     addCache.delete(value);
-  })
+  }
 
   await removeDocuments(removableIds);
 }

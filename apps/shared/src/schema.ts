@@ -9,6 +9,7 @@ const plotPointSchema = entitySchema.extend({
   id: z.string(),
   summary: z.string(),
   title: z.string(),
+  state: z.enum(["introduced", "unresolved", "resolved"]).default("unresolved"),
 });
 
 export type PlotPoint = z.infer<typeof plotPointSchema>;
@@ -93,7 +94,7 @@ export type InventoryAction = z.infer<typeof inventoryActionSchema>;
 
 const plotpointActionSchema = z.object({
   plot_point_id: z.string(),
-  action: z.string(),
+  action: z.enum(["introduce", "mentioned", "partially resolved", "resolved"]),
 });
 
 export type PlotpointAction = z.infer<typeof plotpointActionSchema>;
@@ -190,6 +191,7 @@ const baseNodeSchema = z.object({
   name: z.string(),
   type: z.enum(["book", "arc", "chapter", "scene"]),
   isOpen: z.boolean(),
+  nodeType: z.enum(["story", "non-story", "context"]).default("story"),
   oneliner: z.string().optional(),
   summaries: z
     .array(

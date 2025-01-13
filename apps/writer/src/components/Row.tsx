@@ -8,9 +8,11 @@ export const Row = (props: {
   borderColor?: string;
   onClick?: () => void;
   onMouseDown?: () => void;
+  id?: string;
 }) => {
   return (
     <div
+      id={props.id}
       onClick={props.onClick}
       onMouseDown={props.onMouseDown}
       class={`relative flex flex-row justify-between w-full max-w-6xl ${

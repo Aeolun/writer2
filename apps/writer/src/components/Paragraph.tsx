@@ -12,18 +12,18 @@ import {
 } from "../lib/stores/scenes.ts";
 import { AutoResizeTextarea } from "./AutoResizeTextarea";
 import { Row } from "./Row";
-import { StoryParagraphButtons } from "./StoryParagraphButtons";
 import { ParagraphDetails } from "./ParagraphDetails.tsx";
 import { findPathToNode } from "../lib/stores/tree.ts";
 import { Editor } from "./editor/Editor.tsx";
 import shortUUID from "short-uuid";
 import { FiArrowDown, FiArrowUp, FiPlus, FiTrash } from "solid-icons/fi";
 import { updateEditorContent } from "../lib/stores/editor.ts";
-import { createSignal } from "solid-js";
+import { createSignal, For } from "solid-js";
 import { useAi } from "../lib/use-ai";
 import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
 import { charactersState } from "../lib/stores/characters.ts";
 import { locationsState } from "../lib/stores/locations.ts";
+import { ParagraphActionButtons } from "./ParagraphActionButtons";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "border-yellow-500",
@@ -103,12 +103,12 @@ export const Paragraph = (props: {
         : null;
 
     const chapterContext = [
-      `<chapter_info>`,
+      '<chapter_info>',
       `<current_chapter>${chapterNode.name}</current_chapter>`,
       previousChapter
         ? `<previous_chapter>${previousChapter.name}</previous_chapter>`
         : "",
-      `</chapter_info>`,
+      '</chapter_info>',
     ]
       .filter(Boolean)
       .join("\n");
@@ -185,9 +185,9 @@ export const Paragraph = (props: {
       {props.identifyLocation ? (
         <div class="px-4 w-full breadcrumbs">
           <ul>
-            {findPathToNode(props.sceneId).map((n) => (
-              <li>{n.name}</li>
-            ))}
+            <For each={findPathToNode(props.sceneId)}>
+              {(node) => <li>{node.name}</li>}
+            </For>
             <li>
               Paragraph{" "}
               {scenesState.scenes[props.sceneId].paragraphs.findIndex(
@@ -198,6 +198,7 @@ export const Paragraph = (props: {
         </div>
       ) : null}
       <Row
+        id={`paragraph-${props.paragraph.id}`}
         selected={currentScene()?.selectedParagraph === props.paragraph.id}
         onMouseDown={() => {
           updateSceneSelectedParagraph(props.sceneId, props.paragraph.id);
@@ -206,85 +207,15 @@ export const Paragraph = (props: {
         main={
           <>
             {currentScene()?.selectedParagraph === props.paragraph.id ? (
-              <>
-                <div class="absolute top-[-0.5em] right-0">
-                  <button
-                    type="button"
-                    class="btn btn-xs py-0 px-1"
-                    onClick={() => {
-                      moveParagraphUp(props.sceneId, props.paragraph.id);
-                    }}
-                  >
-                    <FiArrowUp />
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-xs py-0 px-1"
-                    onClick={() => {
-                      createSceneParagraph(
-                        props.sceneId,
-                        {
-                          id: shortUUID.generate(),
-                          text: "",
-                          state: "draft",
-                          comments: [],
-                        },
-                        props.paragraph.id,
-                      );
-                    }}
-                  >
-                    <FiPlus />
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-xs py-0 px-1"
-                    onClick={() => {
-                      removeSceneParagraph(props.sceneId, props.paragraph.id);
-                    }}
-                  >
-                    <FiTrash />
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-xs py-0 px-1"
-                    onClick={() => setGenerateBetweenOpen(true)}
-                    title="Generate content after this paragraph"
-                  >
-                    🪄
-                  </button>
-                  AI {props.paragraph.aiCharacters} H{" "}
-                  {props.paragraph.humanCharacters}
-                </div>
-                <div class="absolute bottom-[-0.5em] right-0 z-10">
-                  <button
-                    type="button"
-                    class="btn btn-xs py-0 px-1"
-                    onClick={() => {
-                      moveParagraphDown(props.sceneId, props.paragraph.id);
-                    }}
-                  >
-                    <FiArrowDown />
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-xs py-0 px-1"
-                    onClick={() => {
-                      createSceneParagraph(
-                        props.sceneId,
-                        {
-                          id: shortUUID.generate(),
-                          text: "",
-                          state: "draft",
-                          comments: [],
-                        },
-                        props.paragraph.id,
-                      );
-                    }}
-                  >
-                    <FiPlus />
-                  </button>
-                </div>
-              </>
+              <ParagraphActionButtons
+                sceneId={props.sceneId}
+                paragraphId={props.paragraph.id}
+                scene={currentScene()}
+                text={props.paragraph.text}
+                onGenerateBetween={() => setGenerateBetweenOpen(true)}
+                aiCharacters={props.paragraph.aiCharacters?.toString()}
+                humanCharacters={props.paragraph.humanCharacters?.toString()}
+              />
             ) : null}
             <Editor
               paragraphId={props.paragraph.id}
@@ -302,16 +233,7 @@ export const Paragraph = (props: {
             ) : null}
           </>
         }
-        buttons={
-          props.paragraph.id === currentScene()?.selectedParagraph ? (
-            <StoryParagraphButtons
-              paragraphId={props.paragraph.id}
-              scene={currentScene()}
-            />
-          ) : (
-            <div class="min-h-18 w-32" />
-          )
-        }
+        buttons={null}
         extra={
           props.paragraph.extraLoading ? (
             <div class="flex flex-col p-2 gap-2 items-center justify-start h-full">

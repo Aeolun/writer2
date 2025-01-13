@@ -11,6 +11,7 @@ import {
 } from "../lib/stores/books";
 import { findNode, findPathToNode } from "../lib/stores/tree";
 import { FileSelector } from "./FileSelector";
+import { NodeTypeButtons } from "./NodeTypeButtons";
 
 export const BookTabs = () => {
   return (
@@ -128,6 +129,9 @@ export const BookTabs = () => {
               value={currentBook()?.start_date ?? ""}
             />
           </FormField>
+          <Show when={currentBook()?.id}>
+            {(id) => <NodeTypeButtons nodeId={id()} />}
+          </Show>
           <FormField label="AI Response">
             <textarea
               class="textarea textarea-bordered mt-2"

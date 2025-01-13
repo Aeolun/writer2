@@ -7,7 +7,6 @@ import { lazy } from "solid-js";
 const GlobalSettings = lazy(() => import("./pages/global-settings.tsx"));
 const Characters = lazy(() => import("./pages/characters.tsx"));
 const Files = lazy(() => import("./pages/files.tsx"));
-const Language = lazy(() => import("./pages/language.tsx"));
 const Locations = lazy(() => import("./pages/locations.tsx"));
 const NewStory = lazy(() => import("./pages/new-story.tsx"));
 const OpenStory = lazy(() => import("./pages/open-story.tsx"));
@@ -24,7 +23,6 @@ function WriterRouter() {
       <Route path={"/"} component={OpenStory} />
       <Route path={"/write"} component={Home} />
       <Route path={"/characters"} component={Characters} />
-      <Route path={"/language"} component={Language} />
       <Route path={"/locations"} component={Locations} />
       <Route path={"/plot-points"} component={PlotPoints} />
       <Route path={"/preview"} component={Preview} />

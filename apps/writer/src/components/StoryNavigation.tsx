@@ -3,6 +3,7 @@ import {
   setTreeState,
   treeState,
   updateNode,
+  isEffectivelyNonStory,
 } from "../lib/stores/tree";
 import type { Node } from "@writer/shared";
 import {
@@ -18,9 +19,17 @@ import { For, Show } from "solid-js";
 import { setSelectedEntity, uiState } from "../lib/stores/ui";
 import { createArc } from "../lib/stores/arcs";
 import { dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME } from "solid-dnd-directive";
+
 const renderNode = (node: Node & { isDndShadowItem?: boolean }) => {
   const chapter = chaptersState.chapters[node.id];
   const scene = scenesState.scenes[node.id];
+  const isNonStory = isEffectivelyNonStory(node.id);
+
+  const getIcon = (baseIcon: string) => {
+    if (node.nodeType === "context") return "📋";
+    if (node.nodeType === "non-story") return "📌";
+    return baseIcon;
+  };
 
   const dndEvent = (e) => {
     console.log(e);
@@ -43,6 +52,7 @@ const renderNode = (node: Node & { isDndShadowItem?: boolean }) => {
           "pl-12": node.type === "chapter",
           "pl-18": node.type === "scene",
           "opacity-50": node.isDndShadowItem === true,
+          "italic text-gray-600": isNonStory,
         }}
         onClick={() => {
           setSelectedEntity(node.type, node.id);
@@ -61,13 +71,13 @@ const renderNode = (node: Node & { isDndShadowItem?: boolean }) => {
         ) : null}
         <span class="font-bold">
           {node.type === "book"
-            ? "📚"
+            ? getIcon("📚")
             : node.type === "arc"
-              ? "🏹"
+              ? getIcon("🏹")
               : node.type === "chapter"
-                ? "📖"
+                ? getIcon("📖")
                 : node.type === "scene"
-                  ? "📝"
+                  ? getIcon("📝")
                   : ""}
         </span>
         <span>{node.name}</span>

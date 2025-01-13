@@ -25,6 +25,7 @@ export interface UIState {
   lastSaveAt?: number;
   stories?: StorySummary[];
   syncing: boolean;
+  plotPointViewMode: "grid" | "table";
   importDialog: {
     running: boolean;
     open: boolean;
@@ -44,6 +45,7 @@ export const uiStateDefault: UIState = {
   showInventory: false,
   saving: false,
   syncing: false,
+  plotPointViewMode: "grid",
   lastGenerationUsage: undefined,
   lastSaveAt: undefined,
   importDialog: {
@@ -112,3 +114,5 @@ export const setImportDialogRunning = (running: boolean) =>
   setUIState("importDialog", "running", running);
 export const setImportDialogComplete = (complete: boolean) =>
   setUIState("importDialog", "completed", complete);
+export const setPlotPointViewMode = (mode: "grid" | "table") =>
+  setUIState("plotPointViewMode", mode);

@@ -12,6 +12,7 @@ import { CharacterSelect } from "./CharacterSelect";
 import { LocationList } from "./snowflake/LocationList";
 import { CharacterList } from "./snowflake/CharacterList";
 import type { Node } from "@writer/shared";
+import { NodeTypeButtons } from "./NodeTypeButtons";
 
 export const ScenePanel = () => {
   const help = (helpKind: "summarize" | "improvements", extra = false) => {
@@ -39,6 +40,7 @@ export const ScenePanel = () => {
       name: scene.title,
       type: "scene",
       isOpen: true,
+      nodeType: findNode(scene.id)?.nodeType ?? "story",
       oneliner: scene.summary
     };
   };
@@ -163,6 +165,9 @@ export const ScenePanel = () => {
           <span class="label-text">Uploaded</span>
         </label>
       </FormField>
+      <Show when={currentScene()?.id}>
+        {(id) => <NodeTypeButtons nodeId={id()} />}
+      </Show>
       <div class="flex gap-2">
         <button
           type="button"

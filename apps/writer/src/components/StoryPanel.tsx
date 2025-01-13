@@ -3,8 +3,6 @@ import { LanguageForm } from "./LanguageForm";
 import { SceneButtons } from "./SceneButtons";
 import { ParagraphsList } from "./ParagraphsList";
 import { GenerateNext } from "./GenerateNext";
-import { InventoryActions } from "./InventoryActions";
-import { PlotpointActions } from "./PlotPointActions";
 import { getItemsAtParagraph } from "../lib/stores/retrieval/get-items-at-paragraph";
 import { setShowInventory, uiState } from "../lib/stores/ui";
 import {
@@ -20,8 +18,35 @@ import { createShortcut } from "@solid-primitives/keyboard";
 import type { SceneParagraph } from "@writer/shared";
 import shortUUID from "short-uuid";
 
+const isElementInViewport = (element: HTMLElement) => {
+  const rect = element.getBoundingClientRect();
+  const parentRect = element.parentElement?.getBoundingClientRect();
+  if (!parentRect) return false;
+  
+  return (
+    rect.top >= parentRect.top &&
+    rect.left >= parentRect.left &&
+    rect.bottom <= parentRect.bottom &&
+    rect.right <= parentRect.right
+  );
+};
+
 export const StoryPanel = () => {
-  const listener = (e) => {
+  // Auto-scroll to selected paragraph when it changes
+  createEffect(() => {
+    const selectedParagraphId = currentScene()?.selectedParagraph;
+    if (selectedParagraphId) {
+      // Small delay to ensure DOM is updated
+      setTimeout(() => {
+        const element = document.getElementById(`paragraph-${selectedParagraphId}`);
+        if (element && !isElementInViewport(element)) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 100);
+    }
+  });
+
+  const listener = (e: KeyboardEvent) => {
     // pass
   };
   window.addEventListener("keydown", listener);
@@ -92,8 +117,6 @@ export const StoryPanel = () => {
       </div>
       <div class="flex flex-col gap-2 py-2 px-4 bg-gray-300">
         <SceneButtons />
-        <InventoryActions />
-        <PlotpointActions />
       </div>
     </div>
   ) : null;

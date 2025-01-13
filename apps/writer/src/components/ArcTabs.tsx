@@ -1,7 +1,9 @@
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { updateArc } from "../lib/stores/arcs";
 import { currentArc } from "../lib/stores/retrieval/current-arc";
 import { FormField } from "./styled/FormField";
+import { findNode, updateNode } from "../lib/stores/tree";
+import { NodeTypeButtons } from "./NodeTypeButtons";
 
 export const ArcTabs = () => {
   const [openTab, setOpenTab] = createSignal("overview");
@@ -60,6 +62,9 @@ export const ArcTabs = () => {
               value={currentArc()?.start_date}
             />
           </FormField>
+          <Show when={currentArc()?.id}>
+            {(id) => <NodeTypeButtons nodeId={id()} />}
+          </Show>
           {currentArc()?.extra && (
             <FormField label="Extra">
               <textarea
