@@ -84,6 +84,8 @@ const retrieve = async () => {
     ? JSON.parse(fs.readFileSync("royalroad.json", "utf-8"))
     : {};
 
+  await clearCacheCategory("list");
+
   const result: Record<string, object | string> = existingResult;
 
   label: for (let i = 1; i < pages; i++) {
@@ -163,13 +165,18 @@ const retrieve = async () => {
           tags.push(tagNode.textContent?.trim() ?? "");
         }
 
-        let cover = selectString(".//img[@class='img-responsive']/@src", node);
+        let cover = selectString(".//img[@data-type='cover']/@src", bookDoc);
         let color = "#000000";
         let textColor = "#FFFFFF";
         if (!url) {
           continue;
         }
         const fictionSlug = url.replace("/fiction/", "").replaceAll("/", "-");
+        console.log({
+          cover,
+          url,
+          nocover: cover?.includes("nocover"),
+        });
         if (cover && url && !cover.includes("nocover")) {
           let coverData: Buffer;
           try {
@@ -228,7 +235,6 @@ const retrieve = async () => {
         for (const scriptTag of scriptTags) {
           const scriptContent = scriptTag.textContent;
           if (scriptContent?.includes("window.fictionCover =")) {
-            //console.log("scriptContent", scriptContent);
             const [before, after] = scriptContent.split("window.chapters = ");
 
             const chapterString = after.split(/;\s+window.volumes/);
