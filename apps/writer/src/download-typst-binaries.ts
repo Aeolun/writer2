@@ -87,16 +87,47 @@ const extractFile = async (filePath: string, destDir: string) => {
     outputPath: string,
     finalName: string,
   ) => {
+    console.log("untarring", {
+      inputPath,
+      outputPath,
+      finalName,
+    });
+    const finalPath = path.join(outputPath, finalName);
+    const tempExtractPath = path.join(outputPath, "tar-temp");
+    
+    // Clean up any existing paths
+    if (fs.existsSync(finalPath)) {
+      fs.rmSync(finalPath, { recursive: true, force: true });
+    }
+    if (fs.existsSync(tempExtractPath)) {
+      fs.rmSync(tempExtractPath, { recursive: true, force: true });
+    }
+    
+    // Create temp directory for tar extraction
+    fs.mkdirSync(tempExtractPath, { recursive: true });
+    
+    // Extract tar file
     await tar.x({
       file: inputPath,
-      cwd: outputPath,
-      filter: (path) => path.endsWith("typst"),
-      onentry: (entry) => {
-        if (entry.path.endsWith("typst")) {
-          entry.pipe(fs.createWriteStream(path.join(outputPath, finalName)));
-        }
-      },
+      cwd: tempExtractPath,
+      filter: (path) => path.endsWith("typst")
     });
+    
+    // Find and move the typst binary
+    const files = fs.readdirSync(tempExtractPath, { recursive: true }) as string[];
+    console.log("files", files);
+    const typstFile = files.find(f => f.endsWith("typst"));
+    
+    if (typstFile) {
+      const sourcePath = path.join(tempExtractPath, typstFile);
+      console.log("sourcePath", sourcePath, "to", finalPath);
+      fs.renameSync(sourcePath, finalPath);
+    } else {
+      console.error("No typst binary found in extracted files");
+    }
+    
+    // Clean up temp directory
+    //fs.rmSync(tempExtractPath, { recursive: true, force: true });
   };
 
   const tempDir = path.join(destDir, "temp");
@@ -104,15 +135,34 @@ const extractFile = async (filePath: string, destDir: string) => {
 
   console.log("unzipping to", tempDir);
   await unzipFile(filePath, tempDir);
-  console.log("unzipped");
+  console.log("decompressing");
   if (fileName.includes(".tar")) {
     const tarFilePath = path.join(tempDir, baseName);
     await untarFile(tarFilePath, destDir, extensionlessFile);
   } else {
-    const extractedFilePath = path.join(tempDir, "typst");
-    const finalFilePath = path.join(destDir, fileName);
+    const fileWithTypst = fs.readdirSync(path.join(tempDir, extensionlessFile)).find(f => f.startsWith("typst"));
+    console.log("fileWithTypst", fileWithTypst);
+    if (!fileWithTypst) {
+      throw new Error("No typst binary found in extracted files");
+    }
+    console.log(' extensionlessFile3', extensionlessFile)
+    const fileExtension = path.extname(fileWithTypst);
+    const extractedFilePath = path.join(tempDir, extensionlessFile, fileWithTypst);
+    const finalFilePath = path.join(destDir, `${extensionlessFile}${fileExtension}`);
+    console.log({
+      extractedFilePath,
+      finalFilePath,
+      tempDir,
+      extensionlessFile,
+      fileName,
+      fileWithTypst,
+    })
+    console.log("renaming", extractedFilePath, "to", finalFilePath);
     if (fs.existsSync(extractedFilePath)) {
+      
       fs.renameSync(extractedFilePath, finalFilePath);
+    } else {
+      console.error("File not found", extractedFilePath);
     }
   }
 
@@ -124,21 +174,34 @@ const downloadReleaseAssets = async (release: Release) => {
   const assets = release.assets;
 
   for (const asset of assets) {
-    const assetPath = path.join(DOWNLOAD_DIR, asset.name);
-    const base = path.basename(asset.name);
-    const baseWithoutExtension = base.slice(0, base.indexOf("."));
+    try {
+      const assetPath = path.join(DOWNLOAD_DIR, asset.name);
+      const base = path.basename(asset.name);
+      const baseWithoutExtension = base.slice(0, base.indexOf("."));
 
-    const extractPath = path.join(EXTRACT_DIR, baseWithoutExtension);
+      const extractPath = path.join(EXTRACT_DIR, baseWithoutExtension);
 
-    if (!fs.existsSync(assetPath)) {
-      console.log(`Downloading ${asset.name}...`);
-      await downloadFile(asset.browser_download_url, assetPath);
-    } else {
-      console.log(`${asset.name} already exists, skipping download.`);
+      if (!fs.existsSync(assetPath)) {
+        console.log(`Downloading ${asset.name}...`);
+        await downloadFile(asset.browser_download_url, assetPath);
+      } else {
+        console.log(`${asset.name} already exists, skipping download.`);
+      }
+
+      console.log(`Extracting ${asset.name}...`);
+      await extractFile(assetPath, extractPath);
+    } catch (error) {
+      console.error(`Error extracting ${asset.name}:`, error);
     }
+  }
 
-    console.log(`Extracting ${asset.name}...`);
-    await extractFile(assetPath, extractPath);
+  // move typst binary to the right place, read all files in the directory and move the typst binary to the right place
+  const files = fs.readdirSync(EXTRACT_DIR);
+  const typstFile = files.find(f => f.startsWith("typst"));
+  if (typstFile) {
+    const sourcePath = path.join(EXTRACT_DIR, typstFile, typstFile);
+    console.log("sourcePath", sourcePath, 'to ', path.join("src-tauri", 'binaries', typstFile));
+    fs.renameSync(sourcePath, path.join("src-tauri", 'binaries', typstFile));
   }
 };
 

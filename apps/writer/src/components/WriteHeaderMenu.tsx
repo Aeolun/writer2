@@ -88,7 +88,7 @@ export const WriteHeaderMenu = () => {
             </button>
           </A>
           <A href={"/snowflake"}>
-            <button class="btn btn-ghost btn-xs" type="button">
+            <button class="btn btn-ghost px-2" type="button">
               Snowflake
             </button>
           </A>
