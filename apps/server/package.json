@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "tsc": "tsc --noEmit",
-    "start": "tsx src/index.ts",
+    "start": "prisma migrate deploy && ptsx src/index.ts",
     "dev": "tsx --watch src/index.ts",
     "insert": "tsx src/insert.ts",
     "migrate:dev": "prisma migrate dev",

@@ -25,4 +25,4 @@ RUN npm install -g pnpm
 COPY --from=builder /app/standalone .
 RUN pnpm exec playwright install
 
-CMD ["pnpm", "migrate:deploy", "&&", "pnpm", "start"]
+CMD ["pnpm", "start"]
