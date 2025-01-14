@@ -1,8 +1,8 @@
-import { publicProcedure } from "../trpc";
+import { publicProcedure } from "../trpc.js";
 import z from "zod";
 import { randomBytes, scrypt } from "node:crypto";
 import { promisify } from "node:util";
-import { prisma } from "../prisma";
+import { prisma } from "../prisma.js";
 
 const scryptAsync = promisify(scrypt);
 

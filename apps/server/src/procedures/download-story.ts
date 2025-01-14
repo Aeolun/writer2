@@ -1,4 +1,4 @@
-import { protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../trpc.js";
 import z from "zod";
 
 export const downloadStory = protectedProcedure

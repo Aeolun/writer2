@@ -20,6 +20,7 @@
   overflow: visible;
   position: absolute;
   z-index: 0;
+  transform: translateZ(calc(var(--thickness, 30px) * -1));
   left: -3px;
   top: -3px;
   right: -3px;
@@ -83,7 +84,7 @@
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.6s;
-  transform: rotateY(5deg);
+  transform: rotateY(7deg);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
 }
 
@@ -92,7 +93,6 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
 }
 .card-container:hover .card-glow {
-  transform: translateZ(-30px);
   opacity: 0;
 }
 
@@ -110,7 +110,7 @@
 
 .card-left {
   position: absolute;
-  width: 30px;
+  width: var(--thickness, 30px);
   height: 100%;
   backface-visibility: hidden;
   display: flex;
@@ -126,7 +126,8 @@
       rgba(0, 0, 6, 0) 98%,
       rgba(0, 0, 0, 1) 100%
     ), var(--color, #666);
-  transform: rotateY(-90deg) translateX(-15px) translateZ(15px);
+  transform: rotateY(-90deg) translateX(calc(var(--half-thickness, -15px) * -1))
+    translateZ(var(--half-thickness, 15px));
 }
 
 .card-front {
@@ -148,7 +149,7 @@
 }
 
 .card-back {
-  transform: rotateY(180deg) translateZ(30px);
+  transform: rotateY(180deg) translateZ(var(--thickness, 30px));
   background: var(--color, #fff);
   color: var(--textColor, #000);
 }

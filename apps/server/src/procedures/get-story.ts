@@ -1,7 +1,7 @@
-import { protectedProcedure, publicProcedure } from "../trpc";
-import { prisma } from "../prisma";
+import { protectedProcedure, publicProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
 import { z } from "zod";
-import { getStoryAssetUrl } from "../util/get-asset-url";
+import { getStoryAssetUrl } from "../util/get-asset-url.js";
 
 export const getStory = publicProcedure
   .input(z.object({ storyId: z.string() }))

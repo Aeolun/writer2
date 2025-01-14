@@ -1,6 +1,6 @@
 import { TRPCError, initTRPC } from "@trpc/server";
-import { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
-import { prisma } from "./prisma";
+import type { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
+import { prisma } from "./prisma.js";
 import { AccessKey } from "@prisma/client";
 
 export const createContext = (

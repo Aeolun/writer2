@@ -1,5 +1,5 @@
-import { publicProcedure } from "../trpc";
-import { prisma } from "../prisma";
+import { publicProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
 import { z } from "zod";
 
 export const getChapter = publicProcedure

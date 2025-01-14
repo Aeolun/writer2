@@ -1,5 +1,5 @@
-import { protectedProcedure } from "../trpc";
-import { prisma } from "../prisma";
+import { protectedProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
 import { z } from "zod";
 
 export const checkBookshelfState = protectedProcedure
@@ -25,10 +25,13 @@ export const checkBookshelfState = protectedProcedure
 
     // Map the results to an object indicating presence of each kind
     const kinds = ["FAVORITE", "FOLLOW", "READ_LATER"];
-    const result = kinds.reduce((acc, kind) => {
-      acc[kind] = shelfEntries.some((entry) => entry.kind === kind);
-      return acc;
-    }, {} as Record<string, boolean>);
+    const result = kinds.reduce(
+      (acc, kind) => {
+        acc[kind] = shelfEntries.some((entry) => entry.kind === kind);
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    );
 
     return result;
   });

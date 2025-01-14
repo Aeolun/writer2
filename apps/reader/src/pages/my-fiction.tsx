@@ -33,13 +33,17 @@ export const MyFictionPage = () => {
             id={story.id}
             coverArtAsset={story.coverArtAsset}
             name={story.name}
-            ownerName={story.ownerName ?? ""}
+            ownerName={story.owner.name ?? ""}
             pages={story.pages ?? 0}
             summary={story.summary ?? ""}
-            color={story.color ?? ""}
+            color={story.coverColor ?? ""}
             textColor={story.coverTextColor ?? ""}
+            fontFamily={story.coverFontFamily ?? ""}
             royalRoadId={story.royalRoadId ?? undefined}
-            canAddToLibrary={user ? true : false}
+            canAddToLibrary={!!user}
+            status={story.status}
+            lastChapterReleasedAt={story.lastChapterReleasedAt}
+            wordsPerWeek={story.wordsPerWeek}
           />
         ))}
       </div>

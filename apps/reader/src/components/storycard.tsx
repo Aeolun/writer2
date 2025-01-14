@@ -2,9 +2,18 @@ import React, { useState } from "react";
 import styles from "./storycard.module.css";
 import classnames from "classnames";
 import { useLocation } from "wouter";
-import { openAddToBookshelf, setIsOpen } from "../slices/bookshelf-slice";
+import { openAddToBookshelf } from "../slices/bookshelf-slice";
 import { useAppDispatch } from "../store";
-import { Check } from "iconoir-react";
+import { Check, Clock } from "iconoir-react";
+import type { StoryStatus } from "@writer/server";
+
+import TimeAgo from "javascript-time-ago";
+
+// English.
+import en from "javascript-time-ago/locale/en";
+
+TimeAgo.addLocale(en);
+const timeAgo = new TimeAgo("en-US");
 
 interface StoryCardProps {
   id: string;
@@ -15,8 +24,11 @@ interface StoryCardProps {
   summary: string; // Add summary to props
   color: string;
   textColor: string;
+  spellingLevel: number;
+  fontFamily: string;
+  lastChapterReleasedAt: string;
   royalRoadId?: number;
-  isCompleted?: boolean;
+  status?: StoryStatus;
   wordsPerWeek?: number;
   canAddToLibrary?: boolean;
 }
@@ -29,8 +41,11 @@ const StoryCard: React.FC<StoryCardProps> = ({
   color,
   textColor,
   pages,
+  fontFamily,
+  lastChapterReleasedAt,
+  spellingLevel,
   royalRoadId,
-  isCompleted,
+  status,
   wordsPerWeek,
   canAddToLibrary,
 }: StoryCardProps) => {
@@ -42,20 +57,24 @@ const StoryCard: React.FC<StoryCardProps> = ({
   };
 
   return (
-    <div
-      className={styles.cardContainer}
-      style={{ "--color": color, "--textColor": textColor }}
-    >
-      <div className={styles.card}>
+    <div className={styles.cardContainer}>
+      <div
+        className={styles.card}
+        style={{
+          "--thickness": Math.round(pages / 20) + "px",
+          "--half-thickness": Math.round(pages / 20) / 2 + "px",
+        }}
+      >
         <div className={styles.cardGlow}>
           <div className={styles.cardGlowInner} />
         </div>
-        <div className={styles.cardLeft} />
+        <div className={styles.cardLeft} style={{ backgroundColor: color }} />
         <div
           className={classnames(
             styles.cardFront,
             "bg-slate-100 dark:bg-slate-800 relative",
           )}
+          style={{ backgroundColor: color, color: textColor }}
         >
           {coverArtAsset ? (
             <img
@@ -64,22 +83,14 @@ const StoryCard: React.FC<StoryCardProps> = ({
               className="w-full object-cover"
             />
           ) : (
-            <p className="text-center text-gray-500 self-start mt-8 font-serif">
+            <p
+              className={`text-center text-gray-500 self-start mt-8 px-4 ${
+                name.length > 40 ? "text-md" : "text-xl"
+              } font-bold`}
+              style={{ fontFamily: fontFamily }}
+            >
               {name}
             </p>
-          )}
-          <div className="absolute bottom-0 right-6 w-8 h-8 text-lg text-gray-500">
-            {isCompleted ? " ✅" : " 🔥"}
-          </div>
-          {royalRoadId && (
-            <a
-              href={`https://www.royalroad.com/fiction/${royalRoadId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="absolute bottom-0 right-0 w-8 h-8 text-xs text-gray-500"
-            >
-              <img src="/rr-192x192.png" alt="External Link" />
-            </a>
           )}
         </div>
         <div
@@ -87,6 +98,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
             styles.cardBack,
             "flex flex-col shadow-md p-4 gap-2",
           )}
+          style={{ backgroundColor: color, color: textColor }}
         >
           <h2
             className={`${
@@ -100,7 +112,13 @@ const StoryCard: React.FC<StoryCardProps> = ({
             {name}
           </h2>
           <p className={"text-xs overflow-x-hidden w-full"}>
-            {pages} pages{isCompleted ? " ✅" : " 🔥"} {wordsPerWeek ?? "?"} W/W
+            {pages} pages
+            {status === "COMPLETED"
+              ? " ✅"
+              : status === "HIATUS"
+                ? " ⏸️"
+                : " 🔥"}{" "}
+            {wordsPerWeek ?? "?"} W/W
           </p>
           <div
             className={"text-xs flex-1 overflow-x-hidden w-full"}
@@ -131,6 +149,26 @@ const StoryCard: React.FC<StoryCardProps> = ({
             </a>
           </div>
         </div>
+      </div>
+      <div className="text-lg text-gray-500 mt-4 flex items-center justify-center gap-1">
+        {status === "COMPLETED" ? " ✅" : status === "HIATUS" ? " ⏸️" : " 🔥"}
+        {lastChapterReleasedAt && (
+          <div className="text-gray-700 bg-opacity-70 bg-white rounded-md px-2 py-1 text-sm flex items-center gap-2">
+            <Clock /> {timeAgo.format(new Date(lastChapterReleasedAt))}
+          </div>
+        )}
+        {spellingLevel > 0 && spellingLevel < 3 && <div>🙄</div>}
+
+        {royalRoadId && (
+          <a
+            href={`https://www.royalroad.com/fiction/${royalRoadId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-6 h-6 text-xs text-gray-500"
+          >
+            <img src="/rr-192x192.png" alt="External Link" />
+          </a>
+        )}
       </div>
     </div>
   );

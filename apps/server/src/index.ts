@@ -1,10 +1,9 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
-import { AppRouter, appRouter } from "./router.ts";
-import { createContext } from "./trpc.ts";
-// import OAuth2Server, { Request, Response } from "@node-oauth/oauth2-server";
-// import authModel from "./auth-model.ts";
+import type { AppRouter } from "./router.js";
+import { appRouter } from "./router.js";
+import { createContext } from "./trpc.js";
 
 export type { AppRouter };
 export * from "@prisma/client";
@@ -23,7 +22,7 @@ fastify.register(fastifyTRPCPlugin, {
   trpcOptions: {
     router: appRouter,
     createContext: createContext,
-    onError: (opts) => {
+    onError: (opts: unknown) => {
       console.log(opts);
     },
   },

@@ -1,5 +1,5 @@
-import { protectedProcedure } from "../trpc";
-import { prisma } from "../prisma";
+import { protectedProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
 import { z } from "zod";
 
 export const updateStoryReadStatus = protectedProcedure

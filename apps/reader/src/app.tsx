@@ -20,6 +20,7 @@ import { AdminPage } from "./pages/admin";
 import { MyFictionPage } from "./pages/my-fiction";
 import { UserSettingsPage } from "./pages/settings";
 import store from "./store";
+import { SearchPage } from "./pages/search";
 export const App = () => {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
@@ -56,6 +57,7 @@ export const App = () => {
               <Route path="/admin" component={AdminPage} />
               <Route path="/my-fiction" component={MyFictionPage} />
               <Route path="/story/:storyId" component={StoryPage} />
+              <Route path="/search" component={SearchPage} />
               <Route path="/login" component={LoginPage} />
               <Route path="/settings" component={UserSettingsPage} />
               <Route

@@ -1,7 +1,7 @@
-import { protectedProcedure } from "../trpc";
-import { prisma } from "../prisma";
+import { protectedProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
 import { scrypt, randomBytes } from "node:crypto";
-import { promisify } from "util";
+import { promisify } from "node:util";
 import z from "zod";
 import { TRPCError } from "@trpc/server";
 

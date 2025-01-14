@@ -24,6 +24,7 @@
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
     "iconoir-react": "^7.9.0",
+    "javascript-time-ago": "^2.5.11",
     "pure-rand": "^6.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

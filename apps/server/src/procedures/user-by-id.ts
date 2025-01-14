@@ -1,7 +1,8 @@
-import { publicProcedure } from "../trpc";
+import { publicProcedure } from "../trpc.js";
 import z from "zod";
-import { prisma } from "../prisma";
-import { getStoryAssetUrl } from "../util/get-asset-url";
+import { prisma } from "../prisma.js";
+import { getStoryAssetUrl } from "../util/get-asset-url.js";
+import { storycardFields } from "../lib/storycard-fields.js";
 
 export const userById = publicProcedure
   .input(z.object({ id: z.number() }))
@@ -15,17 +16,7 @@ export const userById = publicProcedure
       },
       include: {
         ownedStories: {
-          select: {
-            id: true,
-            name: true,
-            summary: true,
-            royalRoadId: true,
-            pages: true,
-            coverColor: true,
-            coverTextColor: true,
-            coverArtAsset: true,
-            status: true,
-          },
+          select: storycardFields,
           where: {
             published: true,
           },

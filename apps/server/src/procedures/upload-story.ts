@@ -1,6 +1,10 @@
-import { Node, persistedSchema } from "@writer/shared";
-import { protectedProcedure } from "../trpc";
-import { prisma } from "../prisma";
+import {
+  contentSchemaToText,
+  type Node,
+  persistedSchema,
+} from "@writer/shared";
+import { protectedProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
 import short from "short-uuid";
 const translator = short();
 
@@ -225,7 +229,10 @@ export const uploadStory = protectedProcedure
             await prisma.paragraphRevision.create({
               data: {
                 paragraphId: paragraph.id,
-                body: paragraphData.text,
+                body:
+                  typeof paragraphData.text === "string"
+                    ? paragraphData.text
+                    : contentSchemaToText(paragraphData.text),
               },
             });
           }

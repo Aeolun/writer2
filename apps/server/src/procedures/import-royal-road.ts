@@ -1,4 +1,4 @@
-import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../trpc.js";
 import z from "zod";
 import short from "short-uuid";
 import turndown from "turndown";
@@ -10,7 +10,7 @@ import type {
   SceneParagraph,
   Chapter,
 } from "@writer/shared";
-import { isRoyalRoadWarning } from "../util/is-royal-road-warning";
+import { isRoyalRoadWarning } from "../util/is-royal-road-warning.js";
 
 type MaybeString = string | null | undefined;
 
@@ -113,10 +113,12 @@ export const importRoyalRoad = protectedProcedure
           scene: {},
           characters: {},
           plotPoints: {},
+          locations: {},
           structure: [],
           name: chapterInfo.title ?? "Unknown",
           modifiedTime: Date.now(),
           settings: {
+            defaultPerspective: "third",
             mangaChapterPath: "",
             aiInstructions: "",
             royalRoadId: input.storyId.toString(),
@@ -151,10 +153,11 @@ export const importRoyalRoad = protectedProcedure
           title: books.title,
           summary: "",
         };
-        const arcStructure = {
+        const arcStructure: Node = {
           id: arcId,
           type: "arc" as const,
           name: books.title,
+          nodeType: "story" as const,
           isOpen: true,
           children: [],
         };
@@ -162,6 +165,7 @@ export const importRoyalRoad = protectedProcedure
         storyData.story.structure.push({
           id: newId,
           type: "book",
+          nodeType: "story" as const,
           name: books.title,
           isOpen: true,
           children: [arcStructure],
@@ -275,12 +279,14 @@ export const importRoyalRoad = protectedProcedure
           type: "chapter",
           name: chapter.title,
           isOpen: true,
+          nodeType: "story" as const,
           children: [
             {
               id: sceneId,
               type: "scene",
               name: chapter.title,
               isOpen: true,
+              nodeType: "story" as const,
             },
           ],
         });

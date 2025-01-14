@@ -1,7 +1,9 @@
 import { z } from "zod";
-import { publicProcedure } from "../trpc";
-import { prisma } from "../prisma";
-import { getStoryAssetUrl } from "../util/get-asset-url";
+import { publicProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
+import { getStoryAssetUrl } from "../util/get-asset-url.js";
+import type { Prisma } from "@prisma/client";
+import { storycardFields } from "../lib/storycard-fields.js";
 
 export const listRandomStories = publicProcedure
   .input(
@@ -12,34 +14,57 @@ export const listRandomStories = publicProcedure
   .query(async ({ input }) => {
     const { limit } = input;
 
-    const storiesCount = await prisma.story.count();
+    const whereConditions: Prisma.StoryWhereInput = {
+      AND: {
+        summary: {
+          not: "",
+        },
+        spellingLevel: {
+          gte: 3,
+        },
+
+        OR: [
+          // last chapter released in the last 60 days (e.g. not on hiatus)
+          {
+            lastChapterReleasedAt: {
+              gt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 60),
+            },
+          },
+          // long completed stories
+          {
+            pages: {
+              gt: 500,
+            },
+            status: "COMPLETED",
+          },
+          // newly created stories with a minimum of content
+          {
+            firstChapterReleasedAt: {
+              // created in the last 3 days
+              gt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
+            },
+            pages: {
+              gt: 3,
+            },
+          },
+        ],
+      },
+    };
+
+    const storiesCount = await prisma.story.count({
+      where: whereConditions,
+    });
     const randomStoryIndex = Math.max(
       Math.floor(Math.random() * (storiesCount - limit)),
       0,
     );
 
     const stories = await prisma.story.findMany({
-      select: {
-        id: true,
-        name: true,
-        summary: true,
-        coverArtAsset: true,
-        coverColor: true,
-        coverTextColor: true,
-        royalRoadId: true,
-        wordsPerWeek: true,
-        pages: true,
-        status: true,
-        ownerId: true,
-        owner: {
-          select: {
-            name: true,
-          },
-        },
-      },
+      select: storycardFields,
       orderBy: {
         sortOrder: "asc",
       },
+      where: whereConditions,
       // this works fine as long as we don't have millions of stories...
       skip: randomStoryIndex,
       take: limit,

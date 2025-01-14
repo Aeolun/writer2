@@ -73,28 +73,33 @@ enum StoryType {
 }
 
 model Story {
-  id                String            @id @default(uuid(7))
-  name              String            @default("")
-  summary           String?           @db.Text()
-  ownerId           Int
-  owner             User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  royalRoadId       Int?              @unique
-  bookShelfStories  BookShelfStory[]
-  published         Boolean           @default(false)
-  status            StoryStatus       @default(ONGOING)
-  type              StoryType         @default(ORIGINAL)
-  wordsPerWeek      Int?
-  coverArtAsset     String
-  coverColor        String            @default("#000000")
-  coverTextColor    String            @default("#FFFFFF")
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-  sortOrder         Int               @default(0)
-  pages             Int?
-  books             Book[]
-  files             File[]
-  storyReadStatuses StoryReadStatus[]
-  storyTags         StoryTag[]
+  id                     String            @id @default(uuid(7))
+  name                   String            @default("")
+  summary                String?           @db.Text()
+  ownerId                Int
+  owner                  User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  royalRoadId            Int?              @unique
+  bookShelfStories       BookShelfStory[]
+  published              Boolean           @default(false)
+  status                 StoryStatus       @default(ONGOING)
+  type                   StoryType         @default(ORIGINAL)
+  wordsPerWeek           Int?
+  spellingLevel          Int?              @default(3)
+  chapters               Int?
+  firstChapterReleasedAt DateTime?
+  lastChapterReleasedAt  DateTime?
+  coverArtAsset          String
+  coverColor             String            @default("#000000")
+  coverTextColor         String            @default("#FFFFFF")
+  coverFontFamily        String            @default("Georgia")
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  sortOrder              Int               @default(0)
+  pages                  Int?
+  books                  Book[]
+  files                  File[]
+  storyReadStatuses      StoryReadStatus[]
+  storyTags              StoryTag[]
 }
 
 model Tag {

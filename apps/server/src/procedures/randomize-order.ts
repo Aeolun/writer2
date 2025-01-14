@@ -1,7 +1,6 @@
-import { adminProcedure } from "../trpc";
-import { prisma } from "../prisma";
-import { z } from "zod";
-import { getStoryAssetUrl } from "../util/get-asset-url";
+import { adminProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
+import PQueue from "p-queue";
 
 export const randomizeOrder = adminProcedure.mutation(async () => {
   const stories = await prisma.story.findMany({
@@ -10,11 +9,42 @@ export const randomizeOrder = adminProcedure.mutation(async () => {
     },
   });
 
-  for (const story of stories) {
-    const randomOrder = Math.floor(Math.random() * 1000000);
-    await prisma.story.update({
-      where: { id: story.id },
-      data: { sortOrder: randomOrder },
-    });
+  // make array with new unique (no duplicates) random numbers
+  const uniqueRandomNumbers = Array.from(
+    new Set(
+      Array.from({ length: 1000000 }, () =>
+        Math.floor(Math.random() * 1000000),
+      ),
+    ).values(),
+  );
+
+  // shuffle the array
+  uniqueRandomNumbers.sort(() => Math.random() - 0.5);
+
+  const queue = new PQueue({ concurrency: 20 });
+  const batchSize = 50;
+  const batches = [];
+
+  // Create batches of stories
+  for (let i = 0; i < stories.length; i += batchSize) {
+    const batch = stories.slice(i, i + batchSize);
+    batches.push(batch);
   }
+
+  // Process each batch concurrently
+  await Promise.all(
+    batches.map((batch) =>
+      queue.add(async () => {
+        const updates = batch.map((story) => ({
+          where: { id: story.id },
+          data: { sortOrder: uniqueRandomNumbers.shift() },
+        }));
+
+        // Use prisma transaction for batch update
+        await prisma.$transaction(
+          updates.map((update) => prisma.story.update(update)),
+        );
+      }),
+    ),
+  );
 });

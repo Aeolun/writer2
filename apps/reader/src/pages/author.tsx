@@ -34,6 +34,7 @@ export const AuthorPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {user.ownedStories.map((story) => (
           <StoryCard
+            key={story.id}
             id={story.id}
             coverArtAsset={story.coverArtAsset} // Assuming this field exists
             name={story.name}
@@ -42,8 +43,12 @@ export const AuthorPage = () => {
             summary={story.summary ?? ""}
             color={story.coverColor ?? ""}
             textColor={story.coverTextColor ?? ""}
-            isCompleted={story.status === "COMPLETED"}
+            status={story.status}
+            lastChapterReleasedAt={story.lastChapterReleasedAt}
+            wordsPerWeek={story.wordsPerWeek}
+            fontFamily={story.coverFontFamily}
             royalRoadId={story.royalRoadId ?? undefined}
+            canAddToLibrary={!!user}
           />
         ))}
       </div>

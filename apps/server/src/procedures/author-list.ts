@@ -1,5 +1,5 @@
-import { prisma } from "../prisma";
-import { publicProcedure } from "../trpc";
+import { prisma } from "../prisma.js";
+import { publicProcedure } from "../trpc.js";
 
 export const authorList = publicProcedure.query(async () => {
   // Retrieve users who have published stories

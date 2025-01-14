@@ -1,9 +1,9 @@
 import { createHash } from "node:crypto";
-import { protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../trpc.js";
 import z from "zod";
 import sharp from "sharp";
-import { prisma } from "../prisma";
-import { uploadFile } from "../util/file-storage";
+import { prisma } from "../prisma.js";
+import { uploadFile } from "../util/file-storage.js";
 
 import short from "short-uuid";
 const translator = short();

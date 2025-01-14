@@ -1,5 +1,5 @@
-import { prisma } from "../prisma";
-import { publicProcedure } from "../trpc";
+import { prisma } from "../prisma.js";
+import { publicProcedure } from "../trpc.js";
 import { createHash, randomBytes, scrypt } from "node:crypto";
 import { promisify } from "util";
 import z from "zod";

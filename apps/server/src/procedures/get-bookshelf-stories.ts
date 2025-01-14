@@ -1,50 +1,34 @@
-import { protectedProcedure } from "../trpc";
-import { prisma } from "../prisma";
-import { getStoryAssetUrl } from "../util/get-asset-url";
+import { protectedProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
+import { getStoryAssetUrl } from "../util/get-asset-url.js";
+import { storycardFields } from "../lib/storycard-fields.js";
 
-export const getBookshelfStories = protectedProcedure.query(
-  async ({ ctx }) => {
-    const userId = ctx.authenticatedUser.id;
+export const getBookshelfStories = protectedProcedure.query(async ({ ctx }) => {
+  const userId = ctx.authenticatedUser.id;
 
-    const bookshelfStories = await prisma.bookShelfStory.findMany({
-      where: { ownerId: userId },
-      include: {
-        story: {
-          select: {
-            id: true,
-            name: true,
-            coverArtAsset: true,
-            summary: true,
-            coverColor: true,
-            coverTextColor: true,
-            royalRoadId: true,
-            pages: true,
-            ownerId: true,
-            owner: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
+  const bookshelfStories = await prisma.bookShelfStory.findMany({
+    where: { ownerId: userId },
+    include: {
+      story: {
+        select: storycardFields,
       },
-    });
+    },
+  });
 
-    return bookshelfStories.map((bookshelfStory) => ({
-      id: bookshelfStory.story.id,
-      name: bookshelfStory.story.name,
-      kind: bookshelfStory.kind,
-      ownerName: bookshelfStory.story.owner.name,
-      summary: bookshelfStory.story.summary,
-      color: bookshelfStory.story.coverColor,
-      textColor: bookshelfStory.story.coverTextColor,
-      royalRoadId: bookshelfStory.story.royalRoadId,
-      coverArtAsset: getStoryAssetUrl(
-        bookshelfStory.story.ownerId,
-        bookshelfStory.story.id,
-        bookshelfStory.story.coverArtAsset,
-      ), // Updated line
-      pages: bookshelfStory.story.pages,
-    }));
-  },
-);
+  return bookshelfStories.map((bookshelfStory) => ({
+    id: bookshelfStory.story.id,
+    name: bookshelfStory.story.name,
+    kind: bookshelfStory.kind,
+    ownerName: bookshelfStory.story.owner.name,
+    summary: bookshelfStory.story.summary,
+    color: bookshelfStory.story.coverColor,
+    textColor: bookshelfStory.story.coverTextColor,
+    royalRoadId: bookshelfStory.story.royalRoadId,
+    coverArtAsset: getStoryAssetUrl(
+      bookshelfStory.story.ownerId,
+      bookshelfStory.story.id,
+      bookshelfStory.story.coverArtAsset,
+    ), // Updated line
+    pages: bookshelfStory.story.pages,
+  }));
+});

@@ -8,4 +8,9 @@ export default defineConfig({
       localsConvention: "camelCase",
     },
   },
+  server: {
+    watch: {
+      ignored: ["**/cache/**"],
+    },
+  },
 });

@@ -1,26 +1,14 @@
-import { protectedProcedure } from "../trpc";
-import { prisma } from "../prisma";
-import { getStoryAssetUrl } from "../util/get-asset-url";
+import { protectedProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
+import { getStoryAssetUrl } from "../util/get-asset-url.js";
+import { storycardFields } from "../lib/storycard-fields.js";
 
 export const getUserStories = protectedProcedure.query(async ({ ctx }) => {
   const userId = ctx.authenticatedUser.id;
 
   const userStories = await prisma.story.findMany({
     where: { ownerId: userId },
-    select: {
-      id: true,
-      name: true,
-      summary: true,
-      coverArtAsset: true,
-      coverColor: true,
-      coverTextColor: true,
-      ownerId: true,
-      royalRoadId: true,
-      pages: true,
-      status: true,
-      createdAt: true,
-      updatedAt: true,
-    },
+    select: storycardFields,
   });
 
   return userStories.map((story) => ({

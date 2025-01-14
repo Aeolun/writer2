@@ -84,7 +84,7 @@ const retrieve = async () => {
     ? JSON.parse(fs.readFileSync("royalroad.json", "utf-8"))
     : {};
 
-  await clearCacheCategory("list");
+  //await clearCacheCategory("list");
 
   const result: Record<string, object | string> = existingResult;
 
@@ -259,7 +259,7 @@ const retrieve = async () => {
                   if (coverUrl.includes("nocover")) {
                     continue;
                   }
-                  const coverData = await getPage(coverUrl, "jpg");
+                  const coverData = await getPage(coverUrl, "cover", "jpg");
                   fs.writeFileSync(
                     join(
                       cacheFolder,

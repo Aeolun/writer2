@@ -30,11 +30,15 @@ const characterSchema = entitySchema.extend({
   distinguishingFeatures: z.string().optional(),
   isMainCharacter: z.boolean().default(true),
   laterVersionOf: z.string().optional(),
-  significantActions: z.array(z.object({
-    action: z.string(),
-    sceneId: z.string(),
-    timestamp: z.number(),
-  })).optional(),
+  significantActions: z
+    .array(
+      z.object({
+        action: z.string(),
+        sceneId: z.string(),
+        timestamp: z.number(),
+      }),
+    )
+    .optional(),
 });
 export type Character = z.infer<typeof characterSchema>;
 
@@ -68,7 +72,7 @@ const arcSchema = treeDataSchema.extend({
         importance: z.string(),
         category: z.enum(["character", "plot", "setting", "theme"]),
         timestamp: z.number(),
-      })
+      }),
     )
     .optional(),
 });
@@ -208,6 +212,7 @@ export type Node = z.infer<typeof baseNodeSchema> & {
   children?: Node[];
 };
 
+// @ts-expect-error: not sure why
 const treeSchema: z.ZodType<Node> = baseNodeSchema.extend({
   children: z.lazy(() => treeSchema.array().optional()),
 });

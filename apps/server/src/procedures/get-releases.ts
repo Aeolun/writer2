@@ -1,5 +1,5 @@
-import { cache } from "../redis";
-import { publicProcedure } from "../trpc";
+import { cache } from "../redis.js";
+import { publicProcedure } from "../trpc.js";
 import axios from "axios";
 
 export interface Release {
@@ -65,7 +65,7 @@ export const getReleases = publicProcedure.query(async () => {
         };
       });
   } catch (error) {
-    console.error(error?.stack);
+    console.error(error);
     if (axios.isAxiosError(error)) {
       console.error(error.response?.data);
     }

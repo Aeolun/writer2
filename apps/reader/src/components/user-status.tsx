@@ -4,11 +4,13 @@ import { Navitem } from "../ui-components/navitem/navitem";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 import { BookStack, EditPencil } from "iconoir-react";
+import { useLocation } from "wouter";
 
 const UserStatus = () => {
   const { data: user, isLoading, error } = trpc.whoAmI.useQuery();
   const queryClient = useQueryClient();
   const signoutMutation = trpc.sessionSignout.useMutation();
+  const [, navigate] = useLocation();
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -26,6 +28,14 @@ const UserStatus = () => {
           type="text"
           placeholder="Search"
           className="input input-bordered w-24 md:w-auto"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && e.currentTarget.value.trim()) {
+              navigate(
+                `/search?q=${encodeURIComponent(e.currentTarget.value.trim())}`,
+              );
+              e.currentTarget.value = "";
+            }
+          }}
         />
       </div>
       {user ? (

@@ -10,6 +10,7 @@ import { useSignIn } from "../hooks/use-sign-in";
 export const StoriesPage = () => {
   const searchParams = useSearchParams();
   const params = useParams();
+  const [filterAbandoned, setFilterAbandoned] = useState(false);
   const { user } = useSignIn();
   const {
     data: storiesData,
@@ -17,8 +18,11 @@ export const StoriesPage = () => {
     error,
   } = trpc.listStories.useQuery({
     limit: 20,
-    cursor: searchParams.get("cursor") ?? undefined,
+    cursor: searchParams.has("cursor")
+      ? Number.parseInt(searchParams.get("cursor") ?? "0")
+      : undefined,
     genre: params.genre,
+    filterAbandoned,
   });
   const [location, navigate] = useLocation();
 
@@ -40,6 +44,15 @@ export const StoriesPage = () => {
         <title>Stories - Reader</title>
       </Helmet>
       <h1 className="text-3xl font-bold mb-6">Stories</h1>
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="filter-abandoned"
+          checked={filterAbandoned}
+          onChange={() => setFilterAbandoned(!filterAbandoned)}
+        />
+        <label htmlFor="filter-abandoned">Hide abandoned</label>
+      </div>
       <div role="tablist" className="tabs tabs-boxed">
         <button
           type="button"
@@ -81,12 +94,17 @@ export const StoriesPage = () => {
             pages={story.pages ?? 0}
             color={story.coverColor}
             textColor={story.coverTextColor}
+            spellingLevel={story.spellingLevel ?? 0}
+            fontFamily={story.coverFontFamily}
             royalRoadId={story.royalRoadId ?? undefined}
-            isCompleted={story.status === "COMPLETED"}
-            canAddToLibrary={user ? true : false}
+            status={story.status}
+            lastChapterReleasedAt={story.lastChapterReleasedAt}
+            canAddToLibrary={!!user}
+            wordsPerWeek={story.wordsPerWeek}
           />
         ))}
       </div>
+
       {storiesData?.nextCursor ? (
         <div className="mt-8 text-center">
           <button

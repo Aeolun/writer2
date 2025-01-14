@@ -1,44 +1,40 @@
 import { z } from "zod";
-import { publicProcedure } from "../trpc";
-import { prisma } from "../prisma";
-import { createHash } from "node:crypto";
-import { getStoryAssetUrl } from "../util/get-asset-url";
+import { publicProcedure } from "../trpc.js";
+import { prisma } from "../prisma.js";
+import { getStoryAssetUrl } from "../util/get-asset-url.js";
+import { storycardFields } from "../lib/storycard-fields.js";
+import type { Prisma } from "@prisma/client";
 
 export const listStories = publicProcedure
   .input(
     z.object({
       limit: z.number().min(1).max(500).optional().default(10),
-      cursor: z.string().optional(),
+      cursor: z.number().optional(),
+      filterAbandoned: z.boolean().optional().default(false),
       genre: z.string().optional(),
     }),
   )
   .query(async ({ input }) => {
-    const { limit, cursor, genre } = input;
+    const { limit, cursor, genre, filterAbandoned } = input;
 
-    const stories = await prisma.story.findMany({
-      select: {
-        id: true,
-        name: true,
-        summary: true,
-        coverArtAsset: true,
-        coverColor: true,
-        coverTextColor: true,
-        royalRoadId: true,
-        pages: true,
-        status: true,
-        ownerId: true,
-        owner: {
-          select: {
-            name: true,
-          },
-        },
+    console.log("input", input);
+    const baseFilter: Prisma.StoryWhereInput = {
+      sortOrder: cursor ? { gte: cursor } : undefined,
+      storyTags: genre
+        ? { some: { tag: { name: { equals: genre } } } }
+        : undefined,
+      pages: {
+        gt: 0,
       },
+    };
+    const stories = await prisma.story.findMany({
+      select: storycardFields,
       take: limit + 1,
       where: {
-        id: cursor ? { gte: cursor } : undefined,
-        storyTags: genre
-          ? { some: { tag: { name: { equals: genre } } } }
-          : undefined,
+        ...baseFilter,
+        ...(filterAbandoned
+          ? { OR: [{ status: { not: "HIATUS" } }, { pages: { gt: 400 } }] }
+          : {}),
       },
       orderBy: {
         sortOrder: "asc",
@@ -48,7 +44,8 @@ export const listStories = publicProcedure
     let nextCursor: typeof cursor | undefined = undefined;
     if (stories.length > limit) {
       const nextItem = stories.pop();
-      nextCursor = nextItem!.id;
+
+      nextCursor = nextItem?.sortOrder;
     }
 
     return {

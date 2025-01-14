@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "html-entities": "^2.5.2",
     "zod": "^3.23.8"
-  },
-  "devDependencies": {}
+  }
 }

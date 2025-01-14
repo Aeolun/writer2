@@ -1,7 +1,7 @@
-import { protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../trpc.js";
 import z from "zod";
 import { chromium } from "playwright";
-import { prisma } from "../prisma";
+import { prisma } from "../prisma.js";
 
 export const publishToRoyalRoad = protectedProcedure
   .input(
@@ -101,6 +101,6 @@ export const publishToRoyalRoad = protectedProcedure
       return { success: true };
     } catch (e) {
       console.error("Failed to publish chapter:", e);
-      return { success: false, error: e.message };
+      return { success: false, error: e?.toString() };
     }
   });

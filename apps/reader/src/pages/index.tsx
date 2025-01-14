@@ -45,13 +45,17 @@ export const IndexPage = () => {
             summary={story.summary ?? ""}
             coverArtAsset={story.coverArtAsset}
             name={story.name}
+            lastChapterReleasedAt={story.lastChapterReleasedAt}
             ownerName={story.owner.name ?? ""}
             pages={story.pages ?? 0}
+            spellingLevel={story.spellingLevel ?? 0}
             color={story.coverColor}
+            wordsPerWeek={story.wordsPerWeek ?? 0}
             textColor={story.coverTextColor}
+            fontFamily={story.coverFontFamily}
             royalRoadId={story.royalRoadId ?? undefined}
-            isCompleted={story.status === "COMPLETED"}
-            canAddToLibrary={user ? true : false}
+            status={story.status}
+            canAddToLibrary={!!user}
           />
         ))}
       </div>

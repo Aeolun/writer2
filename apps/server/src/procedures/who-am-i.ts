@@ -1,6 +1,6 @@
-import { prisma } from "../prisma";
-import { publicProcedure } from "../trpc";
-import { createHash } from "crypto";
+import { prisma } from "../prisma.js";
+import { publicProcedure } from "../trpc.js";
+import { createHash } from "node:crypto";
 export const whoAmI = publicProcedure.query(async (opts) => {
   console.log("whoAmI", opts);
   if (!opts.ctx.token) {
@@ -34,7 +34,9 @@ export const whoAmI = publicProcedure.query(async (opts) => {
 
   const owner = accessToken?.owner ?? session?.owner;
 
-  const sha256Email = createHash("sha256").update(owner?.email).digest("hex");
+  const sha256Email = createHash("sha256")
+    .update(owner?.email ?? "")
+    .digest("hex");
 
   if (!owner) {
     return null;
