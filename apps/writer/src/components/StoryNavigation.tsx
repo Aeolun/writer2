@@ -19,6 +19,7 @@ import { For, Show } from "solid-js";
 import { setSelectedEntity, uiState } from "../lib/stores/ui";
 import { createArc } from "../lib/stores/arcs";
 import { dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME } from "solid-dnd-directive";
+import { createBook } from "../lib/stores/books";
 
 const renderNode = (node: Node & { isDndShadowItem?: boolean }) => {
   const chapter = chaptersState.chapters[node.id];
@@ -233,6 +234,14 @@ export const StoryNavigation = () => {
       on:finalize={dndEvent}
     >
       <For each={treeState.structure}>{renderNode}</For>
+      <button
+        type="button"
+        class="flex items-center gap-2 justify-center py-2 mt-auto border-t border-gray-200 hover:bg-gray-50"
+        onClick={createBook}
+      >
+        <AiFillPlusCircle />
+        <span>New Book</span>
+      </button>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 [package]
 name = "writer"
-version = "1.0.0"
+version = "1.0.1"
 description = "A writing application for fiction"
 authors = ["Bart riepe"]
 license = "MIT"
