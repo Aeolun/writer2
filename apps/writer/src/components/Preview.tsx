@@ -1,7 +1,10 @@
 import { copyFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import markdownit from "markdown-it";
 import { open } from "@tauri-apps/plugin-dialog";
-import { sortedObjects, SortedParagraphObject } from "../lib/stores/retrieval/sorted-objects";
+import {
+  sortedObjects,
+  SortedParagraphObject,
+} from "../lib/stores/retrieval/sorted-objects";
 import { uiState } from "../lib/stores/ui";
 import { createEffect, createSignal } from "solid-js";
 import { updateSceneParagraphData } from "../lib/stores/scenes";
@@ -92,10 +95,17 @@ export const Preview = () => {
               .replaceAll("$", "\\$")
               .replaceAll("<", "\\<")
               .replaceAll(">", "\\>")
+              .replaceAll("╬", "\\╬")
+              .replaceAll(/([^\w\.\? \”])_([^\w\.\? \”])/gm, "$1\\_$2")
               .replaceAll("@", "\\@")
               .replace(/\s*\*\*([\w ]+)\*\*$/g, (match, p1) => {
                 return `=== ${p1}`;
               })
+              // any number of asterisks on a single line
+              .replaceAll(
+                /^\*+$/gm,
+                `#align(center)[\n #block(above: 1cm, below: 1cm)[\n  #image("data${separatorImage}", width: 50%)\n]\n]\n`,
+              )
               .replaceAll(
                 "----- * * * -----",
                 `#align(center)[\n #block(above: 1cm, below: 1cm)[\n  #image("data${separatorImage}", width: 50%)\n]\n]\n`,
@@ -230,11 +240,14 @@ export const Preview = () => {
   </tr>
 ${sortedObjects(uiState.currentId)
   .filter((obj): obj is SortedParagraphObject => obj.type === "paragraph")
-  .flatMap(obj => obj.translations ?? [])
-  .map(translation => `  <tr>
+  .flatMap((obj) => obj.translations ?? [])
+  .map(
+    (translation) => `  <tr>
     <td>${translation.original}</td>
     <td>${translation.translation}</td>
-  </tr>`).join("\n")}\n</table>`}
+  </tr>`,
+  )
+  .join("\n")}\n</table>`}
                 onClick={() => {
                   setTimeout(() => {
                     const textarea: HTMLTextAreaElement | null =
@@ -314,6 +327,7 @@ ${sortedObjects(uiState.currentId)
                   addNotification({
                     title: "Typst Error",
                     message: output.stderr,
+                    pre: true,
                     type: "error",
                   });
                 }

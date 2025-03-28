@@ -5,12 +5,13 @@ import { setSetting, settingsState } from "../stores/settings";
 export const openStory = async (projectPath: string) => {
   if (!projectPath) {
     alert("Please select a folder");
-    return;
+    return false;
   }
+  console.log("openStory", projectPath);
   const validProject = await checkProject(projectPath);
   if (!validProject) {
     alert("This is not a folder with a writer project");
-    return;
+    return false;
   }
   try {
     const story = await loadProject(projectPath);
@@ -29,4 +30,5 @@ export const openStory = async (projectPath: string) => {
       alert("Unknown error occurred");
     }
   }
+  return true;
 };

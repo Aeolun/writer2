@@ -24,5 +24,6 @@ RUN npm install -g pnpm
 # Copy the built package from the builder stage
 COPY --from=builder /app/standalone .
 RUN pnpm exec playwright install
+RUN pnpm exec playwright install-deps
 
 CMD ["pnpm", "start"]

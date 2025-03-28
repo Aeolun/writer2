@@ -12,8 +12,10 @@ export const checkProject = async (projectPath: string) => {
   }
 
   const fileData = await readTextFile(projectFile);
+  console.log("fileData", fileData);
   try {
     const parsed = JSON.parse(fileData);
+    console.log("parsed", parsed);
     if (!parsed.story || !parsed.story.name) {
       return false;
     }

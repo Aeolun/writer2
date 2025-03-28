@@ -73,7 +73,7 @@
             "store:allow-entries",
             "store:allow-save",
             "store:allow-load",
-            "clipboard-manager:allow-write",
+            "clipboard-manager:allow-write-text",
             {
               "identifier": "shell:allow-execute",
               "allow": [
@@ -88,6 +88,10 @@
                   "sidecar": true
                 }
               ]
+            },
+            {
+              "identifier": "http:default",
+              "allow": [{ "url": "https://*.serial-experiments.com" }]
             },
             "shell:allow-open"
           ]

@@ -19,7 +19,7 @@ export const saveStory = async (withAutosave = false) => {
   if (!storyState.story || !storyState.openPath) {
     addNotification({
       title: "No story or open path",
-      message: "You must open a story before saving.",
+      message: "You must have an open path to be able to auto save a story.",
       type: "error",
     });
     return;

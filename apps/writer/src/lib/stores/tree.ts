@@ -190,7 +190,7 @@ export const setTreeItemOpen = (id: string, isOpen: boolean) => {
 
 export const isEffectivelyNonStory = (id: string): boolean => {
   const path = findPathToNode(id);
-  return path.some(node => node.nodeType !== "story");
+  return path.some((node) => node.nodeType !== "story");
 };
 
 export const toggleStoryNode = (id: string) => {
@@ -198,9 +198,9 @@ export const toggleStoryNode = (id: string) => {
   if (!node) return;
   // Cycle through the node types: story -> context -> non-story -> story
   const nextType = {
-    "story": "context",
-    "context": "non-story",
-    "non-story": "story"
+    story: "context",
+    context: "non-story",
+    "non-story": "story",
   }[node.nodeType] as "story" | "context" | "non-story";
   updateNode(id, { nodeType: nextType });
 };
@@ -222,4 +222,23 @@ export const insertNode = (node: Node, parentId: string, beforeId?: string) => {
   } else {
     appendNode(nodeWithoutParentId, parentId);
   }
+};
+
+export const updateAllChildrenNodeType = (
+  parentId: string,
+  nodeType: Node["nodeType"],
+) => {
+  const node = findNode(parentId);
+  if (!node) return;
+
+  const updateChildren = (currentNode: Node) => {
+    if (currentNode.children) {
+      for (const child of currentNode.children) {
+        updateNode(child.id, { nodeType });
+        updateChildren(child);
+      }
+    }
+  };
+
+  updateChildren(node);
 };

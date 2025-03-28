@@ -38,8 +38,10 @@ const Home = () => {
                 directory: true,
               });
               if (projectPath) {
-                openStory(projectPath);
-                nav("/write");
+                const result = await openStory(projectPath);
+                if (result) {
+                  nav("/write");
+                }
               }
             }}
           >

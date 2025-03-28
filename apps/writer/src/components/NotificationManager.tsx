@@ -19,7 +19,11 @@ export const NotificationManager = () => {
           {(notification) => (
             <div class={`alert ${alertClass[notification.type]} relative pr-8`}>
               <div class="flex-1 mr-2">
-                <span>{notification.message}</span>
+                {notification.pre ? (
+                  <pre class="text-xs">{notification.message}</pre>
+                ) : (
+                  <span>{notification.message}</span>
+                )}
                 {notification.details &&
                   Object.keys(notification.details).length > 0 && (
                     <div class="mt-2">

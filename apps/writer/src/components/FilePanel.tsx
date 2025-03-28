@@ -1,7 +1,7 @@
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { resolve } from "@tauri-apps/api/path";
+import { resolve, join, basename } from "@tauri-apps/api/path";
 import { open } from "@tauri-apps/plugin-dialog";
 import {
   copyFile,
@@ -204,10 +204,12 @@ export const FilePanel = ({
       multiple: true,
       directory: false,
     });
-    console.log(files);
+    await mkdir(await join(openPath, "data"), { recursive: true });
+    console.log("fileresponse", files);
     await Promise.all(
       files?.map(async (f) => {
-        if (f.name) {
+        if (f) {
+          const filename = await basename(f);
           const destinationFolder = await resolve(
             openPath,
             "data",
@@ -215,8 +217,9 @@ export const FilePanel = ({
           );
           await mkdir(destinationFolder, { recursive: true });
 
-          const destination = await resolve(destinationFolder, f.name);
-          return copyFile(f.path, destination);
+          const destination = await resolve(destinationFolder, filename);
+          console.log("copying", f, destination);
+          await copyFile(f, destination);
         }
       }) ?? [],
     );

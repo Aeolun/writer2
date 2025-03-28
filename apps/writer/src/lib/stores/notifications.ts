@@ -4,6 +4,7 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
+  pre?: boolean;
   type: "info" | "success" | "warning" | "error";
   details?: Record<string, string[]>;
 }

@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import { reloadTrpc, trpc } from "../lib/trpc";
 import { setSigninPopupOpen, uiState } from "../lib/stores/ui";
-import { setSetting } from "../lib/stores/settings";
+import { setSetting, settingsState } from "../lib/stores/settings";
 import { setSignedInUser, userState } from "../lib/stores/user";
 
 export const SigninPanel = () => {
@@ -13,9 +13,12 @@ export const SigninPanel = () => {
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
   const [isRegistered, setIsRegistered] = createSignal(false);
+  const [signInError, setSignInError] = createSignal<string | null>(null);
+  const [registerError, setRegisterError] = createSignal<string | null>(null);
 
-  const handleSignInSubmit = (event) => {
+  const handleSignInSubmit = (event: SubmitEvent) => {
     event.preventDefault();
+    setSignInError(null);
     trpc.login
       .mutate({
         email: signInEmail(),
@@ -28,14 +31,19 @@ export const SigninPanel = () => {
           reloadTrpc();
           const res = await trpc.whoAmI.query();
           setSignedInUser(res ?? undefined);
+          setSigninPopupOpen(false);
         }
-
-        setSigninPopupOpen(false);
+      })
+      .catch((error) => {
+        setSignInError(
+          error.message || "Failed to sign in. Please check your credentials.",
+        );
       });
   };
 
-  const handleRegisterSubmit = (event) => {
+  const handleRegisterSubmit = (event: SubmitEvent) => {
     event.preventDefault();
+    setRegisterError(null);
     trpc.register
       .mutate({
         email: email(),
@@ -44,6 +52,11 @@ export const SigninPanel = () => {
       })
       .then((result) => {
         setIsRegistered(true);
+      })
+      .catch((error) => {
+        setRegisterError(
+          error.message || "Failed to register. Please try again.",
+        );
       });
   };
 
@@ -54,6 +67,11 @@ export const SigninPanel = () => {
       ) : (
         <>
           <div class="text-lg">Register / Sign-in</div>
+          <div class="text-sm mt-2">
+            Backend server:{" "}
+            {settingsState.serverUrl ||
+              "https://writer.serial-experiments.com/trpc"}
+          </div>
           <div class="text-sm mt-2">
             If you want to sync your story using our servers, you can sign in or
             register here.
@@ -95,6 +113,11 @@ export const SigninPanel = () => {
                 </div>
               ) : (
                 <form onSubmit={handleRegisterSubmit}>
+                  {registerError() && (
+                    <div class="alert alert-error mb-4">
+                      <span>{registerError()}</span>
+                    </div>
+                  )}
                   <div class="form-control">
                     <label class="label">Name</label>
                     <input
@@ -142,6 +165,11 @@ export const SigninPanel = () => {
           {activeTab() === "signin" ? (
             <div class="p-4">
               <h2 class="text-xl font-bold">Sign in</h2>
+              {signInError() && (
+                <div class="alert alert-error mb-4">
+                  <span>{signInError()}</span>
+                </div>
+              )}
               <form onSubmit={handleSignInSubmit}>
                 <div class="form-control">
                   <label class="label">Client name</label>
