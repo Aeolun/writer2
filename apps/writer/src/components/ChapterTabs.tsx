@@ -28,7 +28,6 @@ export const ChapterTabs = () => {
       .map((i) => i.plainText)
       .join("\n\n");
 
-    console.log("paragraphs", paragraphs);
     useAi(helpKind, paragraphs ?? "", false).then((res) => {
       if (helpKind === "suggest_title") {
         updateChapter(chapterId, {
@@ -44,7 +43,10 @@ export const ChapterTabs = () => {
       }
     });
   };
-  console.log("curerntChapter", currentChapter());
+
+  const releaseDate = currentChapter()?.visibleFrom
+    ? new Date(currentChapter()?.visibleFrom).toISOString()
+    : undefined;
 
   return currentChapter() ? (
     <div class="flex flex-col flex-1 overflow-hidden">
@@ -92,6 +94,9 @@ export const ChapterTabs = () => {
                   onInput={(e) => {
                     updateChapter(currentChapter()?.id, {
                       summary: e.target.value,
+                    });
+                    updateNode(currentChapter()?.id, {
+                      oneliner: e.target.value,
                     });
                   }}
                   placeholder="summary"
@@ -180,11 +185,7 @@ export const ChapterTabs = () => {
                       });
                     }
                   }}
-                  value={
-                    currentChapter()?.visibleFrom
-                      ? new Date(currentChapter()?.visibleFrom).toISOString()
-                      : undefined
-                  }
+                  value={releaseDate}
                 />
                 <button
                   type="button"
@@ -247,5 +248,7 @@ export const ChapterTabs = () => {
         </div>
       )}
     </div>
-  ) : null;
+  ) : (
+    "No chapter selected"
+  );
 };

@@ -132,7 +132,10 @@ const writeStoryPath = async (
         2,
       ),
     );
-  } else {
+  } else if (
+    options.saveChangedSince &&
+    validatedBody.story.modifiedTime > options.saveChangedSince
+  ) {
     const indexFile = await path.join(projectPath, `${Date.now()}.json`);
     writableFiles[indexFile] = JSON.stringify(
       {

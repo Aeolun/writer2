@@ -4,6 +4,8 @@ import { currentArc } from "../lib/stores/retrieval/current-arc";
 import { FormField } from "./styled/FormField";
 import { findNode, updateNode } from "../lib/stores/tree";
 import { NodeTypeButtons } from "./NodeTypeButtons";
+import { useAi } from "../lib/use-ai";
+import { sortedObjects } from "../lib/stores/retrieval/sorted-objects";
 
 export const ArcTabs = () => {
   const [openTab, setOpenTab] = createSignal("overview");
@@ -42,6 +44,7 @@ export const ArcTabs = () => {
                 const id = currentArc()?.id;
                 if (id) {
                   updateArc(id, { summary: e.target.value });
+                  updateNode(id, { oneliner: e.target.value });
                 }
               }}
               placeholder="summary"
@@ -84,7 +87,15 @@ export const ArcTabs = () => {
             type="button"
             class="btn btn-primary"
             onClick={() => {
-              alert("not implemented");
+              const allArcText = sortedObjects(currentArc()?.id)
+                .filter((i) => i.type === "paragraph")
+                .map((i) => i.plainText)
+                .join("\n\n");
+              useAi("critiqueStoryline", allArcText, true).then((res) => {
+                updateArc(currentArc()?.id, {
+                  extra: res,
+                });
+              });
             }}
           >
             [AI] Critique storyline

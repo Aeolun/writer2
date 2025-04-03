@@ -2,6 +2,9 @@ import type { Node } from "@writer/shared";
 import { AutoResizeTextarea } from "../AutoResizeTextarea";
 import { updateNode } from "../../lib/stores/tree";
 import { updateSceneData } from "../../lib/stores/scenes";
+import { updateChapter } from "../../lib/stores/chapters";
+import { updateArc } from "../../lib/stores/arcs";
+import { updateBookValue } from "../../lib/stores/books";
 
 export const SnowflakeInput = (props: { node: Node }) => {
   const placeholder = () => {
@@ -34,10 +37,25 @@ export const SnowflakeInput = (props: { node: Node }) => {
             updateSceneData(props.node.id, {
               summary: e.currentTarget.value,
             });
-          } else {
+          } else if (props.node.type === "chapter") {
             updateNode(props.node.id, {
               oneliner: e.currentTarget.value,
             });
+            updateChapter(props.node.id, {
+              summary: e.currentTarget.value,
+            });
+          } else if (props.node.type === "arc") {
+            updateNode(props.node.id, {
+              oneliner: e.currentTarget.value,
+            });
+            updateArc(props.node.id, {
+              summary: e.currentTarget.value,
+            });
+          } else if (props.node.type === "book") {
+            updateNode(props.node.id, {
+              oneliner: e.currentTarget.value,
+            });
+            updateBookValue(props.node.id, "summary", e.currentTarget.value);
           }
         }
       }}

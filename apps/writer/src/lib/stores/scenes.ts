@@ -7,7 +7,13 @@ import type {
 } from "@writer/shared";
 import shortUUID from "short-uuid";
 import { createStore } from "solid-js/store";
-import { appendNode, removeNode, updateNode, insertNode, findParent } from "./tree";
+import {
+  appendNode,
+  removeNode,
+  updateNode,
+  insertNode,
+  findParent,
+} from "./tree";
 
 import { removeEntityFromEmbeddingsCache } from "../embeddings/load-story-to-embeddings";
 
@@ -47,16 +53,19 @@ export const createScene = (chapterId: string, beforeId?: string) => {
   return newScene;
 };
 
-export const updateSelectedSceneParagraph = (sceneId: string, paragraphId: string) => {
+export const updateSelectedSceneParagraph = (
+  sceneId: string,
+  paragraphId: string,
+) => {
   setScenesState("scenes", sceneId, "selectedParagraph", paragraphId);
 };
 
 export const updateSceneData = (sceneId: string, data: Partial<Scene>) => {
   // if we're messing with something that touches all paragraphs, remove the whole shizzle from the cache
-  for(const paragraph of scenesState.scenes[sceneId]?.paragraphs ?? []) {
+  for (const paragraph of scenesState.scenes[sceneId]?.paragraphs ?? []) {
     removeEntityFromEmbeddingsCache(`paragraph/${paragraph.id}`);
   }
-  
+
   if (data.title) {
     updateNode(sceneId, {
       name: data.title,
@@ -155,8 +164,10 @@ export const splitScene = (sceneId: string, paragraphId: string) => {
       type: "scene",
       name: `${scene.title} (Part 2)`,
       isOpen: true,
+      nodeType: "story",
     },
     parentNode.id,
+    sceneId,
   );
 };
 
@@ -181,10 +192,12 @@ export const updateSceneParagraphData = (
 
     // Initialize character counts if they don't exist
     if (currentParagraph.aiCharacters === undefined) {
-      currentParagraph.aiCharacters = currentParagraph.state === "ai" ? currentCounts.characters : 0;
+      currentParagraph.aiCharacters =
+        currentParagraph.state === "ai" ? currentCounts.characters : 0;
     }
     if (currentParagraph.humanCharacters === undefined) {
-      currentParagraph.humanCharacters = currentParagraph.state === "ai" ? 0 : currentCounts.characters;
+      currentParagraph.humanCharacters =
+        currentParagraph.state === "ai" ? 0 : currentCounts.characters;
     }
 
     // Calculate the change in characters
@@ -192,21 +205,32 @@ export const updateSceneParagraphData = (
 
     if (characterDifference >= 0) {
       // Adding characters - always counts as human characters
-      dataToUpdate.humanCharacters = (currentParagraph.humanCharacters ?? 0) + characterDifference;
+      dataToUpdate.humanCharacters =
+        (currentParagraph.humanCharacters ?? 0) + characterDifference;
       dataToUpdate.aiCharacters = currentParagraph.aiCharacters ?? 0;
     } else {
       // Removing characters - first reduce AI characters if they exist
-      const remainingAiChars = Math.max(0, (currentParagraph.aiCharacters ?? 0) + characterDifference);
-      const aiCharactersReduced = (currentParagraph.aiCharacters ?? 0) - remainingAiChars;
+      const remainingAiChars = Math.max(
+        0,
+        (currentParagraph.aiCharacters ?? 0) + characterDifference,
+      );
+      const aiCharactersReduced =
+        (currentParagraph.aiCharacters ?? 0) - remainingAiChars;
       const remainingDifference = characterDifference + aiCharactersReduced;
 
       dataToUpdate.aiCharacters = remainingAiChars;
-      dataToUpdate.humanCharacters = Math.max(0, (currentParagraph.humanCharacters ?? 0) + remainingDifference);
+      dataToUpdate.humanCharacters = Math.max(
+        0,
+        (currentParagraph.humanCharacters ?? 0) + remainingDifference,
+      );
     }
 
     // Change to draft only when human edits exceed AI content
-    if (dataToUpdate.humanCharacters && dataToUpdate.aiCharacters && 
-        dataToUpdate.humanCharacters > dataToUpdate.aiCharacters) {
+    if (
+      dataToUpdate.humanCharacters &&
+      dataToUpdate.aiCharacters &&
+      dataToUpdate.humanCharacters > dataToUpdate.aiCharacters
+    ) {
       dataToUpdate.state = "draft";
     }
   }

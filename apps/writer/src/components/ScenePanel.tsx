@@ -4,7 +4,7 @@ import { currentScene } from "../lib/stores/retrieval/current-scene";
 import { deleteScene, updateSceneData } from "../lib/stores/scenes";
 import { useAi } from "../lib/use-ai";
 import { FormField } from "./styled/FormField";
-import { findNode } from "../lib/stores/tree";
+import { findNode, updateNode } from "../lib/stores/tree";
 import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
 import { storyState } from "../lib/stores/story";
 import { charactersState } from "../lib/stores/characters";
@@ -15,7 +15,10 @@ import type { Node } from "@writer/shared";
 import { NodeTypeButtons } from "./NodeTypeButtons";
 
 export const ScenePanel = () => {
-  const help = (helpKind: "summarize" | "improvements", extra = false) => {
+  const help = (
+    helpKind: "summarize" | "improvements" | "suggest_title",
+    extra = false,
+  ) => {
     const text = `Scene text:\n\n${currentScene()
       ?.paragraphs.map((p) =>
         typeof p.text === "string" ? p.text : contentSchemaToText(p.text),
@@ -26,7 +29,12 @@ export const ScenePanel = () => {
       if (sceneId && extra) {
         updateSceneData(sceneId, { extra: res ?? undefined });
       } else if (sceneId) {
-        updateSceneData(sceneId, { summary: res ?? undefined });
+        if (helpKind === "suggest_title") {
+          updateSceneData(sceneId, { title: res ?? undefined });
+        } else {
+          updateSceneData(sceneId, { summary: res ?? undefined });
+          updateNode(sceneId, { oneliner: res ?? undefined });
+        }
       }
     });
   };
@@ -34,14 +42,14 @@ export const ScenePanel = () => {
   const sceneAsNode = (): Node | undefined => {
     const scene = currentScene();
     if (!scene) return undefined;
-    
+
     return {
       id: scene.id,
       name: scene.title,
       type: "scene",
       isOpen: true,
       nodeType: findNode(scene.id)?.nodeType ?? "story",
-      oneliner: scene.summary
+      oneliner: scene.summary,
     };
   };
 
@@ -127,6 +135,9 @@ export const ScenePanel = () => {
             updateSceneData(currentScene()?.id ?? "", {
               summary: e.target.value,
             });
+            updateNode(currentScene()?.id ?? "", {
+              oneliner: e.target.value,
+            });
           }}
           rows={6}
           placeholder="summary"
@@ -169,6 +180,15 @@ export const ScenePanel = () => {
         {(id) => <NodeTypeButtons nodeId={id()} />}
       </Show>
       <div class="flex gap-2">
+        <button
+          type="button"
+          class="btn btn-primary"
+          onClick={() => {
+            help("suggest_title");
+          }}
+        >
+          [AI] Suggest Title
+        </button>
         <button
           type="button"
           class="btn btn-primary"

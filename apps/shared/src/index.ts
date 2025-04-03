@@ -1,8 +1,5 @@
-export {
-  persistedSchema,
-  type Node,
-  type ContentNode,
-} from "./schema.js";
+export * from "./schema.js";
+export type * from "./schema.js";
 export {
   contentSchemaToHtml,
   contentSchemaToText,

@@ -1,5 +1,6 @@
 import { createStore } from "solid-js/store";
 import type { Node } from "@writer/shared";
+import { updateSceneData } from "./scenes";
 
 const treeStateDefault = {
   structure: [],
@@ -106,7 +107,9 @@ export const updateNode = (id: string, updates: Partial<Node>) => {
 
   // Update the node
   // @ts-expect-error: TS does not know that pathToNode is a valid path
-  setTreeState(...pathTo, (node) => ({ ...node, ...updates }));
+  setTreeState(...pathTo, (node) => {
+    return { ...node, ...updates };
+  });
 };
 
 export const appendNode = (node: Node, parentId?: string, afterId?: string) => {

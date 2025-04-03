@@ -30,22 +30,16 @@ export const Editor = (props: {
   let view: EditorView | undefined;
 
   onCleanup(() => {
-    console.log("cleanup", props.paragraphId, view);
     if (props.paragraphId) {
-      console.log("unregisterEditor", props.paragraphId);
       unregisterEditor(props.paragraphId);
     }
     if (view) {
-      console.log("destroy view");
       view.destroy();
     }
   });
 
   createEffect(() => {
-    console.log("createEffect", props.paragraphId, view);
     if (!props.paragraphId || view) return;
-
-    console.log("createEffect 2");
 
     // Create a new div element for the editor
     const editorNode = document.createElement("div");

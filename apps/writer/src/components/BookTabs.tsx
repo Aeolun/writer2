@@ -9,7 +9,7 @@ import {
   setBooksStore,
   updateBookValue,
 } from "../lib/stores/books";
-import { findNode, findPathToNode } from "../lib/stores/tree";
+import { findNode, findPathToNode, updateNode } from "../lib/stores/tree";
 import { FileSelector } from "./FileSelector";
 import { NodeTypeButtons } from "./NodeTypeButtons";
 
@@ -94,6 +94,9 @@ export const BookTabs = () => {
                   "summary",
                   e.currentTarget.value,
                 );
+                updateNode(currentBook()!.id, {
+                  oneliner: e.currentTarget.value,
+                });
               }}
               value={currentBook()?.summary}
             />
