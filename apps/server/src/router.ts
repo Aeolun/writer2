@@ -31,6 +31,12 @@ import { getUserStories } from "./procedures/my-fiction.js";
 import { publishToRoyalRoad } from "./procedures/publish-to-royal-road.js";
 import { updatePassword } from "./procedures/update-password.js";
 import { searchStories } from "./procedures/search-stories.js";
+import { updateClientName } from "./procedures/updateClientName.js";
+import { updateAvatar } from "./procedures/update-avatar.js";
+import { uploadUserImage } from "./procedures/upload-user-image.js";
+import { updateName } from "./procedures/updateName.js";
+import { syncRoyalRoadPublishingProcedure } from "./procedures/sync-royal-road-publishing.js";
+import { checkStoryDifferences } from "./procedures/check-story-differences.js";
 
 export const appRouter = router({
   userList: userList,
@@ -65,6 +71,12 @@ export const appRouter = router({
   publishToRoyalRoad: publishToRoyalRoad,
   updatePassword: updatePassword,
   searchStories: searchStories,
+  updateClientName: updateClientName,
+  updateAvatar: updateAvatar,
+  uploadUserImage: uploadUserImage,
+  updateName: updateName,
+  syncRoyalRoadPublishing: syncRoyalRoadPublishingProcedure,
+  checkStoryDifferences: checkStoryDifferences,
 });
 
 // Export type router type signature,

@@ -1,21 +1,19 @@
-import { PersistedStory, SavePayload, saveSchema } from "@writer/shared";
+import type { SavePayload } from "@writer/shared";
+import { saveSchema } from "@writer/shared";
 import { saveProject } from "./save-project";
 import { storyState } from "../stores/story";
-import { charactersState } from "../stores/characters";
-import { plotpoints } from "../stores/plot-points";
-import { scenesState } from "../stores/scenes";
-import { booksStore } from "../stores/books";
-import { arcsStore } from "../stores/arcs";
-import { chaptersState } from "../stores/chapters";
-import { items } from "../stores/items";
-import { treeState } from "../stores/tree";
-import { languageStore } from "../stores/language-store";
 import { setLastSaveAt, uiState } from "../stores/ui";
 import { addNotification } from "../stores/notifications";
 import { unwrap } from "solid-js/store";
-import { locationsState } from "../stores/locations";
+import { treeState } from "../stores/tree";
+import { scenesState } from "../stores/scenes";
+import { booksStore } from "../stores/books";
+import { stateToStory } from "./state-to-story";
 
-export const saveStory = async (withAutosave = false) => {
+export const saveStory = async (
+  withAutosave = false,
+  forceFullSave = false,
+) => {
   if (!storyState.story || !storyState.openPath) {
     addNotification({
       title: "No story or open path",
@@ -25,52 +23,52 @@ export const saveStory = async (withAutosave = false) => {
     return;
   }
 
-  const story = unwrap(storyState).story;
-  console.log("story", story);
-  if (!story?.id) {
-    throw new Error("Story has no id");
-  }
-  const storyData: SavePayload = {
-    story: {
-      ...story,
-      characters: unwrap(charactersState).characters,
-      plotPoints: unwrap(plotpoints).plotPoints,
-      scene: unwrap(scenesState).scenes,
-      book: unwrap(booksStore).books,
-      arc: unwrap(arcsStore).arcs,
-      locations: unwrap(locationsState).locations,
-      chapter: unwrap(chaptersState).chapters,
-      item: unwrap(items).items,
-      structure: unwrap(treeState).structure,
-    },
-    language: unwrap(languageStore.languages),
-    newAutosave: withAutosave,
-    changesSince: unwrap(uiState).lastSaveAt,
-    expectedLastModified: unwrap(storyState).expectedLastModified,
-  };
+  try {
+    // Use the stateToStory function to get the base story data
+    const storyData = stateToStory();
 
-  const persisted = saveSchema.parse(storyData);
+    // Add the additional fields needed for saving
+    const savePayload: SavePayload = {
+      ...storyData,
+      newAutosave: withAutosave,
+      changesSince: forceFullSave
+        ? undefined
+        : (unwrap(uiState).lastSaveAt ??
+          unwrap(storyState).expectedLastModified),
+      expectedLastModified: unwrap(storyState).expectedLastModified,
+    };
 
-  if (
-    Object.keys(treeState.structure).length > 0 &&
-    Object.keys(scenesState.scenes).length === 0 &&
-    Object.keys(booksStore.books).length === 0
-  ) {
+    const persisted = saveSchema.parse(savePayload);
+
+    if (
+      Object.keys(treeState.structure).length > 0 &&
+      Object.keys(scenesState.scenes).length === 0 &&
+      Object.keys(booksStore.books).length === 0
+    ) {
+      addNotification({
+        title: "No scenes or books",
+        message:
+          "Maybe something went wrong, tree has items, but books and scenes do not.",
+        type: "error",
+      });
+      return;
+    }
+
+    const openPath = storyState.openPath;
+    if (!openPath) {
+      return;
+    }
+
+    await saveProject(openPath, persisted);
+
+    setLastSaveAt(Date.now());
+  } catch (error) {
+    console.error("Error saving story:", error);
     addNotification({
-      title: "No scenes or books",
+      title: "Save failed",
       message:
-        "Maybe something went wrong, tree has items, but books and scenes do not.",
+        error instanceof Error ? error.message : "An unknown error occurred",
       type: "error",
     });
-    return;
   }
-
-  const openPath = storyState.openPath;
-  if (!openPath) {
-    return;
-  }
-
-  await saveProject(openPath, persisted);
-
-  setLastSaveAt(Date.now());
 };

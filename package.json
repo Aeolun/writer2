@@ -1,0 +1,20 @@
+{
+  "name": "writer",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Writer monorepo",
+  "scripts": {
+    "dev": "pnpm build:shared && pnpm -r --parallel dev",
+    "dev:reader": "pnpm build:shared && pnpm --filter @writer/reader dev",
+    "dev:server": "pnpm build:shared && pnpm --filter @writer/server dev",
+    "build": "pnpm -r build",
+    "build:shared": "pnpm --filter @writer/shared build",
+    "test": "pnpm -r test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

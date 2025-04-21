@@ -1,6 +1,7 @@
 import type { instructions } from "./ai-instructions.ts";
 import { Anthropic } from "./llm/anthropic.ts";
 import { Cerebras } from "./llm/cerebras.ts";
+import { Gemini } from "./llm/gemini.ts";
 import { Groq } from "./llm/groq.ts";
 import { Ollama } from "./llm/ollama.ts";
 import { OpenAI } from "./llm/openai.ts";
@@ -11,7 +12,7 @@ export async function useAi(
   kind: keyof typeof instructions,
   text: string | { text: string; canCache: boolean }[],
   addInstructions = true,
-) {
+): Promise<string> {
   const aiSource = settingsState.aiSource;
   const storyInstructions = storyState.story?.settings?.aiInstructions;
 
@@ -55,6 +56,13 @@ export async function useAi(
     const ollama = new Ollama();
     await ollama.init();
     return ollama.chat(kind, fullText, {
+      additionalInstructions: addInstructions ? storyInstructions : undefined,
+    });
+  }
+  if (aiSource === "gemini") {
+    const gemini = new Gemini();
+    await gemini.init();
+    return gemini.chat(kind, fullText, {
       additionalInstructions: addInstructions ? storyInstructions : undefined,
     });
   }

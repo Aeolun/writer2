@@ -38,6 +38,15 @@ export const BookTabs = () => {
               value={currentBook()?.title}
             />
           </FormField>
+          <FormField label="Modified Time">
+            <input
+              type="text"
+              placeholder="modified time"
+              class="input input-bordered"
+              disabled
+              value={currentBook()?.modifiedAt}
+            />
+          </FormField>
           <FormField label="Author">
             <input
               type="text"

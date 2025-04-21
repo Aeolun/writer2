@@ -2,6 +2,7 @@ import { Book } from "@writer/shared";
 import { createStore } from "solid-js/store";
 import { appendNode, findNode, removeNode, updateNode } from "./tree";
 import shortUUID from "short-uuid";
+import { setStoryState } from "./story";
 
 const booksStoreDefault = {
   books: {},
@@ -22,7 +23,14 @@ export const createBook = () => {
     summary: "",
     modifiedAt: Date.now(),
   } satisfies Book);
-  appendNode({ id, type: "book", name: "New book", isOpen: true });
+  appendNode({
+    id,
+    type: "book",
+    name: "New book",
+    isOpen: true,
+    nodeType: "story",
+  });
+  setStoryState("story", "modifiedTime", Date.now());
   return id;
 };
 
@@ -39,6 +47,7 @@ export const updateBookValue = <K extends keyof Book>(
     [key]: value,
     modifiedAt: Date.now(),
   });
+  setStoryState("story", "modifiedTime", Date.now());
   if (key === "title") {
     updateNode(id, { name: value as string });
   }
@@ -52,6 +61,7 @@ export const deleteBook = (id: string) => {
     return;
   }
   removeNode(id);
+  setStoryState("story", "modifiedTime", Date.now());
   // @ts-expect-error: this is a valid way to delete
   setBooksStore("books", id, undefined);
 };

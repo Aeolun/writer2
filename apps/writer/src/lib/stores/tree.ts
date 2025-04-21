@@ -245,3 +245,100 @@ export const updateAllChildrenNodeType = (
 
   updateChildren(node);
 };
+
+export const getContextNodes = (): Node[] => {
+  const contextNodes: Node[] = [];
+
+  const traverse = (node: Node, parentIsContext: boolean = false) => {
+    // If this is a scene node and either:
+    // 1. It has nodeType "context", or
+    // 2. Its parent is a context node
+    if (
+      node.type === "scene" &&
+      (node.nodeType === "context" || parentIsContext)
+    ) {
+      contextNodes.push(node);
+    }
+
+    // If this node is a context node, mark all its children as being under a context node
+    const isContext = node.nodeType === "context";
+
+    if (node.children) {
+      for (const child of node.children) {
+        traverse(child, isContext);
+      }
+    }
+  };
+
+  for (const node of treeState.structure) {
+    traverse(node);
+  }
+
+  return contextNodes;
+};
+
+export const getStoryNodes = (): Node[] => {
+  const storyNodes: Node[] = [];
+
+  const traverse = (node: Node) => {
+    if (node.type === "scene" && node.nodeType === "story") {
+      storyNodes.push(node);
+    }
+    if (node.children) {
+      for (const child of node.children) {
+        traverse(child);
+      }
+    }
+  };
+
+  for (const node of treeState.structure) {
+    traverse(node);
+  }
+
+  return storyNodes;
+};
+
+/**
+ * Search for story nodes based on a query string
+ * @param query The search query
+ * @param maxResults Maximum number of results to return
+ * @returns Array of matching story nodes
+ */
+export const searchStoryNodes = (
+  query: string,
+  maxResults: number = 10,
+): Node[] => {
+  if (!query || query.trim() === "") {
+    return [];
+  }
+
+  const results: Node[] = [];
+  const lowerQuery = query.toLowerCase();
+
+  const traverse = (node: Node) => {
+    // Only include scene nodes that are marked as story nodes
+    if (node.type === "scene" && node.nodeType === "story") {
+      // Check if the node name contains the query
+      if (
+        node.name.toLowerCase().includes(lowerQuery) ||
+        (node.oneliner && node.oneliner.toLowerCase().includes(lowerQuery))
+      ) {
+        results.push(node);
+      }
+    }
+
+    // Continue traversing children
+    if (node.children) {
+      for (const child of node.children) {
+        traverse(child);
+      }
+    }
+  };
+
+  for (const node of treeState.structure) {
+    traverse(node);
+  }
+
+  // Return up to maxResults results
+  return results.slice(0, maxResults);
+};

@@ -16,6 +16,8 @@ import {
 } from "./tree";
 
 import { removeEntityFromEmbeddingsCache } from "../embeddings/load-story-to-embeddings";
+import { setChaptersState } from "./chapters";
+import { setStoryState } from "./story";
 
 const scenesStateDefault = {
   scenes: {},
@@ -35,6 +37,7 @@ export const createScene = (chapterId: string, beforeId?: string) => {
     name: "New Scene",
     children: [],
     isOpen: true,
+    nodeType: "story" as const,
   };
 
   setScenesState("scenes", newScene.id, {
@@ -49,6 +52,7 @@ export const createScene = (chapterId: string, beforeId?: string) => {
     text: "",
   } satisfies Scene);
   insertNode(newScene, chapterId, beforeId);
+  setStoryState("story", "modifiedTime", Date.now());
 
   return newScene;
 };
@@ -75,6 +79,7 @@ export const updateSceneData = (sceneId: string, data: Partial<Scene>) => {
     ...data,
     modifiedAt: Date.now(),
   });
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const updateSceneCursor = (sceneId: string, cursor: number) => {
@@ -169,6 +174,7 @@ export const splitScene = (sceneId: string, paragraphId: string) => {
     parentNode.id,
     sceneId,
   );
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const updateSceneParagraphData = (
@@ -254,6 +260,16 @@ export const updateSceneParagraphData = (
     (p) => p.id === paragraphId,
     dataToUpdate,
   );
+  setScenesState("scenes", sceneId, {
+    modifiedAt: Date.now(),
+  });
+  setStoryState("story", "modifiedTime", Date.now());
+  const parentId = findParent(sceneId)?.id;
+  if (parentId) {
+    setChaptersState("chapters", parentId, {
+      modifiedAt: Date.now(),
+    });
+  }
 
   if (data.text) {
     const allWords = scenesState.scenes[sceneId].paragraphs
@@ -289,6 +305,7 @@ export const removePlotpointFromSceneParagraph = (
     "plot_point_actions",
     (actions) => actions?.filter((a) => a.plot_point_id !== plotpointId),
   );
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const addPlotpointActionToSceneParagraph = (
@@ -304,6 +321,7 @@ export const addPlotpointActionToSceneParagraph = (
     "plot_point_actions",
     (actions) => [...(actions ?? []), plotpoint],
   );
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const removeInventoryFromSceneParagraph = (
@@ -319,6 +337,7 @@ export const removeInventoryFromSceneParagraph = (
     "inventory_actions",
     (actions) => actions?.filter((a) => a.item_name !== itemId),
   );
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const addInventoryActionToSceneParagraph = (
@@ -334,6 +353,7 @@ export const addInventoryActionToSceneParagraph = (
     "inventory_actions",
     (actions) => [...(actions ?? []), inventory],
   );
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const moveParagraphUp = (sceneId: string, paragraphId: string) => {
@@ -348,6 +368,7 @@ export const moveParagraphUp = (sceneId: string, paragraphId: string) => {
       ...p.slice(index + 1),
     ];
   });
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const moveParagraphDown = (sceneId: string, paragraphId: string) => {
@@ -362,6 +383,7 @@ export const moveParagraphDown = (sceneId: string, paragraphId: string) => {
       ...p.slice(index + 2),
     ];
   });
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const removeSceneParagraph = (sceneId: string, paragraphId: string) => {
@@ -369,6 +391,7 @@ export const removeSceneParagraph = (sceneId: string, paragraphId: string) => {
   setScenesState("scenes", sceneId, "paragraphs", (p) => {
     return p.filter((p) => p.id !== paragraphId);
   });
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const createSceneParagraph = (
@@ -405,6 +428,7 @@ export const createSceneParagraph = (
       selectedParagraph: paragraph.id,
     };
   });
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const deleteScene = (sceneId: string) => {
@@ -415,4 +439,5 @@ export const deleteScene = (sceneId: string) => {
   // @ts-expect-error: this is a valid way to delete
   setScenesState("scenes", sceneId, undefined);
   removeNode(sceneId);
+  setStoryState("story", "modifiedTime", Date.now());
 };

@@ -1,0 +1,277 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma/client"
+}
+
+model User {
+  id                Int                @id @default(autoincrement())
+  email             String             @unique
+  name              String             @unique
+  password          String
+  role              String             @default("user")
+  avatarUrl         String? // Custom avatar URL
+  ownedStories      Story[]
+  bookShelfStories  BookShelfStory[]
+  createdAt         DateTime           @default(now())
+  accessKeys        AccessKey[]
+  paragraphComments ParagraphComment[]
+  files             File[]
+  sessions          Session[]
+  storyReadStatuses StoryReadStatus[]
+}
+
+model Session {
+  id         String   @id @default(uuid(7))
+  ownerId    Int
+  owner      User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  validUntil DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model AccessKey {
+  id          Int       @id @default(autoincrement())
+  key         String    @unique
+  description String?
+  ownerId     Int
+  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastUsedAt  DateTime?
+}
+
+enum SavedType {
+  FAVORITE
+  FOLLOW
+  READ_LATER
+}
+
+model BookShelfStory {
+  id        Int       @id @default(autoincrement())
+  name      String    @default("")
+  ownerId   Int
+  owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  storyId   String
+  story     Story     @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  kind      SavedType
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum StoryStatus {
+  COMPLETED
+  ONGOING
+  HIATUS
+}
+
+enum StoryType {
+  FANFICTION
+  ORIGINAL
+}
+
+model Story {
+  id                     String            @id @default(uuid(7))
+  name                   String            @default("")
+  summary                String?           @db.Text()
+  ownerId                Int
+  owner                  User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  royalRoadId            Int?              @unique
+  bookShelfStories       BookShelfStory[]
+  published              Boolean           @default(false)
+  status                 StoryStatus       @default(ONGOING)
+  type                   StoryType         @default(ORIGINAL)
+  wordsPerWeek           Int?
+  spellingLevel          Int?              @default(3)
+  chapters               Int?
+  firstChapterReleasedAt DateTime?
+  lastChapterReleasedAt  DateTime?
+  coverArtAsset          String
+  coverColor             String            @default("#000000")
+  coverTextColor         String            @default("#FFFFFF")
+  coverFontFamily        String            @default("Georgia")
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  sortOrder              Int               @default(0)
+  pages                  Int?
+  books                  Book[]
+  files                  File[]
+  storyReadStatuses      StoryReadStatus[]
+  storyTags              StoryTag[]
+}
+
+model Tag {
+  id        String     @id @default(uuid(7))
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  storyTags StoryTag[]
+}
+
+model StoryTag {
+  id        String   @id @default(uuid(7))
+  storyId   String
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  tagId     String
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([storyId, tagId])
+}
+
+model StoryReadStatus {
+  id                String    @id @default(uuid(7))
+  storyId           String
+  story             Story     @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  userId            Int
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastChapterId     String?
+  lastChapter       Chapter?  @relation(fields: [lastChapterId], references: [id])
+  lastChapterReadAt DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Book {
+  id            String   @id @default(uuid(7))
+  name          String   @default("")
+  storyId       String
+  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  coverArtAsset String
+  spineArtAsset String
+  pages         Int?
+  arcs          Arc[]
+  sortOrder     Int
+  nodeType      String   @default("story") // "story", "non-story", or "context"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
+}
+
+model Arc {
+  id        String    @id @default(uuid(7))
+  name      String    @default("")
+  bookId    String
+  book      Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  chapters  Chapter[]
+  sortOrder Int // Added for ordering within a book
+  nodeType  String    @default("story") // Added for consistency ("story", "non-story", "context")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+}
+
+model Chapter {
+  id               String              @id @default(uuid(7))
+  name             String              @default("")
+  arcId            String // Changed from bookId
+  arc              Arc                 @relation(fields: [arcId], references: [id], onDelete: Cascade) // Changed from book
+  publishedOn      DateTime?
+  sortOrder        Int
+  royalRoadId      Int? // ID of the chapter on Royal Road
+  scenes           Scene[]
+  StoryReadStatus  StoryReadStatus[]
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @default(now()) @updatedAt
+  nodeType         String              @default("story") // "story", "non-story", or "context"
+  publishingStatus ChapterPublishing[]
+}
+
+model Scene {
+  id         String      @id @default(uuid(7))
+  name       String      @default("")
+  body       String      @db.LongText()
+  chapter    Chapter     @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId  String
+  sortOrder  Int
+  nodeType   String      @default("story") // "story", "non-story", or "context"
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  paragraphs Paragraph[]
+}
+
+model Paragraph {
+  id                 String              @id @default(uuid(7))
+  sceneId            String
+  scene              Scene               @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  paragraphRevisions ParagraphRevision[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @default(now()) @updatedAt
+  sortOrder          Int
+}
+
+model ParagraphRevision {
+  id               String             @id @default(uuid(7))
+  paragraphId      String
+  paragraph        Paragraph          @relation(fields: [paragraphId], references: [id], onDelete: Cascade)
+  body             String             @db.LongText()
+  contentSchema    String?            @db.LongText() // Store the original content schema as JSON
+  version          Int                @default(1)
+  createdAt        DateTime           @default(now())
+  paragraphComment ParagraphComment[]
+}
+
+enum ParagraphCommentType {
+  COMMENT
+  SUGGESTION
+}
+
+model ParagraphComment {
+  id                  Int                  @id @default(autoincrement())
+  paragraphRevisionId String
+  paragraphRevision   ParagraphRevision    @relation(fields: [paragraphRevisionId], references: [id], onDelete: Cascade)
+  ownerId             Int
+  owner               User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  body                String
+  type                ParagraphCommentType @default(COMMENT)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+}
+
+model File {
+  id        String   @id @default(uuid(7))
+  ownerId   Int
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  storyId   String?
+  story     Story?   @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  localPath String?
+  path      String   @unique
+  sha256    String   @default("")
+  width     Int?
+  height    Int?
+  bytes     Int?
+  mimeType  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PublishingPlatform {
+  ROYAL_ROAD
+  // Add more platforms here as they are supported
+}
+
+enum PublishingStatus {
+  DRAFT
+  PUBLISHED
+  FAILED
+}
+
+model ChapterPublishing {
+  id           String             @id @default(uuid(7))
+  chapterId    String
+  chapter      Chapter            @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  platform     PublishingPlatform
+  status       PublishingStatus   @default(DRAFT)
+  platformId   String? // The ID of the chapter on the platform (e.g., Royal Road chapter ID)
+  publishedAt  DateTime? // When we successfully published the chapter
+  lastAttempt  DateTime? // Last time we tried to publish
+  errorMessage String?            @db.Text() // Last error message if publishing failed
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@unique([chapterId, platform])
+  @@unique([platform, platformId]) // Ensure platform IDs are unique per platform
+}

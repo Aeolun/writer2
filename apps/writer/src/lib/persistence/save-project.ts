@@ -39,7 +39,7 @@ const writeStoryPath = async (
         if (
           options?.saveChangedSince &&
           (!entityData.modifiedAt ||
-            entityData.modifiedAt < options.saveChangedSince)
+            Number(entityData.modifiedAt) < options.saveChangedSince)
         ) {
           continue;
         }
@@ -133,8 +133,9 @@ const writeStoryPath = async (
       ),
     );
   } else if (
+    options?.autosave &&
     options.saveChangedSince &&
-    validatedBody.story.modifiedTime > options.saveChangedSince
+    Number(validatedBody.story.modifiedTime) > options.saveChangedSince
   ) {
     const indexFile = await path.join(projectPath, `${Date.now()}.json`);
     writableFiles[indexFile] = JSON.stringify(
@@ -191,13 +192,13 @@ export const saveProject = async (projectPath: string, data: SavePayload) => {
       );
       await mkdir(storyAutoSavePath, { recursive: true });
       await writeStoryPath(validatedBody, storyAutoSavePath, {
-        saveChangedSince: data.changesSince ?? data.expectedLastModified,
+        saveChangedSince: data.changesSince,
         autosave: true,
       });
     }
 
     await writeStoryPath(validatedBody, projectPath, {
-      saveChangedSince: data.changesSince ?? data.expectedLastModified,
+      saveChangedSince: data.changesSince,
     });
 
     const newFileStat = await stat(storyFile);

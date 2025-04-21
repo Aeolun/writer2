@@ -28,6 +28,7 @@ export class Anthropic implements LlmInterface {
   async listModels() {
     await this.init();
     return [
+      "claude-3-7-sonnet-latest",
       "claude-3-5-sonnet-latest",
       "claude-3-5-sonnet-20241022",
       "claude-3-5-sonnet-20240620",
@@ -51,7 +52,7 @@ export class Anthropic implements LlmInterface {
     if (!this.api) {
       throw new Error("Not initialized yet");
     }
-    const result = await this.api.beta.promptCaching.messages.create({
+    const result = await this.api.messages.create({
       system: options?.additionalInstructions
         ? [
             {

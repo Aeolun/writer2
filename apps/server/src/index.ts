@@ -6,7 +6,7 @@ import { appRouter } from "./router.js";
 import { createContext } from "./trpc.js";
 
 export type { AppRouter };
-export * from "@prisma/client";
+export * from "./generated/prisma/client/index.js";
 
 const fastify = Fastify({
   bodyLimit: 10485760, // Set the payload limit to 10 MB (10 * 1024 * 1024 bytes)

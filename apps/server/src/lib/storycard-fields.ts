@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "../generated/prisma/client/index.js";
 
 export const storycardFields: Prisma.StorySelect = {
   id: true,

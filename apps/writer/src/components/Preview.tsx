@@ -37,6 +37,23 @@ export const Preview = () => {
     .filter((i) => i)
     .join("\n");
 
+  const inlineText = sortedObjects(uiState.currentId, false, {
+    translationsInline: true,
+  }).map((item) => {
+    if (item.type === "paragraph") {
+      return `${md.render(item.text.trim())}`;
+    }
+    if (item.type === "chapter_header") {
+      return `<h1>${item.text}</h1>`;
+    }
+    if (item.type === "break") {
+      return `<div><img style="margin: 2em auto; display: block;" src="https://pub-43e7e0f137a34d1ca1ce3be7325ba046.r2.dev/Group.png" /></div>`;
+    }
+    return undefined;
+  })
+    .filter((i) => i)
+    .join("\n");
+
   const [typstText, setTypstText] = createSignal("");
   createEffect(() => {
     const process = async () => {
@@ -227,6 +244,24 @@ export const Preview = () => {
                 }, 0);
               }}
             />
+            <textarea
+              class="textarea textarea-bordered"
+              id={"preview_inline"}
+              rows={10}
+              value={inlineText}
+              onClick={() => {
+                //select all
+                setTimeout(() => {
+                  const textarea: HTMLTextAreaElement | null =
+                    document.querySelector("#preview_inline");
+                  if (textarea) {
+                    textarea.select();
+                    textarea.setSelectionRange(0, 99999);
+                    navigator.clipboard.writeText(textarea.value);
+                  }
+                }, 0);
+              }}
+            />
             <div class="mt-4">
               <h3 class="text-lg font-bold mb-2">Translations</h3>
               <textarea
@@ -239,15 +274,15 @@ export const Preview = () => {
     <th>Original</th>
   </tr>
 ${sortedObjects(uiState.currentId)
-  .filter((obj): obj is SortedParagraphObject => obj.type === "paragraph")
-  .flatMap((obj) => obj.translations ?? [])
-  .map(
-    (translation) => `  <tr>
+                    .filter((obj): obj is SortedParagraphObject => obj.type === "paragraph")
+                    .flatMap((obj) => obj.translations ?? [])
+                    .map(
+                      (translation) => `  <tr>
     <td>${translation.original}</td>
     <td>${translation.translation}</td>
   </tr>`,
-  )
-  .join("\n")}\n</table>`}
+                    )
+                    .join("\n")}\n</table>`}
                 onClick={() => {
                   setTimeout(() => {
                     const textarea: HTMLTextAreaElement | null =
@@ -340,7 +375,9 @@ ${sortedObjects(uiState.currentId)
         {tab() === 2 && (
           <div>
             <div class="max-w-xl m-auto">
-              {sortedObjects(uiState.currentId).map((scene) => {
+              {sortedObjects(uiState.currentId, false, {
+                translationsInline: true,
+              }).map((scene) => {
                 if (scene.type === "summary") {
                   return (
                     <div class="p-4 my-2 bg-base-300">
@@ -373,19 +410,20 @@ ${sortedObjects(uiState.currentId)
                   );
                 }
                 if (scene.type === "paragraph") {
+                  const textElement = document.createElement("div");
+                  textElement.innerHTML = scene.text.replaceAll("--", "—");
                   return (
                     <div
-                      class={`relative font-serif indent-4 my-2 group ${
-                        scene.state === "sdt"
-                          ? "text-purple-500"
-                          : scene.state === "revise"
-                            ? "text-red-500"
-                            : scene.posted
-                              ? "text-gray-600"
-                              : undefined
-                      }`}
+                      class={`relative font-serif indent-4 my-2 group ${scene.state === "sdt"
+                        ? "text-purple-500"
+                        : scene.state === "revise"
+                          ? "text-red-500"
+                          : scene.posted
+                            ? "text-gray-600"
+                            : undefined
+                        }`}
                     >
-                      {scene.text ? scene.text.replaceAll("--", "—") : null}
+                      {textElement}
                       <div class="absolute right-[-30px] bottom-[0px] flex gap-2 items-center select-none hidden group-hover:flex">
                         <button
                           type="button"

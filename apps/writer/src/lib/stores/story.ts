@@ -21,7 +21,7 @@ const storyStateDefault = {
     name: "",
     modifiedTime: 0,
     settings: {
-      defaultPerspective: "first",
+      defaultPerspective: "first" as const,
     },
     uploadedFiles: {},
     lastPublishTime: 0,
@@ -42,7 +42,9 @@ export const resetStoryState = () => {
       id: short.generate(),
       name: "",
       modifiedTime: 0,
-      settings: {},
+      settings: {
+        defaultPerspective: "first" as const,
+      },
       uploadedFiles: {},
       lastPublishTime: 0,
     },
@@ -127,6 +129,7 @@ export const setStoryProperty = <K extends keyof StoryStateProperties>(
   value: StoryStateProperties[K],
 ) => {
   setStoryState("story", property, value);
+  setStoryState("story", "modifiedTime", Date.now());
 };
 
 export const setStorySetting = <K extends keyof StorySettings>(
@@ -134,4 +137,5 @@ export const setStorySetting = <K extends keyof StorySettings>(
   value: StorySettings[K],
 ) => {
   setStoryState("story", "settings", property, value);
+  setStoryState("story", "modifiedTime", Date.now());
 };

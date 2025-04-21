@@ -26,6 +26,11 @@ export const loadToState = async (savedStory: PersistedStory) => {
   for (const sceneId of Object.keys(scenesToSet)) {
     let sceneWords = 0;
     for (const paragraph of scenesToSet[sceneId].paragraphs) {
+      // Ensure paragraph has a modifiedAt timestamp
+      if (!paragraph.modifiedAt) {
+        paragraph.modifiedAt = Date.now();
+      }
+
       const counts = getWordCount(paragraph.text);
       paragraph.words = counts.words;
       sceneWords += paragraph.words;

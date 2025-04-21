@@ -1,7 +1,7 @@
 import { TRPCError, initTRPC } from "@trpc/server";
 import type { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
 import { prisma } from "./prisma.js";
-import { AccessKey } from "@prisma/client";
+import { AccessKey } from "./generated/prisma/client/index.js";
 
 export const createContext = (
   opts: CreateFastifyContextOptions,
@@ -12,6 +12,8 @@ export const createContext = (
     token: opts.req.headers.authorization?.replace("Bearer ", ""),
   };
 };
+
+export type Context = Awaited<ReturnType<typeof createContext>>;
 
 /**
  * Initialization of tRPC backend

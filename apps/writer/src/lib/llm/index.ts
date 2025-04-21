@@ -4,6 +4,7 @@ import type { LlmInterface } from "./llm-interface";
 import { Ollama } from "./ollama";
 import { OpenAI } from "./openai";
 import { Cerebras } from "./cerebras";
+import { Gemini } from "./gemini";
 
 export const availableLLMs = [
   "groq",
@@ -11,6 +12,7 @@ export const availableLLMs = [
   "anthropic",
   "ollama",
   "cerebras",
+  "gemini",
 ] as const;
 export type LLMName = (typeof availableLLMs)[number];
 
@@ -20,4 +22,5 @@ export const llms: Record<LLMName, LlmInterface> = {
   anthropic: new Anthropic(),
   ollama: new Ollama(),
   cerebras: new Cerebras(),
+  gemini: new Gemini(),
 };

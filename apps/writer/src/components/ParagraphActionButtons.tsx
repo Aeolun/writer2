@@ -2,9 +2,9 @@ import { FiArrowDown, FiArrowUp, FiPlus, FiTrash, FiMenu } from "solid-icons/fi"
 import { TbBuildingStore, TbTimeline } from "solid-icons/tb";
 import { ImMagicWand, ImPlay2 } from "solid-icons/im";
 import { BsSpellcheck } from "solid-icons/bs";
-import { RiBuildingsAncientGateLine, RiSystemStarFill } from "solid-icons/ri";
+import { RiBuildingsAncientGateLine, RiSystemStarFill, RiSystemEye2Line } from "solid-icons/ri";
 import shortUUID from "short-uuid";
-import { createSceneParagraph, moveParagraphDown, moveParagraphUp, removeSceneParagraph, splitScene, updateSceneParagraphData } from "../lib/stores/scenes";
+import { createSceneParagraph, moveParagraphDown, moveParagraphUp, removeSceneParagraph, scenesState, splitScene, updateSceneParagraphData } from "../lib/stores/scenes";
 import { createSignal } from "solid-js";
 import { InventoryActions } from "./InventoryActions";
 import { PlotpointActions } from "./PlotPointActions";
@@ -20,6 +20,7 @@ import {
   DropdownMenuLabel,
 } from "../solid-ui/dropdown-menu";
 import type { Scene, ContentNode } from "@writer/shared";
+import { charactersState } from "../lib/stores/characters";
 
 interface ParagraphActionButtonsProps {
   sceneId: string;
@@ -39,15 +40,111 @@ export const ParagraphActionButtons = (props: ParagraphActionButtonsProps) => {
   const [translationModalOpen, setTranslationModalOpen] = createSignal(false);
   const [translationText, setTranslationText] = createSignal("");
 
-  const help = async (helpKind: "rewrite_spelling" | "rewrite" | "snowflake_refine_scene_style" | "snowflake_convert_perspective") => {
+  const help = async (helpKind: "rewrite_spelling" | "rewrite" | "snowflake_refine_scene_style" | "snowflake_convert_perspective" | "add_sensory_details") => {
     if (!props.scene) return;
-    
+
     updateSceneParagraphData(props.sceneId, props.paragraphId, {
       extraLoading: true,
     });
 
     try {
-      const result = await useAi(helpKind, typeof props.text === "string" ? props.text : contentSchemaToText(props.text));
+      // Get the current paragraph text
+      const currentParagraphText = typeof props.text === "string" ? props.text : contentSchemaToText(props.text);
+
+      // Find the current paragraph index in the scene
+      const currentParagraphIndex = props.scene.paragraphs.findIndex(p => p.id === props.paragraphId);
+
+      // Get previous and next paragraphs if they exist
+      const previousParagraphs = [];
+      for (let i = 1; i <= 5; i++) {
+        const prevIndex = currentParagraphIndex - i;
+        if (prevIndex >= 0) {
+          const prevParagraph = props.scene.paragraphs[prevIndex];
+          const prevContent = typeof prevParagraph.text === "string"
+            ? prevParagraph.text
+            : contentSchemaToText(prevParagraph.text);
+          previousParagraphs.push(prevContent);
+        }
+      }
+
+      const nextParagraph = props.scene.paragraphs[currentParagraphIndex + 1];
+      const nextParagraphContent = nextParagraph ?
+        (typeof nextParagraph.text === "string" ?
+          nextParagraph.text :
+          contentSchemaToText(nextParagraph.text)) : "";
+
+      // Build character context
+      const characterLines: string[] = [];
+      if (props.scene.protagonistId) {
+        const protagonist = charactersState.characters[props.scene.protagonistId];
+        if (protagonist) {
+          characterLines.push(
+            `<perspective>${protagonist.firstName}'s ${props.scene.perspective ?? "third"}-person perspective</perspective>`,
+          );
+
+          // Add comprehensive character information for the protagonist
+          const protagonistDetails = [
+            `Name: ${protagonist.firstName} ${protagonist.lastName || ""}`,
+            `Personality: ${protagonist.personality || "Not provided"}`,
+            `Personality Quirks: ${protagonist.personalityQuirks || "Not provided"}`,
+            `Likes: ${protagonist.likes || "Not provided"}`,
+            `Dislikes: ${protagonist.dislikes || "Not provided"}`,
+            `Background: ${protagonist.background || "Not provided"}`,
+            `Distinguishing Features: ${protagonist.distinguishingFeatures || "Not provided"}`,
+            `Age: ${protagonist.age || "Not provided"}`,
+            `Gender: ${protagonist.gender || "Not provided"}`,
+            `Sexual Orientation: ${protagonist.sexualOrientation || "Not provided"}`
+          ].filter(line => !line.endsWith("Not provided")).join("\n");
+
+          if (protagonistDetails) {
+            characterLines.push(`<protagonist_details>${protagonistDetails}</protagonist_details>`);
+          }
+
+          if (protagonist.writingStyle) {
+            characterLines.push(`<protagonist_writing_style>${protagonist.writingStyle}</protagonist_writing_style>`);
+          }
+        }
+      }
+      for (const charId of props.scene?.characterIds ?? []) {
+        const char = charactersState.characters[charId];
+        if (!char) continue;
+        const charText = `${[char.firstName, char.middleName, char.lastName]
+          .filter(Boolean)
+          .join(" ")}: ${char.personality}`;
+        characterLines.push(`<present_character>${charText}</present_character>`);
+      }
+      for (const charId of props.scene?.referredCharacterIds ?? []) {
+        const char = charactersState.characters[charId];
+        if (!char) continue;
+        const charText = `${[char.firstName, char.middleName, char.lastName]
+          .filter(Boolean)
+          .join(" ")}: ${char.personality}`;
+        characterLines.push(
+          `<referred_character>${charText}</referred_character>`,
+        );
+      }
+
+      // Format the text with XML tags for context
+      const previousParagraphsXml = previousParagraphs
+        .map((content, index) => `<previous_paragraph_${index + 1}>${content}</previous_paragraph_${index + 1}>`)
+        .join('\n');
+
+      const characterContextXml = characterLines.join('\n');
+
+      const formattedText = `<current_paragraph>${currentParagraphText}</current_paragraph>
+<next_paragraph>${nextParagraphContent}</next_paragraph>`;
+
+      // Pass the formatted text as a string to useAi
+      const result = await useAi(helpKind, [{
+        text: characterContextXml,
+        canCache: characterContextXml.length > 0,
+      }, {
+        text: previousParagraphsXml,
+        canCache: previousParagraphsXml.length > 0,
+      }, {
+        text: formattedText,
+        canCache: false,
+      }]);
       updateSceneParagraphData(props.sceneId, props.paragraphId, {
         extra: result,
         extraLoading: false,
@@ -85,6 +182,7 @@ export const ParagraphActionButtons = (props: ParagraphActionButtonsProps) => {
             type="button"
             class="btn btn-xs"
             onClick={props.onGenerateBetween}
+            disabled={scenesState.scenes[props.sceneId].protagonistId === undefined}
             title="Generate content after this paragraph"
           >
             🪄
@@ -97,6 +195,7 @@ export const ParagraphActionButtons = (props: ParagraphActionButtonsProps) => {
             type="button"
             class="btn btn-xs"
             onClick={() => help("rewrite_spelling")}
+            disabled={scenesState.scenes[props.sceneId].protagonistId === undefined}
             title="Fix spelling and basic grammar"
           >
             <BsSpellcheck />
@@ -105,6 +204,7 @@ export const ParagraphActionButtons = (props: ParagraphActionButtonsProps) => {
             type="button"
             class="btn btn-xs"
             onClick={() => help("rewrite")}
+            disabled={scenesState.scenes[props.sceneId].protagonistId === undefined}
             title="Rewrite with style improvements"
           >
             <RiBuildingsAncientGateLine />
@@ -113,9 +213,19 @@ export const ParagraphActionButtons = (props: ParagraphActionButtonsProps) => {
             type="button"
             class="btn btn-xs"
             onClick={() => help("snowflake_refine_scene_style")}
+            disabled={scenesState.scenes[props.sceneId].protagonistId === undefined}
             title="Refine paragraph style"
           >
             <RiSystemStarFill />
+          </button>
+          <button
+            type="button"
+            class="btn btn-xs"
+            onClick={() => help("add_sensory_details")}
+            disabled={scenesState.scenes[props.sceneId].protagonistId === undefined}
+            title="Add sensory details"
+          >
+            <RiSystemEye2Line />
           </button>
         </div>
 
@@ -177,7 +287,7 @@ export const ParagraphActionButtons = (props: ParagraphActionButtonsProps) => {
               }, props.paragraphId)}>
                 Add New Paragraph
               </DropdownMenuItem>
-              
+
               <DropdownMenuLabel>Paragraph State</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => updateSceneParagraphData(props.sceneId, props.paragraphId, { state: "draft" })}>
                 Set as Draft

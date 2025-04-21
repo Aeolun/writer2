@@ -1,2 +1,5 @@
 packages:
-  - "apps/**"
+  - 'apps/*'
+  - 'packages/*'
+catalog:
+  zod: ^3.24.3

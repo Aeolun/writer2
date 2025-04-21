@@ -41,8 +41,14 @@ export const whoAmI = publicProcedure.query(async (opts) => {
   if (!owner) {
     return null;
   }
+
+  // Use custom avatar URL if it exists, otherwise use Gravatar
+  const avatarUrl =
+    owner.avatarUrl || `https://gravatar.com/avatar/${sha256Email}`;
+
   return {
     ...owner,
-    avatarUrl: `https://gravatar.com/avatar/${sha256Email}`,
+    avatarUrl,
+    clientName: accessToken?.description || null,
   };
 });

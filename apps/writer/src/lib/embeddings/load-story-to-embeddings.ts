@@ -23,23 +23,31 @@ export type ParagraphEmbeddingMetadata = {
   kind: "content";
 };
 
-export type CharacterEmbeddingMetadata = {
-  characterId: string;
-  storyId: string;
-  kind: "context";
-  aspect: "summary" | "appearance" | "identity" | "role";
-} | {
-  characterId: string;
-  storyId: string;
-  sceneId: string;
-  kind: "context";
-  aspect: "action";
-};
+export type CharacterEmbeddingMetadata =
+  | {
+      characterId: string;
+      storyId: string;
+      kind: "context";
+      aspect: "profile" | "action";
+    }
+  | {
+      characterId: string;
+      storyId: string;
+      sceneId: string;
+      kind: "context";
+      aspect: "action";
+    };
 
 export type LocationEmbeddingMetadata = {
   locationId: string;
   storyId: string;
   kind: "context";
+};
+
+export type StoryNodeEmbeddingMetadata = {
+  nodeId: string;
+  storyId: string;
+  kind: "story_node";
 };
 
 export const loadStoryToEmbeddings = async () => {
@@ -53,6 +61,24 @@ export const loadStoryToEmbeddings = async () => {
     // Skip if scene node is marked as non-story
     const sceneNode = findNode(sceneId);
     if (sceneNode?.nodeType !== "story") continue;
+
+    // Add the scene node itself as a document
+    if (!addCache.has(`node/${sceneId}`)) {
+      const nodeContent = sceneNode.oneliner || sceneNode.name;
+      if (nodeContent) {
+        documents.push({
+          id: `node/${sceneId}`,
+          pageContent: nodeContent,
+          metadata: {
+            nodeId: sceneId,
+            storyId: storyId ?? "",
+            kind: "story_node",
+          } satisfies StoryNodeEmbeddingMetadata,
+        });
+        addCache.add(`node/${sceneId}`);
+        nr++;
+      }
+    }
 
     for (const paragraph of scene.paragraphs) {
       const paragraphText =
@@ -82,86 +108,81 @@ export const loadStoryToEmbeddings = async () => {
   for (const [characterId, character] of Object.entries(
     charactersState.characters,
   )) {
-    const fullName = [character.firstName, character.middleName, character.lastName]
+    const fullName = [
+      character.firstName,
+      character.middleName,
+      character.lastName,
+    ]
       .filter(Boolean)
       .join(" ");
-    const displayName = character.nickname ? `${fullName} "${character.nickname}"` : fullName;
+    const displayName = character.nickname
+      ? `${fullName} "${character.nickname}"`
+      : fullName;
 
-    // Basic summary and personality
-    if (!addCache.has(`character/${characterId}/summary`)) {
+    // Combined character profile (summary, appearance, identity, and role)
+    if (!addCache.has(`character/${characterId}/profile`)) {
+      // Build a comprehensive character profile
+      const profileParts = [
+        // Summary
+        `${displayName}: ${character.summary}`,
+
+        // Appearance
+        [
+          `${displayName} is ${character.age} years old and ${character.height}cm tall`,
+          character.distinguishingFeatures
+            ? `Notable features: ${character.distinguishingFeatures}`
+            : null,
+          character.hairColor
+            ? `Has ${character.hairColor.toLowerCase()} hair`
+            : null,
+          character.eyeColor
+            ? `Has ${character.eyeColor.toLowerCase()} eyes`
+            : null,
+        ]
+          .filter(Boolean)
+          .join(". "),
+
+        // Identity
+        [
+          character.gender
+            ? `${displayName}'s gender is ${character.gender}`
+            : null,
+          character.sexualOrientation
+            ? `Their sexual orientation is ${character.sexualOrientation}`
+            : null,
+        ]
+          .filter(Boolean)
+          .join(". "),
+
+        // Role
+        `${displayName} is a ${character.isMainCharacter ? "main character" : "supporting character"} in the story`,
+
+        // Personality
+        character.personality ? `Personality: ${character.personality}` : null,
+        character.personalityQuirks
+          ? `Personality quirks: ${character.personalityQuirks}`
+          : null,
+        character.likes ? `Likes: ${character.likes}` : null,
+        character.dislikes ? `Dislikes: ${character.dislikes}` : null,
+        character.background ? `Background: ${character.background}` : null,
+        character.writingStyle
+          ? `Writing style: ${character.writingStyle}`
+          : null,
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+
       documents.push({
-        id: `character/${characterId}/summary`,
-        pageContent: `${displayName}: ${character.summary}`,
+        id: `character/${characterId}/profile`,
+        pageContent: profileParts,
         metadata: {
           characterId,
           storyId: storyId ?? "",
           kind: "context",
-          aspect: "summary",
+          aspect: "profile",
         } satisfies CharacterEmbeddingMetadata,
       });
-      addCache.add(`character/${characterId}/summary`);
-      nr++;
-    }
-
-    // Physical appearance
-    if (!addCache.has(`character/${characterId}/appearance`)) {
-      const appearance = [
-        `${displayName} is ${character.age} years old and ${character.height}cm tall`,
-        character.distinguishingFeatures ? `Notable features: ${character.distinguishingFeatures}` : null,
-        character.hairColor ? `Has ${character.hairColor.toLowerCase()} hair` : null,
-        character.eyeColor ? `Has ${character.eyeColor.toLowerCase()} eyes` : null,
-      ].filter(Boolean).join(". ");
-
-      documents.push({
-        id: `character/${characterId}/appearance`,
-        pageContent: appearance,
-        metadata: {
-          characterId,
-          storyId: storyId ?? "",
-          kind: "context",
-          aspect: "appearance",
-        } satisfies CharacterEmbeddingMetadata,
-      });
-      addCache.add(`character/${characterId}/appearance`);
-      nr++;
-    }
-
-    // Identity and orientation
-    if (!addCache.has(`character/${characterId}/identity`)) {
-      const identity = [
-        character.gender ? `${displayName}'s gender is ${character.gender}` : null,
-        character.sexualOrientation ? `Their sexual orientation is ${character.sexualOrientation}` : null,
-      ].filter(Boolean).join(". ");
-
-      if (identity) {
-        documents.push({
-          id: `character/${characterId}/identity`,
-          pageContent: identity,
-          metadata: {
-            characterId,
-            storyId: storyId ?? "",
-            kind: "context",
-            aspect: "identity",
-          } satisfies CharacterEmbeddingMetadata,
-        });
-        addCache.add(`character/${characterId}/identity`);
-        nr++;
-      }
-    }
-
-    // Role in story
-    if (!addCache.has(`character/${characterId}/role`)) {
-      documents.push({
-        id: `character/${characterId}/role`,
-        pageContent: `${displayName} is a ${character.isMainCharacter ? "main character" : "supporting character"} in the story`,
-        metadata: {
-          characterId,
-          storyId: storyId ?? "",
-          kind: "context",
-          aspect: "role",
-        } satisfies CharacterEmbeddingMetadata,
-      });
-      addCache.add(`character/${characterId}/role`);
+      addCache.add(`character/${characterId}/profile`);
       nr++;
     }
 

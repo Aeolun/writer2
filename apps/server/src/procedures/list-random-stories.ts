@@ -2,7 +2,7 @@ import { z } from "zod";
 import { publicProcedure } from "../trpc.js";
 import { prisma } from "../prisma.js";
 import { getStoryAssetUrl } from "../util/get-asset-url.js";
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "../generated/prisma/client/index.js";
 import { storycardFields } from "../lib/storycard-fields.js";
 
 export const listRandomStories = publicProcedure

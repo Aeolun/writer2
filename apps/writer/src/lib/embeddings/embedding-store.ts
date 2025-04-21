@@ -62,6 +62,7 @@ export const searchEmbeddings = async (
   query: string,
   numResults: number,
   filter?: (doc: Document) => boolean,
+  minRelevanceScore?: number,
 ): Promise<
   [
     Document<
@@ -74,7 +75,11 @@ export const searchEmbeddings = async (
 > => {
   const store = await getVectorStore();
   console.log("searching embeddings", store.memoryVectors.length);
-  return store.similaritySearchWithScore(query, numResults, filter) as Promise<
+  return store
+    .similaritySearchWithScore(query, numResults, filter)
+    .then((res) => {
+      return res.filter((r) => r[1] >= (minRelevanceScore ?? 0));
+    }) as Promise<
     [
       Document<
         | CharacterEmbeddingMetadata

@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { prisma } from "../prisma.js";
 import { publicProcedure } from "../trpc.js";
 import { createHash, randomBytes, scrypt } from "node:crypto";
@@ -36,5 +37,8 @@ export const login = publicProcedure
       });
       return newAccessKey.key;
     }
-    return undefined;
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Invalid email or password",
+    });
   });

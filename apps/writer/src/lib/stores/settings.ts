@@ -1,15 +1,22 @@
 import { createStore } from "solid-js/store";
-import { Store } from "@tauri-apps/plugin-store";
+import { load } from "@tauri-apps/plugin-store";
 import type { LLMName } from "../llm";
 import debounce from "debounce";
 
+export interface ServerAuth {
+  url: string;
+  token: string;
+}
+
 export interface SettingsState {
-  clientToken: string;
+  clientToken: string; // Legacy field, kept for backward compatibility
   openaiKey: string;
   groqKey: string;
   cerebrasKey: string;
   anthropicKey: string;
+  geminiKey: string;
   serverUrl: string;
+  serverAuths: ServerAuth[]; // New field to store auth per server
   aiSource: LLMName | "";
   aiModel: string;
   royalRoadEmail: string;
@@ -23,7 +30,9 @@ const initialSettings: SettingsState = {
   groqKey: "",
   cerebrasKey: "",
   anthropicKey: "",
+  geminiKey: "",
   serverUrl: "https://writer.serial-experiments.com/trpc",
+  serverAuths: [],
   aiSource: "",
   aiModel: "",
   royalRoadEmail: "",
@@ -37,7 +46,7 @@ export const resetSettingsState = () => {
   setSettingsState({ ...initialSettings });
 };
 
-export const tauriSettingsStore = new Store("global-settings.bin");
+export const tauriSettingsStore = await load("global-settings.bin");
 
 const debounceSave = debounce(() => {
   tauriSettingsStore.save();
@@ -59,6 +68,33 @@ const setSettings = (settings: SettingsState) => {
   }
   // when we set the whole store at once, we can save immediately (as additional events of the same kind are unlikely)
   tauriSettingsStore.save();
+};
+
+// Helper function to get the token for a specific server URL
+export const getTokenForServer = (url: string): string => {
+  const auth = settingsState.serverAuths.find((auth) => auth.url === url);
+  return auth?.token || "";
+};
+
+// Helper function to set the token for a specific server URL
+export const setTokenForServer = (url: string, token: string) => {
+  const currentAuths = [...settingsState.serverAuths];
+  const existingIndex = currentAuths.findIndex((auth) => auth.url === url);
+
+  if (existingIndex >= 0) {
+    // Update existing auth
+    currentAuths[existingIndex] = { url, token };
+  } else {
+    // Add new auth
+    currentAuths.push({ url, token });
+  }
+
+  setSetting("serverAuths", currentAuths);
+
+  // Also update the legacy clientToken if this is the current server
+  if (url === settingsState.serverUrl) {
+    setSetting("clientToken", token);
+  }
 };
 
 export { setSetting, setSettings };

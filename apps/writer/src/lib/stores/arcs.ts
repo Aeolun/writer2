@@ -8,6 +8,7 @@ import {
   updateNode,
   insertNode,
 } from "./tree"; // Import functions from tree.ts
+import { setStoryState } from "./story";
 
 const arcsStoreDefault = {
   arcs: {},
@@ -28,6 +29,7 @@ export function createArc(bookId: string, beforeId?: string) {
     name: "New Arc",
     children: [],
     isOpen: true,
+    nodeType: "story",
   };
 
   setArcsStore("arcs", newArc.id, {
@@ -37,6 +39,7 @@ export function createArc(bookId: string, beforeId?: string) {
     modifiedAt: Date.now(),
   } satisfies Arc);
   insertNode(newArc, bookId, beforeId);
+  setStoryState("story", "modifiedTime", Date.now());
   return newArc;
 }
 
@@ -49,6 +52,7 @@ export function updateArc(arcId: string, updatedData: Partial<Arc>) {
   updateNode(arcId, {
     name: updatedData.title,
   });
+  setStoryState("story", "modifiedTime", Date.now());
 }
 
 // Function to delete an arc
@@ -60,6 +64,7 @@ export function deleteArc(arcId: string) {
       return rest;
     });
     removeNode(arcId);
+    setStoryState("story", "modifiedTime", Date.now());
   } else {
     alert(`Remove ${arcNode?.children?.length} chapters first`);
   }

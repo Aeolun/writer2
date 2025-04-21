@@ -12,7 +12,14 @@ export const resetPlotpoints = () => {
 };
 
 export const updatePlotpoint = (id: string, changes: Partial<PlotPoint>) => {
-  setPlotpoints("plotPoints", id, changes);
+  for (const key in changes) {
+    setPlotpoints(
+      "plotPoints",
+      id,
+      key as keyof PlotPoint,
+      changes[key as keyof PlotPoint],
+    );
+  }
 };
 
 export const deletePlotpoint = (id: string) => {

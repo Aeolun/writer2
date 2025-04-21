@@ -98,8 +98,8 @@ export const Paragraph = (props: {
     const previousChapter =
       chapterNode?.children?.[0]?.id === scene.id
         ? arcNode?.children?.[
-            arcNode.children.findIndex((c) => c.id === chapterNode.id) - 1
-          ]
+        arcNode.children.findIndex((c) => c.id === chapterNode.id) - 1
+        ]
         : null;
 
     const chapterContext = [
@@ -220,6 +220,7 @@ export const Paragraph = (props: {
             <Editor
               paragraphId={props.paragraph.id}
               onChange={(data) => {
+                console.log("onChange", data);
                 updateSceneParagraphData(props.sceneId, props.paragraph.id, {
                   text: data,
                 });

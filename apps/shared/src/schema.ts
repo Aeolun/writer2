@@ -16,11 +16,18 @@ export type PlotPoint = z.infer<typeof plotPointSchema>;
 
 const characterSchema = entitySchema.extend({
   picture: z.string(),
+  /** @deprecated Use firstName, middleName, lastName instead */
+  name: z.string().optional(),
   firstName: z.string(),
   middleName: z.string().optional(),
   lastName: z.string().optional(),
   nickname: z.string().optional(),
   summary: z.string(),
+  background: z.string().optional(),
+  personality: z.string().optional(),
+  personalityQuirks: z.string().optional(),
+  likes: z.string().optional(),
+  dislikes: z.string().optional(),
   age: z.string(),
   gender: z.string().optional(),
   sexualOrientation: z.string().optional(),
@@ -28,6 +35,7 @@ const characterSchema = entitySchema.extend({
   hairColor: z.string().optional(),
   eyeColor: z.string().optional(),
   distinguishingFeatures: z.string().optional(),
+  writingStyle: z.string().optional(),
   isMainCharacter: z.boolean().default(true),
   laterVersionOf: z.string().optional(),
   significantActions: z
@@ -177,6 +185,7 @@ const sceneSchema = treeDataSchema.extend({
   characterIds: z.array(z.string()).optional(),
   referredCharacterIds: z.array(z.string()).optional(),
   locationId: z.string().optional(),
+  selectedContextNodes: z.array(z.string()).optional(),
   generationApproaches: z
     .array(
       z.object({
@@ -270,6 +279,7 @@ export const storySettingsSchema = z.object({
   royalRoadId: z.string().optional(),
   defaultPerspective: z.enum(["first", "third"]).default("third"),
   defaultProtagonistId: z.string().optional(),
+  publishToRoyalRoad: z.boolean().optional(),
 });
 
 export type StorySettings = z.infer<typeof storySettingsSchema>;

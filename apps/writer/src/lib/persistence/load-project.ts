@@ -6,21 +6,32 @@ import {
   entities,
   languageEntities,
   persistedSchema,
+  type DifferenceResult,
+  type Story,
 } from "@writer/shared";
-import short from "short-uuid";
-
-import { setExpectedLastModified, setOpenPath } from "../stores/story";
+import { stateToStory } from "./state-to-story";
+import {
+  setExpectedLastModified,
+  setOpenPath,
+  storyState,
+} from "../stores/story";
 import { loadToState } from "./load-to-state";
+import { userState } from "../stores/user";
+import { prepareDifferenceInput } from "./sync-utils";
+import { trpc } from "../trpc";
+import { setSyncState } from "../stores/ui";
+import { addNotification } from "../stores/notifications";
+import { setLastKnownServerUpdate } from "../stores/ui";
+import { checkSyncStatus } from "./check-sync-status";
 
-const migrateCharacterNames = (storyData: any) => {
-  if (storyData.story.characters) {
+// Type for raw story data before Zod parsing
+
+const migrateCharacterNames = (storyData: PersistedStory) => {
+  if (storyData?.story?.characters) {
     for (const characterId of Object.keys(storyData.story.characters)) {
       const character = storyData.story.characters[characterId];
       if (character.name && !character.firstName) {
-        // Split the full name into parts
         const nameParts = character.name.trim().split(/\s+/);
-
-        // Handle the name parts
         if (nameParts.length === 1) {
           character.firstName = nameParts[0];
         } else if (nameParts.length === 2) {
@@ -31,9 +42,6 @@ const migrateCharacterNames = (storyData: any) => {
           character.lastName = nameParts[nameParts.length - 1];
           character.middleName = nameParts.slice(1, -1).join(" ");
         }
-
-        // Remove the old name field
-        delete character.name;
       } else if (!character.firstName) {
         character.firstName = "unknown";
       }
@@ -43,67 +51,130 @@ const migrateCharacterNames = (storyData: any) => {
 
 export const loadProject = async (projectPath: string) => {
   const indexPath = await path.join(projectPath, "index.json");
-  const story = await readTextFile(indexPath);
+  const storyText = await readTextFile(indexPath);
   const storyStat = await stat(indexPath);
 
-  const storyData = JSON.parse(story);
-  if (!storyData.story.id) {
-    storyData.story.id = short.generate().toString();
+  const storyData: PersistedStory = JSON.parse(storyText);
+  // Ensure main story modifiedTime is a number
+  if (typeof storyData.story.modifiedTime === "string") {
+    storyData.story.modifiedTime = Number(storyData.story.modifiedTime);
+  }
+  if (
+    !storyData.story.modifiedTime ||
+    Number.isNaN(storyData.story.modifiedTime)
+  ) {
+    console.warn(
+      "Story index.json missing or invalid modifiedTime, setting to now.",
+    );
+    storyData.story.modifiedTime = Date.now();
+  }
+
+  if (!storyData?.story?.id) {
+    throw new Error("Story ID is missing from index.json");
   }
 
   for (const entity of entities) {
-    delete storyData.story[entity];
-
+    storyData.story[entity] = {};
     try {
-      storyData.story[entity] = {};
       const entityPath = await path.join(projectPath, entity);
       if (await exists(entityPath)) {
         const entityFiles = await readDir(entityPath);
         for (const entityId of entityFiles
-          .filter((file) => !file.name.startsWith("."))
-          .map((file) => file.name.replace(".json", ""))) {
+          .filter((file) => file.name && !file.name.startsWith("."))
+          .map((file) => file.name?.replace(".json", "") ?? "")) {
+          if (!entityId) continue;
           const entityFile = await path.join(entityPath, `${entityId}.json`);
           const entityData = await readTextFile(entityFile);
-          storyData.story[entity][entityId] = JSON.parse(entityData.toString());
+          const parsedEntityData = JSON.parse(entityData.toString());
+
+          // Ensure entity modifiedAt is a number
+          if (typeof parsedEntityData.modifiedAt === "string") {
+            parsedEntityData.modifiedAt = Number(parsedEntityData.modifiedAt);
+          }
+          if (
+            !parsedEntityData.modifiedAt ||
+            Number.isNaN(parsedEntityData.modifiedAt)
+          ) {
+            console.warn(
+              `Entity ${entity}/${entityId} missing or invalid modifiedAt, setting to now.`,
+            );
+            parsedEntityData.modifiedAt = Date.now();
+          }
+
+          // Specific check for scenes to handle paragraph timestamps
+          if (
+            entity === "scene" &&
+            Array.isArray(parsedEntityData.paragraphs)
+          ) {
+            for (const paragraph of parsedEntityData.paragraphs) {
+              if (typeof paragraph.modifiedAt === "string") {
+                paragraph.modifiedAt = Number(paragraph.modifiedAt);
+              }
+              if (!paragraph.modifiedAt || Number.isNaN(paragraph.modifiedAt)) {
+                console.warn(
+                  `Paragraph ${paragraph.id} in Scene ${entityId} missing or invalid modifiedAt, setting to now.`,
+                );
+                paragraph.modifiedAt = Date.now();
+              }
+            }
+          }
+
+          storyData.story[entity][entityId] = parsedEntityData;
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error(`Error loading entity type ${entity}:`, error);
     }
   }
 
-  // Migrate character names after loading all entities
-  migrateCharacterNames(storyData);
-
   for (const languageEntity of languageEntities) {
     if (storyData.language) {
-      delete storyData.language[languageEntity];
       storyData.language[languageEntity] = {};
       const languageEntityPath = await path.join(projectPath, languageEntity);
       if (await exists(languageEntityPath)) {
         const languageEntityFiles = await readDir(languageEntityPath);
-        for (const languageEntityId of languageEntityFiles.map((name) =>
-          name.name.replace(".json", ""),
+        for (const languageEntityId of languageEntityFiles.map(
+          (name) => name.name?.replace(".json", "") ?? "",
         )) {
+          if (!languageEntityId) continue;
           const entityPath = await path.join(
             languageEntityPath,
             `${languageEntityId}.json`,
           );
           const languageEntityData = await readTextFile(entityPath);
-          storyData.language[languageEntity][languageEntityId] = JSON.parse(
+          const parsedLanguageEntityData = JSON.parse(
             languageEntityData.toString(),
           );
+          // Ensure language entity modifiedAt is a number
+          if (typeof parsedLanguageEntityData.modifiedAt === "string") {
+            parsedLanguageEntityData.modifiedAt = new Date(
+              parsedLanguageEntityData.modifiedAt,
+            ).getTime();
+          }
+          if (
+            !parsedLanguageEntityData.modifiedAt ||
+            Number.isNaN(parsedLanguageEntityData.modifiedAt)
+          ) {
+            console.warn(
+              `Language entity ${languageEntity}/${languageEntityId} missing or invalid modifiedAt, setting to now.`,
+            );
+            parsedLanguageEntityData.modifiedAt = Date.now();
+          }
+          storyData.language[languageEntity][languageEntityId] =
+            parsedLanguageEntityData;
         }
       }
     }
   }
 
+  migrateCharacterNames(storyData);
+
   let savedStory: PersistedStory;
   try {
     savedStory = persistedSchema.parse(storyData);
   } catch (error) {
-    console.log(error);
-    throw new Error("Story does not match schema and cannot be loaded.");
+    console.error("Story schema validation failed:", error);
+    throw new Error("Story file format is invalid and cannot be loaded.");
   }
 
   const ids: string[] = [];
@@ -118,7 +189,6 @@ export const loadProject = async (projectPath: string) => {
   for (const node of savedStory.story.structure) {
     getIdFromTreeObject(node);
   }
-  // trash all entities that don't have a corresponding id in the structure
   for (const entity of ["book", "arc", "chapter", "scene"] as const) {
     if (savedStory.story[entity]) {
       for (const id of Object.keys(savedStory.story[entity])) {
@@ -129,19 +199,23 @@ export const loadProject = async (projectPath: string) => {
     }
   }
 
-  // const storyObject = await db.query.storyTable.findFirst({
-  //   where: eq(storyTable.name, savedStory.story.name),
-  // });
-  // if (!storyObject) {
-  //   await db.insert(storyTable).values({
-  //     id: short.generate().toString(),
-  //     name: savedStory.story.name,
-  //   });
-  // }
-
-  loadToState(savedStory);
+  await loadToState(savedStory);
   setOpenPath(projectPath);
   setExpectedLastModified(storyStat.mtime?.getTime() ?? 0);
+  setSyncState(null);
+  setLastKnownServerUpdate(storyState.story?.modifiedTime ?? null);
+
+  // Deferred sync check
+  setTimeout(async () => {
+    if (userState.signedInUser && storyState.story?.id) {
+      await checkSyncStatus();
+    } else {
+      console.log(
+        "User not signed in or story ID missing, skipping difference check (deferred).",
+      );
+      setSyncState(null);
+    }
+  }, 0);
 
   return savedStory;
 };

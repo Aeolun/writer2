@@ -92,7 +92,13 @@ const extractTranslations = (text: any) => {
   return translations;
 };
 
-export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
+export const sortedObjects = (
+  rootId?: string,
+  includeUnpublished = false,
+  options?: {
+    translationsInline?: boolean;
+  },
+) => {
   const stats = {
     words: 0,
     aiWords: 0,
@@ -206,11 +212,15 @@ export const sortedObjects = (rootId?: string, includeUnpublished = false) => {
                 text:
                   typeof paragraph.text === "string"
                     ? paragraph.text
-                    : contentSchemaToHtml(paragraph.text),
+                    : contentSchemaToHtml(paragraph.text, {
+                        translationsInline: options?.translationsInline,
+                      }),
                 plainText:
                   typeof paragraph.text === "string"
                     ? paragraph.text
-                    : contentSchemaToText(paragraph.text),
+                    : contentSchemaToText(paragraph.text, {
+                        translationsInline: options?.translationsInline,
+                      }),
                 sceneId: scene.id,
                 state: paragraph.state,
                 posted: sceneData.posted ?? false,

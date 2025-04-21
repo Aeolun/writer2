@@ -1,11 +1,18 @@
+import type { PersistedStory, Node } from "@writer/shared";
 import { createStore } from "solid-js/store";
-import { Store } from "@tauri-apps/plugin-store";
 import { findPathToNode } from "./tree";
-import type { Node } from "@writer/shared";
+import type { DifferenceResult } from "@writer/shared";
 
 export type StorySummary = {
   name: string;
 };
+
+interface ImportDialogState {
+  open: boolean;
+  running: boolean;
+  chapters: { id: number; title: string; imported: boolean }[];
+  complete: boolean;
+}
 
 export interface UIState {
   selectedImageChapter?: string;
@@ -25,17 +32,16 @@ export interface UIState {
   lastSaveAt?: number;
   stories?: StorySummary[];
   syncing: boolean;
+  uploading: boolean;
   plotPointViewMode: "grid" | "table";
-  importDialog: {
-    running: boolean;
-    open: boolean;
-    chapters?: {
-      id: number;
-      title: string;
-      imported: boolean;
-    }[];
-    completed: boolean;
-  };
+  importDialog: ImportDialogState;
+  loadingFromServer: boolean;
+  lastFocus: string | null;
+  showLoadFromServerConflictDialog: boolean;
+  serverStoryDataForConfirmation: PersistedStory | null;
+  syncState: DifferenceResult | null;
+  showSyncStatusDialog: boolean;
+  lastKnownServerUpdate: number | null;
 }
 
 export const uiStateDefault: UIState = {
@@ -45,19 +51,27 @@ export const uiStateDefault: UIState = {
   showInventory: false,
   saving: false,
   syncing: false,
+  uploading: false,
   plotPointViewMode: "grid",
   lastGenerationUsage: undefined,
   lastSaveAt: undefined,
   importDialog: {
-    running: false,
     open: false,
-    completed: false,
+    running: false,
+    chapters: [],
+    complete: false,
   },
+  loadingFromServer: false,
+  lastFocus: null,
+  showLoadFromServerConflictDialog: false,
+  serverStoryDataForConfirmation: null,
+  selectionPath: [],
+  syncState: null,
+  showSyncStatusDialog: false,
+  lastKnownServerUpdate: null,
 };
 
-export const [uiState, setUIState] = createStore(uiStateDefault);
-
-export const store = new Store("global-settings.bin");
+export const [uiState, setUIState] = createStore<UIState>(uiStateDefault);
 
 export const setSelectedEntity = (
   entity: "book" | "arc" | "chapter" | "scene",
@@ -86,6 +100,8 @@ export const setSelectedLanguage = (language?: string) =>
   setUIState("selectedLanguage", language);
 export const setSaving = (saving: boolean) => setUIState("saving", saving);
 export const setSyncing = (syncing: boolean) => setUIState("syncing", syncing);
+export const setUploading = (uploading: boolean) =>
+  setUIState("uploading", uploading);
 export const setLastSaveAt = (lastSaveAt?: number) =>
   setUIState("lastSaveAt", lastSaveAt);
 export const setSelectedImageChapter = (chapter: string) =>
@@ -113,6 +129,28 @@ export const setImportDialogChapterImported = (id: number) =>
 export const setImportDialogRunning = (running: boolean) =>
   setUIState("importDialog", "running", running);
 export const setImportDialogComplete = (complete: boolean) =>
-  setUIState("importDialog", "completed", complete);
+  setUIState("importDialog", "complete", complete);
 export const setPlotPointViewMode = (mode: "grid" | "table") =>
   setUIState("plotPointViewMode", mode);
+export const setLoadingFromServer = (loading: boolean) =>
+  setUIState("loadingFromServer", loading);
+export const setShowLoadFromServerConflictDialog = (show: boolean) =>
+  setUIState("showLoadFromServerConflictDialog", show);
+export const setServerStoryForConfirmation = (story: PersistedStory | null) =>
+  setUIState("serverStoryDataForConfirmation", story);
+export const setLastFocus = (lastFocus: string | null) =>
+  setUIState({ lastFocus });
+
+// Setter for the new sync state
+export const setSyncState = (state: DifferenceResult | null) => {
+  console.log("Setting sync state:", state);
+  setUIState("syncState", state);
+};
+
+// Setter for the new dialog state
+export const setShowSyncStatusDialog = (show: boolean) => {
+  setUIState("showSyncStatusDialog", show);
+};
+
+export const setLastKnownServerUpdate = (timestamp: number | null) =>
+  setUIState("lastKnownServerUpdate", timestamp);

@@ -84,9 +84,8 @@ const StoryCard: React.FC<StoryCardProps> = ({
             />
           ) : (
             <p
-              className={`text-center text-gray-500 self-start mt-8 px-4 ${
-                name.length > 40 ? "text-md" : "text-xl"
-              } font-bold`}
+              className={`text-center text-gray-500 self-start mt-8 px-4 ${name.length > 40 ? "text-md" : "text-xl"
+                } font-bold`}
               style={{ fontFamily: fontFamily }}
             >
               {name}
@@ -101,13 +100,12 @@ const StoryCard: React.FC<StoryCardProps> = ({
           style={{ backgroundColor: color, color: textColor }}
         >
           <h2
-            className={`${
-              name.length > 40
-                ? "text-xs"
-                : name.length > 20
-                  ? "text-md"
-                  : "text-lg"
-            } font-bold`}
+            className={`${name.length > 40
+              ? "text-xs"
+              : name.length > 20
+                ? "text-md"
+                : "text-lg"
+              } font-bold`}
           >
             {name}
           </h2>
@@ -151,9 +149,9 @@ const StoryCard: React.FC<StoryCardProps> = ({
         </div>
       </div>
       <div className="text-lg text-gray-500 mt-4 flex items-center justify-center gap-1">
-        {status === "COMPLETED" ? " ✅" : status === "HIATUS" ? " ⏸️" : " 🔥"}
+        <span title={status === "COMPLETED" ? "Completed" : status === "HIATUS" ? "Hiatus" : "Ongoing"}>{status === "COMPLETED" ? " ✅" : status === "HIATUS" ? " ⏸️" : " 🔥"}</span>
         {lastChapterReleasedAt && (
-          <div className="text-gray-700 bg-opacity-70 bg-white rounded-md px-2 py-1 text-sm flex items-center gap-2">
+          <div title="Last chapter released" className="text-gray-700 bg-opacity-70 bg-white rounded-md px-2 py-1 text-sm flex items-center gap-2">
             <Clock /> {timeAgo.format(new Date(lastChapterReleasedAt))}
           </div>
         )}
@@ -161,6 +159,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
 
         {royalRoadId && (
           <a
+            title="Royal road story"
             href={`https://www.royalroad.com/fiction/${royalRoadId}`}
             target="_blank"
             rel="noopener noreferrer"

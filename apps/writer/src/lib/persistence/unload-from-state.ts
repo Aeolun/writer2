@@ -18,6 +18,7 @@ import {
   unloadStory,
 } from "../stores/story";
 import { resetTreeState, setTree, setTreeState } from "../stores/tree";
+import { resetUserState } from "../stores/user";
 
 export const unloadFromState = () => {
   resetArcsStore();
@@ -30,6 +31,7 @@ export const unloadFromState = () => {
   resetLanguageStore();
   resetTreeState();
   resetStoryState();
+  resetUserState();
 
   // clean up the embeddings store too
   resetVectorStore();

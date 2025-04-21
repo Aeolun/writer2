@@ -8,6 +8,7 @@ import {
   updateNode,
 } from "./tree";
 import shortUUID from "short-uuid";
+import { setStoryState } from "./story";
 
 const chaptersStateDefault = {
   chapters: {},
@@ -27,6 +28,7 @@ export const createChapter = (arcId: string, beforeId?: string) => {
     name: "New Chapter",
     children: [],
     isOpen: true,
+    nodeType: "story" as const,
   };
 
   setChaptersState("chapters", newChapter.id, {
@@ -36,6 +38,7 @@ export const createChapter = (arcId: string, beforeId?: string) => {
     modifiedAt: Date.now(),
   } satisfies Chapter);
   insertNode(newChapter, arcId, beforeId);
+  setStoryState("story", "modifiedTime", Date.now());
   return newChapter;
 };
 
@@ -47,6 +50,7 @@ export const deleteChapter = (id: string) => {
     return;
   }
   removeNode(id);
+  setStoryState("story", "modifiedTime", Date.now());
   // @ts-expect-error: this is a valid way to delete
   setChaptersState("chapters", id, undefined);
 };
@@ -59,4 +63,5 @@ export const updateChapter = (id: string, chapter: Partial<Chapter>) => {
   if (chapter.title) {
     updateNode(id, { name: chapter.title as string });
   }
+  setStoryState("story", "modifiedTime", Date.now());
 };

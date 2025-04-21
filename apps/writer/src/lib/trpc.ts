@@ -1,9 +1,9 @@
-import { createTRPCClient, unstable_httpBatchStreamLink } from "@trpc/client";
+import { createTRPCClient, httpBatchStreamLink } from "@trpc/client";
 import type { AppRouter } from "@writer/server";
-import { settingsState } from "./stores/settings";
+import { settingsState, getTokenForServer } from "./stores/settings";
 
 export let trpc: ReturnType<typeof createTRPCClient<AppRouter>>;
-export let batchLink: ReturnType<typeof unstable_httpBatchStreamLink>;
+export let batchLink: ReturnType<typeof httpBatchStreamLink>;
 
 export const reloadTrpc = (passedServerUrl?: string) => {
   let serverUrl = passedServerUrl ?? settingsState.serverUrl;
@@ -11,11 +11,12 @@ export const reloadTrpc = (passedServerUrl?: string) => {
     serverUrl = "https://writer.serial-experiments.com/trpc";
   }
   console.log("creating client", serverUrl);
-  batchLink = unstable_httpBatchStreamLink({
+  batchLink = httpBatchStreamLink({
     url: `${serverUrl}`,
     // You can pass any HTTP headers you wish here
     async headers() {
-      const token = settingsState.clientToken;
+      // Use the new token system
+      const token = getTokenForServer(serverUrl);
 
       return token
         ? {

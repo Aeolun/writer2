@@ -87,7 +87,9 @@ export const Editor = (props: {
       dispatchTransaction(transaction) {
         const newState = view!.state.apply(transaction);
         view!.updateState(newState);
-        props.onChange(newState.doc.toJSON());
+        if (transaction.docChanged) {
+          props.onChange(newState.doc.toJSON());
+        }
       },
     });
 

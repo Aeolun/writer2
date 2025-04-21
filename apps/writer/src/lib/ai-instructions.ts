@@ -1,3 +1,7 @@
+import { sensoryDetailsInstruction } from "./ai-instructions/sensory-details";
+import { ragQueriesInstruction } from "./ai-instructions/rag-queries";
+import { snowflakeExpandBookInstruction } from "./ai-instructions/snowflake-expand-book";
+
 export const instructions = {
   suggest_title:
     "You are a writing assistant. You will be prompted with a set of paragraphs, suggest a title for the chapter that the content represents. Output only the suggested title.",
@@ -8,11 +12,12 @@ export const instructions = {
   critique:
     "You are a writing assistant, try to give constructive advice. When prompted with a set of paragraphs, you will output a concerns you might have about the writing. This could be anything from grammar to plot holes to character inconsistencies.",
   rewrite_spelling:
-    "You are a writing assistant. When prompted with a paragraph, you will output a rewritten version of the paragraph in idiomatic English. Only output the rewritten paragraph. Correct all improper spelling and grammar, but change nothing else about the sentences or paragraph. Do not change profanity!",
+    "You are a writing assistant. When prompted with paragraphs in XML tags, you will output a rewritten version of ONLY the paragraph in the <current_paragraph> tag. Only output the rewritten paragraph. Correct all improper spelling and grammar, but change nothing else about the sentences or paragraph. Do not change profanity! The context includes multiple previous paragraphs (if available) and the next paragraph to help you understand the flow of the story.",
   rewrite_similar:
-    "You are a writing assistant. When prompted with a paragraph, you will output a rewritten version of the paragraph in idiomatic English. Only output the rewritten paragraph. Where possible, try to stick to the original meaning. Do not add new information, do not change the tense, and especially do not change the tone. Output only the rewritten paragraphs.",
+    "You are a writing assistant. When prompted with paragraphs in XML tags, you will output a rewritten version of ONLY the paragraph in the <current_paragraph> tag. Only output the rewritten paragraph. Where possible, try to stick to the original meaning. Do not add new information, do not change the tense, and especially do not change the tone. Output only the rewritten paragraph. The context includes multiple previous paragraphs (if available) and the next paragraph to help you understand the flow of the story.",
   rewrite:
-    "You are a writing assistant. When prompted with a paragraph, you will output a rewritten version of the paragraph. Only output the rewritten paragraph. Try to change all sections where something is being described to show that thing instead (show don't tell). Do not invent extra events. Try to keep the length the same. Preserve the original meaning and intent of the paragraph. Do not change the tone or tense.",
+    "You are a writing assistant. When prompted with paragraphs in XML tags, you will output a rewritten version of ONLY the paragraph in the <current_paragraph> tag. Only output the rewritten paragraph. Try to change all sections where something is being described to show that thing instead (show don't tell). Do not invent extra events. Try to keep the length the same. Preserve the original meaning and intent of the paragraph. Do not change the tone or tense. The context includes multiple previous paragraphs (if available) and the next paragraph to help you understand the flow of the story.",
+  add_sensory_details: sensoryDetailsInstruction,
   synopsis:
     "You are a writing assistant, try to give constructive advice. When prompted with a set of paragraphs, you will output a summary of the given paragraphs.",
   critiqueStoryline:
@@ -30,27 +35,7 @@ export const instructions = {
     "You are a writing assistant. Given a scene's content, create a one-line summary that captures the essence of what happens in the scene. If provided with context about the story's perspective, follow those instructions for handling first-person content. Keep the summary brief but specific. Output only the summary.",
   snowflake_parent:
     "You are a writing assistant. Given several one-line summaries of story elements (arcs, chapters, scenes), create a single one-line summary that encompasses all of them cohesively. If there is a similar protagonist or other characters in the story, use their name(s) in the summary. Keep it brief but specific. Output only the summary.",
-  snowflake_expand_book: `You are a writing assistant. Given a book's full synopsis and its context within a larger series, create 4 story arcs that will form the main structure of this book.
-
-The context includes:
-- The overall story concept
-- The book's detailed synopsis
-- Summaries of previous and upcoming books (if any)
-
-Using the detailed synopsis as your guide, create 4 major story arcs that:
-1. Build upon events from previous books (if any)
-2. Present substantial challenges that advance both this book's story and the larger narrative
-3. Set up elements that will be important in later books (if any)
-4. Together cover the complete narrative of this book
-
-For each arc, write a detailed paragraph describing:
-1. The main conflict or challenge
-2. Key character developments and relationships
-3. Important plot revelations
-4. How it connects to the larger story
-5. Its resolution and setup for the next arc
-
-Output exactly 4 arc descriptions, separated by "===". Each arc should be a full paragraph that provides enough detail for further chapter development.`,
+  snowflake_expand_book: snowflakeExpandBookInstruction,
 
   snowflake_expand_arc: `You are a writing assistant. Your task is to generate chapters for an arc in a story.
 
@@ -397,17 +382,8 @@ Example output:
 Also try to avoid ending the scene with a cliffhanger or open-ended question or reflection. The story will continue in the next scene.
 `,
 
-  snowflake_refine_scene_style: `You are a writing assistant. Given a scene and a list of critiques, rewrite the scene to address these issues while maintaining the same plot points and character interactions. Focus on:
-
-- Replacing purple prose with clear, evocative language
-- Making dialogue more natural and less cliché
-- Toning down melodramatic descriptions
-- Finding fresh ways to describe emotions and reactions
-- Maintaining the scene's intensity without being edgy
-
-Keep the same events, character positions, and story progression. Only modify the writing style to address the identified issues. Do try to keep the scene length the same if possible.
-
-Output only the refined scene text in natural paragraphs.`,
+  snowflake_refine_scene_style:
+    "You are a writing assistant. When prompted with paragraphs in XML tags, you will output a refined version of ONLY the paragraph in the <current_paragraph> tag. Only output the refined paragraph. Focus on improving the writing style while maintaining the same events and character interactions. Consider the context from the multiple previous paragraphs (if available) and the next paragraph to ensure continuity.",
 
   snowflake_refine_arc: `You are a writing assistant. Given an arc summary and its context, improve and expand ONLY the current summary according to the specified target level.
 
@@ -880,6 +856,7 @@ Example changes:
 - "She wondered if Tom" becomes "I wondered if Tom"
 
 CRITICAL: Your response must contain ONLY the complete converted text. Do not include any other text, explanations, or formatting.`,
+  rag_queries: ragQueriesInstruction,
 };
 
 export type HelpKind =
@@ -890,6 +867,7 @@ export type HelpKind =
   | "rewrite_spelling"
   | "rewrite_similar"
   | "rewrite"
+  | "add_sensory_details"
   | "synopsis"
   | "critiqueStoryline"
   | "improvements"
@@ -912,4 +890,5 @@ export type HelpKind =
   | "snowflake_gather_context"
   | "snowflake_extract_character_actions"
   | "generate_between"
-  | "snowflake_convert_perspective";
+  | "snowflake_convert_perspective"
+  | "rag_queries";

@@ -1,7 +1,10 @@
 import { createStore } from "solid-js/store";
 import { generate as short } from "short-uuid";
 import type { Character } from "@writer/shared";
-import { removeEntityFromEmbeddingsCache, removeEntityIdsFromEmbeddings } from "../embeddings/load-story-to-embeddings";
+import {
+  removeEntityFromEmbeddingsCache,
+  removeEntityIdsFromEmbeddings,
+} from "../embeddings/load-story-to-embeddings";
 import { addNotification } from "./notifications";
 
 export type CharactersState = {
@@ -38,15 +41,21 @@ export const createCharacter = () => {
     age: "0",
     picture: "",
     summary: "",
+    background: "",
+    personality: "",
+    personalityQuirks: "",
+    likes: "",
+    dislikes: "",
     gender: "",
     sexualOrientation: "",
     height: 170,
     hairColor: "",
     eyeColor: "",
     distinguishingFeatures: "",
+    writingStyle: "",
     modifiedAt: Date.now(),
-    significantActions: []
-  } satisfies Character
+    significantActions: [],
+  } satisfies Character;
   setCharactersState("characters", id, character);
   return id;
 };
@@ -56,8 +65,8 @@ export const updateCharacterProperty = <T extends keyof Character>(
   property: T,
   value: Character[T],
 ) => {
-  setCharactersState("characters", characterId, property, value)
-  setCharactersState("characters", characterId, 'modifiedAt', Date.now())
+  setCharactersState("characters", characterId, property, value);
+  setCharactersState("characters", characterId, "modifiedAt", Date.now());
   removeEntityFromEmbeddingsCache(`character/${characterId}/identity`);
   removeEntityFromEmbeddingsCache(`character/${characterId}/appearance`);
   removeEntityFromEmbeddingsCache(`character/${characterId}/role`);
@@ -71,11 +80,13 @@ export const setSelectedCharacterId = (characterId: string) => {
 export const removeCharacter = (characterId: string) => {
   // @ts-expect-error: yes, this is a valid operation
   setCharactersState("characters", characterId, undefined);
-  removeEntityIdsFromEmbeddings(/character\/${characterId}.*/).catch(error => {
-    addNotification({
-      type: 'error',
-      title: "Failed to clear embedding cache for character",
-      message: "Failed to clear embedding cache on character deletion"
-    })
-  })
+  removeEntityIdsFromEmbeddings(/character\/${characterId}.*/).catch(
+    (error) => {
+      addNotification({
+        type: "error",
+        title: "Failed to clear embedding cache for character",
+        message: "Failed to clear embedding cache on character deletion",
+      });
+    },
+  );
 };

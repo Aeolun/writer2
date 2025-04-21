@@ -1,5 +1,7 @@
 import {
   GetObjectCommand,
+  HeadObjectCommand,
+  HeadObjectCommandOutput,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -18,6 +20,19 @@ const getClient = () => {
     endpoint: process.env.CLOUDFLARE_S3_ENDPOINT ?? "",
   });
   return s3Api;
+};
+
+export const headFile = async (
+  path: string,
+): Promise<HeadObjectCommandOutput> => {
+  const client = getClient();
+  const response = await client.send(
+    new HeadObjectCommand({
+      Bucket: "writer2",
+      Key: path,
+    }),
+  );
+  return response;
 };
 
 export const uploadFile = async (

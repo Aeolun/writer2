@@ -3,14 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
+  "type": "module",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "html-entities": "^2.5.2",
-    "zod": "^3.23.8"
+    "html-entities": "^2.6.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
   }
 }

@@ -7,10 +7,10 @@ import { join } from "node:path";
 import Color from "color";
 import PQueue from "p-queue";
 import cliProgress from "cli-progress";
-import type { User } from "@prisma/client";
+import type { User } from "./generated/prisma/client/index.js";
 import OpenAI from "openai";
 import pThrottle from "p-throttle";
-import htmlEntities from "html-entities";
+import { decode } from "html-entities";
 const queue = new PQueue({ concurrency: 20 });
 
 const client = new OpenAI({
@@ -241,8 +241,7 @@ const insert = async () => {
         return;
       }
 
-      const fixedSummary = htmlEntities
-        .decode(story.description)
+      const fixedSummary = decode(story.description)
         .replace(/\n+/g, "\n\n")
         .substring(0, 65000)
         .replaceAll("&nbsp;", " ");
