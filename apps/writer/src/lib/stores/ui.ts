@@ -42,6 +42,10 @@ export interface UIState {
   syncState: DifferenceResult | null;
   showSyncStatusDialog: boolean;
   lastKnownServerUpdate: number | null;
+  uploadingMessage: string | null;
+  isMenuOpen: boolean;
+  showFiles: boolean;
+  showPreview: boolean;
 }
 
 export const uiStateDefault: UIState = {
@@ -69,6 +73,10 @@ export const uiStateDefault: UIState = {
   syncState: null,
   showSyncStatusDialog: false,
   lastKnownServerUpdate: null,
+  uploadingMessage: null,
+  isMenuOpen: false,
+  showFiles: false,
+  showPreview: false,
 };
 
 export const [uiState, setUIState] = createStore<UIState>(uiStateDefault);
@@ -115,8 +123,17 @@ export const addAiResponse = (response: string) =>
   ]);
 export const setAiPrompt = (prompt: string) => setUIState("aiPrompt", prompt);
 export const setAiOpenTab = (tab: number) => setUIState("aiOpenTab", tab);
-export const setImportDialogOpen = (open: boolean) =>
-  setUIState("importDialog", "open", open);
+export const setImportDialogOpen = (open: boolean) => {
+  if (open) {
+    setUIState("importDialog", "open", true);
+  } else {
+    // Reset the state when closing
+    setUIState("importDialog", {
+      ...uiStateDefault.importDialog, // Use defaults
+      open: false,
+    });
+  }
+};
 export const setImportDialogChapters = (
   chapters: {
     id: number;
@@ -154,3 +171,12 @@ export const setShowSyncStatusDialog = (show: boolean) => {
 
 export const setLastKnownServerUpdate = (timestamp: number | null) =>
   setUIState("lastKnownServerUpdate", timestamp);
+
+export const setUploadingMessage = (message: string | null) =>
+  setUIState("uploadingMessage", message);
+
+export const toggleMenu = () => setUIState("isMenuOpen", (prev) => !prev);
+export const closeMenu = () => setUIState("isMenuOpen", false);
+
+export const toggleFiles = () => setUIState("showFiles", (prev) => !prev);
+export const togglePreview = () => setUIState("showPreview", (prev) => !prev);

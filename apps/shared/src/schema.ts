@@ -64,6 +64,7 @@ const bookSchema = treeDataSchema.extend({
   coverArtist: z.string().optional(),
   critique: z.string().optional(),
   coverImage: z.string().optional(),
+  spineImage: z.string().optional(),
   separatorImage: z.string().optional(),
   start_date: z.string().optional(),
 });

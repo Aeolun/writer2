@@ -1,3 +1,72 @@
+// --- ENUMS ---
+
+enum SavedType {
+  FAVORITE
+  FOLLOW
+  READ_LATER
+}
+
+enum StoryStatus {
+  COMPLETED
+  ONGOING
+  HIATUS
+}
+
+enum StoryType {
+  FANFICTION
+  ORIGINAL
+}
+
+enum PublishingPlatform {
+  ROYAL_ROAD
+  // Add more platforms here as they are supported
+}
+
+enum PublishingStatus {
+  DRAFT
+  PUBLISHED
+  FAILED
+}
+
+enum ParagraphCommentType {
+  COMMENT
+  SUGGESTION
+}
+
+// New Enums based on client schema
+enum Perspective {
+  FIRST
+  THIRD
+}
+
+enum PlotPointState {
+  INTRODUCED
+  UNRESOLVED
+  RESOLVED
+}
+
+enum ParagraphState {
+  AI
+  DRAFT
+  REVISE
+  FINAL
+  SDT // Show Don't Tell (writing style indicator)
+}
+
+enum PlotPointActionType {
+  INTRODUCE
+  MENTIONED
+  PARTIALLY_RESOLVED
+  RESOLVED
+}
+
+enum InventoryActionType {
+  ADD
+  REMOVE
+}
+
+// --- MODELS ---
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -45,12 +114,6 @@ model AccessKey {
   lastUsedAt  DateTime?
 }
 
-enum SavedType {
-  FAVORITE
-  FOLLOW
-  READ_LATER
-}
-
 model BookShelfStory {
   id        Int       @id @default(autoincrement())
   name      String    @default("")
@@ -61,17 +124,6 @@ model BookShelfStory {
   kind      SavedType
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-}
-
-enum StoryStatus {
-  COMPLETED
-  ONGOING
-  HIATUS
-}
-
-enum StoryType {
-  FANFICTION
-  ORIGINAL
 }
 
 model Story {
@@ -90,10 +142,14 @@ model Story {
   chapters               Int?
   firstChapterReleasedAt DateTime?
   lastChapterReleasedAt  DateTime?
-  coverArtAsset          String
+  coverArtFileId         String? // New FK field
+  coverArtFile           File?             @relation("StoryCoverArt", fields: [coverArtFileId], references: [id], onDelete: SetNull)
   coverColor             String            @default("#000000")
   coverTextColor         String            @default("#FFFFFF")
   coverFontFamily        String            @default("Georgia")
+  defaultPerspective     Perspective?      @default(THIRD)
+  defaultProtagonistId   String?
+  defaultProtagonist     Character?        @relation("DefaultProtagonist", fields: [defaultProtagonistId], references: [id], onDelete: SetNull)
   createdAt              DateTime          @default(now())
   updatedAt              DateTime          @updatedAt
   sortOrder              Int               @default(0)
@@ -102,6 +158,10 @@ model Story {
   files                  File[]
   storyReadStatuses      StoryReadStatus[]
   storyTags              StoryTag[]
+  characters             Character[]
+  locations              Location[]
+  plotPoints             PlotPoint[]
+  items                  Item[]
 }
 
 model Tag {
@@ -131,30 +191,34 @@ model StoryReadStatus {
   userId            Int
   user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   lastChapterId     String?
-  lastChapter       Chapter?  @relation(fields: [lastChapterId], references: [id])
+  lastChapter       Chapter?  @relation(fields: [lastChapterId], references: [id], onDelete: SetNull)
   lastChapterReadAt DateTime?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 }
 
 model Book {
-  id            String   @id @default(uuid(7))
-  name          String   @default("")
-  storyId       String
-  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  coverArtAsset String
-  spineArtAsset String
-  pages         Int?
-  arcs          Arc[]
-  sortOrder     Int
-  nodeType      String   @default("story") // "story", "non-story", or "context"
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @default(now())
+  id             String   @id @default(uuid(7))
+  name           String   @default("")
+  summary        String?  @db.Text
+  storyId        String
+  story          Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  coverArtFileId String? // New FK field
+  coverArtFile   File?    @relation("BookCoverArt", fields: [coverArtFileId], references: [id], onDelete: SetNull)
+  spineArtFileId String? // New FK field
+  spineArtFile   File?    @relation("BookSpineArt", fields: [spineArtFileId], references: [id], onDelete: SetNull)
+  pages          Int?
+  arcs           Arc[]
+  sortOrder      Int
+  nodeType       String   @default("story") // "story", "non-story", or "context"
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
 }
 
 model Arc {
   id        String    @id @default(uuid(7))
   name      String    @default("")
+  summary   String?   @db.Text
   bookId    String
   book      Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
   chapters  Chapter[]
@@ -167,6 +231,7 @@ model Arc {
 model Chapter {
   id               String              @id @default(uuid(7))
   name             String              @default("")
+  summary          String?             @db.Text
   arcId            String // Changed from bookId
   arc              Arc                 @relation(fields: [arcId], references: [id], onDelete: Cascade) // Changed from book
   publishedOn      DateTime?
@@ -181,16 +246,24 @@ model Chapter {
 }
 
 model Scene {
-  id         String      @id @default(uuid(7))
-  name       String      @default("")
-  body       String      @db.LongText()
-  chapter    Chapter     @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  chapterId  String
-  sortOrder  Int
-  nodeType   String      @default("story") // "story", "non-story", or "context"
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  paragraphs Paragraph[]
+  id                      String                   @id @default(uuid(7))
+  name                    String                   @default("")
+  summary                 String?                  @db.Text
+  body                    String                   @db.LongText()
+  chapter                 Chapter                  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId               String
+  sortOrder               Int
+  nodeType                String                   @default("story") // "story", "non-story", or "context"
+  perspective             Perspective?
+  protagonistId           String?
+  protagonist             Character?               @relation("SceneProtagonist", fields: [protagonistId], references: [id], onDelete: SetNull)
+  locationId              String?
+  location                Location?                @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  paragraphs              Paragraph[]
+  participatingCharacters SceneCharacter[]         @relation("ParticipatingCharacters")
+  referredCharacters      SceneReferredCharacter[] @relation("ReferredCharacters")
 }
 
 model Paragraph {
@@ -210,13 +283,13 @@ model ParagraphRevision {
   body             String             @db.LongText()
   contentSchema    String?            @db.LongText() // Store the original content schema as JSON
   version          Int                @default(1)
+  state            ParagraphState?
+  aiCharacters     Int?
+  humanCharacters  Int?
+  plotPointActions Json?
+  inventoryActions Json?
   createdAt        DateTime           @default(now())
   paragraphComment ParagraphComment[]
-}
-
-enum ParagraphCommentType {
-  COMMENT
-  SUGGESTION
 }
 
 model ParagraphComment {
@@ -235,7 +308,7 @@ model File {
   id        String   @id @default(uuid(7))
   ownerId   Int
   owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  storyId   String?
+  storyId   String? // General story association if needed
   story     Story?   @relation(fields: [storyId], references: [id], onDelete: Cascade)
   localPath String?
   path      String   @unique
@@ -246,17 +319,13 @@ model File {
   mimeType  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
 
-enum PublishingPlatform {
-  ROYAL_ROAD
-  // Add more platforms here as they are supported
-}
-
-enum PublishingStatus {
-  DRAFT
-  PUBLISHED
-  FAILED
+  // Explicit back-relations for images/assets
+  storyCoverArt    Story[]     @relation("StoryCoverArt")
+  bookCoverArt     Book[]      @relation("BookCoverArt")
+  bookSpineArt     Book[]      @relation("BookSpineArt")
+  characterPicture Character[] @relation("CharacterPicture")
+  locationPicture  Location[]  @relation("LocationPicture")
 }
 
 model ChapterPublishing {
@@ -274,4 +343,105 @@ model ChapterPublishing {
 
   @@unique([chapterId, platform])
   @@unique([platform, platformId]) // Ensure platform IDs are unique per platform
+}
+
+model Character {
+  id                         String                   @id @default(uuid(7))
+  storyId                    String
+  story                      Story                    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  pictureFileId              String? // New FK field
+  pictureFile                File?                    @relation("CharacterPicture", fields: [pictureFileId], references: [id], onDelete: SetNull)
+  firstName                  String
+  middleName                 String?
+  lastName                   String?
+  nickname                   String?
+  summary                    String?                  @db.Text
+  background                 String?                  @db.Text
+  personality                String?                  @db.Text
+  personalityQuirks          String?                  @db.Text
+  likes                      String?                  @db.Text
+  dislikes                   String?                  @db.Text
+  age                        String?
+  gender                     String?
+  sexualOrientation          String?
+  height                     Int?
+  hairColor                  String?
+  eyeColor                   String?
+  distinguishingFeatures     String?                  @db.Text
+  writingStyle               String?                  @db.Text
+  isMainCharacter            Boolean                  @default(true)
+  laterVersionOfId           String?
+  laterVersionOf             Character?               @relation("CharacterVersion", fields: [laterVersionOfId], references: [id], onDelete: SetNull)
+  previousVersion            Character[]              @relation("CharacterVersion")
+  significantActions         Json?
+  createdAt                  DateTime                 @default(now())
+  updatedAt                  DateTime                 @updatedAt
+  defaultProtagonistForStory Story[]                  @relation("DefaultProtagonist")
+  sceneProtagonistIn         Scene[]                  @relation("SceneProtagonist")
+  participatingInScenes      SceneCharacter[]         @relation("ParticipatingCharacters")
+  referredInScenes           SceneReferredCharacter[] @relation("ReferredCharacters")
+
+  @@index([storyId])
+}
+
+model Location {
+  id            String   @id @default(uuid(7))
+  storyId       String
+  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  name          String
+  pictureFileId String? // New FK field
+  pictureFile   File?    @relation("LocationPicture", fields: [pictureFileId], references: [id], onDelete: SetNull)
+  description   String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  scenes        Scene[]
+
+  @@index([storyId])
+}
+
+model PlotPoint {
+  id        String         @id @default(uuid(7))
+  storyId   String
+  story     Story          @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  title     String
+  summary   String?        @db.Text
+  state     PlotPointState @default(UNRESOLVED)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([storyId])
+}
+
+model Item {
+  id        String   @id @default(uuid(7))
+  storyId   String
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([storyId, name])
+  @@index([storyId])
+}
+
+model SceneCharacter {
+  sceneId     String
+  scene       Scene     @relation("ParticipatingCharacters", fields: [sceneId], references: [id], onDelete: Cascade)
+  characterId String
+  character   Character @relation("ParticipatingCharacters", fields: [characterId], references: [id], onDelete: Cascade)
+  assignedAt  DateTime  @default(now())
+
+  @@id([sceneId, characterId])
+  @@index([characterId])
+}
+
+model SceneReferredCharacter {
+  sceneId     String
+  scene       Scene     @relation("ReferredCharacters", fields: [sceneId], references: [id], onDelete: Cascade)
+  characterId String
+  character   Character @relation("ReferredCharacters", fields: [characterId], references: [id], onDelete: Cascade)
+  assignedAt  DateTime  @default(now())
+
+  @@id([sceneId, characterId])
+  @@index([characterId])
 }

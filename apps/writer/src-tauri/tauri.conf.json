@@ -91,7 +91,11 @@
             },
             {
               "identifier": "http:default",
-              "allow": [{ "url": "https://*.serial-experiments.com" }]
+              "allow": [
+                { "url": "https://*.serial-experiments.com" },
+                { "url": "https://*.openai.com" },
+                { "url": "https://*.googleapis.com" }
+              ]
             },
             "shell:allow-open"
           ]

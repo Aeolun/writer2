@@ -11,6 +11,7 @@ import type {
   Chapter,
 } from "@writer/shared";
 import { isRoyalRoadWarning } from "../util/is-royal-road-warning.js";
+import { TRPCError } from "@trpc/server";
 
 type MaybeString = string | null | undefined;
 
@@ -57,8 +58,8 @@ export const importRoyalRoad = protectedProcedure
         return res;
       }
     };
+    const browser = await chromium.launch();
     try {
-      const browser = await chromium.launch();
       const page = await browser.newPage();
 
       const chapterInfo = await possibleCache(
@@ -203,7 +204,7 @@ export const importRoyalRoad = protectedProcedure
 
             const contentObject = await page.$(".chapter-content");
             const invisibleParagraph = await page.$(
-              ".chapter-content p:not(:visible)",
+              ".chapter-content > *:not(:visible)",
             );
 
             if (!contentObject) {
@@ -296,12 +297,19 @@ export const importRoyalRoad = protectedProcedure
         };
       }
       console.log("Done!");
-      await browser.close();
+
       yield {
         kind: "storyImported",
         data: storyData,
       };
     } catch (e) {
       console.error(e);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to import from Royal Road",
+        cause: e,
+      });
+    } finally {
+      await browser.close();
     }
   });

@@ -2,9 +2,17 @@ import { trpc } from "../trpc";
 import { storyState } from "../stores/story";
 import { addNotification } from "../stores/notifications";
 import { stateToStory } from "./state-to-story";
-import { setUploading, setLastKnownServerUpdate } from "../stores/ui";
+import {
+  setUploading,
+  setLastKnownServerUpdate,
+  setUploadingMessage,
+} from "../stores/ui";
 import { settingsState } from "../stores/settings";
 import { checkSyncStatus, hasConflicts } from "./check-sync-status";
+import { uploadedFiles, addUploadedFile } from "../stores/uploaded-files";
+import { readFile } from "@tauri-apps/plugin-fs";
+import { resolve } from "@tauri-apps/api/path";
+import { arrayBufferToBase64 } from "../util";
 
 interface TRPCError {
   shape?: {
@@ -22,6 +30,46 @@ interface UploadResult {
   error?: string;
 }
 
+async function uploadFileByPath(relativePath: string): Promise<void> {
+  const openPath = storyState.openPath;
+  const storyId = storyState.story?.id;
+
+  if (!openPath || !storyId) {
+    throw new Error("Cannot upload file: Story path or ID missing.");
+  }
+
+  const normalizedPath = relativePath.startsWith("/")
+    ? relativePath
+    : `/${relativePath}`;
+
+  console.log(`Uploading file: ${normalizedPath}`);
+  setUploadingMessage(`Uploading ${normalizedPath}...`);
+
+  try {
+    const readPath = await resolve(openPath, "data", normalizedPath.slice(1));
+    const fileData = await readFile(readPath);
+    const result = await trpc.uploadStoryImage.mutate({
+      dataBase64: arrayBufferToBase64(fileData),
+      path: normalizedPath,
+      storyId,
+    });
+
+    addUploadedFile(normalizedPath, {
+      hash: result.sha256,
+      publicUrl: result.fullUrl,
+    });
+    console.log(`Successfully uploaded ${normalizedPath}`);
+  } catch (error) {
+    console.error(`Failed to upload file ${normalizedPath}:`, error);
+    addNotification({
+      title: "File Upload Failed",
+      message: `Could not upload ${normalizedPath}. Please try again or check the file.`,
+      type: "error",
+    });
+    throw new Error(`Failed to upload ${normalizedPath}`);
+  }
+}
+
 export const uploadStory = async () => {
   if (!storyState.story || !storyState.openPath) {
     addNotification({
@@ -32,11 +80,15 @@ export const uploadStory = async () => {
     return;
   }
 
+  const openPath = storyState.openPath;
+  const storyId = storyState.story.id;
+
   try {
-    // Check sync status before uploading
+    setUploading(true);
+    setUploadingMessage("Checking sync status...");
+
     const syncStatus = await checkSyncStatus();
 
-    // If there are conflicts, fail the upload
     if (hasConflicts(syncStatus)) {
       addNotification({
         title: "Upload failed",
@@ -44,14 +96,68 @@ export const uploadStory = async () => {
           "There are conflicts between local and server versions. Please resolve conflicts before uploading.",
         type: "error",
       });
+      setUploading(false);
       return;
     }
 
-    // Set uploading state to true
-    setUploading(true);
-
-    // Use the stateToStory function to get the complete story data
+    setUploadingMessage("Checking files...");
     const persistedStory = stateToStory();
+    const referencedFiles = new Set<string>();
+
+    if (persistedStory.story.settings?.headerImage) {
+      referencedFiles.add(persistedStory.story.settings.headerImage);
+    }
+    for (const book of Object.values(persistedStory.story.book ?? {})) {
+      if (book.coverImage) referencedFiles.add(book.coverImage);
+      if (book.spineImage) referencedFiles.add(book.spineImage);
+    }
+    for (const char of Object.values(persistedStory.story.characters ?? {})) {
+      if (char.picture) referencedFiles.add(char.picture);
+    }
+    for (const loc of Object.values(persistedStory.story.locations ?? {})) {
+      if (loc.picture) referencedFiles.add(loc.picture);
+    }
+
+    const filesToUpload: string[] = [];
+    const currentUploadedFiles = uploadedFiles.files;
+    for (const path of referencedFiles) {
+      if (path) {
+        const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+        if (!currentUploadedFiles[normalizedPath]?.publicUrl) {
+          filesToUpload.push(normalizedPath);
+        }
+      }
+    }
+
+    if (filesToUpload.length > 0) {
+      addNotification({
+        title: "Uploading Files",
+        message: `Uploading ${filesToUpload.length} referenced file(s)...`,
+        type: "info",
+      });
+      console.log("Files needing upload:", filesToUpload);
+
+      try {
+        await Promise.all(filesToUpload.map(uploadFileByPath));
+        addNotification({
+          title: "File Upload Complete",
+          message: "All referenced files uploaded successfully.",
+          type: "success",
+        });
+      } catch (uploadError) {
+        addNotification({
+          title: "Upload Failed",
+          message: `One or more file uploads failed. Story not saved. ${uploadError instanceof Error ? uploadError.message : ""}`,
+          type: "error",
+        });
+        setUploading(false);
+        return;
+      }
+    }
+
+    const finalPersistedStory = stateToStory();
+
+    setUploadingMessage("Saving story data...");
 
     const royalRoadCredentials =
       settingsState.royalRoadEmail && settingsState.royalRoadPassword
@@ -61,10 +167,9 @@ export const uploadStory = async () => {
           }
         : undefined;
 
-    // Check if we need Royal Road credentials
     const needsRoyalRoadCredentials =
-      persistedStory.story.settings?.publishToRoyalRoad &&
-      Object.values(persistedStory.story.chapter).some(
+      finalPersistedStory.story.settings?.publishToRoyalRoad &&
+      Object.values(finalPersistedStory.story.chapter).some(
         (chapter) =>
           chapter.visibleFrom &&
           new Date(chapter.visibleFrom) < new Date() &&
@@ -82,7 +187,7 @@ export const uploadStory = async () => {
     }
 
     const result = (await trpc.uploadStory.mutate({
-      ...persistedStory,
+      ...finalPersistedStory,
       royalRoadCredentials,
     })) as UploadResult;
 
@@ -95,7 +200,6 @@ export const uploadStory = async () => {
       });
       setLastKnownServerUpdate(storyState.story?.modifiedTime ?? null);
 
-      // Refresh sync state after successful upload
       await checkSyncStatus();
     } else {
       console.error("Upload failed:", result.error);
@@ -120,10 +224,8 @@ export const uploadStory = async () => {
       type: "error",
       details: errorDetails,
     });
-
-    throw error;
   } finally {
-    // Always set uploading state back to false when done
     setUploading(false);
+    setUploadingMessage(null);
   }
 };

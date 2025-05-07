@@ -256,7 +256,19 @@ export const WriteHeaderMenu = () => {
               }
               onClick={() => {
                 if (storyState.story?.settings?.royalRoadId) {
-                  importRoyalRoad(storyState.story?.settings?.royalRoadId);
+                  importRoyalRoad(storyState.story?.settings?.royalRoadId).then(() => {
+                    addNotification({
+                      type: "success",
+                      title: "Imported Royal Road",
+                      message: "Royal Road imported successfully",
+                    });
+                  }).catch((error) => {
+                    addNotification({
+                      type: "error",
+                      title: "Import failed",
+                      message: error.message,
+                    });
+                  });
                 }
               }}
             >

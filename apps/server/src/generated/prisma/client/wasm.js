@@ -169,10 +169,12 @@ exports.Prisma.StoryScalarFieldEnum = {
   chapters: 'chapters',
   firstChapterReleasedAt: 'firstChapterReleasedAt',
   lastChapterReleasedAt: 'lastChapterReleasedAt',
-  coverArtAsset: 'coverArtAsset',
+  coverArtFileId: 'coverArtFileId',
   coverColor: 'coverColor',
   coverTextColor: 'coverTextColor',
   coverFontFamily: 'coverFontFamily',
+  defaultPerspective: 'defaultPerspective',
+  defaultProtagonistId: 'defaultProtagonistId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   sortOrder: 'sortOrder',
@@ -207,9 +209,10 @@ exports.Prisma.StoryReadStatusScalarFieldEnum = {
 exports.Prisma.BookScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  summary: 'summary',
   storyId: 'storyId',
-  coverArtAsset: 'coverArtAsset',
-  spineArtAsset: 'spineArtAsset',
+  coverArtFileId: 'coverArtFileId',
+  spineArtFileId: 'spineArtFileId',
   pages: 'pages',
   sortOrder: 'sortOrder',
   nodeType: 'nodeType',
@@ -220,6 +223,7 @@ exports.Prisma.BookScalarFieldEnum = {
 exports.Prisma.ArcScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  summary: 'summary',
   bookId: 'bookId',
   sortOrder: 'sortOrder',
   nodeType: 'nodeType',
@@ -230,6 +234,7 @@ exports.Prisma.ArcScalarFieldEnum = {
 exports.Prisma.ChapterScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  summary: 'summary',
   arcId: 'arcId',
   publishedOn: 'publishedOn',
   sortOrder: 'sortOrder',
@@ -242,10 +247,14 @@ exports.Prisma.ChapterScalarFieldEnum = {
 exports.Prisma.SceneScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  summary: 'summary',
   body: 'body',
   chapterId: 'chapterId',
   sortOrder: 'sortOrder',
   nodeType: 'nodeType',
+  perspective: 'perspective',
+  protagonistId: 'protagonistId',
+  locationId: 'locationId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -264,6 +273,11 @@ exports.Prisma.ParagraphRevisionScalarFieldEnum = {
   body: 'body',
   contentSchema: 'contentSchema',
   version: 'version',
+  state: 'state',
+  aiCharacters: 'aiCharacters',
+  humanCharacters: 'humanCharacters',
+  plotPointActions: 'plotPointActions',
+  inventoryActions: 'inventoryActions',
   createdAt: 'createdAt'
 };
 
@@ -305,9 +319,83 @@ exports.Prisma.ChapterPublishingScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CharacterScalarFieldEnum = {
+  id: 'id',
+  storyId: 'storyId',
+  pictureFileId: 'pictureFileId',
+  firstName: 'firstName',
+  middleName: 'middleName',
+  lastName: 'lastName',
+  nickname: 'nickname',
+  summary: 'summary',
+  background: 'background',
+  personality: 'personality',
+  personalityQuirks: 'personalityQuirks',
+  likes: 'likes',
+  dislikes: 'dislikes',
+  age: 'age',
+  gender: 'gender',
+  sexualOrientation: 'sexualOrientation',
+  height: 'height',
+  hairColor: 'hairColor',
+  eyeColor: 'eyeColor',
+  distinguishingFeatures: 'distinguishingFeatures',
+  writingStyle: 'writingStyle',
+  isMainCharacter: 'isMainCharacter',
+  laterVersionOfId: 'laterVersionOfId',
+  significantActions: 'significantActions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LocationScalarFieldEnum = {
+  id: 'id',
+  storyId: 'storyId',
+  name: 'name',
+  pictureFileId: 'pictureFileId',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PlotPointScalarFieldEnum = {
+  id: 'id',
+  storyId: 'storyId',
+  title: 'title',
+  summary: 'summary',
+  state: 'state',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ItemScalarFieldEnum = {
+  id: 'id',
+  storyId: 'storyId',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SceneCharacterScalarFieldEnum = {
+  sceneId: 'sceneId',
+  characterId: 'characterId',
+  assignedAt: 'assignedAt'
+};
+
+exports.Prisma.SceneReferredCharacterScalarFieldEnum = {
+  sceneId: 'sceneId',
+  characterId: 'characterId',
+  assignedAt: 'assignedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.NullsOrder = {
@@ -341,10 +429,11 @@ exports.Prisma.StoryOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
   summary: 'summary',
-  coverArtAsset: 'coverArtAsset',
+  coverArtFileId: 'coverArtFileId',
   coverColor: 'coverColor',
   coverTextColor: 'coverTextColor',
-  coverFontFamily: 'coverFontFamily'
+  coverFontFamily: 'coverFontFamily',
+  defaultProtagonistId: 'defaultProtagonistId'
 };
 
 exports.Prisma.TagOrderByRelevanceFieldEnum = {
@@ -367,15 +456,17 @@ exports.Prisma.StoryReadStatusOrderByRelevanceFieldEnum = {
 exports.Prisma.BookOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
+  summary: 'summary',
   storyId: 'storyId',
-  coverArtAsset: 'coverArtAsset',
-  spineArtAsset: 'spineArtAsset',
+  coverArtFileId: 'coverArtFileId',
+  spineArtFileId: 'spineArtFileId',
   nodeType: 'nodeType'
 };
 
 exports.Prisma.ArcOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
+  summary: 'summary',
   bookId: 'bookId',
   nodeType: 'nodeType'
 };
@@ -383,6 +474,7 @@ exports.Prisma.ArcOrderByRelevanceFieldEnum = {
 exports.Prisma.ChapterOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
+  summary: 'summary',
   arcId: 'arcId',
   nodeType: 'nodeType'
 };
@@ -390,14 +482,28 @@ exports.Prisma.ChapterOrderByRelevanceFieldEnum = {
 exports.Prisma.SceneOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
+  summary: 'summary',
   body: 'body',
   chapterId: 'chapterId',
-  nodeType: 'nodeType'
+  nodeType: 'nodeType',
+  protagonistId: 'protagonistId',
+  locationId: 'locationId'
 };
 
 exports.Prisma.ParagraphOrderByRelevanceFieldEnum = {
   id: 'id',
   sceneId: 'sceneId'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.ParagraphRevisionOrderByRelevanceFieldEnum = {
@@ -427,6 +533,61 @@ exports.Prisma.ChapterPublishingOrderByRelevanceFieldEnum = {
   platformId: 'platformId',
   errorMessage: 'errorMessage'
 };
+
+exports.Prisma.CharacterOrderByRelevanceFieldEnum = {
+  id: 'id',
+  storyId: 'storyId',
+  pictureFileId: 'pictureFileId',
+  firstName: 'firstName',
+  middleName: 'middleName',
+  lastName: 'lastName',
+  nickname: 'nickname',
+  summary: 'summary',
+  background: 'background',
+  personality: 'personality',
+  personalityQuirks: 'personalityQuirks',
+  likes: 'likes',
+  dislikes: 'dislikes',
+  age: 'age',
+  gender: 'gender',
+  sexualOrientation: 'sexualOrientation',
+  hairColor: 'hairColor',
+  eyeColor: 'eyeColor',
+  distinguishingFeatures: 'distinguishingFeatures',
+  writingStyle: 'writingStyle',
+  laterVersionOfId: 'laterVersionOfId'
+};
+
+exports.Prisma.LocationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  storyId: 'storyId',
+  name: 'name',
+  pictureFileId: 'pictureFileId',
+  description: 'description'
+};
+
+exports.Prisma.PlotPointOrderByRelevanceFieldEnum = {
+  id: 'id',
+  storyId: 'storyId',
+  title: 'title',
+  summary: 'summary'
+};
+
+exports.Prisma.ItemOrderByRelevanceFieldEnum = {
+  id: 'id',
+  storyId: 'storyId',
+  name: 'name'
+};
+
+exports.Prisma.SceneCharacterOrderByRelevanceFieldEnum = {
+  sceneId: 'sceneId',
+  characterId: 'characterId'
+};
+
+exports.Prisma.SceneReferredCharacterOrderByRelevanceFieldEnum = {
+  sceneId: 'sceneId',
+  characterId: 'characterId'
+};
 exports.SavedType = exports.$Enums.SavedType = {
   FAVORITE: 'FAVORITE',
   FOLLOW: 'FOLLOW',
@@ -444,6 +605,19 @@ exports.StoryType = exports.$Enums.StoryType = {
   ORIGINAL: 'ORIGINAL'
 };
 
+exports.Perspective = exports.$Enums.Perspective = {
+  FIRST: 'FIRST',
+  THIRD: 'THIRD'
+};
+
+exports.ParagraphState = exports.$Enums.ParagraphState = {
+  AI: 'AI',
+  DRAFT: 'DRAFT',
+  REVISE: 'REVISE',
+  FINAL: 'FINAL',
+  SDT: 'SDT'
+};
+
 exports.ParagraphCommentType = exports.$Enums.ParagraphCommentType = {
   COMMENT: 'COMMENT',
   SUGGESTION: 'SUGGESTION'
@@ -457,6 +631,12 @@ exports.PublishingStatus = exports.$Enums.PublishingStatus = {
   DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',
   FAILED: 'FAILED'
+};
+
+exports.PlotPointState = exports.$Enums.PlotPointState = {
+  INTRODUCED: 'INTRODUCED',
+  UNRESOLVED: 'UNRESOLVED',
+  RESOLVED: 'RESOLVED'
 };
 
 exports.Prisma.ModelName = {
@@ -476,7 +656,13 @@ exports.Prisma.ModelName = {
   ParagraphRevision: 'ParagraphRevision',
   ParagraphComment: 'ParagraphComment',
   File: 'File',
-  ChapterPublishing: 'ChapterPublishing'
+  ChapterPublishing: 'ChapterPublishing',
+  Character: 'Character',
+  Location: 'Location',
+  PlotPoint: 'PlotPoint',
+  Item: 'Item',
+  SceneCharacter: 'SceneCharacter',
+  SceneReferredCharacter: 'SceneReferredCharacter'
 };
 
 /**

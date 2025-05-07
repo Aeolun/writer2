@@ -98,6 +98,36 @@ export type File = $Result.DefaultSelection<Prisma.$FilePayload>
  * 
  */
 export type ChapterPublishing = $Result.DefaultSelection<Prisma.$ChapterPublishingPayload>
+/**
+ * Model Character
+ * 
+ */
+export type Character = $Result.DefaultSelection<Prisma.$CharacterPayload>
+/**
+ * Model Location
+ * 
+ */
+export type Location = $Result.DefaultSelection<Prisma.$LocationPayload>
+/**
+ * Model PlotPoint
+ * 
+ */
+export type PlotPoint = $Result.DefaultSelection<Prisma.$PlotPointPayload>
+/**
+ * Model Item
+ * 
+ */
+export type Item = $Result.DefaultSelection<Prisma.$ItemPayload>
+/**
+ * Model SceneCharacter
+ * 
+ */
+export type SceneCharacter = $Result.DefaultSelection<Prisma.$SceneCharacterPayload>
+/**
+ * Model SceneReferredCharacter
+ * 
+ */
+export type SceneReferredCharacter = $Result.DefaultSelection<Prisma.$SceneReferredCharacterPayload>
 
 /**
  * Enums
@@ -129,14 +159,6 @@ export const StoryType: {
 export type StoryType = (typeof StoryType)[keyof typeof StoryType]
 
 
-export const ParagraphCommentType: {
-  COMMENT: 'COMMENT',
-  SUGGESTION: 'SUGGESTION'
-};
-
-export type ParagraphCommentType = (typeof ParagraphCommentType)[keyof typeof ParagraphCommentType]
-
-
 export const PublishingPlatform: {
   ROYAL_ROAD: 'ROYAL_ROAD'
 };
@@ -152,6 +174,60 @@ export const PublishingStatus: {
 
 export type PublishingStatus = (typeof PublishingStatus)[keyof typeof PublishingStatus]
 
+
+export const ParagraphCommentType: {
+  COMMENT: 'COMMENT',
+  SUGGESTION: 'SUGGESTION'
+};
+
+export type ParagraphCommentType = (typeof ParagraphCommentType)[keyof typeof ParagraphCommentType]
+
+
+export const Perspective: {
+  FIRST: 'FIRST',
+  THIRD: 'THIRD'
+};
+
+export type Perspective = (typeof Perspective)[keyof typeof Perspective]
+
+
+export const PlotPointState: {
+  INTRODUCED: 'INTRODUCED',
+  UNRESOLVED: 'UNRESOLVED',
+  RESOLVED: 'RESOLVED'
+};
+
+export type PlotPointState = (typeof PlotPointState)[keyof typeof PlotPointState]
+
+
+export const ParagraphState: {
+  AI: 'AI',
+  DRAFT: 'DRAFT',
+  REVISE: 'REVISE',
+  FINAL: 'FINAL',
+  SDT: 'SDT'
+};
+
+export type ParagraphState = (typeof ParagraphState)[keyof typeof ParagraphState]
+
+
+export const PlotPointActionType: {
+  INTRODUCE: 'INTRODUCE',
+  MENTIONED: 'MENTIONED',
+  PARTIALLY_RESOLVED: 'PARTIALLY_RESOLVED',
+  RESOLVED: 'RESOLVED'
+};
+
+export type PlotPointActionType = (typeof PlotPointActionType)[keyof typeof PlotPointActionType]
+
+
+export const InventoryActionType: {
+  ADD: 'ADD',
+  REMOVE: 'REMOVE'
+};
+
+export type InventoryActionType = (typeof InventoryActionType)[keyof typeof InventoryActionType]
+
 }
 
 export type SavedType = $Enums.SavedType
@@ -166,10 +242,6 @@ export type StoryType = $Enums.StoryType
 
 export const StoryType: typeof $Enums.StoryType
 
-export type ParagraphCommentType = $Enums.ParagraphCommentType
-
-export const ParagraphCommentType: typeof $Enums.ParagraphCommentType
-
 export type PublishingPlatform = $Enums.PublishingPlatform
 
 export const PublishingPlatform: typeof $Enums.PublishingPlatform
@@ -177,6 +249,30 @@ export const PublishingPlatform: typeof $Enums.PublishingPlatform
 export type PublishingStatus = $Enums.PublishingStatus
 
 export const PublishingStatus: typeof $Enums.PublishingStatus
+
+export type ParagraphCommentType = $Enums.ParagraphCommentType
+
+export const ParagraphCommentType: typeof $Enums.ParagraphCommentType
+
+export type Perspective = $Enums.Perspective
+
+export const Perspective: typeof $Enums.Perspective
+
+export type PlotPointState = $Enums.PlotPointState
+
+export const PlotPointState: typeof $Enums.PlotPointState
+
+export type ParagraphState = $Enums.ParagraphState
+
+export const ParagraphState: typeof $Enums.ParagraphState
+
+export type PlotPointActionType = $Enums.PlotPointActionType
+
+export const PlotPointActionType: typeof $Enums.PlotPointActionType
+
+export type InventoryActionType = $Enums.InventoryActionType
+
+export const InventoryActionType: typeof $Enums.InventoryActionType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -472,6 +568,66 @@ export class PrismaClient<
     * ```
     */
   get chapterPublishing(): Prisma.ChapterPublishingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.character`: Exposes CRUD operations for the **Character** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Characters
+    * const characters = await prisma.character.findMany()
+    * ```
+    */
+  get character(): Prisma.CharacterDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.location`: Exposes CRUD operations for the **Location** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Locations
+    * const locations = await prisma.location.findMany()
+    * ```
+    */
+  get location(): Prisma.LocationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.plotPoint`: Exposes CRUD operations for the **PlotPoint** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PlotPoints
+    * const plotPoints = await prisma.plotPoint.findMany()
+    * ```
+    */
+  get plotPoint(): Prisma.PlotPointDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.item`: Exposes CRUD operations for the **Item** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Items
+    * const items = await prisma.item.findMany()
+    * ```
+    */
+  get item(): Prisma.ItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sceneCharacter`: Exposes CRUD operations for the **SceneCharacter** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SceneCharacters
+    * const sceneCharacters = await prisma.sceneCharacter.findMany()
+    * ```
+    */
+  get sceneCharacter(): Prisma.SceneCharacterDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sceneReferredCharacter`: Exposes CRUD operations for the **SceneReferredCharacter** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SceneReferredCharacters
+    * const sceneReferredCharacters = await prisma.sceneReferredCharacter.findMany()
+    * ```
+    */
+  get sceneReferredCharacter(): Prisma.SceneReferredCharacterDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -928,7 +1084,13 @@ export namespace Prisma {
     ParagraphRevision: 'ParagraphRevision',
     ParagraphComment: 'ParagraphComment',
     File: 'File',
-    ChapterPublishing: 'ChapterPublishing'
+    ChapterPublishing: 'ChapterPublishing',
+    Character: 'Character',
+    Location: 'Location',
+    PlotPoint: 'PlotPoint',
+    Item: 'Item',
+    SceneCharacter: 'SceneCharacter',
+    SceneReferredCharacter: 'SceneReferredCharacter'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -947,7 +1109,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "accessKey" | "bookShelfStory" | "story" | "tag" | "storyTag" | "storyReadStatus" | "book" | "arc" | "chapter" | "scene" | "paragraph" | "paragraphRevision" | "paragraphComment" | "file" | "chapterPublishing"
+      modelProps: "user" | "session" | "accessKey" | "bookShelfStory" | "story" | "tag" | "storyTag" | "storyReadStatus" | "book" | "arc" | "chapter" | "scene" | "paragraph" | "paragraphRevision" | "paragraphComment" | "file" | "chapterPublishing" | "character" | "location" | "plotPoint" | "item" | "sceneCharacter" | "sceneReferredCharacter"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2073,6 +2235,402 @@ export namespace Prisma {
           }
         }
       }
+      Character: {
+        payload: Prisma.$CharacterPayload<ExtArgs>
+        fields: Prisma.CharacterFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CharacterFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CharacterPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CharacterFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CharacterPayload>
+          }
+          findFirst: {
+            args: Prisma.CharacterFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CharacterPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CharacterFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CharacterPayload>
+          }
+          findMany: {
+            args: Prisma.CharacterFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CharacterPayload>[]
+          }
+          create: {
+            args: Prisma.CharacterCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CharacterPayload>
+          }
+          createMany: {
+            args: Prisma.CharacterCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.CharacterDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CharacterPayload>
+          }
+          update: {
+            args: Prisma.CharacterUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CharacterPayload>
+          }
+          deleteMany: {
+            args: Prisma.CharacterDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CharacterUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CharacterUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CharacterPayload>
+          }
+          aggregate: {
+            args: Prisma.CharacterAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCharacter>
+          }
+          groupBy: {
+            args: Prisma.CharacterGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CharacterGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CharacterCountArgs<ExtArgs>
+            result: $Utils.Optional<CharacterCountAggregateOutputType> | number
+          }
+        }
+      }
+      Location: {
+        payload: Prisma.$LocationPayload<ExtArgs>
+        fields: Prisma.LocationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LocationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LocationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationPayload>
+          }
+          findFirst: {
+            args: Prisma.LocationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LocationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationPayload>
+          }
+          findMany: {
+            args: Prisma.LocationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationPayload>[]
+          }
+          create: {
+            args: Prisma.LocationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationPayload>
+          }
+          createMany: {
+            args: Prisma.LocationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.LocationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationPayload>
+          }
+          update: {
+            args: Prisma.LocationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationPayload>
+          }
+          deleteMany: {
+            args: Prisma.LocationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LocationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.LocationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationPayload>
+          }
+          aggregate: {
+            args: Prisma.LocationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLocation>
+          }
+          groupBy: {
+            args: Prisma.LocationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LocationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LocationCountArgs<ExtArgs>
+            result: $Utils.Optional<LocationCountAggregateOutputType> | number
+          }
+        }
+      }
+      PlotPoint: {
+        payload: Prisma.$PlotPointPayload<ExtArgs>
+        fields: Prisma.PlotPointFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PlotPointFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlotPointPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PlotPointFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlotPointPayload>
+          }
+          findFirst: {
+            args: Prisma.PlotPointFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlotPointPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PlotPointFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlotPointPayload>
+          }
+          findMany: {
+            args: Prisma.PlotPointFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlotPointPayload>[]
+          }
+          create: {
+            args: Prisma.PlotPointCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlotPointPayload>
+          }
+          createMany: {
+            args: Prisma.PlotPointCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.PlotPointDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlotPointPayload>
+          }
+          update: {
+            args: Prisma.PlotPointUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlotPointPayload>
+          }
+          deleteMany: {
+            args: Prisma.PlotPointDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PlotPointUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.PlotPointUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlotPointPayload>
+          }
+          aggregate: {
+            args: Prisma.PlotPointAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePlotPoint>
+          }
+          groupBy: {
+            args: Prisma.PlotPointGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PlotPointGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PlotPointCountArgs<ExtArgs>
+            result: $Utils.Optional<PlotPointCountAggregateOutputType> | number
+          }
+        }
+      }
+      Item: {
+        payload: Prisma.$ItemPayload<ExtArgs>
+        fields: Prisma.ItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemPayload>
+          }
+          findFirst: {
+            args: Prisma.ItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemPayload>
+          }
+          findMany: {
+            args: Prisma.ItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemPayload>[]
+          }
+          create: {
+            args: Prisma.ItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemPayload>
+          }
+          createMany: {
+            args: Prisma.ItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.ItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemPayload>
+          }
+          update: {
+            args: Prisma.ItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.ItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ItemPayload>
+          }
+          aggregate: {
+            args: Prisma.ItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateItem>
+          }
+          groupBy: {
+            args: Prisma.ItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ItemCountArgs<ExtArgs>
+            result: $Utils.Optional<ItemCountAggregateOutputType> | number
+          }
+        }
+      }
+      SceneCharacter: {
+        payload: Prisma.$SceneCharacterPayload<ExtArgs>
+        fields: Prisma.SceneCharacterFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SceneCharacterFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneCharacterPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SceneCharacterFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneCharacterPayload>
+          }
+          findFirst: {
+            args: Prisma.SceneCharacterFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneCharacterPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SceneCharacterFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneCharacterPayload>
+          }
+          findMany: {
+            args: Prisma.SceneCharacterFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneCharacterPayload>[]
+          }
+          create: {
+            args: Prisma.SceneCharacterCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneCharacterPayload>
+          }
+          createMany: {
+            args: Prisma.SceneCharacterCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.SceneCharacterDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneCharacterPayload>
+          }
+          update: {
+            args: Prisma.SceneCharacterUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneCharacterPayload>
+          }
+          deleteMany: {
+            args: Prisma.SceneCharacterDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SceneCharacterUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.SceneCharacterUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneCharacterPayload>
+          }
+          aggregate: {
+            args: Prisma.SceneCharacterAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSceneCharacter>
+          }
+          groupBy: {
+            args: Prisma.SceneCharacterGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SceneCharacterGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SceneCharacterCountArgs<ExtArgs>
+            result: $Utils.Optional<SceneCharacterCountAggregateOutputType> | number
+          }
+        }
+      }
+      SceneReferredCharacter: {
+        payload: Prisma.$SceneReferredCharacterPayload<ExtArgs>
+        fields: Prisma.SceneReferredCharacterFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SceneReferredCharacterFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneReferredCharacterPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SceneReferredCharacterFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneReferredCharacterPayload>
+          }
+          findFirst: {
+            args: Prisma.SceneReferredCharacterFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneReferredCharacterPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SceneReferredCharacterFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneReferredCharacterPayload>
+          }
+          findMany: {
+            args: Prisma.SceneReferredCharacterFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneReferredCharacterPayload>[]
+          }
+          create: {
+            args: Prisma.SceneReferredCharacterCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneReferredCharacterPayload>
+          }
+          createMany: {
+            args: Prisma.SceneReferredCharacterCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.SceneReferredCharacterDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneReferredCharacterPayload>
+          }
+          update: {
+            args: Prisma.SceneReferredCharacterUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneReferredCharacterPayload>
+          }
+          deleteMany: {
+            args: Prisma.SceneReferredCharacterDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SceneReferredCharacterUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.SceneReferredCharacterUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SceneReferredCharacterPayload>
+          }
+          aggregate: {
+            args: Prisma.SceneReferredCharacterAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSceneReferredCharacter>
+          }
+          groupBy: {
+            args: Prisma.SceneReferredCharacterGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SceneReferredCharacterGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SceneReferredCharacterCountArgs<ExtArgs>
+            result: $Utils.Optional<SceneReferredCharacterCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2174,6 +2732,12 @@ export namespace Prisma {
     paragraphComment?: ParagraphCommentOmit
     file?: FileOmit
     chapterPublishing?: ChapterPublishingOmit
+    character?: CharacterOmit
+    location?: LocationOmit
+    plotPoint?: PlotPointOmit
+    item?: ItemOmit
+    sceneCharacter?: SceneCharacterOmit
+    sceneReferredCharacter?: SceneReferredCharacterOmit
   }
 
   /* Types for Logging */
@@ -2358,6 +2922,10 @@ export namespace Prisma {
     files: number
     storyReadStatuses: number
     storyTags: number
+    characters: number
+    locations: number
+    plotPoints: number
+    items: number
   }
 
   export type StoryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2366,6 +2934,10 @@ export namespace Prisma {
     files?: boolean | StoryCountOutputTypeCountFilesArgs
     storyReadStatuses?: boolean | StoryCountOutputTypeCountStoryReadStatusesArgs
     storyTags?: boolean | StoryCountOutputTypeCountStoryTagsArgs
+    characters?: boolean | StoryCountOutputTypeCountCharactersArgs
+    locations?: boolean | StoryCountOutputTypeCountLocationsArgs
+    plotPoints?: boolean | StoryCountOutputTypeCountPlotPointsArgs
+    items?: boolean | StoryCountOutputTypeCountItemsArgs
   }
 
   // Custom InputTypes
@@ -2412,6 +2984,34 @@ export namespace Prisma {
    */
   export type StoryCountOutputTypeCountStoryTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StoryTagWhereInput
+  }
+
+  /**
+   * StoryCountOutputType without action
+   */
+  export type StoryCountOutputTypeCountCharactersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CharacterWhereInput
+  }
+
+  /**
+   * StoryCountOutputType without action
+   */
+  export type StoryCountOutputTypeCountLocationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LocationWhereInput
+  }
+
+  /**
+   * StoryCountOutputType without action
+   */
+  export type StoryCountOutputTypeCountPlotPointsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlotPointWhereInput
+  }
+
+  /**
+   * StoryCountOutputType without action
+   */
+  export type StoryCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ItemWhereInput
   }
 
 
@@ -2563,10 +3163,14 @@ export namespace Prisma {
 
   export type SceneCountOutputType = {
     paragraphs: number
+    participatingCharacters: number
+    referredCharacters: number
   }
 
   export type SceneCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     paragraphs?: boolean | SceneCountOutputTypeCountParagraphsArgs
+    participatingCharacters?: boolean | SceneCountOutputTypeCountParticipatingCharactersArgs
+    referredCharacters?: boolean | SceneCountOutputTypeCountReferredCharactersArgs
   }
 
   // Custom InputTypes
@@ -2585,6 +3189,20 @@ export namespace Prisma {
    */
   export type SceneCountOutputTypeCountParagraphsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ParagraphWhereInput
+  }
+
+  /**
+   * SceneCountOutputType without action
+   */
+  export type SceneCountOutputTypeCountParticipatingCharactersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SceneCharacterWhereInput
+  }
+
+  /**
+   * SceneCountOutputType without action
+   */
+  export type SceneCountOutputTypeCountReferredCharactersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SceneReferredCharacterWhereInput
   }
 
 
@@ -2647,6 +3265,171 @@ export namespace Prisma {
    */
   export type ParagraphRevisionCountOutputTypeCountParagraphCommentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ParagraphCommentWhereInput
+  }
+
+
+  /**
+   * Count Type FileCountOutputType
+   */
+
+  export type FileCountOutputType = {
+    storyCoverArt: number
+    bookCoverArt: number
+    bookSpineArt: number
+    characterPicture: number
+    locationPicture: number
+  }
+
+  export type FileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    storyCoverArt?: boolean | FileCountOutputTypeCountStoryCoverArtArgs
+    bookCoverArt?: boolean | FileCountOutputTypeCountBookCoverArtArgs
+    bookSpineArt?: boolean | FileCountOutputTypeCountBookSpineArtArgs
+    characterPicture?: boolean | FileCountOutputTypeCountCharacterPictureArgs
+    locationPicture?: boolean | FileCountOutputTypeCountLocationPictureArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FileCountOutputType without action
+   */
+  export type FileCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileCountOutputType
+     */
+    select?: FileCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FileCountOutputType without action
+   */
+  export type FileCountOutputTypeCountStoryCoverArtArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StoryWhereInput
+  }
+
+  /**
+   * FileCountOutputType without action
+   */
+  export type FileCountOutputTypeCountBookCoverArtArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BookWhereInput
+  }
+
+  /**
+   * FileCountOutputType without action
+   */
+  export type FileCountOutputTypeCountBookSpineArtArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BookWhereInput
+  }
+
+  /**
+   * FileCountOutputType without action
+   */
+  export type FileCountOutputTypeCountCharacterPictureArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CharacterWhereInput
+  }
+
+  /**
+   * FileCountOutputType without action
+   */
+  export type FileCountOutputTypeCountLocationPictureArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LocationWhereInput
+  }
+
+
+  /**
+   * Count Type CharacterCountOutputType
+   */
+
+  export type CharacterCountOutputType = {
+    previousVersion: number
+    defaultProtagonistForStory: number
+    sceneProtagonistIn: number
+    participatingInScenes: number
+    referredInScenes: number
+  }
+
+  export type CharacterCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    previousVersion?: boolean | CharacterCountOutputTypeCountPreviousVersionArgs
+    defaultProtagonistForStory?: boolean | CharacterCountOutputTypeCountDefaultProtagonistForStoryArgs
+    sceneProtagonistIn?: boolean | CharacterCountOutputTypeCountSceneProtagonistInArgs
+    participatingInScenes?: boolean | CharacterCountOutputTypeCountParticipatingInScenesArgs
+    referredInScenes?: boolean | CharacterCountOutputTypeCountReferredInScenesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CharacterCountOutputType without action
+   */
+  export type CharacterCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CharacterCountOutputType
+     */
+    select?: CharacterCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CharacterCountOutputType without action
+   */
+  export type CharacterCountOutputTypeCountPreviousVersionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CharacterWhereInput
+  }
+
+  /**
+   * CharacterCountOutputType without action
+   */
+  export type CharacterCountOutputTypeCountDefaultProtagonistForStoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StoryWhereInput
+  }
+
+  /**
+   * CharacterCountOutputType without action
+   */
+  export type CharacterCountOutputTypeCountSceneProtagonistInArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SceneWhereInput
+  }
+
+  /**
+   * CharacterCountOutputType without action
+   */
+  export type CharacterCountOutputTypeCountParticipatingInScenesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SceneCharacterWhereInput
+  }
+
+  /**
+   * CharacterCountOutputType without action
+   */
+  export type CharacterCountOutputTypeCountReferredInScenesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SceneReferredCharacterWhereInput
+  }
+
+
+  /**
+   * Count Type LocationCountOutputType
+   */
+
+  export type LocationCountOutputType = {
+    scenes: number
+  }
+
+  export type LocationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    scenes?: boolean | LocationCountOutputTypeCountScenesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * LocationCountOutputType without action
+   */
+  export type LocationCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationCountOutputType
+     */
+    select?: LocationCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * LocationCountOutputType without action
+   */
+  export type LocationCountOutputTypeCountScenesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SceneWhereInput
   }
 
 
@@ -6824,10 +7607,12 @@ export namespace Prisma {
     chapters: number | null
     firstChapterReleasedAt: Date | null
     lastChapterReleasedAt: Date | null
-    coverArtAsset: string | null
+    coverArtFileId: string | null
     coverColor: string | null
     coverTextColor: string | null
     coverFontFamily: string | null
+    defaultPerspective: $Enums.Perspective | null
+    defaultProtagonistId: string | null
     createdAt: Date | null
     updatedAt: Date | null
     sortOrder: number | null
@@ -6848,10 +7633,12 @@ export namespace Prisma {
     chapters: number | null
     firstChapterReleasedAt: Date | null
     lastChapterReleasedAt: Date | null
-    coverArtAsset: string | null
+    coverArtFileId: string | null
     coverColor: string | null
     coverTextColor: string | null
     coverFontFamily: string | null
+    defaultPerspective: $Enums.Perspective | null
+    defaultProtagonistId: string | null
     createdAt: Date | null
     updatedAt: Date | null
     sortOrder: number | null
@@ -6872,10 +7659,12 @@ export namespace Prisma {
     chapters: number
     firstChapterReleasedAt: number
     lastChapterReleasedAt: number
-    coverArtAsset: number
+    coverArtFileId: number
     coverColor: number
     coverTextColor: number
     coverFontFamily: number
+    defaultPerspective: number
+    defaultProtagonistId: number
     createdAt: number
     updatedAt: number
     sortOrder: number
@@ -6918,10 +7707,12 @@ export namespace Prisma {
     chapters?: true
     firstChapterReleasedAt?: true
     lastChapterReleasedAt?: true
-    coverArtAsset?: true
+    coverArtFileId?: true
     coverColor?: true
     coverTextColor?: true
     coverFontFamily?: true
+    defaultPerspective?: true
+    defaultProtagonistId?: true
     createdAt?: true
     updatedAt?: true
     sortOrder?: true
@@ -6942,10 +7733,12 @@ export namespace Prisma {
     chapters?: true
     firstChapterReleasedAt?: true
     lastChapterReleasedAt?: true
-    coverArtAsset?: true
+    coverArtFileId?: true
     coverColor?: true
     coverTextColor?: true
     coverFontFamily?: true
+    defaultPerspective?: true
+    defaultProtagonistId?: true
     createdAt?: true
     updatedAt?: true
     sortOrder?: true
@@ -6966,10 +7759,12 @@ export namespace Prisma {
     chapters?: true
     firstChapterReleasedAt?: true
     lastChapterReleasedAt?: true
-    coverArtAsset?: true
+    coverArtFileId?: true
     coverColor?: true
     coverTextColor?: true
     coverFontFamily?: true
+    defaultPerspective?: true
+    defaultProtagonistId?: true
     createdAt?: true
     updatedAt?: true
     sortOrder?: true
@@ -7077,10 +7872,12 @@ export namespace Prisma {
     chapters: number | null
     firstChapterReleasedAt: Date | null
     lastChapterReleasedAt: Date | null
-    coverArtAsset: string
+    coverArtFileId: string | null
     coverColor: string
     coverTextColor: string
     coverFontFamily: string
+    defaultPerspective: $Enums.Perspective | null
+    defaultProtagonistId: string | null
     createdAt: Date
     updatedAt: Date
     sortOrder: number
@@ -7120,20 +7917,28 @@ export namespace Prisma {
     chapters?: boolean
     firstChapterReleasedAt?: boolean
     lastChapterReleasedAt?: boolean
-    coverArtAsset?: boolean
+    coverArtFileId?: boolean
     coverColor?: boolean
     coverTextColor?: boolean
     coverFontFamily?: boolean
+    defaultPerspective?: boolean
+    defaultProtagonistId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     sortOrder?: boolean
     pages?: boolean
     owner?: boolean | UserDefaultArgs<ExtArgs>
     bookShelfStories?: boolean | Story$bookShelfStoriesArgs<ExtArgs>
+    coverArtFile?: boolean | Story$coverArtFileArgs<ExtArgs>
+    defaultProtagonist?: boolean | Story$defaultProtagonistArgs<ExtArgs>
     books?: boolean | Story$booksArgs<ExtArgs>
     files?: boolean | Story$filesArgs<ExtArgs>
     storyReadStatuses?: boolean | Story$storyReadStatusesArgs<ExtArgs>
     storyTags?: boolean | Story$storyTagsArgs<ExtArgs>
+    characters?: boolean | Story$charactersArgs<ExtArgs>
+    locations?: boolean | Story$locationsArgs<ExtArgs>
+    plotPoints?: boolean | Story$plotPointsArgs<ExtArgs>
+    items?: boolean | Story$itemsArgs<ExtArgs>
     _count?: boolean | StoryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["story"]>
 
@@ -7153,24 +7958,32 @@ export namespace Prisma {
     chapters?: boolean
     firstChapterReleasedAt?: boolean
     lastChapterReleasedAt?: boolean
-    coverArtAsset?: boolean
+    coverArtFileId?: boolean
     coverColor?: boolean
     coverTextColor?: boolean
     coverFontFamily?: boolean
+    defaultPerspective?: boolean
+    defaultProtagonistId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     sortOrder?: boolean
     pages?: boolean
   }
 
-  export type StoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "summary" | "ownerId" | "royalRoadId" | "published" | "status" | "type" | "wordsPerWeek" | "spellingLevel" | "chapters" | "firstChapterReleasedAt" | "lastChapterReleasedAt" | "coverArtAsset" | "coverColor" | "coverTextColor" | "coverFontFamily" | "createdAt" | "updatedAt" | "sortOrder" | "pages", ExtArgs["result"]["story"]>
+  export type StoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "summary" | "ownerId" | "royalRoadId" | "published" | "status" | "type" | "wordsPerWeek" | "spellingLevel" | "chapters" | "firstChapterReleasedAt" | "lastChapterReleasedAt" | "coverArtFileId" | "coverColor" | "coverTextColor" | "coverFontFamily" | "defaultPerspective" | "defaultProtagonistId" | "createdAt" | "updatedAt" | "sortOrder" | "pages", ExtArgs["result"]["story"]>
   export type StoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     owner?: boolean | UserDefaultArgs<ExtArgs>
     bookShelfStories?: boolean | Story$bookShelfStoriesArgs<ExtArgs>
+    coverArtFile?: boolean | Story$coverArtFileArgs<ExtArgs>
+    defaultProtagonist?: boolean | Story$defaultProtagonistArgs<ExtArgs>
     books?: boolean | Story$booksArgs<ExtArgs>
     files?: boolean | Story$filesArgs<ExtArgs>
     storyReadStatuses?: boolean | Story$storyReadStatusesArgs<ExtArgs>
     storyTags?: boolean | Story$storyTagsArgs<ExtArgs>
+    characters?: boolean | Story$charactersArgs<ExtArgs>
+    locations?: boolean | Story$locationsArgs<ExtArgs>
+    plotPoints?: boolean | Story$plotPointsArgs<ExtArgs>
+    items?: boolean | Story$itemsArgs<ExtArgs>
     _count?: boolean | StoryCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -7179,10 +7992,16 @@ export namespace Prisma {
     objects: {
       owner: Prisma.$UserPayload<ExtArgs>
       bookShelfStories: Prisma.$BookShelfStoryPayload<ExtArgs>[]
+      coverArtFile: Prisma.$FilePayload<ExtArgs> | null
+      defaultProtagonist: Prisma.$CharacterPayload<ExtArgs> | null
       books: Prisma.$BookPayload<ExtArgs>[]
       files: Prisma.$FilePayload<ExtArgs>[]
       storyReadStatuses: Prisma.$StoryReadStatusPayload<ExtArgs>[]
       storyTags: Prisma.$StoryTagPayload<ExtArgs>[]
+      characters: Prisma.$CharacterPayload<ExtArgs>[]
+      locations: Prisma.$LocationPayload<ExtArgs>[]
+      plotPoints: Prisma.$PlotPointPayload<ExtArgs>[]
+      items: Prisma.$ItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7198,10 +8017,12 @@ export namespace Prisma {
       chapters: number | null
       firstChapterReleasedAt: Date | null
       lastChapterReleasedAt: Date | null
-      coverArtAsset: string
+      coverArtFileId: string | null
       coverColor: string
       coverTextColor: string
       coverFontFamily: string
+      defaultPerspective: $Enums.Perspective | null
+      defaultProtagonistId: string | null
       createdAt: Date
       updatedAt: Date
       sortOrder: number
@@ -7548,10 +8369,16 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     bookShelfStories<T extends Story$bookShelfStoriesArgs<ExtArgs> = {}>(args?: Subset<T, Story$bookShelfStoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookShelfStoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    coverArtFile<T extends Story$coverArtFileArgs<ExtArgs> = {}>(args?: Subset<T, Story$coverArtFileArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    defaultProtagonist<T extends Story$defaultProtagonistArgs<ExtArgs> = {}>(args?: Subset<T, Story$defaultProtagonistArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     books<T extends Story$booksArgs<ExtArgs> = {}>(args?: Subset<T, Story$booksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     files<T extends Story$filesArgs<ExtArgs> = {}>(args?: Subset<T, Story$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     storyReadStatuses<T extends Story$storyReadStatusesArgs<ExtArgs> = {}>(args?: Subset<T, Story$storyReadStatusesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryReadStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     storyTags<T extends Story$storyTagsArgs<ExtArgs> = {}>(args?: Subset<T, Story$storyTagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    characters<T extends Story$charactersArgs<ExtArgs> = {}>(args?: Subset<T, Story$charactersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    locations<T extends Story$locationsArgs<ExtArgs> = {}>(args?: Subset<T, Story$locationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    plotPoints<T extends Story$plotPointsArgs<ExtArgs> = {}>(args?: Subset<T, Story$plotPointsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlotPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    items<T extends Story$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Story$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7594,10 +8421,12 @@ export namespace Prisma {
     readonly chapters: FieldRef<"Story", 'Int'>
     readonly firstChapterReleasedAt: FieldRef<"Story", 'DateTime'>
     readonly lastChapterReleasedAt: FieldRef<"Story", 'DateTime'>
-    readonly coverArtAsset: FieldRef<"Story", 'String'>
+    readonly coverArtFileId: FieldRef<"Story", 'String'>
     readonly coverColor: FieldRef<"Story", 'String'>
     readonly coverTextColor: FieldRef<"Story", 'String'>
     readonly coverFontFamily: FieldRef<"Story", 'String'>
+    readonly defaultPerspective: FieldRef<"Story", 'Perspective'>
+    readonly defaultProtagonistId: FieldRef<"Story", 'String'>
     readonly createdAt: FieldRef<"Story", 'DateTime'>
     readonly updatedAt: FieldRef<"Story", 'DateTime'>
     readonly sortOrder: FieldRef<"Story", 'Int'>
@@ -7969,6 +8798,44 @@ export namespace Prisma {
   }
 
   /**
+   * Story.coverArtFile
+   */
+  export type Story$coverArtFileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    where?: FileWhereInput
+  }
+
+  /**
+   * Story.defaultProtagonist
+   */
+  export type Story$defaultProtagonistArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    where?: CharacterWhereInput
+  }
+
+  /**
    * Story.books
    */
   export type Story$booksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8062,6 +8929,102 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StoryTagScalarFieldEnum | StoryTagScalarFieldEnum[]
+  }
+
+  /**
+   * Story.characters
+   */
+  export type Story$charactersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    where?: CharacterWhereInput
+    orderBy?: CharacterOrderByWithRelationInput | CharacterOrderByWithRelationInput[]
+    cursor?: CharacterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CharacterScalarFieldEnum | CharacterScalarFieldEnum[]
+  }
+
+  /**
+   * Story.locations
+   */
+  export type Story$locationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    where?: LocationWhereInput
+    orderBy?: LocationOrderByWithRelationInput | LocationOrderByWithRelationInput[]
+    cursor?: LocationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LocationScalarFieldEnum | LocationScalarFieldEnum[]
+  }
+
+  /**
+   * Story.plotPoints
+   */
+  export type Story$plotPointsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+    where?: PlotPointWhereInput
+    orderBy?: PlotPointOrderByWithRelationInput | PlotPointOrderByWithRelationInput[]
+    cursor?: PlotPointWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PlotPointScalarFieldEnum | PlotPointScalarFieldEnum[]
+  }
+
+  /**
+   * Story.items
+   */
+  export type Story$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+    where?: ItemWhereInput
+    orderBy?: ItemOrderByWithRelationInput | ItemOrderByWithRelationInput[]
+    cursor?: ItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ItemScalarFieldEnum | ItemScalarFieldEnum[]
   }
 
   /**
@@ -10997,9 +11960,10 @@ export namespace Prisma {
   export type BookMinAggregateOutputType = {
     id: string | null
     name: string | null
+    summary: string | null
     storyId: string | null
-    coverArtAsset: string | null
-    spineArtAsset: string | null
+    coverArtFileId: string | null
+    spineArtFileId: string | null
     pages: number | null
     sortOrder: number | null
     nodeType: string | null
@@ -11010,9 +11974,10 @@ export namespace Prisma {
   export type BookMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    summary: string | null
     storyId: string | null
-    coverArtAsset: string | null
-    spineArtAsset: string | null
+    coverArtFileId: string | null
+    spineArtFileId: string | null
     pages: number | null
     sortOrder: number | null
     nodeType: string | null
@@ -11023,9 +11988,10 @@ export namespace Prisma {
   export type BookCountAggregateOutputType = {
     id: number
     name: number
+    summary: number
     storyId: number
-    coverArtAsset: number
-    spineArtAsset: number
+    coverArtFileId: number
+    spineArtFileId: number
     pages: number
     sortOrder: number
     nodeType: number
@@ -11048,9 +12014,10 @@ export namespace Prisma {
   export type BookMinAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     storyId?: true
-    coverArtAsset?: true
-    spineArtAsset?: true
+    coverArtFileId?: true
+    spineArtFileId?: true
     pages?: true
     sortOrder?: true
     nodeType?: true
@@ -11061,9 +12028,10 @@ export namespace Prisma {
   export type BookMaxAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     storyId?: true
-    coverArtAsset?: true
-    spineArtAsset?: true
+    coverArtFileId?: true
+    spineArtFileId?: true
     pages?: true
     sortOrder?: true
     nodeType?: true
@@ -11074,9 +12042,10 @@ export namespace Prisma {
   export type BookCountAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     storyId?: true
-    coverArtAsset?: true
-    spineArtAsset?: true
+    coverArtFileId?: true
+    spineArtFileId?: true
     pages?: true
     sortOrder?: true
     nodeType?: true
@@ -11174,9 +12143,10 @@ export namespace Prisma {
   export type BookGroupByOutputType = {
     id: string
     name: string
+    summary: string | null
     storyId: string
-    coverArtAsset: string
-    spineArtAsset: string
+    coverArtFileId: string | null
+    spineArtFileId: string | null
     pages: number | null
     sortOrder: number
     nodeType: string
@@ -11206,15 +12176,18 @@ export namespace Prisma {
   export type BookSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    summary?: boolean
     storyId?: boolean
-    coverArtAsset?: boolean
-    spineArtAsset?: boolean
+    coverArtFileId?: boolean
+    spineArtFileId?: boolean
     pages?: boolean
     sortOrder?: boolean
     nodeType?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     story?: boolean | StoryDefaultArgs<ExtArgs>
+    coverArtFile?: boolean | Book$coverArtFileArgs<ExtArgs>
+    spineArtFile?: boolean | Book$spineArtFileArgs<ExtArgs>
     arcs?: boolean | Book$arcsArgs<ExtArgs>
     _count?: boolean | BookCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["book"]>
@@ -11224,9 +12197,10 @@ export namespace Prisma {
   export type BookSelectScalar = {
     id?: boolean
     name?: boolean
+    summary?: boolean
     storyId?: boolean
-    coverArtAsset?: boolean
-    spineArtAsset?: boolean
+    coverArtFileId?: boolean
+    spineArtFileId?: boolean
     pages?: boolean
     sortOrder?: boolean
     nodeType?: boolean
@@ -11234,9 +12208,11 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "storyId" | "coverArtAsset" | "spineArtAsset" | "pages" | "sortOrder" | "nodeType" | "createdAt" | "updatedAt", ExtArgs["result"]["book"]>
+  export type BookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "summary" | "storyId" | "coverArtFileId" | "spineArtFileId" | "pages" | "sortOrder" | "nodeType" | "createdAt" | "updatedAt", ExtArgs["result"]["book"]>
   export type BookInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     story?: boolean | StoryDefaultArgs<ExtArgs>
+    coverArtFile?: boolean | Book$coverArtFileArgs<ExtArgs>
+    spineArtFile?: boolean | Book$spineArtFileArgs<ExtArgs>
     arcs?: boolean | Book$arcsArgs<ExtArgs>
     _count?: boolean | BookCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -11245,14 +12221,17 @@ export namespace Prisma {
     name: "Book"
     objects: {
       story: Prisma.$StoryPayload<ExtArgs>
+      coverArtFile: Prisma.$FilePayload<ExtArgs> | null
+      spineArtFile: Prisma.$FilePayload<ExtArgs> | null
       arcs: Prisma.$ArcPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      summary: string | null
       storyId: string
-      coverArtAsset: string
-      spineArtAsset: string
+      coverArtFileId: string | null
+      spineArtFileId: string | null
       pages: number | null
       sortOrder: number
       nodeType: string
@@ -11599,6 +12578,8 @@ export namespace Prisma {
   export interface Prisma__BookClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     story<T extends StoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StoryDefaultArgs<ExtArgs>>): Prisma__StoryClient<$Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    coverArtFile<T extends Book$coverArtFileArgs<ExtArgs> = {}>(args?: Subset<T, Book$coverArtFileArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    spineArtFile<T extends Book$spineArtFileArgs<ExtArgs> = {}>(args?: Subset<T, Book$spineArtFileArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     arcs<T extends Book$arcsArgs<ExtArgs> = {}>(args?: Subset<T, Book$arcsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArcPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -11631,9 +12612,10 @@ export namespace Prisma {
   interface BookFieldRefs {
     readonly id: FieldRef<"Book", 'String'>
     readonly name: FieldRef<"Book", 'String'>
+    readonly summary: FieldRef<"Book", 'String'>
     readonly storyId: FieldRef<"Book", 'String'>
-    readonly coverArtAsset: FieldRef<"Book", 'String'>
-    readonly spineArtAsset: FieldRef<"Book", 'String'>
+    readonly coverArtFileId: FieldRef<"Book", 'String'>
+    readonly spineArtFileId: FieldRef<"Book", 'String'>
     readonly pages: FieldRef<"Book", 'Int'>
     readonly sortOrder: FieldRef<"Book", 'Int'>
     readonly nodeType: FieldRef<"Book", 'String'>
@@ -11982,6 +12964,44 @@ export namespace Prisma {
   }
 
   /**
+   * Book.coverArtFile
+   */
+  export type Book$coverArtFileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    where?: FileWhereInput
+  }
+
+  /**
+   * Book.spineArtFile
+   */
+  export type Book$spineArtFileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    where?: FileWhereInput
+  }
+
+  /**
    * Book.arcs
    */
   export type Book$arcsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12047,6 +13067,7 @@ export namespace Prisma {
   export type ArcMinAggregateOutputType = {
     id: string | null
     name: string | null
+    summary: string | null
     bookId: string | null
     sortOrder: number | null
     nodeType: string | null
@@ -12057,6 +13078,7 @@ export namespace Prisma {
   export type ArcMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    summary: string | null
     bookId: string | null
     sortOrder: number | null
     nodeType: string | null
@@ -12067,6 +13089,7 @@ export namespace Prisma {
   export type ArcCountAggregateOutputType = {
     id: number
     name: number
+    summary: number
     bookId: number
     sortOrder: number
     nodeType: number
@@ -12087,6 +13110,7 @@ export namespace Prisma {
   export type ArcMinAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     bookId?: true
     sortOrder?: true
     nodeType?: true
@@ -12097,6 +13121,7 @@ export namespace Prisma {
   export type ArcMaxAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     bookId?: true
     sortOrder?: true
     nodeType?: true
@@ -12107,6 +13132,7 @@ export namespace Prisma {
   export type ArcCountAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     bookId?: true
     sortOrder?: true
     nodeType?: true
@@ -12204,6 +13230,7 @@ export namespace Prisma {
   export type ArcGroupByOutputType = {
     id: string
     name: string
+    summary: string | null
     bookId: string
     sortOrder: number
     nodeType: string
@@ -12233,6 +13260,7 @@ export namespace Prisma {
   export type ArcSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    summary?: boolean
     bookId?: boolean
     sortOrder?: boolean
     nodeType?: boolean
@@ -12248,6 +13276,7 @@ export namespace Prisma {
   export type ArcSelectScalar = {
     id?: boolean
     name?: boolean
+    summary?: boolean
     bookId?: boolean
     sortOrder?: boolean
     nodeType?: boolean
@@ -12255,7 +13284,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ArcOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "bookId" | "sortOrder" | "nodeType" | "createdAt" | "updatedAt", ExtArgs["result"]["arc"]>
+  export type ArcOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "summary" | "bookId" | "sortOrder" | "nodeType" | "createdAt" | "updatedAt", ExtArgs["result"]["arc"]>
   export type ArcInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     book?: boolean | BookDefaultArgs<ExtArgs>
     chapters?: boolean | Arc$chaptersArgs<ExtArgs>
@@ -12271,6 +13300,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      summary: string | null
       bookId: string
       sortOrder: number
       nodeType: string
@@ -12649,6 +13679,7 @@ export namespace Prisma {
   interface ArcFieldRefs {
     readonly id: FieldRef<"Arc", 'String'>
     readonly name: FieldRef<"Arc", 'String'>
+    readonly summary: FieldRef<"Arc", 'String'>
     readonly bookId: FieldRef<"Arc", 'String'>
     readonly sortOrder: FieldRef<"Arc", 'Int'>
     readonly nodeType: FieldRef<"Arc", 'String'>
@@ -13064,6 +14095,7 @@ export namespace Prisma {
   export type ChapterMinAggregateOutputType = {
     id: string | null
     name: string | null
+    summary: string | null
     arcId: string | null
     publishedOn: Date | null
     sortOrder: number | null
@@ -13076,6 +14108,7 @@ export namespace Prisma {
   export type ChapterMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    summary: string | null
     arcId: string | null
     publishedOn: Date | null
     sortOrder: number | null
@@ -13088,6 +14121,7 @@ export namespace Prisma {
   export type ChapterCountAggregateOutputType = {
     id: number
     name: number
+    summary: number
     arcId: number
     publishedOn: number
     sortOrder: number
@@ -13112,6 +14146,7 @@ export namespace Prisma {
   export type ChapterMinAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     arcId?: true
     publishedOn?: true
     sortOrder?: true
@@ -13124,6 +14159,7 @@ export namespace Prisma {
   export type ChapterMaxAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     arcId?: true
     publishedOn?: true
     sortOrder?: true
@@ -13136,6 +14172,7 @@ export namespace Prisma {
   export type ChapterCountAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     arcId?: true
     publishedOn?: true
     sortOrder?: true
@@ -13235,6 +14272,7 @@ export namespace Prisma {
   export type ChapterGroupByOutputType = {
     id: string
     name: string
+    summary: string | null
     arcId: string
     publishedOn: Date | null
     sortOrder: number
@@ -13266,6 +14304,7 @@ export namespace Prisma {
   export type ChapterSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    summary?: boolean
     arcId?: boolean
     publishedOn?: boolean
     sortOrder?: boolean
@@ -13285,6 +14324,7 @@ export namespace Prisma {
   export type ChapterSelectScalar = {
     id?: boolean
     name?: boolean
+    summary?: boolean
     arcId?: boolean
     publishedOn?: boolean
     sortOrder?: boolean
@@ -13294,7 +14334,7 @@ export namespace Prisma {
     nodeType?: boolean
   }
 
-  export type ChapterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "arcId" | "publishedOn" | "sortOrder" | "royalRoadId" | "createdAt" | "updatedAt" | "nodeType", ExtArgs["result"]["chapter"]>
+  export type ChapterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "summary" | "arcId" | "publishedOn" | "sortOrder" | "royalRoadId" | "createdAt" | "updatedAt" | "nodeType", ExtArgs["result"]["chapter"]>
   export type ChapterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     arc?: boolean | ArcDefaultArgs<ExtArgs>
     scenes?: boolean | Chapter$scenesArgs<ExtArgs>
@@ -13314,6 +14354,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      summary: string | null
       arcId: string
       publishedOn: Date | null
       sortOrder: number
@@ -13696,6 +14737,7 @@ export namespace Prisma {
   interface ChapterFieldRefs {
     readonly id: FieldRef<"Chapter", 'String'>
     readonly name: FieldRef<"Chapter", 'String'>
+    readonly summary: FieldRef<"Chapter", 'String'>
     readonly arcId: FieldRef<"Chapter", 'String'>
     readonly publishedOn: FieldRef<"Chapter", 'DateTime'>
     readonly sortOrder: FieldRef<"Chapter", 'Int'>
@@ -14159,10 +15201,14 @@ export namespace Prisma {
   export type SceneMinAggregateOutputType = {
     id: string | null
     name: string | null
+    summary: string | null
     body: string | null
     chapterId: string | null
     sortOrder: number | null
     nodeType: string | null
+    perspective: $Enums.Perspective | null
+    protagonistId: string | null
+    locationId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -14170,10 +15216,14 @@ export namespace Prisma {
   export type SceneMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    summary: string | null
     body: string | null
     chapterId: string | null
     sortOrder: number | null
     nodeType: string | null
+    perspective: $Enums.Perspective | null
+    protagonistId: string | null
+    locationId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -14181,10 +15231,14 @@ export namespace Prisma {
   export type SceneCountAggregateOutputType = {
     id: number
     name: number
+    summary: number
     body: number
     chapterId: number
     sortOrder: number
     nodeType: number
+    perspective: number
+    protagonistId: number
+    locationId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -14202,10 +15256,14 @@ export namespace Prisma {
   export type SceneMinAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     body?: true
     chapterId?: true
     sortOrder?: true
     nodeType?: true
+    perspective?: true
+    protagonistId?: true
+    locationId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -14213,10 +15271,14 @@ export namespace Prisma {
   export type SceneMaxAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     body?: true
     chapterId?: true
     sortOrder?: true
     nodeType?: true
+    perspective?: true
+    protagonistId?: true
+    locationId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -14224,10 +15286,14 @@ export namespace Prisma {
   export type SceneCountAggregateInputType = {
     id?: true
     name?: true
+    summary?: true
     body?: true
     chapterId?: true
     sortOrder?: true
     nodeType?: true
+    perspective?: true
+    protagonistId?: true
+    locationId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -14322,10 +15388,14 @@ export namespace Prisma {
   export type SceneGroupByOutputType = {
     id: string
     name: string
+    summary: string | null
     body: string
     chapterId: string
     sortOrder: number
     nodeType: string
+    perspective: $Enums.Perspective | null
+    protagonistId: string | null
+    locationId: string | null
     createdAt: Date
     updatedAt: Date
     _count: SceneCountAggregateOutputType | null
@@ -14352,14 +15422,22 @@ export namespace Prisma {
   export type SceneSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    summary?: boolean
     body?: boolean
     chapterId?: boolean
     sortOrder?: boolean
     nodeType?: boolean
+    perspective?: boolean
+    protagonistId?: boolean
+    locationId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     chapter?: boolean | ChapterDefaultArgs<ExtArgs>
+    protagonist?: boolean | Scene$protagonistArgs<ExtArgs>
+    location?: boolean | Scene$locationArgs<ExtArgs>
     paragraphs?: boolean | Scene$paragraphsArgs<ExtArgs>
+    participatingCharacters?: boolean | Scene$participatingCharactersArgs<ExtArgs>
+    referredCharacters?: boolean | Scene$referredCharactersArgs<ExtArgs>
     _count?: boolean | SceneCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["scene"]>
 
@@ -14368,18 +15446,26 @@ export namespace Prisma {
   export type SceneSelectScalar = {
     id?: boolean
     name?: boolean
+    summary?: boolean
     body?: boolean
     chapterId?: boolean
     sortOrder?: boolean
     nodeType?: boolean
+    perspective?: boolean
+    protagonistId?: boolean
+    locationId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SceneOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "body" | "chapterId" | "sortOrder" | "nodeType" | "createdAt" | "updatedAt", ExtArgs["result"]["scene"]>
+  export type SceneOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "summary" | "body" | "chapterId" | "sortOrder" | "nodeType" | "perspective" | "protagonistId" | "locationId" | "createdAt" | "updatedAt", ExtArgs["result"]["scene"]>
   export type SceneInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     chapter?: boolean | ChapterDefaultArgs<ExtArgs>
+    protagonist?: boolean | Scene$protagonistArgs<ExtArgs>
+    location?: boolean | Scene$locationArgs<ExtArgs>
     paragraphs?: boolean | Scene$paragraphsArgs<ExtArgs>
+    participatingCharacters?: boolean | Scene$participatingCharactersArgs<ExtArgs>
+    referredCharacters?: boolean | Scene$referredCharactersArgs<ExtArgs>
     _count?: boolean | SceneCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -14387,15 +15473,23 @@ export namespace Prisma {
     name: "Scene"
     objects: {
       chapter: Prisma.$ChapterPayload<ExtArgs>
+      protagonist: Prisma.$CharacterPayload<ExtArgs> | null
+      location: Prisma.$LocationPayload<ExtArgs> | null
       paragraphs: Prisma.$ParagraphPayload<ExtArgs>[]
+      participatingCharacters: Prisma.$SceneCharacterPayload<ExtArgs>[]
+      referredCharacters: Prisma.$SceneReferredCharacterPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      summary: string | null
       body: string
       chapterId: string
       sortOrder: number
       nodeType: string
+      perspective: $Enums.Perspective | null
+      protagonistId: string | null
+      locationId: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["scene"]>
@@ -14739,7 +15833,11 @@ export namespace Prisma {
   export interface Prisma__SceneClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     chapter<T extends ChapterDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChapterDefaultArgs<ExtArgs>>): Prisma__ChapterClient<$Result.GetResult<Prisma.$ChapterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    protagonist<T extends Scene$protagonistArgs<ExtArgs> = {}>(args?: Subset<T, Scene$protagonistArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    location<T extends Scene$locationArgs<ExtArgs> = {}>(args?: Subset<T, Scene$locationArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     paragraphs<T extends Scene$paragraphsArgs<ExtArgs> = {}>(args?: Subset<T, Scene$paragraphsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ParagraphPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    participatingCharacters<T extends Scene$participatingCharactersArgs<ExtArgs> = {}>(args?: Subset<T, Scene$participatingCharactersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    referredCharacters<T extends Scene$referredCharactersArgs<ExtArgs> = {}>(args?: Subset<T, Scene$referredCharactersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14771,10 +15869,14 @@ export namespace Prisma {
   interface SceneFieldRefs {
     readonly id: FieldRef<"Scene", 'String'>
     readonly name: FieldRef<"Scene", 'String'>
+    readonly summary: FieldRef<"Scene", 'String'>
     readonly body: FieldRef<"Scene", 'String'>
     readonly chapterId: FieldRef<"Scene", 'String'>
     readonly sortOrder: FieldRef<"Scene", 'Int'>
     readonly nodeType: FieldRef<"Scene", 'String'>
+    readonly perspective: FieldRef<"Scene", 'Perspective'>
+    readonly protagonistId: FieldRef<"Scene", 'String'>
+    readonly locationId: FieldRef<"Scene", 'String'>
     readonly createdAt: FieldRef<"Scene", 'DateTime'>
     readonly updatedAt: FieldRef<"Scene", 'DateTime'>
   }
@@ -15120,6 +16222,44 @@ export namespace Prisma {
   }
 
   /**
+   * Scene.protagonist
+   */
+  export type Scene$protagonistArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    where?: CharacterWhereInput
+  }
+
+  /**
+   * Scene.location
+   */
+  export type Scene$locationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    where?: LocationWhereInput
+  }
+
+  /**
    * Scene.paragraphs
    */
   export type Scene$paragraphsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15141,6 +16281,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ParagraphScalarFieldEnum | ParagraphScalarFieldEnum[]
+  }
+
+  /**
+   * Scene.participatingCharacters
+   */
+  export type Scene$participatingCharactersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    where?: SceneCharacterWhereInput
+    orderBy?: SceneCharacterOrderByWithRelationInput | SceneCharacterOrderByWithRelationInput[]
+    cursor?: SceneCharacterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SceneCharacterScalarFieldEnum | SceneCharacterScalarFieldEnum[]
+  }
+
+  /**
+   * Scene.referredCharacters
+   */
+  export type Scene$referredCharactersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    where?: SceneReferredCharacterWhereInput
+    orderBy?: SceneReferredCharacterOrderByWithRelationInput | SceneReferredCharacterOrderByWithRelationInput[]
+    cursor?: SceneReferredCharacterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SceneReferredCharacterScalarFieldEnum | SceneReferredCharacterScalarFieldEnum[]
   }
 
   /**
@@ -16169,10 +17357,14 @@ export namespace Prisma {
 
   export type ParagraphRevisionAvgAggregateOutputType = {
     version: number | null
+    aiCharacters: number | null
+    humanCharacters: number | null
   }
 
   export type ParagraphRevisionSumAggregateOutputType = {
     version: number | null
+    aiCharacters: number | null
+    humanCharacters: number | null
   }
 
   export type ParagraphRevisionMinAggregateOutputType = {
@@ -16181,6 +17373,9 @@ export namespace Prisma {
     body: string | null
     contentSchema: string | null
     version: number | null
+    state: $Enums.ParagraphState | null
+    aiCharacters: number | null
+    humanCharacters: number | null
     createdAt: Date | null
   }
 
@@ -16190,6 +17385,9 @@ export namespace Prisma {
     body: string | null
     contentSchema: string | null
     version: number | null
+    state: $Enums.ParagraphState | null
+    aiCharacters: number | null
+    humanCharacters: number | null
     createdAt: Date | null
   }
 
@@ -16199,6 +17397,11 @@ export namespace Prisma {
     body: number
     contentSchema: number
     version: number
+    state: number
+    aiCharacters: number
+    humanCharacters: number
+    plotPointActions: number
+    inventoryActions: number
     createdAt: number
     _all: number
   }
@@ -16206,10 +17409,14 @@ export namespace Prisma {
 
   export type ParagraphRevisionAvgAggregateInputType = {
     version?: true
+    aiCharacters?: true
+    humanCharacters?: true
   }
 
   export type ParagraphRevisionSumAggregateInputType = {
     version?: true
+    aiCharacters?: true
+    humanCharacters?: true
   }
 
   export type ParagraphRevisionMinAggregateInputType = {
@@ -16218,6 +17425,9 @@ export namespace Prisma {
     body?: true
     contentSchema?: true
     version?: true
+    state?: true
+    aiCharacters?: true
+    humanCharacters?: true
     createdAt?: true
   }
 
@@ -16227,6 +17437,9 @@ export namespace Prisma {
     body?: true
     contentSchema?: true
     version?: true
+    state?: true
+    aiCharacters?: true
+    humanCharacters?: true
     createdAt?: true
   }
 
@@ -16236,6 +17449,11 @@ export namespace Prisma {
     body?: true
     contentSchema?: true
     version?: true
+    state?: true
+    aiCharacters?: true
+    humanCharacters?: true
+    plotPointActions?: true
+    inventoryActions?: true
     createdAt?: true
     _all?: true
   }
@@ -16332,6 +17550,11 @@ export namespace Prisma {
     body: string
     contentSchema: string | null
     version: number
+    state: $Enums.ParagraphState | null
+    aiCharacters: number | null
+    humanCharacters: number | null
+    plotPointActions: JsonValue | null
+    inventoryActions: JsonValue | null
     createdAt: Date
     _count: ParagraphRevisionCountAggregateOutputType | null
     _avg: ParagraphRevisionAvgAggregateOutputType | null
@@ -16360,6 +17583,11 @@ export namespace Prisma {
     body?: boolean
     contentSchema?: boolean
     version?: boolean
+    state?: boolean
+    aiCharacters?: boolean
+    humanCharacters?: boolean
+    plotPointActions?: boolean
+    inventoryActions?: boolean
     createdAt?: boolean
     paragraph?: boolean | ParagraphDefaultArgs<ExtArgs>
     paragraphComment?: boolean | ParagraphRevision$paragraphCommentArgs<ExtArgs>
@@ -16374,10 +17602,15 @@ export namespace Prisma {
     body?: boolean
     contentSchema?: boolean
     version?: boolean
+    state?: boolean
+    aiCharacters?: boolean
+    humanCharacters?: boolean
+    plotPointActions?: boolean
+    inventoryActions?: boolean
     createdAt?: boolean
   }
 
-  export type ParagraphRevisionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "paragraphId" | "body" | "contentSchema" | "version" | "createdAt", ExtArgs["result"]["paragraphRevision"]>
+  export type ParagraphRevisionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "paragraphId" | "body" | "contentSchema" | "version" | "state" | "aiCharacters" | "humanCharacters" | "plotPointActions" | "inventoryActions" | "createdAt", ExtArgs["result"]["paragraphRevision"]>
   export type ParagraphRevisionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     paragraph?: boolean | ParagraphDefaultArgs<ExtArgs>
     paragraphComment?: boolean | ParagraphRevision$paragraphCommentArgs<ExtArgs>
@@ -16396,6 +17629,11 @@ export namespace Prisma {
       body: string
       contentSchema: string | null
       version: number
+      state: $Enums.ParagraphState | null
+      aiCharacters: number | null
+      humanCharacters: number | null
+      plotPointActions: Prisma.JsonValue | null
+      inventoryActions: Prisma.JsonValue | null
       createdAt: Date
     }, ExtArgs["result"]["paragraphRevision"]>
     composites: {}
@@ -16773,6 +18011,11 @@ export namespace Prisma {
     readonly body: FieldRef<"ParagraphRevision", 'String'>
     readonly contentSchema: FieldRef<"ParagraphRevision", 'String'>
     readonly version: FieldRef<"ParagraphRevision", 'Int'>
+    readonly state: FieldRef<"ParagraphRevision", 'ParagraphState'>
+    readonly aiCharacters: FieldRef<"ParagraphRevision", 'Int'>
+    readonly humanCharacters: FieldRef<"ParagraphRevision", 'Int'>
+    readonly plotPointActions: FieldRef<"ParagraphRevision", 'Json'>
+    readonly inventoryActions: FieldRef<"ParagraphRevision", 'Json'>
     readonly createdAt: FieldRef<"ParagraphRevision", 'DateTime'>
   }
     
@@ -18420,6 +19663,12 @@ export namespace Prisma {
     updatedAt?: boolean
     owner?: boolean | UserDefaultArgs<ExtArgs>
     story?: boolean | File$storyArgs<ExtArgs>
+    storyCoverArt?: boolean | File$storyCoverArtArgs<ExtArgs>
+    bookCoverArt?: boolean | File$bookCoverArtArgs<ExtArgs>
+    bookSpineArt?: boolean | File$bookSpineArtArgs<ExtArgs>
+    characterPicture?: boolean | File$characterPictureArgs<ExtArgs>
+    locationPicture?: boolean | File$locationPictureArgs<ExtArgs>
+    _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["file"]>
 
 
@@ -18443,6 +19692,12 @@ export namespace Prisma {
   export type FileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     owner?: boolean | UserDefaultArgs<ExtArgs>
     story?: boolean | File$storyArgs<ExtArgs>
+    storyCoverArt?: boolean | File$storyCoverArtArgs<ExtArgs>
+    bookCoverArt?: boolean | File$bookCoverArtArgs<ExtArgs>
+    bookSpineArt?: boolean | File$bookSpineArtArgs<ExtArgs>
+    characterPicture?: boolean | File$characterPictureArgs<ExtArgs>
+    locationPicture?: boolean | File$locationPictureArgs<ExtArgs>
+    _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>
   }
 
   export type $FilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18450,6 +19705,11 @@ export namespace Prisma {
     objects: {
       owner: Prisma.$UserPayload<ExtArgs>
       story: Prisma.$StoryPayload<ExtArgs> | null
+      storyCoverArt: Prisma.$StoryPayload<ExtArgs>[]
+      bookCoverArt: Prisma.$BookPayload<ExtArgs>[]
+      bookSpineArt: Prisma.$BookPayload<ExtArgs>[]
+      characterPicture: Prisma.$CharacterPayload<ExtArgs>[]
+      locationPicture: Prisma.$LocationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -18806,6 +20066,11 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     story<T extends File$storyArgs<ExtArgs> = {}>(args?: Subset<T, File$storyArgs<ExtArgs>>): Prisma__StoryClient<$Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    storyCoverArt<T extends File$storyCoverArtArgs<ExtArgs> = {}>(args?: Subset<T, File$storyCoverArtArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bookCoverArt<T extends File$bookCoverArtArgs<ExtArgs> = {}>(args?: Subset<T, File$bookCoverArtArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bookSpineArt<T extends File$bookSpineArtArgs<ExtArgs> = {}>(args?: Subset<T, File$bookSpineArtArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    characterPicture<T extends File$characterPictureArgs<ExtArgs> = {}>(args?: Subset<T, File$characterPictureArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    locationPicture<T extends File$locationPictureArgs<ExtArgs> = {}>(args?: Subset<T, File$locationPictureArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19206,6 +20471,126 @@ export namespace Prisma {
      */
     include?: StoryInclude<ExtArgs> | null
     where?: StoryWhereInput
+  }
+
+  /**
+   * File.storyCoverArt
+   */
+  export type File$storyCoverArtArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Story
+     */
+    select?: StorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Story
+     */
+    omit?: StoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInclude<ExtArgs> | null
+    where?: StoryWhereInput
+    orderBy?: StoryOrderByWithRelationInput | StoryOrderByWithRelationInput[]
+    cursor?: StoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StoryScalarFieldEnum | StoryScalarFieldEnum[]
+  }
+
+  /**
+   * File.bookCoverArt
+   */
+  export type File$bookCoverArtArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Book
+     */
+    select?: BookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Book
+     */
+    omit?: BookOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BookInclude<ExtArgs> | null
+    where?: BookWhereInput
+    orderBy?: BookOrderByWithRelationInput | BookOrderByWithRelationInput[]
+    cursor?: BookWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BookScalarFieldEnum | BookScalarFieldEnum[]
+  }
+
+  /**
+   * File.bookSpineArt
+   */
+  export type File$bookSpineArtArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Book
+     */
+    select?: BookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Book
+     */
+    omit?: BookOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BookInclude<ExtArgs> | null
+    where?: BookWhereInput
+    orderBy?: BookOrderByWithRelationInput | BookOrderByWithRelationInput[]
+    cursor?: BookWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BookScalarFieldEnum | BookScalarFieldEnum[]
+  }
+
+  /**
+   * File.characterPicture
+   */
+  export type File$characterPictureArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    where?: CharacterWhereInput
+    orderBy?: CharacterOrderByWithRelationInput | CharacterOrderByWithRelationInput[]
+    cursor?: CharacterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CharacterScalarFieldEnum | CharacterScalarFieldEnum[]
+  }
+
+  /**
+   * File.locationPicture
+   */
+  export type File$locationPictureArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    where?: LocationWhereInput
+    orderBy?: LocationOrderByWithRelationInput | LocationOrderByWithRelationInput[]
+    cursor?: LocationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LocationScalarFieldEnum | LocationScalarFieldEnum[]
   }
 
   /**
@@ -20212,6 +21597,6090 @@ export namespace Prisma {
 
 
   /**
+   * Model Character
+   */
+
+  export type AggregateCharacter = {
+    _count: CharacterCountAggregateOutputType | null
+    _avg: CharacterAvgAggregateOutputType | null
+    _sum: CharacterSumAggregateOutputType | null
+    _min: CharacterMinAggregateOutputType | null
+    _max: CharacterMaxAggregateOutputType | null
+  }
+
+  export type CharacterAvgAggregateOutputType = {
+    height: number | null
+  }
+
+  export type CharacterSumAggregateOutputType = {
+    height: number | null
+  }
+
+  export type CharacterMinAggregateOutputType = {
+    id: string | null
+    storyId: string | null
+    pictureFileId: string | null
+    firstName: string | null
+    middleName: string | null
+    lastName: string | null
+    nickname: string | null
+    summary: string | null
+    background: string | null
+    personality: string | null
+    personalityQuirks: string | null
+    likes: string | null
+    dislikes: string | null
+    age: string | null
+    gender: string | null
+    sexualOrientation: string | null
+    height: number | null
+    hairColor: string | null
+    eyeColor: string | null
+    distinguishingFeatures: string | null
+    writingStyle: string | null
+    isMainCharacter: boolean | null
+    laterVersionOfId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CharacterMaxAggregateOutputType = {
+    id: string | null
+    storyId: string | null
+    pictureFileId: string | null
+    firstName: string | null
+    middleName: string | null
+    lastName: string | null
+    nickname: string | null
+    summary: string | null
+    background: string | null
+    personality: string | null
+    personalityQuirks: string | null
+    likes: string | null
+    dislikes: string | null
+    age: string | null
+    gender: string | null
+    sexualOrientation: string | null
+    height: number | null
+    hairColor: string | null
+    eyeColor: string | null
+    distinguishingFeatures: string | null
+    writingStyle: string | null
+    isMainCharacter: boolean | null
+    laterVersionOfId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CharacterCountAggregateOutputType = {
+    id: number
+    storyId: number
+    pictureFileId: number
+    firstName: number
+    middleName: number
+    lastName: number
+    nickname: number
+    summary: number
+    background: number
+    personality: number
+    personalityQuirks: number
+    likes: number
+    dislikes: number
+    age: number
+    gender: number
+    sexualOrientation: number
+    height: number
+    hairColor: number
+    eyeColor: number
+    distinguishingFeatures: number
+    writingStyle: number
+    isMainCharacter: number
+    laterVersionOfId: number
+    significantActions: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CharacterAvgAggregateInputType = {
+    height?: true
+  }
+
+  export type CharacterSumAggregateInputType = {
+    height?: true
+  }
+
+  export type CharacterMinAggregateInputType = {
+    id?: true
+    storyId?: true
+    pictureFileId?: true
+    firstName?: true
+    middleName?: true
+    lastName?: true
+    nickname?: true
+    summary?: true
+    background?: true
+    personality?: true
+    personalityQuirks?: true
+    likes?: true
+    dislikes?: true
+    age?: true
+    gender?: true
+    sexualOrientation?: true
+    height?: true
+    hairColor?: true
+    eyeColor?: true
+    distinguishingFeatures?: true
+    writingStyle?: true
+    isMainCharacter?: true
+    laterVersionOfId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CharacterMaxAggregateInputType = {
+    id?: true
+    storyId?: true
+    pictureFileId?: true
+    firstName?: true
+    middleName?: true
+    lastName?: true
+    nickname?: true
+    summary?: true
+    background?: true
+    personality?: true
+    personalityQuirks?: true
+    likes?: true
+    dislikes?: true
+    age?: true
+    gender?: true
+    sexualOrientation?: true
+    height?: true
+    hairColor?: true
+    eyeColor?: true
+    distinguishingFeatures?: true
+    writingStyle?: true
+    isMainCharacter?: true
+    laterVersionOfId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CharacterCountAggregateInputType = {
+    id?: true
+    storyId?: true
+    pictureFileId?: true
+    firstName?: true
+    middleName?: true
+    lastName?: true
+    nickname?: true
+    summary?: true
+    background?: true
+    personality?: true
+    personalityQuirks?: true
+    likes?: true
+    dislikes?: true
+    age?: true
+    gender?: true
+    sexualOrientation?: true
+    height?: true
+    hairColor?: true
+    eyeColor?: true
+    distinguishingFeatures?: true
+    writingStyle?: true
+    isMainCharacter?: true
+    laterVersionOfId?: true
+    significantActions?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CharacterAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Character to aggregate.
+     */
+    where?: CharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Characters to fetch.
+     */
+    orderBy?: CharacterOrderByWithRelationInput | CharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Characters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Characters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Characters
+    **/
+    _count?: true | CharacterCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CharacterAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CharacterSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CharacterMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CharacterMaxAggregateInputType
+  }
+
+  export type GetCharacterAggregateType<T extends CharacterAggregateArgs> = {
+        [P in keyof T & keyof AggregateCharacter]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCharacter[P]>
+      : GetScalarType<T[P], AggregateCharacter[P]>
+  }
+
+
+
+
+  export type CharacterGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CharacterWhereInput
+    orderBy?: CharacterOrderByWithAggregationInput | CharacterOrderByWithAggregationInput[]
+    by: CharacterScalarFieldEnum[] | CharacterScalarFieldEnum
+    having?: CharacterScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CharacterCountAggregateInputType | true
+    _avg?: CharacterAvgAggregateInputType
+    _sum?: CharacterSumAggregateInputType
+    _min?: CharacterMinAggregateInputType
+    _max?: CharacterMaxAggregateInputType
+  }
+
+  export type CharacterGroupByOutputType = {
+    id: string
+    storyId: string
+    pictureFileId: string | null
+    firstName: string
+    middleName: string | null
+    lastName: string | null
+    nickname: string | null
+    summary: string | null
+    background: string | null
+    personality: string | null
+    personalityQuirks: string | null
+    likes: string | null
+    dislikes: string | null
+    age: string | null
+    gender: string | null
+    sexualOrientation: string | null
+    height: number | null
+    hairColor: string | null
+    eyeColor: string | null
+    distinguishingFeatures: string | null
+    writingStyle: string | null
+    isMainCharacter: boolean
+    laterVersionOfId: string | null
+    significantActions: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CharacterCountAggregateOutputType | null
+    _avg: CharacterAvgAggregateOutputType | null
+    _sum: CharacterSumAggregateOutputType | null
+    _min: CharacterMinAggregateOutputType | null
+    _max: CharacterMaxAggregateOutputType | null
+  }
+
+  type GetCharacterGroupByPayload<T extends CharacterGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CharacterGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CharacterGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CharacterGroupByOutputType[P]>
+            : GetScalarType<T[P], CharacterGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CharacterSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    storyId?: boolean
+    pictureFileId?: boolean
+    firstName?: boolean
+    middleName?: boolean
+    lastName?: boolean
+    nickname?: boolean
+    summary?: boolean
+    background?: boolean
+    personality?: boolean
+    personalityQuirks?: boolean
+    likes?: boolean
+    dislikes?: boolean
+    age?: boolean
+    gender?: boolean
+    sexualOrientation?: boolean
+    height?: boolean
+    hairColor?: boolean
+    eyeColor?: boolean
+    distinguishingFeatures?: boolean
+    writingStyle?: boolean
+    isMainCharacter?: boolean
+    laterVersionOfId?: boolean
+    significantActions?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+    pictureFile?: boolean | Character$pictureFileArgs<ExtArgs>
+    laterVersionOf?: boolean | Character$laterVersionOfArgs<ExtArgs>
+    previousVersion?: boolean | Character$previousVersionArgs<ExtArgs>
+    defaultProtagonistForStory?: boolean | Character$defaultProtagonistForStoryArgs<ExtArgs>
+    sceneProtagonistIn?: boolean | Character$sceneProtagonistInArgs<ExtArgs>
+    participatingInScenes?: boolean | Character$participatingInScenesArgs<ExtArgs>
+    referredInScenes?: boolean | Character$referredInScenesArgs<ExtArgs>
+    _count?: boolean | CharacterCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["character"]>
+
+
+
+  export type CharacterSelectScalar = {
+    id?: boolean
+    storyId?: boolean
+    pictureFileId?: boolean
+    firstName?: boolean
+    middleName?: boolean
+    lastName?: boolean
+    nickname?: boolean
+    summary?: boolean
+    background?: boolean
+    personality?: boolean
+    personalityQuirks?: boolean
+    likes?: boolean
+    dislikes?: boolean
+    age?: boolean
+    gender?: boolean
+    sexualOrientation?: boolean
+    height?: boolean
+    hairColor?: boolean
+    eyeColor?: boolean
+    distinguishingFeatures?: boolean
+    writingStyle?: boolean
+    isMainCharacter?: boolean
+    laterVersionOfId?: boolean
+    significantActions?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CharacterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "storyId" | "pictureFileId" | "firstName" | "middleName" | "lastName" | "nickname" | "summary" | "background" | "personality" | "personalityQuirks" | "likes" | "dislikes" | "age" | "gender" | "sexualOrientation" | "height" | "hairColor" | "eyeColor" | "distinguishingFeatures" | "writingStyle" | "isMainCharacter" | "laterVersionOfId" | "significantActions" | "createdAt" | "updatedAt", ExtArgs["result"]["character"]>
+  export type CharacterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+    pictureFile?: boolean | Character$pictureFileArgs<ExtArgs>
+    laterVersionOf?: boolean | Character$laterVersionOfArgs<ExtArgs>
+    previousVersion?: boolean | Character$previousVersionArgs<ExtArgs>
+    defaultProtagonistForStory?: boolean | Character$defaultProtagonistForStoryArgs<ExtArgs>
+    sceneProtagonistIn?: boolean | Character$sceneProtagonistInArgs<ExtArgs>
+    participatingInScenes?: boolean | Character$participatingInScenesArgs<ExtArgs>
+    referredInScenes?: boolean | Character$referredInScenesArgs<ExtArgs>
+    _count?: boolean | CharacterCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $CharacterPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Character"
+    objects: {
+      story: Prisma.$StoryPayload<ExtArgs>
+      pictureFile: Prisma.$FilePayload<ExtArgs> | null
+      laterVersionOf: Prisma.$CharacterPayload<ExtArgs> | null
+      previousVersion: Prisma.$CharacterPayload<ExtArgs>[]
+      defaultProtagonistForStory: Prisma.$StoryPayload<ExtArgs>[]
+      sceneProtagonistIn: Prisma.$ScenePayload<ExtArgs>[]
+      participatingInScenes: Prisma.$SceneCharacterPayload<ExtArgs>[]
+      referredInScenes: Prisma.$SceneReferredCharacterPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      storyId: string
+      pictureFileId: string | null
+      firstName: string
+      middleName: string | null
+      lastName: string | null
+      nickname: string | null
+      summary: string | null
+      background: string | null
+      personality: string | null
+      personalityQuirks: string | null
+      likes: string | null
+      dislikes: string | null
+      age: string | null
+      gender: string | null
+      sexualOrientation: string | null
+      height: number | null
+      hairColor: string | null
+      eyeColor: string | null
+      distinguishingFeatures: string | null
+      writingStyle: string | null
+      isMainCharacter: boolean
+      laterVersionOfId: string | null
+      significantActions: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["character"]>
+    composites: {}
+  }
+
+  type CharacterGetPayload<S extends boolean | null | undefined | CharacterDefaultArgs> = $Result.GetResult<Prisma.$CharacterPayload, S>
+
+  type CharacterCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CharacterFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CharacterCountAggregateInputType | true
+    }
+
+  export interface CharacterDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Character'], meta: { name: 'Character' } }
+    /**
+     * Find zero or one Character that matches the filter.
+     * @param {CharacterFindUniqueArgs} args - Arguments to find a Character
+     * @example
+     * // Get one Character
+     * const character = await prisma.character.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CharacterFindUniqueArgs>(args: SelectSubset<T, CharacterFindUniqueArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Character that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CharacterFindUniqueOrThrowArgs} args - Arguments to find a Character
+     * @example
+     * // Get one Character
+     * const character = await prisma.character.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CharacterFindUniqueOrThrowArgs>(args: SelectSubset<T, CharacterFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Character that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CharacterFindFirstArgs} args - Arguments to find a Character
+     * @example
+     * // Get one Character
+     * const character = await prisma.character.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CharacterFindFirstArgs>(args?: SelectSubset<T, CharacterFindFirstArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Character that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CharacterFindFirstOrThrowArgs} args - Arguments to find a Character
+     * @example
+     * // Get one Character
+     * const character = await prisma.character.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CharacterFindFirstOrThrowArgs>(args?: SelectSubset<T, CharacterFindFirstOrThrowArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Characters that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CharacterFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Characters
+     * const characters = await prisma.character.findMany()
+     * 
+     * // Get first 10 Characters
+     * const characters = await prisma.character.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const characterWithIdOnly = await prisma.character.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CharacterFindManyArgs>(args?: SelectSubset<T, CharacterFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Character.
+     * @param {CharacterCreateArgs} args - Arguments to create a Character.
+     * @example
+     * // Create one Character
+     * const Character = await prisma.character.create({
+     *   data: {
+     *     // ... data to create a Character
+     *   }
+     * })
+     * 
+     */
+    create<T extends CharacterCreateArgs>(args: SelectSubset<T, CharacterCreateArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Characters.
+     * @param {CharacterCreateManyArgs} args - Arguments to create many Characters.
+     * @example
+     * // Create many Characters
+     * const character = await prisma.character.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CharacterCreateManyArgs>(args?: SelectSubset<T, CharacterCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Character.
+     * @param {CharacterDeleteArgs} args - Arguments to delete one Character.
+     * @example
+     * // Delete one Character
+     * const Character = await prisma.character.delete({
+     *   where: {
+     *     // ... filter to delete one Character
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CharacterDeleteArgs>(args: SelectSubset<T, CharacterDeleteArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Character.
+     * @param {CharacterUpdateArgs} args - Arguments to update one Character.
+     * @example
+     * // Update one Character
+     * const character = await prisma.character.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CharacterUpdateArgs>(args: SelectSubset<T, CharacterUpdateArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Characters.
+     * @param {CharacterDeleteManyArgs} args - Arguments to filter Characters to delete.
+     * @example
+     * // Delete a few Characters
+     * const { count } = await prisma.character.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CharacterDeleteManyArgs>(args?: SelectSubset<T, CharacterDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Characters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CharacterUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Characters
+     * const character = await prisma.character.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CharacterUpdateManyArgs>(args: SelectSubset<T, CharacterUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Character.
+     * @param {CharacterUpsertArgs} args - Arguments to update or create a Character.
+     * @example
+     * // Update or create a Character
+     * const character = await prisma.character.upsert({
+     *   create: {
+     *     // ... data to create a Character
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Character we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CharacterUpsertArgs>(args: SelectSubset<T, CharacterUpsertArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Characters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CharacterCountArgs} args - Arguments to filter Characters to count.
+     * @example
+     * // Count the number of Characters
+     * const count = await prisma.character.count({
+     *   where: {
+     *     // ... the filter for the Characters we want to count
+     *   }
+     * })
+    **/
+    count<T extends CharacterCountArgs>(
+      args?: Subset<T, CharacterCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CharacterCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Character.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CharacterAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CharacterAggregateArgs>(args: Subset<T, CharacterAggregateArgs>): Prisma.PrismaPromise<GetCharacterAggregateType<T>>
+
+    /**
+     * Group by Character.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CharacterGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CharacterGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CharacterGroupByArgs['orderBy'] }
+        : { orderBy?: CharacterGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CharacterGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCharacterGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Character model
+   */
+  readonly fields: CharacterFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Character.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CharacterClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    story<T extends StoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StoryDefaultArgs<ExtArgs>>): Prisma__StoryClient<$Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    pictureFile<T extends Character$pictureFileArgs<ExtArgs> = {}>(args?: Subset<T, Character$pictureFileArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    laterVersionOf<T extends Character$laterVersionOfArgs<ExtArgs> = {}>(args?: Subset<T, Character$laterVersionOfArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    previousVersion<T extends Character$previousVersionArgs<ExtArgs> = {}>(args?: Subset<T, Character$previousVersionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    defaultProtagonistForStory<T extends Character$defaultProtagonistForStoryArgs<ExtArgs> = {}>(args?: Subset<T, Character$defaultProtagonistForStoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sceneProtagonistIn<T extends Character$sceneProtagonistInArgs<ExtArgs> = {}>(args?: Subset<T, Character$sceneProtagonistInArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScenePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    participatingInScenes<T extends Character$participatingInScenesArgs<ExtArgs> = {}>(args?: Subset<T, Character$participatingInScenesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    referredInScenes<T extends Character$referredInScenesArgs<ExtArgs> = {}>(args?: Subset<T, Character$referredInScenesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Character model
+   */
+  interface CharacterFieldRefs {
+    readonly id: FieldRef<"Character", 'String'>
+    readonly storyId: FieldRef<"Character", 'String'>
+    readonly pictureFileId: FieldRef<"Character", 'String'>
+    readonly firstName: FieldRef<"Character", 'String'>
+    readonly middleName: FieldRef<"Character", 'String'>
+    readonly lastName: FieldRef<"Character", 'String'>
+    readonly nickname: FieldRef<"Character", 'String'>
+    readonly summary: FieldRef<"Character", 'String'>
+    readonly background: FieldRef<"Character", 'String'>
+    readonly personality: FieldRef<"Character", 'String'>
+    readonly personalityQuirks: FieldRef<"Character", 'String'>
+    readonly likes: FieldRef<"Character", 'String'>
+    readonly dislikes: FieldRef<"Character", 'String'>
+    readonly age: FieldRef<"Character", 'String'>
+    readonly gender: FieldRef<"Character", 'String'>
+    readonly sexualOrientation: FieldRef<"Character", 'String'>
+    readonly height: FieldRef<"Character", 'Int'>
+    readonly hairColor: FieldRef<"Character", 'String'>
+    readonly eyeColor: FieldRef<"Character", 'String'>
+    readonly distinguishingFeatures: FieldRef<"Character", 'String'>
+    readonly writingStyle: FieldRef<"Character", 'String'>
+    readonly isMainCharacter: FieldRef<"Character", 'Boolean'>
+    readonly laterVersionOfId: FieldRef<"Character", 'String'>
+    readonly significantActions: FieldRef<"Character", 'Json'>
+    readonly createdAt: FieldRef<"Character", 'DateTime'>
+    readonly updatedAt: FieldRef<"Character", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Character findUnique
+   */
+  export type CharacterFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which Character to fetch.
+     */
+    where: CharacterWhereUniqueInput
+  }
+
+  /**
+   * Character findUniqueOrThrow
+   */
+  export type CharacterFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which Character to fetch.
+     */
+    where: CharacterWhereUniqueInput
+  }
+
+  /**
+   * Character findFirst
+   */
+  export type CharacterFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which Character to fetch.
+     */
+    where?: CharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Characters to fetch.
+     */
+    orderBy?: CharacterOrderByWithRelationInput | CharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Characters.
+     */
+    cursor?: CharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Characters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Characters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Characters.
+     */
+    distinct?: CharacterScalarFieldEnum | CharacterScalarFieldEnum[]
+  }
+
+  /**
+   * Character findFirstOrThrow
+   */
+  export type CharacterFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which Character to fetch.
+     */
+    where?: CharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Characters to fetch.
+     */
+    orderBy?: CharacterOrderByWithRelationInput | CharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Characters.
+     */
+    cursor?: CharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Characters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Characters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Characters.
+     */
+    distinct?: CharacterScalarFieldEnum | CharacterScalarFieldEnum[]
+  }
+
+  /**
+   * Character findMany
+   */
+  export type CharacterFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which Characters to fetch.
+     */
+    where?: CharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Characters to fetch.
+     */
+    orderBy?: CharacterOrderByWithRelationInput | CharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Characters.
+     */
+    cursor?: CharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Characters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Characters.
+     */
+    skip?: number
+    distinct?: CharacterScalarFieldEnum | CharacterScalarFieldEnum[]
+  }
+
+  /**
+   * Character create
+   */
+  export type CharacterCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Character.
+     */
+    data: XOR<CharacterCreateInput, CharacterUncheckedCreateInput>
+  }
+
+  /**
+   * Character createMany
+   */
+  export type CharacterCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Characters.
+     */
+    data: CharacterCreateManyInput | CharacterCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Character update
+   */
+  export type CharacterUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Character.
+     */
+    data: XOR<CharacterUpdateInput, CharacterUncheckedUpdateInput>
+    /**
+     * Choose, which Character to update.
+     */
+    where: CharacterWhereUniqueInput
+  }
+
+  /**
+   * Character updateMany
+   */
+  export type CharacterUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Characters.
+     */
+    data: XOR<CharacterUpdateManyMutationInput, CharacterUncheckedUpdateManyInput>
+    /**
+     * Filter which Characters to update
+     */
+    where?: CharacterWhereInput
+    /**
+     * Limit how many Characters to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Character upsert
+   */
+  export type CharacterUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Character to update in case it exists.
+     */
+    where: CharacterWhereUniqueInput
+    /**
+     * In case the Character found by the `where` argument doesn't exist, create a new Character with this data.
+     */
+    create: XOR<CharacterCreateInput, CharacterUncheckedCreateInput>
+    /**
+     * In case the Character was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CharacterUpdateInput, CharacterUncheckedUpdateInput>
+  }
+
+  /**
+   * Character delete
+   */
+  export type CharacterDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    /**
+     * Filter which Character to delete.
+     */
+    where: CharacterWhereUniqueInput
+  }
+
+  /**
+   * Character deleteMany
+   */
+  export type CharacterDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Characters to delete
+     */
+    where?: CharacterWhereInput
+    /**
+     * Limit how many Characters to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Character.pictureFile
+   */
+  export type Character$pictureFileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    where?: FileWhereInput
+  }
+
+  /**
+   * Character.laterVersionOf
+   */
+  export type Character$laterVersionOfArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    where?: CharacterWhereInput
+  }
+
+  /**
+   * Character.previousVersion
+   */
+  export type Character$previousVersionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+    where?: CharacterWhereInput
+    orderBy?: CharacterOrderByWithRelationInput | CharacterOrderByWithRelationInput[]
+    cursor?: CharacterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CharacterScalarFieldEnum | CharacterScalarFieldEnum[]
+  }
+
+  /**
+   * Character.defaultProtagonistForStory
+   */
+  export type Character$defaultProtagonistForStoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Story
+     */
+    select?: StorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Story
+     */
+    omit?: StoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInclude<ExtArgs> | null
+    where?: StoryWhereInput
+    orderBy?: StoryOrderByWithRelationInput | StoryOrderByWithRelationInput[]
+    cursor?: StoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StoryScalarFieldEnum | StoryScalarFieldEnum[]
+  }
+
+  /**
+   * Character.sceneProtagonistIn
+   */
+  export type Character$sceneProtagonistInArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Scene
+     */
+    select?: SceneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Scene
+     */
+    omit?: SceneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneInclude<ExtArgs> | null
+    where?: SceneWhereInput
+    orderBy?: SceneOrderByWithRelationInput | SceneOrderByWithRelationInput[]
+    cursor?: SceneWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SceneScalarFieldEnum | SceneScalarFieldEnum[]
+  }
+
+  /**
+   * Character.participatingInScenes
+   */
+  export type Character$participatingInScenesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    where?: SceneCharacterWhereInput
+    orderBy?: SceneCharacterOrderByWithRelationInput | SceneCharacterOrderByWithRelationInput[]
+    cursor?: SceneCharacterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SceneCharacterScalarFieldEnum | SceneCharacterScalarFieldEnum[]
+  }
+
+  /**
+   * Character.referredInScenes
+   */
+  export type Character$referredInScenesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    where?: SceneReferredCharacterWhereInput
+    orderBy?: SceneReferredCharacterOrderByWithRelationInput | SceneReferredCharacterOrderByWithRelationInput[]
+    cursor?: SceneReferredCharacterWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SceneReferredCharacterScalarFieldEnum | SceneReferredCharacterScalarFieldEnum[]
+  }
+
+  /**
+   * Character without action
+   */
+  export type CharacterDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Character
+     */
+    select?: CharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Character
+     */
+    omit?: CharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CharacterInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Location
+   */
+
+  export type AggregateLocation = {
+    _count: LocationCountAggregateOutputType | null
+    _min: LocationMinAggregateOutputType | null
+    _max: LocationMaxAggregateOutputType | null
+  }
+
+  export type LocationMinAggregateOutputType = {
+    id: string | null
+    storyId: string | null
+    name: string | null
+    pictureFileId: string | null
+    description: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type LocationMaxAggregateOutputType = {
+    id: string | null
+    storyId: string | null
+    name: string | null
+    pictureFileId: string | null
+    description: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type LocationCountAggregateOutputType = {
+    id: number
+    storyId: number
+    name: number
+    pictureFileId: number
+    description: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type LocationMinAggregateInputType = {
+    id?: true
+    storyId?: true
+    name?: true
+    pictureFileId?: true
+    description?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type LocationMaxAggregateInputType = {
+    id?: true
+    storyId?: true
+    name?: true
+    pictureFileId?: true
+    description?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type LocationCountAggregateInputType = {
+    id?: true
+    storyId?: true
+    name?: true
+    pictureFileId?: true
+    description?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type LocationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Location to aggregate.
+     */
+    where?: LocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Locations to fetch.
+     */
+    orderBy?: LocationOrderByWithRelationInput | LocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Locations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Locations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Locations
+    **/
+    _count?: true | LocationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LocationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LocationMaxAggregateInputType
+  }
+
+  export type GetLocationAggregateType<T extends LocationAggregateArgs> = {
+        [P in keyof T & keyof AggregateLocation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLocation[P]>
+      : GetScalarType<T[P], AggregateLocation[P]>
+  }
+
+
+
+
+  export type LocationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LocationWhereInput
+    orderBy?: LocationOrderByWithAggregationInput | LocationOrderByWithAggregationInput[]
+    by: LocationScalarFieldEnum[] | LocationScalarFieldEnum
+    having?: LocationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LocationCountAggregateInputType | true
+    _min?: LocationMinAggregateInputType
+    _max?: LocationMaxAggregateInputType
+  }
+
+  export type LocationGroupByOutputType = {
+    id: string
+    storyId: string
+    name: string
+    pictureFileId: string | null
+    description: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: LocationCountAggregateOutputType | null
+    _min: LocationMinAggregateOutputType | null
+    _max: LocationMaxAggregateOutputType | null
+  }
+
+  type GetLocationGroupByPayload<T extends LocationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LocationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LocationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LocationGroupByOutputType[P]>
+            : GetScalarType<T[P], LocationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LocationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    storyId?: boolean
+    name?: boolean
+    pictureFileId?: boolean
+    description?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+    pictureFile?: boolean | Location$pictureFileArgs<ExtArgs>
+    scenes?: boolean | Location$scenesArgs<ExtArgs>
+    _count?: boolean | LocationCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["location"]>
+
+
+
+  export type LocationSelectScalar = {
+    id?: boolean
+    storyId?: boolean
+    name?: boolean
+    pictureFileId?: boolean
+    description?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type LocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "storyId" | "name" | "pictureFileId" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["location"]>
+  export type LocationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+    pictureFile?: boolean | Location$pictureFileArgs<ExtArgs>
+    scenes?: boolean | Location$scenesArgs<ExtArgs>
+    _count?: boolean | LocationCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $LocationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Location"
+    objects: {
+      story: Prisma.$StoryPayload<ExtArgs>
+      pictureFile: Prisma.$FilePayload<ExtArgs> | null
+      scenes: Prisma.$ScenePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      storyId: string
+      name: string
+      pictureFileId: string | null
+      description: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["location"]>
+    composites: {}
+  }
+
+  type LocationGetPayload<S extends boolean | null | undefined | LocationDefaultArgs> = $Result.GetResult<Prisma.$LocationPayload, S>
+
+  type LocationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LocationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LocationCountAggregateInputType | true
+    }
+
+  export interface LocationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Location'], meta: { name: 'Location' } }
+    /**
+     * Find zero or one Location that matches the filter.
+     * @param {LocationFindUniqueArgs} args - Arguments to find a Location
+     * @example
+     * // Get one Location
+     * const location = await prisma.location.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LocationFindUniqueArgs>(args: SelectSubset<T, LocationFindUniqueArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Location that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LocationFindUniqueOrThrowArgs} args - Arguments to find a Location
+     * @example
+     * // Get one Location
+     * const location = await prisma.location.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LocationFindUniqueOrThrowArgs>(args: SelectSubset<T, LocationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Location that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationFindFirstArgs} args - Arguments to find a Location
+     * @example
+     * // Get one Location
+     * const location = await prisma.location.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LocationFindFirstArgs>(args?: SelectSubset<T, LocationFindFirstArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Location that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationFindFirstOrThrowArgs} args - Arguments to find a Location
+     * @example
+     * // Get one Location
+     * const location = await prisma.location.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LocationFindFirstOrThrowArgs>(args?: SelectSubset<T, LocationFindFirstOrThrowArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Locations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Locations
+     * const locations = await prisma.location.findMany()
+     * 
+     * // Get first 10 Locations
+     * const locations = await prisma.location.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const locationWithIdOnly = await prisma.location.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LocationFindManyArgs>(args?: SelectSubset<T, LocationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Location.
+     * @param {LocationCreateArgs} args - Arguments to create a Location.
+     * @example
+     * // Create one Location
+     * const Location = await prisma.location.create({
+     *   data: {
+     *     // ... data to create a Location
+     *   }
+     * })
+     * 
+     */
+    create<T extends LocationCreateArgs>(args: SelectSubset<T, LocationCreateArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Locations.
+     * @param {LocationCreateManyArgs} args - Arguments to create many Locations.
+     * @example
+     * // Create many Locations
+     * const location = await prisma.location.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LocationCreateManyArgs>(args?: SelectSubset<T, LocationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Location.
+     * @param {LocationDeleteArgs} args - Arguments to delete one Location.
+     * @example
+     * // Delete one Location
+     * const Location = await prisma.location.delete({
+     *   where: {
+     *     // ... filter to delete one Location
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LocationDeleteArgs>(args: SelectSubset<T, LocationDeleteArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Location.
+     * @param {LocationUpdateArgs} args - Arguments to update one Location.
+     * @example
+     * // Update one Location
+     * const location = await prisma.location.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LocationUpdateArgs>(args: SelectSubset<T, LocationUpdateArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Locations.
+     * @param {LocationDeleteManyArgs} args - Arguments to filter Locations to delete.
+     * @example
+     * // Delete a few Locations
+     * const { count } = await prisma.location.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LocationDeleteManyArgs>(args?: SelectSubset<T, LocationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Locations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Locations
+     * const location = await prisma.location.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LocationUpdateManyArgs>(args: SelectSubset<T, LocationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Location.
+     * @param {LocationUpsertArgs} args - Arguments to update or create a Location.
+     * @example
+     * // Update or create a Location
+     * const location = await prisma.location.upsert({
+     *   create: {
+     *     // ... data to create a Location
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Location we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LocationUpsertArgs>(args: SelectSubset<T, LocationUpsertArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Locations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationCountArgs} args - Arguments to filter Locations to count.
+     * @example
+     * // Count the number of Locations
+     * const count = await prisma.location.count({
+     *   where: {
+     *     // ... the filter for the Locations we want to count
+     *   }
+     * })
+    **/
+    count<T extends LocationCountArgs>(
+      args?: Subset<T, LocationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LocationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Location.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LocationAggregateArgs>(args: Subset<T, LocationAggregateArgs>): Prisma.PrismaPromise<GetLocationAggregateType<T>>
+
+    /**
+     * Group by Location.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LocationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LocationGroupByArgs['orderBy'] }
+        : { orderBy?: LocationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LocationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLocationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Location model
+   */
+  readonly fields: LocationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Location.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LocationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    story<T extends StoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StoryDefaultArgs<ExtArgs>>): Prisma__StoryClient<$Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    pictureFile<T extends Location$pictureFileArgs<ExtArgs> = {}>(args?: Subset<T, Location$pictureFileArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    scenes<T extends Location$scenesArgs<ExtArgs> = {}>(args?: Subset<T, Location$scenesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScenePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Location model
+   */
+  interface LocationFieldRefs {
+    readonly id: FieldRef<"Location", 'String'>
+    readonly storyId: FieldRef<"Location", 'String'>
+    readonly name: FieldRef<"Location", 'String'>
+    readonly pictureFileId: FieldRef<"Location", 'String'>
+    readonly description: FieldRef<"Location", 'String'>
+    readonly createdAt: FieldRef<"Location", 'DateTime'>
+    readonly updatedAt: FieldRef<"Location", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Location findUnique
+   */
+  export type LocationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    /**
+     * Filter, which Location to fetch.
+     */
+    where: LocationWhereUniqueInput
+  }
+
+  /**
+   * Location findUniqueOrThrow
+   */
+  export type LocationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    /**
+     * Filter, which Location to fetch.
+     */
+    where: LocationWhereUniqueInput
+  }
+
+  /**
+   * Location findFirst
+   */
+  export type LocationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    /**
+     * Filter, which Location to fetch.
+     */
+    where?: LocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Locations to fetch.
+     */
+    orderBy?: LocationOrderByWithRelationInput | LocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Locations.
+     */
+    cursor?: LocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Locations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Locations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Locations.
+     */
+    distinct?: LocationScalarFieldEnum | LocationScalarFieldEnum[]
+  }
+
+  /**
+   * Location findFirstOrThrow
+   */
+  export type LocationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    /**
+     * Filter, which Location to fetch.
+     */
+    where?: LocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Locations to fetch.
+     */
+    orderBy?: LocationOrderByWithRelationInput | LocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Locations.
+     */
+    cursor?: LocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Locations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Locations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Locations.
+     */
+    distinct?: LocationScalarFieldEnum | LocationScalarFieldEnum[]
+  }
+
+  /**
+   * Location findMany
+   */
+  export type LocationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    /**
+     * Filter, which Locations to fetch.
+     */
+    where?: LocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Locations to fetch.
+     */
+    orderBy?: LocationOrderByWithRelationInput | LocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Locations.
+     */
+    cursor?: LocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Locations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Locations.
+     */
+    skip?: number
+    distinct?: LocationScalarFieldEnum | LocationScalarFieldEnum[]
+  }
+
+  /**
+   * Location create
+   */
+  export type LocationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Location.
+     */
+    data: XOR<LocationCreateInput, LocationUncheckedCreateInput>
+  }
+
+  /**
+   * Location createMany
+   */
+  export type LocationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Locations.
+     */
+    data: LocationCreateManyInput | LocationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Location update
+   */
+  export type LocationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Location.
+     */
+    data: XOR<LocationUpdateInput, LocationUncheckedUpdateInput>
+    /**
+     * Choose, which Location to update.
+     */
+    where: LocationWhereUniqueInput
+  }
+
+  /**
+   * Location updateMany
+   */
+  export type LocationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Locations.
+     */
+    data: XOR<LocationUpdateManyMutationInput, LocationUncheckedUpdateManyInput>
+    /**
+     * Filter which Locations to update
+     */
+    where?: LocationWhereInput
+    /**
+     * Limit how many Locations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Location upsert
+   */
+  export type LocationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Location to update in case it exists.
+     */
+    where: LocationWhereUniqueInput
+    /**
+     * In case the Location found by the `where` argument doesn't exist, create a new Location with this data.
+     */
+    create: XOR<LocationCreateInput, LocationUncheckedCreateInput>
+    /**
+     * In case the Location was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LocationUpdateInput, LocationUncheckedUpdateInput>
+  }
+
+  /**
+   * Location delete
+   */
+  export type LocationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    /**
+     * Filter which Location to delete.
+     */
+    where: LocationWhereUniqueInput
+  }
+
+  /**
+   * Location deleteMany
+   */
+  export type LocationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Locations to delete
+     */
+    where?: LocationWhereInput
+    /**
+     * Limit how many Locations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Location.pictureFile
+   */
+  export type Location$pictureFileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    where?: FileWhereInput
+  }
+
+  /**
+   * Location.scenes
+   */
+  export type Location$scenesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Scene
+     */
+    select?: SceneSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Scene
+     */
+    omit?: SceneOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneInclude<ExtArgs> | null
+    where?: SceneWhereInput
+    orderBy?: SceneOrderByWithRelationInput | SceneOrderByWithRelationInput[]
+    cursor?: SceneWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SceneScalarFieldEnum | SceneScalarFieldEnum[]
+  }
+
+  /**
+   * Location without action
+   */
+  export type LocationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PlotPoint
+   */
+
+  export type AggregatePlotPoint = {
+    _count: PlotPointCountAggregateOutputType | null
+    _min: PlotPointMinAggregateOutputType | null
+    _max: PlotPointMaxAggregateOutputType | null
+  }
+
+  export type PlotPointMinAggregateOutputType = {
+    id: string | null
+    storyId: string | null
+    title: string | null
+    summary: string | null
+    state: $Enums.PlotPointState | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PlotPointMaxAggregateOutputType = {
+    id: string | null
+    storyId: string | null
+    title: string | null
+    summary: string | null
+    state: $Enums.PlotPointState | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PlotPointCountAggregateOutputType = {
+    id: number
+    storyId: number
+    title: number
+    summary: number
+    state: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PlotPointMinAggregateInputType = {
+    id?: true
+    storyId?: true
+    title?: true
+    summary?: true
+    state?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PlotPointMaxAggregateInputType = {
+    id?: true
+    storyId?: true
+    title?: true
+    summary?: true
+    state?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PlotPointCountAggregateInputType = {
+    id?: true
+    storyId?: true
+    title?: true
+    summary?: true
+    state?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PlotPointAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlotPoint to aggregate.
+     */
+    where?: PlotPointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlotPoints to fetch.
+     */
+    orderBy?: PlotPointOrderByWithRelationInput | PlotPointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PlotPointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlotPoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlotPoints.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PlotPoints
+    **/
+    _count?: true | PlotPointCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PlotPointMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PlotPointMaxAggregateInputType
+  }
+
+  export type GetPlotPointAggregateType<T extends PlotPointAggregateArgs> = {
+        [P in keyof T & keyof AggregatePlotPoint]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePlotPoint[P]>
+      : GetScalarType<T[P], AggregatePlotPoint[P]>
+  }
+
+
+
+
+  export type PlotPointGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlotPointWhereInput
+    orderBy?: PlotPointOrderByWithAggregationInput | PlotPointOrderByWithAggregationInput[]
+    by: PlotPointScalarFieldEnum[] | PlotPointScalarFieldEnum
+    having?: PlotPointScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PlotPointCountAggregateInputType | true
+    _min?: PlotPointMinAggregateInputType
+    _max?: PlotPointMaxAggregateInputType
+  }
+
+  export type PlotPointGroupByOutputType = {
+    id: string
+    storyId: string
+    title: string
+    summary: string | null
+    state: $Enums.PlotPointState
+    createdAt: Date
+    updatedAt: Date
+    _count: PlotPointCountAggregateOutputType | null
+    _min: PlotPointMinAggregateOutputType | null
+    _max: PlotPointMaxAggregateOutputType | null
+  }
+
+  type GetPlotPointGroupByPayload<T extends PlotPointGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PlotPointGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PlotPointGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PlotPointGroupByOutputType[P]>
+            : GetScalarType<T[P], PlotPointGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PlotPointSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    storyId?: boolean
+    title?: boolean
+    summary?: boolean
+    state?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["plotPoint"]>
+
+
+
+  export type PlotPointSelectScalar = {
+    id?: boolean
+    storyId?: boolean
+    title?: boolean
+    summary?: boolean
+    state?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PlotPointOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "storyId" | "title" | "summary" | "state" | "createdAt" | "updatedAt", ExtArgs["result"]["plotPoint"]>
+  export type PlotPointInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+  }
+
+  export type $PlotPointPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PlotPoint"
+    objects: {
+      story: Prisma.$StoryPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      storyId: string
+      title: string
+      summary: string | null
+      state: $Enums.PlotPointState
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["plotPoint"]>
+    composites: {}
+  }
+
+  type PlotPointGetPayload<S extends boolean | null | undefined | PlotPointDefaultArgs> = $Result.GetResult<Prisma.$PlotPointPayload, S>
+
+  type PlotPointCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PlotPointFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PlotPointCountAggregateInputType | true
+    }
+
+  export interface PlotPointDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PlotPoint'], meta: { name: 'PlotPoint' } }
+    /**
+     * Find zero or one PlotPoint that matches the filter.
+     * @param {PlotPointFindUniqueArgs} args - Arguments to find a PlotPoint
+     * @example
+     * // Get one PlotPoint
+     * const plotPoint = await prisma.plotPoint.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PlotPointFindUniqueArgs>(args: SelectSubset<T, PlotPointFindUniqueArgs<ExtArgs>>): Prisma__PlotPointClient<$Result.GetResult<Prisma.$PlotPointPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PlotPoint that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PlotPointFindUniqueOrThrowArgs} args - Arguments to find a PlotPoint
+     * @example
+     * // Get one PlotPoint
+     * const plotPoint = await prisma.plotPoint.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PlotPointFindUniqueOrThrowArgs>(args: SelectSubset<T, PlotPointFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PlotPointClient<$Result.GetResult<Prisma.$PlotPointPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlotPoint that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlotPointFindFirstArgs} args - Arguments to find a PlotPoint
+     * @example
+     * // Get one PlotPoint
+     * const plotPoint = await prisma.plotPoint.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PlotPointFindFirstArgs>(args?: SelectSubset<T, PlotPointFindFirstArgs<ExtArgs>>): Prisma__PlotPointClient<$Result.GetResult<Prisma.$PlotPointPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlotPoint that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlotPointFindFirstOrThrowArgs} args - Arguments to find a PlotPoint
+     * @example
+     * // Get one PlotPoint
+     * const plotPoint = await prisma.plotPoint.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PlotPointFindFirstOrThrowArgs>(args?: SelectSubset<T, PlotPointFindFirstOrThrowArgs<ExtArgs>>): Prisma__PlotPointClient<$Result.GetResult<Prisma.$PlotPointPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PlotPoints that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlotPointFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PlotPoints
+     * const plotPoints = await prisma.plotPoint.findMany()
+     * 
+     * // Get first 10 PlotPoints
+     * const plotPoints = await prisma.plotPoint.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const plotPointWithIdOnly = await prisma.plotPoint.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PlotPointFindManyArgs>(args?: SelectSubset<T, PlotPointFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlotPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PlotPoint.
+     * @param {PlotPointCreateArgs} args - Arguments to create a PlotPoint.
+     * @example
+     * // Create one PlotPoint
+     * const PlotPoint = await prisma.plotPoint.create({
+     *   data: {
+     *     // ... data to create a PlotPoint
+     *   }
+     * })
+     * 
+     */
+    create<T extends PlotPointCreateArgs>(args: SelectSubset<T, PlotPointCreateArgs<ExtArgs>>): Prisma__PlotPointClient<$Result.GetResult<Prisma.$PlotPointPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PlotPoints.
+     * @param {PlotPointCreateManyArgs} args - Arguments to create many PlotPoints.
+     * @example
+     * // Create many PlotPoints
+     * const plotPoint = await prisma.plotPoint.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PlotPointCreateManyArgs>(args?: SelectSubset<T, PlotPointCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a PlotPoint.
+     * @param {PlotPointDeleteArgs} args - Arguments to delete one PlotPoint.
+     * @example
+     * // Delete one PlotPoint
+     * const PlotPoint = await prisma.plotPoint.delete({
+     *   where: {
+     *     // ... filter to delete one PlotPoint
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PlotPointDeleteArgs>(args: SelectSubset<T, PlotPointDeleteArgs<ExtArgs>>): Prisma__PlotPointClient<$Result.GetResult<Prisma.$PlotPointPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PlotPoint.
+     * @param {PlotPointUpdateArgs} args - Arguments to update one PlotPoint.
+     * @example
+     * // Update one PlotPoint
+     * const plotPoint = await prisma.plotPoint.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PlotPointUpdateArgs>(args: SelectSubset<T, PlotPointUpdateArgs<ExtArgs>>): Prisma__PlotPointClient<$Result.GetResult<Prisma.$PlotPointPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PlotPoints.
+     * @param {PlotPointDeleteManyArgs} args - Arguments to filter PlotPoints to delete.
+     * @example
+     * // Delete a few PlotPoints
+     * const { count } = await prisma.plotPoint.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PlotPointDeleteManyArgs>(args?: SelectSubset<T, PlotPointDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlotPoints.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlotPointUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PlotPoints
+     * const plotPoint = await prisma.plotPoint.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PlotPointUpdateManyArgs>(args: SelectSubset<T, PlotPointUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one PlotPoint.
+     * @param {PlotPointUpsertArgs} args - Arguments to update or create a PlotPoint.
+     * @example
+     * // Update or create a PlotPoint
+     * const plotPoint = await prisma.plotPoint.upsert({
+     *   create: {
+     *     // ... data to create a PlotPoint
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PlotPoint we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PlotPointUpsertArgs>(args: SelectSubset<T, PlotPointUpsertArgs<ExtArgs>>): Prisma__PlotPointClient<$Result.GetResult<Prisma.$PlotPointPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PlotPoints.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlotPointCountArgs} args - Arguments to filter PlotPoints to count.
+     * @example
+     * // Count the number of PlotPoints
+     * const count = await prisma.plotPoint.count({
+     *   where: {
+     *     // ... the filter for the PlotPoints we want to count
+     *   }
+     * })
+    **/
+    count<T extends PlotPointCountArgs>(
+      args?: Subset<T, PlotPointCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PlotPointCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PlotPoint.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlotPointAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PlotPointAggregateArgs>(args: Subset<T, PlotPointAggregateArgs>): Prisma.PrismaPromise<GetPlotPointAggregateType<T>>
+
+    /**
+     * Group by PlotPoint.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlotPointGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PlotPointGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PlotPointGroupByArgs['orderBy'] }
+        : { orderBy?: PlotPointGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PlotPointGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPlotPointGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PlotPoint model
+   */
+  readonly fields: PlotPointFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PlotPoint.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PlotPointClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    story<T extends StoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StoryDefaultArgs<ExtArgs>>): Prisma__StoryClient<$Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PlotPoint model
+   */
+  interface PlotPointFieldRefs {
+    readonly id: FieldRef<"PlotPoint", 'String'>
+    readonly storyId: FieldRef<"PlotPoint", 'String'>
+    readonly title: FieldRef<"PlotPoint", 'String'>
+    readonly summary: FieldRef<"PlotPoint", 'String'>
+    readonly state: FieldRef<"PlotPoint", 'PlotPointState'>
+    readonly createdAt: FieldRef<"PlotPoint", 'DateTime'>
+    readonly updatedAt: FieldRef<"PlotPoint", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PlotPoint findUnique
+   */
+  export type PlotPointFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+    /**
+     * Filter, which PlotPoint to fetch.
+     */
+    where: PlotPointWhereUniqueInput
+  }
+
+  /**
+   * PlotPoint findUniqueOrThrow
+   */
+  export type PlotPointFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+    /**
+     * Filter, which PlotPoint to fetch.
+     */
+    where: PlotPointWhereUniqueInput
+  }
+
+  /**
+   * PlotPoint findFirst
+   */
+  export type PlotPointFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+    /**
+     * Filter, which PlotPoint to fetch.
+     */
+    where?: PlotPointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlotPoints to fetch.
+     */
+    orderBy?: PlotPointOrderByWithRelationInput | PlotPointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlotPoints.
+     */
+    cursor?: PlotPointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlotPoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlotPoints.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlotPoints.
+     */
+    distinct?: PlotPointScalarFieldEnum | PlotPointScalarFieldEnum[]
+  }
+
+  /**
+   * PlotPoint findFirstOrThrow
+   */
+  export type PlotPointFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+    /**
+     * Filter, which PlotPoint to fetch.
+     */
+    where?: PlotPointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlotPoints to fetch.
+     */
+    orderBy?: PlotPointOrderByWithRelationInput | PlotPointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlotPoints.
+     */
+    cursor?: PlotPointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlotPoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlotPoints.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlotPoints.
+     */
+    distinct?: PlotPointScalarFieldEnum | PlotPointScalarFieldEnum[]
+  }
+
+  /**
+   * PlotPoint findMany
+   */
+  export type PlotPointFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+    /**
+     * Filter, which PlotPoints to fetch.
+     */
+    where?: PlotPointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlotPoints to fetch.
+     */
+    orderBy?: PlotPointOrderByWithRelationInput | PlotPointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PlotPoints.
+     */
+    cursor?: PlotPointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlotPoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlotPoints.
+     */
+    skip?: number
+    distinct?: PlotPointScalarFieldEnum | PlotPointScalarFieldEnum[]
+  }
+
+  /**
+   * PlotPoint create
+   */
+  export type PlotPointCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PlotPoint.
+     */
+    data: XOR<PlotPointCreateInput, PlotPointUncheckedCreateInput>
+  }
+
+  /**
+   * PlotPoint createMany
+   */
+  export type PlotPointCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PlotPoints.
+     */
+    data: PlotPointCreateManyInput | PlotPointCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PlotPoint update
+   */
+  export type PlotPointUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PlotPoint.
+     */
+    data: XOR<PlotPointUpdateInput, PlotPointUncheckedUpdateInput>
+    /**
+     * Choose, which PlotPoint to update.
+     */
+    where: PlotPointWhereUniqueInput
+  }
+
+  /**
+   * PlotPoint updateMany
+   */
+  export type PlotPointUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PlotPoints.
+     */
+    data: XOR<PlotPointUpdateManyMutationInput, PlotPointUncheckedUpdateManyInput>
+    /**
+     * Filter which PlotPoints to update
+     */
+    where?: PlotPointWhereInput
+    /**
+     * Limit how many PlotPoints to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlotPoint upsert
+   */
+  export type PlotPointUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PlotPoint to update in case it exists.
+     */
+    where: PlotPointWhereUniqueInput
+    /**
+     * In case the PlotPoint found by the `where` argument doesn't exist, create a new PlotPoint with this data.
+     */
+    create: XOR<PlotPointCreateInput, PlotPointUncheckedCreateInput>
+    /**
+     * In case the PlotPoint was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PlotPointUpdateInput, PlotPointUncheckedUpdateInput>
+  }
+
+  /**
+   * PlotPoint delete
+   */
+  export type PlotPointDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+    /**
+     * Filter which PlotPoint to delete.
+     */
+    where: PlotPointWhereUniqueInput
+  }
+
+  /**
+   * PlotPoint deleteMany
+   */
+  export type PlotPointDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlotPoints to delete
+     */
+    where?: PlotPointWhereInput
+    /**
+     * Limit how many PlotPoints to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlotPoint without action
+   */
+  export type PlotPointDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlotPoint
+     */
+    select?: PlotPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlotPoint
+     */
+    omit?: PlotPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlotPointInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Item
+   */
+
+  export type AggregateItem = {
+    _count: ItemCountAggregateOutputType | null
+    _min: ItemMinAggregateOutputType | null
+    _max: ItemMaxAggregateOutputType | null
+  }
+
+  export type ItemMinAggregateOutputType = {
+    id: string | null
+    storyId: string | null
+    name: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ItemMaxAggregateOutputType = {
+    id: string | null
+    storyId: string | null
+    name: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ItemCountAggregateOutputType = {
+    id: number
+    storyId: number
+    name: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ItemMinAggregateInputType = {
+    id?: true
+    storyId?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ItemMaxAggregateInputType = {
+    id?: true
+    storyId?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ItemCountAggregateInputType = {
+    id?: true
+    storyId?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Item to aggregate.
+     */
+    where?: ItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Items to fetch.
+     */
+    orderBy?: ItemOrderByWithRelationInput | ItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Items.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Items
+    **/
+    _count?: true | ItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ItemMaxAggregateInputType
+  }
+
+  export type GetItemAggregateType<T extends ItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateItem[P]>
+      : GetScalarType<T[P], AggregateItem[P]>
+  }
+
+
+
+
+  export type ItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ItemWhereInput
+    orderBy?: ItemOrderByWithAggregationInput | ItemOrderByWithAggregationInput[]
+    by: ItemScalarFieldEnum[] | ItemScalarFieldEnum
+    having?: ItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ItemCountAggregateInputType | true
+    _min?: ItemMinAggregateInputType
+    _max?: ItemMaxAggregateInputType
+  }
+
+  export type ItemGroupByOutputType = {
+    id: string
+    storyId: string
+    name: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ItemCountAggregateOutputType | null
+    _min: ItemMinAggregateOutputType | null
+    _max: ItemMaxAggregateOutputType | null
+  }
+
+  type GetItemGroupByPayload<T extends ItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ItemGroupByOutputType[P]>
+            : GetScalarType<T[P], ItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    storyId?: boolean
+    name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["item"]>
+
+
+
+  export type ItemSelectScalar = {
+    id?: boolean
+    storyId?: boolean
+    name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "storyId" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["item"]>
+  export type ItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+  }
+
+  export type $ItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Item"
+    objects: {
+      story: Prisma.$StoryPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      storyId: string
+      name: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["item"]>
+    composites: {}
+  }
+
+  type ItemGetPayload<S extends boolean | null | undefined | ItemDefaultArgs> = $Result.GetResult<Prisma.$ItemPayload, S>
+
+  type ItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ItemCountAggregateInputType | true
+    }
+
+  export interface ItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Item'], meta: { name: 'Item' } }
+    /**
+     * Find zero or one Item that matches the filter.
+     * @param {ItemFindUniqueArgs} args - Arguments to find a Item
+     * @example
+     * // Get one Item
+     * const item = await prisma.item.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ItemFindUniqueArgs>(args: SelectSubset<T, ItemFindUniqueArgs<ExtArgs>>): Prisma__ItemClient<$Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Item that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ItemFindUniqueOrThrowArgs} args - Arguments to find a Item
+     * @example
+     * // Get one Item
+     * const item = await prisma.item.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ItemFindUniqueOrThrowArgs>(args: SelectSubset<T, ItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ItemClient<$Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Item that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemFindFirstArgs} args - Arguments to find a Item
+     * @example
+     * // Get one Item
+     * const item = await prisma.item.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ItemFindFirstArgs>(args?: SelectSubset<T, ItemFindFirstArgs<ExtArgs>>): Prisma__ItemClient<$Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Item that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemFindFirstOrThrowArgs} args - Arguments to find a Item
+     * @example
+     * // Get one Item
+     * const item = await prisma.item.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ItemFindFirstOrThrowArgs>(args?: SelectSubset<T, ItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__ItemClient<$Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Items that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Items
+     * const items = await prisma.item.findMany()
+     * 
+     * // Get first 10 Items
+     * const items = await prisma.item.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const itemWithIdOnly = await prisma.item.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ItemFindManyArgs>(args?: SelectSubset<T, ItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Item.
+     * @param {ItemCreateArgs} args - Arguments to create a Item.
+     * @example
+     * // Create one Item
+     * const Item = await prisma.item.create({
+     *   data: {
+     *     // ... data to create a Item
+     *   }
+     * })
+     * 
+     */
+    create<T extends ItemCreateArgs>(args: SelectSubset<T, ItemCreateArgs<ExtArgs>>): Prisma__ItemClient<$Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Items.
+     * @param {ItemCreateManyArgs} args - Arguments to create many Items.
+     * @example
+     * // Create many Items
+     * const item = await prisma.item.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ItemCreateManyArgs>(args?: SelectSubset<T, ItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Item.
+     * @param {ItemDeleteArgs} args - Arguments to delete one Item.
+     * @example
+     * // Delete one Item
+     * const Item = await prisma.item.delete({
+     *   where: {
+     *     // ... filter to delete one Item
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ItemDeleteArgs>(args: SelectSubset<T, ItemDeleteArgs<ExtArgs>>): Prisma__ItemClient<$Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Item.
+     * @param {ItemUpdateArgs} args - Arguments to update one Item.
+     * @example
+     * // Update one Item
+     * const item = await prisma.item.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ItemUpdateArgs>(args: SelectSubset<T, ItemUpdateArgs<ExtArgs>>): Prisma__ItemClient<$Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Items.
+     * @param {ItemDeleteManyArgs} args - Arguments to filter Items to delete.
+     * @example
+     * // Delete a few Items
+     * const { count } = await prisma.item.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ItemDeleteManyArgs>(args?: SelectSubset<T, ItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Items.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Items
+     * const item = await prisma.item.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ItemUpdateManyArgs>(args: SelectSubset<T, ItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Item.
+     * @param {ItemUpsertArgs} args - Arguments to update or create a Item.
+     * @example
+     * // Update or create a Item
+     * const item = await prisma.item.upsert({
+     *   create: {
+     *     // ... data to create a Item
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Item we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ItemUpsertArgs>(args: SelectSubset<T, ItemUpsertArgs<ExtArgs>>): Prisma__ItemClient<$Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Items.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemCountArgs} args - Arguments to filter Items to count.
+     * @example
+     * // Count the number of Items
+     * const count = await prisma.item.count({
+     *   where: {
+     *     // ... the filter for the Items we want to count
+     *   }
+     * })
+    **/
+    count<T extends ItemCountArgs>(
+      args?: Subset<T, ItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Item.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ItemAggregateArgs>(args: Subset<T, ItemAggregateArgs>): Prisma.PrismaPromise<GetItemAggregateType<T>>
+
+    /**
+     * Group by Item.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ItemGroupByArgs['orderBy'] }
+        : { orderBy?: ItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Item model
+   */
+  readonly fields: ItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Item.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    story<T extends StoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StoryDefaultArgs<ExtArgs>>): Prisma__StoryClient<$Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Item model
+   */
+  interface ItemFieldRefs {
+    readonly id: FieldRef<"Item", 'String'>
+    readonly storyId: FieldRef<"Item", 'String'>
+    readonly name: FieldRef<"Item", 'String'>
+    readonly createdAt: FieldRef<"Item", 'DateTime'>
+    readonly updatedAt: FieldRef<"Item", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Item findUnique
+   */
+  export type ItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+    /**
+     * Filter, which Item to fetch.
+     */
+    where: ItemWhereUniqueInput
+  }
+
+  /**
+   * Item findUniqueOrThrow
+   */
+  export type ItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+    /**
+     * Filter, which Item to fetch.
+     */
+    where: ItemWhereUniqueInput
+  }
+
+  /**
+   * Item findFirst
+   */
+  export type ItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+    /**
+     * Filter, which Item to fetch.
+     */
+    where?: ItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Items to fetch.
+     */
+    orderBy?: ItemOrderByWithRelationInput | ItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Items.
+     */
+    cursor?: ItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Items.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Items.
+     */
+    distinct?: ItemScalarFieldEnum | ItemScalarFieldEnum[]
+  }
+
+  /**
+   * Item findFirstOrThrow
+   */
+  export type ItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+    /**
+     * Filter, which Item to fetch.
+     */
+    where?: ItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Items to fetch.
+     */
+    orderBy?: ItemOrderByWithRelationInput | ItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Items.
+     */
+    cursor?: ItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Items.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Items.
+     */
+    distinct?: ItemScalarFieldEnum | ItemScalarFieldEnum[]
+  }
+
+  /**
+   * Item findMany
+   */
+  export type ItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+    /**
+     * Filter, which Items to fetch.
+     */
+    where?: ItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Items to fetch.
+     */
+    orderBy?: ItemOrderByWithRelationInput | ItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Items.
+     */
+    cursor?: ItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Items.
+     */
+    skip?: number
+    distinct?: ItemScalarFieldEnum | ItemScalarFieldEnum[]
+  }
+
+  /**
+   * Item create
+   */
+  export type ItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Item.
+     */
+    data: XOR<ItemCreateInput, ItemUncheckedCreateInput>
+  }
+
+  /**
+   * Item createMany
+   */
+  export type ItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Items.
+     */
+    data: ItemCreateManyInput | ItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Item update
+   */
+  export type ItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Item.
+     */
+    data: XOR<ItemUpdateInput, ItemUncheckedUpdateInput>
+    /**
+     * Choose, which Item to update.
+     */
+    where: ItemWhereUniqueInput
+  }
+
+  /**
+   * Item updateMany
+   */
+  export type ItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Items.
+     */
+    data: XOR<ItemUpdateManyMutationInput, ItemUncheckedUpdateManyInput>
+    /**
+     * Filter which Items to update
+     */
+    where?: ItemWhereInput
+    /**
+     * Limit how many Items to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Item upsert
+   */
+  export type ItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Item to update in case it exists.
+     */
+    where: ItemWhereUniqueInput
+    /**
+     * In case the Item found by the `where` argument doesn't exist, create a new Item with this data.
+     */
+    create: XOR<ItemCreateInput, ItemUncheckedCreateInput>
+    /**
+     * In case the Item was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ItemUpdateInput, ItemUncheckedUpdateInput>
+  }
+
+  /**
+   * Item delete
+   */
+  export type ItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+    /**
+     * Filter which Item to delete.
+     */
+    where: ItemWhereUniqueInput
+  }
+
+  /**
+   * Item deleteMany
+   */
+  export type ItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Items to delete
+     */
+    where?: ItemWhereInput
+    /**
+     * Limit how many Items to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Item without action
+   */
+  export type ItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Item
+     */
+    select?: ItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Item
+     */
+    omit?: ItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ItemInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SceneCharacter
+   */
+
+  export type AggregateSceneCharacter = {
+    _count: SceneCharacterCountAggregateOutputType | null
+    _min: SceneCharacterMinAggregateOutputType | null
+    _max: SceneCharacterMaxAggregateOutputType | null
+  }
+
+  export type SceneCharacterMinAggregateOutputType = {
+    sceneId: string | null
+    characterId: string | null
+    assignedAt: Date | null
+  }
+
+  export type SceneCharacterMaxAggregateOutputType = {
+    sceneId: string | null
+    characterId: string | null
+    assignedAt: Date | null
+  }
+
+  export type SceneCharacterCountAggregateOutputType = {
+    sceneId: number
+    characterId: number
+    assignedAt: number
+    _all: number
+  }
+
+
+  export type SceneCharacterMinAggregateInputType = {
+    sceneId?: true
+    characterId?: true
+    assignedAt?: true
+  }
+
+  export type SceneCharacterMaxAggregateInputType = {
+    sceneId?: true
+    characterId?: true
+    assignedAt?: true
+  }
+
+  export type SceneCharacterCountAggregateInputType = {
+    sceneId?: true
+    characterId?: true
+    assignedAt?: true
+    _all?: true
+  }
+
+  export type SceneCharacterAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SceneCharacter to aggregate.
+     */
+    where?: SceneCharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SceneCharacters to fetch.
+     */
+    orderBy?: SceneCharacterOrderByWithRelationInput | SceneCharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SceneCharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SceneCharacters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SceneCharacters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SceneCharacters
+    **/
+    _count?: true | SceneCharacterCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SceneCharacterMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SceneCharacterMaxAggregateInputType
+  }
+
+  export type GetSceneCharacterAggregateType<T extends SceneCharacterAggregateArgs> = {
+        [P in keyof T & keyof AggregateSceneCharacter]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSceneCharacter[P]>
+      : GetScalarType<T[P], AggregateSceneCharacter[P]>
+  }
+
+
+
+
+  export type SceneCharacterGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SceneCharacterWhereInput
+    orderBy?: SceneCharacterOrderByWithAggregationInput | SceneCharacterOrderByWithAggregationInput[]
+    by: SceneCharacterScalarFieldEnum[] | SceneCharacterScalarFieldEnum
+    having?: SceneCharacterScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SceneCharacterCountAggregateInputType | true
+    _min?: SceneCharacterMinAggregateInputType
+    _max?: SceneCharacterMaxAggregateInputType
+  }
+
+  export type SceneCharacterGroupByOutputType = {
+    sceneId: string
+    characterId: string
+    assignedAt: Date
+    _count: SceneCharacterCountAggregateOutputType | null
+    _min: SceneCharacterMinAggregateOutputType | null
+    _max: SceneCharacterMaxAggregateOutputType | null
+  }
+
+  type GetSceneCharacterGroupByPayload<T extends SceneCharacterGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SceneCharacterGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SceneCharacterGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SceneCharacterGroupByOutputType[P]>
+            : GetScalarType<T[P], SceneCharacterGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SceneCharacterSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    sceneId?: boolean
+    characterId?: boolean
+    assignedAt?: boolean
+    scene?: boolean | SceneDefaultArgs<ExtArgs>
+    character?: boolean | CharacterDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sceneCharacter"]>
+
+
+
+  export type SceneCharacterSelectScalar = {
+    sceneId?: boolean
+    characterId?: boolean
+    assignedAt?: boolean
+  }
+
+  export type SceneCharacterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"sceneId" | "characterId" | "assignedAt", ExtArgs["result"]["sceneCharacter"]>
+  export type SceneCharacterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    scene?: boolean | SceneDefaultArgs<ExtArgs>
+    character?: boolean | CharacterDefaultArgs<ExtArgs>
+  }
+
+  export type $SceneCharacterPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SceneCharacter"
+    objects: {
+      scene: Prisma.$ScenePayload<ExtArgs>
+      character: Prisma.$CharacterPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      sceneId: string
+      characterId: string
+      assignedAt: Date
+    }, ExtArgs["result"]["sceneCharacter"]>
+    composites: {}
+  }
+
+  type SceneCharacterGetPayload<S extends boolean | null | undefined | SceneCharacterDefaultArgs> = $Result.GetResult<Prisma.$SceneCharacterPayload, S>
+
+  type SceneCharacterCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SceneCharacterFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SceneCharacterCountAggregateInputType | true
+    }
+
+  export interface SceneCharacterDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SceneCharacter'], meta: { name: 'SceneCharacter' } }
+    /**
+     * Find zero or one SceneCharacter that matches the filter.
+     * @param {SceneCharacterFindUniqueArgs} args - Arguments to find a SceneCharacter
+     * @example
+     * // Get one SceneCharacter
+     * const sceneCharacter = await prisma.sceneCharacter.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SceneCharacterFindUniqueArgs>(args: SelectSubset<T, SceneCharacterFindUniqueArgs<ExtArgs>>): Prisma__SceneCharacterClient<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SceneCharacter that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SceneCharacterFindUniqueOrThrowArgs} args - Arguments to find a SceneCharacter
+     * @example
+     * // Get one SceneCharacter
+     * const sceneCharacter = await prisma.sceneCharacter.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SceneCharacterFindUniqueOrThrowArgs>(args: SelectSubset<T, SceneCharacterFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SceneCharacterClient<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SceneCharacter that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneCharacterFindFirstArgs} args - Arguments to find a SceneCharacter
+     * @example
+     * // Get one SceneCharacter
+     * const sceneCharacter = await prisma.sceneCharacter.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SceneCharacterFindFirstArgs>(args?: SelectSubset<T, SceneCharacterFindFirstArgs<ExtArgs>>): Prisma__SceneCharacterClient<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SceneCharacter that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneCharacterFindFirstOrThrowArgs} args - Arguments to find a SceneCharacter
+     * @example
+     * // Get one SceneCharacter
+     * const sceneCharacter = await prisma.sceneCharacter.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SceneCharacterFindFirstOrThrowArgs>(args?: SelectSubset<T, SceneCharacterFindFirstOrThrowArgs<ExtArgs>>): Prisma__SceneCharacterClient<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SceneCharacters that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneCharacterFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SceneCharacters
+     * const sceneCharacters = await prisma.sceneCharacter.findMany()
+     * 
+     * // Get first 10 SceneCharacters
+     * const sceneCharacters = await prisma.sceneCharacter.findMany({ take: 10 })
+     * 
+     * // Only select the `sceneId`
+     * const sceneCharacterWithSceneIdOnly = await prisma.sceneCharacter.findMany({ select: { sceneId: true } })
+     * 
+     */
+    findMany<T extends SceneCharacterFindManyArgs>(args?: SelectSubset<T, SceneCharacterFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SceneCharacter.
+     * @param {SceneCharacterCreateArgs} args - Arguments to create a SceneCharacter.
+     * @example
+     * // Create one SceneCharacter
+     * const SceneCharacter = await prisma.sceneCharacter.create({
+     *   data: {
+     *     // ... data to create a SceneCharacter
+     *   }
+     * })
+     * 
+     */
+    create<T extends SceneCharacterCreateArgs>(args: SelectSubset<T, SceneCharacterCreateArgs<ExtArgs>>): Prisma__SceneCharacterClient<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SceneCharacters.
+     * @param {SceneCharacterCreateManyArgs} args - Arguments to create many SceneCharacters.
+     * @example
+     * // Create many SceneCharacters
+     * const sceneCharacter = await prisma.sceneCharacter.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SceneCharacterCreateManyArgs>(args?: SelectSubset<T, SceneCharacterCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a SceneCharacter.
+     * @param {SceneCharacterDeleteArgs} args - Arguments to delete one SceneCharacter.
+     * @example
+     * // Delete one SceneCharacter
+     * const SceneCharacter = await prisma.sceneCharacter.delete({
+     *   where: {
+     *     // ... filter to delete one SceneCharacter
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SceneCharacterDeleteArgs>(args: SelectSubset<T, SceneCharacterDeleteArgs<ExtArgs>>): Prisma__SceneCharacterClient<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SceneCharacter.
+     * @param {SceneCharacterUpdateArgs} args - Arguments to update one SceneCharacter.
+     * @example
+     * // Update one SceneCharacter
+     * const sceneCharacter = await prisma.sceneCharacter.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SceneCharacterUpdateArgs>(args: SelectSubset<T, SceneCharacterUpdateArgs<ExtArgs>>): Prisma__SceneCharacterClient<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SceneCharacters.
+     * @param {SceneCharacterDeleteManyArgs} args - Arguments to filter SceneCharacters to delete.
+     * @example
+     * // Delete a few SceneCharacters
+     * const { count } = await prisma.sceneCharacter.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SceneCharacterDeleteManyArgs>(args?: SelectSubset<T, SceneCharacterDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SceneCharacters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneCharacterUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SceneCharacters
+     * const sceneCharacter = await prisma.sceneCharacter.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SceneCharacterUpdateManyArgs>(args: SelectSubset<T, SceneCharacterUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one SceneCharacter.
+     * @param {SceneCharacterUpsertArgs} args - Arguments to update or create a SceneCharacter.
+     * @example
+     * // Update or create a SceneCharacter
+     * const sceneCharacter = await prisma.sceneCharacter.upsert({
+     *   create: {
+     *     // ... data to create a SceneCharacter
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SceneCharacter we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SceneCharacterUpsertArgs>(args: SelectSubset<T, SceneCharacterUpsertArgs<ExtArgs>>): Prisma__SceneCharacterClient<$Result.GetResult<Prisma.$SceneCharacterPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SceneCharacters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneCharacterCountArgs} args - Arguments to filter SceneCharacters to count.
+     * @example
+     * // Count the number of SceneCharacters
+     * const count = await prisma.sceneCharacter.count({
+     *   where: {
+     *     // ... the filter for the SceneCharacters we want to count
+     *   }
+     * })
+    **/
+    count<T extends SceneCharacterCountArgs>(
+      args?: Subset<T, SceneCharacterCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SceneCharacterCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SceneCharacter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneCharacterAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SceneCharacterAggregateArgs>(args: Subset<T, SceneCharacterAggregateArgs>): Prisma.PrismaPromise<GetSceneCharacterAggregateType<T>>
+
+    /**
+     * Group by SceneCharacter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneCharacterGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SceneCharacterGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SceneCharacterGroupByArgs['orderBy'] }
+        : { orderBy?: SceneCharacterGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SceneCharacterGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSceneCharacterGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SceneCharacter model
+   */
+  readonly fields: SceneCharacterFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SceneCharacter.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SceneCharacterClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    scene<T extends SceneDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SceneDefaultArgs<ExtArgs>>): Prisma__SceneClient<$Result.GetResult<Prisma.$ScenePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    character<T extends CharacterDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CharacterDefaultArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SceneCharacter model
+   */
+  interface SceneCharacterFieldRefs {
+    readonly sceneId: FieldRef<"SceneCharacter", 'String'>
+    readonly characterId: FieldRef<"SceneCharacter", 'String'>
+    readonly assignedAt: FieldRef<"SceneCharacter", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SceneCharacter findUnique
+   */
+  export type SceneCharacterFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which SceneCharacter to fetch.
+     */
+    where: SceneCharacterWhereUniqueInput
+  }
+
+  /**
+   * SceneCharacter findUniqueOrThrow
+   */
+  export type SceneCharacterFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which SceneCharacter to fetch.
+     */
+    where: SceneCharacterWhereUniqueInput
+  }
+
+  /**
+   * SceneCharacter findFirst
+   */
+  export type SceneCharacterFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which SceneCharacter to fetch.
+     */
+    where?: SceneCharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SceneCharacters to fetch.
+     */
+    orderBy?: SceneCharacterOrderByWithRelationInput | SceneCharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SceneCharacters.
+     */
+    cursor?: SceneCharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SceneCharacters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SceneCharacters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SceneCharacters.
+     */
+    distinct?: SceneCharacterScalarFieldEnum | SceneCharacterScalarFieldEnum[]
+  }
+
+  /**
+   * SceneCharacter findFirstOrThrow
+   */
+  export type SceneCharacterFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which SceneCharacter to fetch.
+     */
+    where?: SceneCharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SceneCharacters to fetch.
+     */
+    orderBy?: SceneCharacterOrderByWithRelationInput | SceneCharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SceneCharacters.
+     */
+    cursor?: SceneCharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SceneCharacters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SceneCharacters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SceneCharacters.
+     */
+    distinct?: SceneCharacterScalarFieldEnum | SceneCharacterScalarFieldEnum[]
+  }
+
+  /**
+   * SceneCharacter findMany
+   */
+  export type SceneCharacterFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which SceneCharacters to fetch.
+     */
+    where?: SceneCharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SceneCharacters to fetch.
+     */
+    orderBy?: SceneCharacterOrderByWithRelationInput | SceneCharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SceneCharacters.
+     */
+    cursor?: SceneCharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SceneCharacters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SceneCharacters.
+     */
+    skip?: number
+    distinct?: SceneCharacterScalarFieldEnum | SceneCharacterScalarFieldEnum[]
+  }
+
+  /**
+   * SceneCharacter create
+   */
+  export type SceneCharacterCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SceneCharacter.
+     */
+    data: XOR<SceneCharacterCreateInput, SceneCharacterUncheckedCreateInput>
+  }
+
+  /**
+   * SceneCharacter createMany
+   */
+  export type SceneCharacterCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SceneCharacters.
+     */
+    data: SceneCharacterCreateManyInput | SceneCharacterCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SceneCharacter update
+   */
+  export type SceneCharacterUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SceneCharacter.
+     */
+    data: XOR<SceneCharacterUpdateInput, SceneCharacterUncheckedUpdateInput>
+    /**
+     * Choose, which SceneCharacter to update.
+     */
+    where: SceneCharacterWhereUniqueInput
+  }
+
+  /**
+   * SceneCharacter updateMany
+   */
+  export type SceneCharacterUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SceneCharacters.
+     */
+    data: XOR<SceneCharacterUpdateManyMutationInput, SceneCharacterUncheckedUpdateManyInput>
+    /**
+     * Filter which SceneCharacters to update
+     */
+    where?: SceneCharacterWhereInput
+    /**
+     * Limit how many SceneCharacters to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SceneCharacter upsert
+   */
+  export type SceneCharacterUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SceneCharacter to update in case it exists.
+     */
+    where: SceneCharacterWhereUniqueInput
+    /**
+     * In case the SceneCharacter found by the `where` argument doesn't exist, create a new SceneCharacter with this data.
+     */
+    create: XOR<SceneCharacterCreateInput, SceneCharacterUncheckedCreateInput>
+    /**
+     * In case the SceneCharacter was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SceneCharacterUpdateInput, SceneCharacterUncheckedUpdateInput>
+  }
+
+  /**
+   * SceneCharacter delete
+   */
+  export type SceneCharacterDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+    /**
+     * Filter which SceneCharacter to delete.
+     */
+    where: SceneCharacterWhereUniqueInput
+  }
+
+  /**
+   * SceneCharacter deleteMany
+   */
+  export type SceneCharacterDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SceneCharacters to delete
+     */
+    where?: SceneCharacterWhereInput
+    /**
+     * Limit how many SceneCharacters to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SceneCharacter without action
+   */
+  export type SceneCharacterDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneCharacter
+     */
+    select?: SceneCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneCharacter
+     */
+    omit?: SceneCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneCharacterInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SceneReferredCharacter
+   */
+
+  export type AggregateSceneReferredCharacter = {
+    _count: SceneReferredCharacterCountAggregateOutputType | null
+    _min: SceneReferredCharacterMinAggregateOutputType | null
+    _max: SceneReferredCharacterMaxAggregateOutputType | null
+  }
+
+  export type SceneReferredCharacterMinAggregateOutputType = {
+    sceneId: string | null
+    characterId: string | null
+    assignedAt: Date | null
+  }
+
+  export type SceneReferredCharacterMaxAggregateOutputType = {
+    sceneId: string | null
+    characterId: string | null
+    assignedAt: Date | null
+  }
+
+  export type SceneReferredCharacterCountAggregateOutputType = {
+    sceneId: number
+    characterId: number
+    assignedAt: number
+    _all: number
+  }
+
+
+  export type SceneReferredCharacterMinAggregateInputType = {
+    sceneId?: true
+    characterId?: true
+    assignedAt?: true
+  }
+
+  export type SceneReferredCharacterMaxAggregateInputType = {
+    sceneId?: true
+    characterId?: true
+    assignedAt?: true
+  }
+
+  export type SceneReferredCharacterCountAggregateInputType = {
+    sceneId?: true
+    characterId?: true
+    assignedAt?: true
+    _all?: true
+  }
+
+  export type SceneReferredCharacterAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SceneReferredCharacter to aggregate.
+     */
+    where?: SceneReferredCharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SceneReferredCharacters to fetch.
+     */
+    orderBy?: SceneReferredCharacterOrderByWithRelationInput | SceneReferredCharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SceneReferredCharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SceneReferredCharacters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SceneReferredCharacters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SceneReferredCharacters
+    **/
+    _count?: true | SceneReferredCharacterCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SceneReferredCharacterMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SceneReferredCharacterMaxAggregateInputType
+  }
+
+  export type GetSceneReferredCharacterAggregateType<T extends SceneReferredCharacterAggregateArgs> = {
+        [P in keyof T & keyof AggregateSceneReferredCharacter]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSceneReferredCharacter[P]>
+      : GetScalarType<T[P], AggregateSceneReferredCharacter[P]>
+  }
+
+
+
+
+  export type SceneReferredCharacterGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SceneReferredCharacterWhereInput
+    orderBy?: SceneReferredCharacterOrderByWithAggregationInput | SceneReferredCharacterOrderByWithAggregationInput[]
+    by: SceneReferredCharacterScalarFieldEnum[] | SceneReferredCharacterScalarFieldEnum
+    having?: SceneReferredCharacterScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SceneReferredCharacterCountAggregateInputType | true
+    _min?: SceneReferredCharacterMinAggregateInputType
+    _max?: SceneReferredCharacterMaxAggregateInputType
+  }
+
+  export type SceneReferredCharacterGroupByOutputType = {
+    sceneId: string
+    characterId: string
+    assignedAt: Date
+    _count: SceneReferredCharacterCountAggregateOutputType | null
+    _min: SceneReferredCharacterMinAggregateOutputType | null
+    _max: SceneReferredCharacterMaxAggregateOutputType | null
+  }
+
+  type GetSceneReferredCharacterGroupByPayload<T extends SceneReferredCharacterGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SceneReferredCharacterGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SceneReferredCharacterGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SceneReferredCharacterGroupByOutputType[P]>
+            : GetScalarType<T[P], SceneReferredCharacterGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SceneReferredCharacterSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    sceneId?: boolean
+    characterId?: boolean
+    assignedAt?: boolean
+    scene?: boolean | SceneDefaultArgs<ExtArgs>
+    character?: boolean | CharacterDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sceneReferredCharacter"]>
+
+
+
+  export type SceneReferredCharacterSelectScalar = {
+    sceneId?: boolean
+    characterId?: boolean
+    assignedAt?: boolean
+  }
+
+  export type SceneReferredCharacterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"sceneId" | "characterId" | "assignedAt", ExtArgs["result"]["sceneReferredCharacter"]>
+  export type SceneReferredCharacterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    scene?: boolean | SceneDefaultArgs<ExtArgs>
+    character?: boolean | CharacterDefaultArgs<ExtArgs>
+  }
+
+  export type $SceneReferredCharacterPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SceneReferredCharacter"
+    objects: {
+      scene: Prisma.$ScenePayload<ExtArgs>
+      character: Prisma.$CharacterPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      sceneId: string
+      characterId: string
+      assignedAt: Date
+    }, ExtArgs["result"]["sceneReferredCharacter"]>
+    composites: {}
+  }
+
+  type SceneReferredCharacterGetPayload<S extends boolean | null | undefined | SceneReferredCharacterDefaultArgs> = $Result.GetResult<Prisma.$SceneReferredCharacterPayload, S>
+
+  type SceneReferredCharacterCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SceneReferredCharacterFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SceneReferredCharacterCountAggregateInputType | true
+    }
+
+  export interface SceneReferredCharacterDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SceneReferredCharacter'], meta: { name: 'SceneReferredCharacter' } }
+    /**
+     * Find zero or one SceneReferredCharacter that matches the filter.
+     * @param {SceneReferredCharacterFindUniqueArgs} args - Arguments to find a SceneReferredCharacter
+     * @example
+     * // Get one SceneReferredCharacter
+     * const sceneReferredCharacter = await prisma.sceneReferredCharacter.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SceneReferredCharacterFindUniqueArgs>(args: SelectSubset<T, SceneReferredCharacterFindUniqueArgs<ExtArgs>>): Prisma__SceneReferredCharacterClient<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SceneReferredCharacter that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SceneReferredCharacterFindUniqueOrThrowArgs} args - Arguments to find a SceneReferredCharacter
+     * @example
+     * // Get one SceneReferredCharacter
+     * const sceneReferredCharacter = await prisma.sceneReferredCharacter.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SceneReferredCharacterFindUniqueOrThrowArgs>(args: SelectSubset<T, SceneReferredCharacterFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SceneReferredCharacterClient<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SceneReferredCharacter that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneReferredCharacterFindFirstArgs} args - Arguments to find a SceneReferredCharacter
+     * @example
+     * // Get one SceneReferredCharacter
+     * const sceneReferredCharacter = await prisma.sceneReferredCharacter.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SceneReferredCharacterFindFirstArgs>(args?: SelectSubset<T, SceneReferredCharacterFindFirstArgs<ExtArgs>>): Prisma__SceneReferredCharacterClient<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SceneReferredCharacter that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneReferredCharacterFindFirstOrThrowArgs} args - Arguments to find a SceneReferredCharacter
+     * @example
+     * // Get one SceneReferredCharacter
+     * const sceneReferredCharacter = await prisma.sceneReferredCharacter.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SceneReferredCharacterFindFirstOrThrowArgs>(args?: SelectSubset<T, SceneReferredCharacterFindFirstOrThrowArgs<ExtArgs>>): Prisma__SceneReferredCharacterClient<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SceneReferredCharacters that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneReferredCharacterFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SceneReferredCharacters
+     * const sceneReferredCharacters = await prisma.sceneReferredCharacter.findMany()
+     * 
+     * // Get first 10 SceneReferredCharacters
+     * const sceneReferredCharacters = await prisma.sceneReferredCharacter.findMany({ take: 10 })
+     * 
+     * // Only select the `sceneId`
+     * const sceneReferredCharacterWithSceneIdOnly = await prisma.sceneReferredCharacter.findMany({ select: { sceneId: true } })
+     * 
+     */
+    findMany<T extends SceneReferredCharacterFindManyArgs>(args?: SelectSubset<T, SceneReferredCharacterFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SceneReferredCharacter.
+     * @param {SceneReferredCharacterCreateArgs} args - Arguments to create a SceneReferredCharacter.
+     * @example
+     * // Create one SceneReferredCharacter
+     * const SceneReferredCharacter = await prisma.sceneReferredCharacter.create({
+     *   data: {
+     *     // ... data to create a SceneReferredCharacter
+     *   }
+     * })
+     * 
+     */
+    create<T extends SceneReferredCharacterCreateArgs>(args: SelectSubset<T, SceneReferredCharacterCreateArgs<ExtArgs>>): Prisma__SceneReferredCharacterClient<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SceneReferredCharacters.
+     * @param {SceneReferredCharacterCreateManyArgs} args - Arguments to create many SceneReferredCharacters.
+     * @example
+     * // Create many SceneReferredCharacters
+     * const sceneReferredCharacter = await prisma.sceneReferredCharacter.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SceneReferredCharacterCreateManyArgs>(args?: SelectSubset<T, SceneReferredCharacterCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a SceneReferredCharacter.
+     * @param {SceneReferredCharacterDeleteArgs} args - Arguments to delete one SceneReferredCharacter.
+     * @example
+     * // Delete one SceneReferredCharacter
+     * const SceneReferredCharacter = await prisma.sceneReferredCharacter.delete({
+     *   where: {
+     *     // ... filter to delete one SceneReferredCharacter
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SceneReferredCharacterDeleteArgs>(args: SelectSubset<T, SceneReferredCharacterDeleteArgs<ExtArgs>>): Prisma__SceneReferredCharacterClient<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SceneReferredCharacter.
+     * @param {SceneReferredCharacterUpdateArgs} args - Arguments to update one SceneReferredCharacter.
+     * @example
+     * // Update one SceneReferredCharacter
+     * const sceneReferredCharacter = await prisma.sceneReferredCharacter.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SceneReferredCharacterUpdateArgs>(args: SelectSubset<T, SceneReferredCharacterUpdateArgs<ExtArgs>>): Prisma__SceneReferredCharacterClient<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SceneReferredCharacters.
+     * @param {SceneReferredCharacterDeleteManyArgs} args - Arguments to filter SceneReferredCharacters to delete.
+     * @example
+     * // Delete a few SceneReferredCharacters
+     * const { count } = await prisma.sceneReferredCharacter.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SceneReferredCharacterDeleteManyArgs>(args?: SelectSubset<T, SceneReferredCharacterDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SceneReferredCharacters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneReferredCharacterUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SceneReferredCharacters
+     * const sceneReferredCharacter = await prisma.sceneReferredCharacter.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SceneReferredCharacterUpdateManyArgs>(args: SelectSubset<T, SceneReferredCharacterUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one SceneReferredCharacter.
+     * @param {SceneReferredCharacterUpsertArgs} args - Arguments to update or create a SceneReferredCharacter.
+     * @example
+     * // Update or create a SceneReferredCharacter
+     * const sceneReferredCharacter = await prisma.sceneReferredCharacter.upsert({
+     *   create: {
+     *     // ... data to create a SceneReferredCharacter
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SceneReferredCharacter we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SceneReferredCharacterUpsertArgs>(args: SelectSubset<T, SceneReferredCharacterUpsertArgs<ExtArgs>>): Prisma__SceneReferredCharacterClient<$Result.GetResult<Prisma.$SceneReferredCharacterPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SceneReferredCharacters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneReferredCharacterCountArgs} args - Arguments to filter SceneReferredCharacters to count.
+     * @example
+     * // Count the number of SceneReferredCharacters
+     * const count = await prisma.sceneReferredCharacter.count({
+     *   where: {
+     *     // ... the filter for the SceneReferredCharacters we want to count
+     *   }
+     * })
+    **/
+    count<T extends SceneReferredCharacterCountArgs>(
+      args?: Subset<T, SceneReferredCharacterCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SceneReferredCharacterCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SceneReferredCharacter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneReferredCharacterAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SceneReferredCharacterAggregateArgs>(args: Subset<T, SceneReferredCharacterAggregateArgs>): Prisma.PrismaPromise<GetSceneReferredCharacterAggregateType<T>>
+
+    /**
+     * Group by SceneReferredCharacter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SceneReferredCharacterGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SceneReferredCharacterGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SceneReferredCharacterGroupByArgs['orderBy'] }
+        : { orderBy?: SceneReferredCharacterGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SceneReferredCharacterGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSceneReferredCharacterGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SceneReferredCharacter model
+   */
+  readonly fields: SceneReferredCharacterFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SceneReferredCharacter.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SceneReferredCharacterClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    scene<T extends SceneDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SceneDefaultArgs<ExtArgs>>): Prisma__SceneClient<$Result.GetResult<Prisma.$ScenePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    character<T extends CharacterDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CharacterDefaultArgs<ExtArgs>>): Prisma__CharacterClient<$Result.GetResult<Prisma.$CharacterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SceneReferredCharacter model
+   */
+  interface SceneReferredCharacterFieldRefs {
+    readonly sceneId: FieldRef<"SceneReferredCharacter", 'String'>
+    readonly characterId: FieldRef<"SceneReferredCharacter", 'String'>
+    readonly assignedAt: FieldRef<"SceneReferredCharacter", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SceneReferredCharacter findUnique
+   */
+  export type SceneReferredCharacterFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which SceneReferredCharacter to fetch.
+     */
+    where: SceneReferredCharacterWhereUniqueInput
+  }
+
+  /**
+   * SceneReferredCharacter findUniqueOrThrow
+   */
+  export type SceneReferredCharacterFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which SceneReferredCharacter to fetch.
+     */
+    where: SceneReferredCharacterWhereUniqueInput
+  }
+
+  /**
+   * SceneReferredCharacter findFirst
+   */
+  export type SceneReferredCharacterFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which SceneReferredCharacter to fetch.
+     */
+    where?: SceneReferredCharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SceneReferredCharacters to fetch.
+     */
+    orderBy?: SceneReferredCharacterOrderByWithRelationInput | SceneReferredCharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SceneReferredCharacters.
+     */
+    cursor?: SceneReferredCharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SceneReferredCharacters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SceneReferredCharacters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SceneReferredCharacters.
+     */
+    distinct?: SceneReferredCharacterScalarFieldEnum | SceneReferredCharacterScalarFieldEnum[]
+  }
+
+  /**
+   * SceneReferredCharacter findFirstOrThrow
+   */
+  export type SceneReferredCharacterFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which SceneReferredCharacter to fetch.
+     */
+    where?: SceneReferredCharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SceneReferredCharacters to fetch.
+     */
+    orderBy?: SceneReferredCharacterOrderByWithRelationInput | SceneReferredCharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SceneReferredCharacters.
+     */
+    cursor?: SceneReferredCharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SceneReferredCharacters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SceneReferredCharacters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SceneReferredCharacters.
+     */
+    distinct?: SceneReferredCharacterScalarFieldEnum | SceneReferredCharacterScalarFieldEnum[]
+  }
+
+  /**
+   * SceneReferredCharacter findMany
+   */
+  export type SceneReferredCharacterFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    /**
+     * Filter, which SceneReferredCharacters to fetch.
+     */
+    where?: SceneReferredCharacterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SceneReferredCharacters to fetch.
+     */
+    orderBy?: SceneReferredCharacterOrderByWithRelationInput | SceneReferredCharacterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SceneReferredCharacters.
+     */
+    cursor?: SceneReferredCharacterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SceneReferredCharacters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SceneReferredCharacters.
+     */
+    skip?: number
+    distinct?: SceneReferredCharacterScalarFieldEnum | SceneReferredCharacterScalarFieldEnum[]
+  }
+
+  /**
+   * SceneReferredCharacter create
+   */
+  export type SceneReferredCharacterCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SceneReferredCharacter.
+     */
+    data: XOR<SceneReferredCharacterCreateInput, SceneReferredCharacterUncheckedCreateInput>
+  }
+
+  /**
+   * SceneReferredCharacter createMany
+   */
+  export type SceneReferredCharacterCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SceneReferredCharacters.
+     */
+    data: SceneReferredCharacterCreateManyInput | SceneReferredCharacterCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SceneReferredCharacter update
+   */
+  export type SceneReferredCharacterUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SceneReferredCharacter.
+     */
+    data: XOR<SceneReferredCharacterUpdateInput, SceneReferredCharacterUncheckedUpdateInput>
+    /**
+     * Choose, which SceneReferredCharacter to update.
+     */
+    where: SceneReferredCharacterWhereUniqueInput
+  }
+
+  /**
+   * SceneReferredCharacter updateMany
+   */
+  export type SceneReferredCharacterUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SceneReferredCharacters.
+     */
+    data: XOR<SceneReferredCharacterUpdateManyMutationInput, SceneReferredCharacterUncheckedUpdateManyInput>
+    /**
+     * Filter which SceneReferredCharacters to update
+     */
+    where?: SceneReferredCharacterWhereInput
+    /**
+     * Limit how many SceneReferredCharacters to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SceneReferredCharacter upsert
+   */
+  export type SceneReferredCharacterUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SceneReferredCharacter to update in case it exists.
+     */
+    where: SceneReferredCharacterWhereUniqueInput
+    /**
+     * In case the SceneReferredCharacter found by the `where` argument doesn't exist, create a new SceneReferredCharacter with this data.
+     */
+    create: XOR<SceneReferredCharacterCreateInput, SceneReferredCharacterUncheckedCreateInput>
+    /**
+     * In case the SceneReferredCharacter was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SceneReferredCharacterUpdateInput, SceneReferredCharacterUncheckedUpdateInput>
+  }
+
+  /**
+   * SceneReferredCharacter delete
+   */
+  export type SceneReferredCharacterDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+    /**
+     * Filter which SceneReferredCharacter to delete.
+     */
+    where: SceneReferredCharacterWhereUniqueInput
+  }
+
+  /**
+   * SceneReferredCharacter deleteMany
+   */
+  export type SceneReferredCharacterDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SceneReferredCharacters to delete
+     */
+    where?: SceneReferredCharacterWhereInput
+    /**
+     * Limit how many SceneReferredCharacters to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SceneReferredCharacter without action
+   */
+  export type SceneReferredCharacterDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SceneReferredCharacter
+     */
+    select?: SceneReferredCharacterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SceneReferredCharacter
+     */
+    omit?: SceneReferredCharacterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SceneReferredCharacterInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -20289,10 +27758,12 @@ export namespace Prisma {
     chapters: 'chapters',
     firstChapterReleasedAt: 'firstChapterReleasedAt',
     lastChapterReleasedAt: 'lastChapterReleasedAt',
-    coverArtAsset: 'coverArtAsset',
+    coverArtFileId: 'coverArtFileId',
     coverColor: 'coverColor',
     coverTextColor: 'coverTextColor',
     coverFontFamily: 'coverFontFamily',
+    defaultPerspective: 'defaultPerspective',
+    defaultProtagonistId: 'defaultProtagonistId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     sortOrder: 'sortOrder',
@@ -20339,9 +27810,10 @@ export namespace Prisma {
   export const BookScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    summary: 'summary',
     storyId: 'storyId',
-    coverArtAsset: 'coverArtAsset',
-    spineArtAsset: 'spineArtAsset',
+    coverArtFileId: 'coverArtFileId',
+    spineArtFileId: 'spineArtFileId',
     pages: 'pages',
     sortOrder: 'sortOrder',
     nodeType: 'nodeType',
@@ -20355,6 +27827,7 @@ export namespace Prisma {
   export const ArcScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    summary: 'summary',
     bookId: 'bookId',
     sortOrder: 'sortOrder',
     nodeType: 'nodeType',
@@ -20368,6 +27841,7 @@ export namespace Prisma {
   export const ChapterScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    summary: 'summary',
     arcId: 'arcId',
     publishedOn: 'publishedOn',
     sortOrder: 'sortOrder',
@@ -20383,10 +27857,14 @@ export namespace Prisma {
   export const SceneScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    summary: 'summary',
     body: 'body',
     chapterId: 'chapterId',
     sortOrder: 'sortOrder',
     nodeType: 'nodeType',
+    perspective: 'perspective',
+    protagonistId: 'protagonistId',
+    locationId: 'locationId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -20411,6 +27889,11 @@ export namespace Prisma {
     body: 'body',
     contentSchema: 'contentSchema',
     version: 'version',
+    state: 'state',
+    aiCharacters: 'aiCharacters',
+    humanCharacters: 'humanCharacters',
+    plotPointActions: 'plotPointActions',
+    inventoryActions: 'inventoryActions',
     createdAt: 'createdAt'
   };
 
@@ -20464,12 +27947,107 @@ export namespace Prisma {
   export type ChapterPublishingScalarFieldEnum = (typeof ChapterPublishingScalarFieldEnum)[keyof typeof ChapterPublishingScalarFieldEnum]
 
 
+  export const CharacterScalarFieldEnum: {
+    id: 'id',
+    storyId: 'storyId',
+    pictureFileId: 'pictureFileId',
+    firstName: 'firstName',
+    middleName: 'middleName',
+    lastName: 'lastName',
+    nickname: 'nickname',
+    summary: 'summary',
+    background: 'background',
+    personality: 'personality',
+    personalityQuirks: 'personalityQuirks',
+    likes: 'likes',
+    dislikes: 'dislikes',
+    age: 'age',
+    gender: 'gender',
+    sexualOrientation: 'sexualOrientation',
+    height: 'height',
+    hairColor: 'hairColor',
+    eyeColor: 'eyeColor',
+    distinguishingFeatures: 'distinguishingFeatures',
+    writingStyle: 'writingStyle',
+    isMainCharacter: 'isMainCharacter',
+    laterVersionOfId: 'laterVersionOfId',
+    significantActions: 'significantActions',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CharacterScalarFieldEnum = (typeof CharacterScalarFieldEnum)[keyof typeof CharacterScalarFieldEnum]
+
+
+  export const LocationScalarFieldEnum: {
+    id: 'id',
+    storyId: 'storyId',
+    name: 'name',
+    pictureFileId: 'pictureFileId',
+    description: 'description',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type LocationScalarFieldEnum = (typeof LocationScalarFieldEnum)[keyof typeof LocationScalarFieldEnum]
+
+
+  export const PlotPointScalarFieldEnum: {
+    id: 'id',
+    storyId: 'storyId',
+    title: 'title',
+    summary: 'summary',
+    state: 'state',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PlotPointScalarFieldEnum = (typeof PlotPointScalarFieldEnum)[keyof typeof PlotPointScalarFieldEnum]
+
+
+  export const ItemScalarFieldEnum: {
+    id: 'id',
+    storyId: 'storyId',
+    name: 'name',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ItemScalarFieldEnum = (typeof ItemScalarFieldEnum)[keyof typeof ItemScalarFieldEnum]
+
+
+  export const SceneCharacterScalarFieldEnum: {
+    sceneId: 'sceneId',
+    characterId: 'characterId',
+    assignedAt: 'assignedAt'
+  };
+
+  export type SceneCharacterScalarFieldEnum = (typeof SceneCharacterScalarFieldEnum)[keyof typeof SceneCharacterScalarFieldEnum]
+
+
+  export const SceneReferredCharacterScalarFieldEnum: {
+    sceneId: 'sceneId',
+    characterId: 'characterId',
+    assignedAt: 'assignedAt'
+  };
+
+  export type SceneReferredCharacterScalarFieldEnum = (typeof SceneReferredCharacterScalarFieldEnum)[keyof typeof SceneReferredCharacterScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const NullsOrder: {
@@ -20518,10 +28096,11 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     summary: 'summary',
-    coverArtAsset: 'coverArtAsset',
+    coverArtFileId: 'coverArtFileId',
     coverColor: 'coverColor',
     coverTextColor: 'coverTextColor',
-    coverFontFamily: 'coverFontFamily'
+    coverFontFamily: 'coverFontFamily',
+    defaultProtagonistId: 'defaultProtagonistId'
   };
 
   export type StoryOrderByRelevanceFieldEnum = (typeof StoryOrderByRelevanceFieldEnum)[keyof typeof StoryOrderByRelevanceFieldEnum]
@@ -20556,9 +28135,10 @@ export namespace Prisma {
   export const BookOrderByRelevanceFieldEnum: {
     id: 'id',
     name: 'name',
+    summary: 'summary',
     storyId: 'storyId',
-    coverArtAsset: 'coverArtAsset',
-    spineArtAsset: 'spineArtAsset',
+    coverArtFileId: 'coverArtFileId',
+    spineArtFileId: 'spineArtFileId',
     nodeType: 'nodeType'
   };
 
@@ -20568,6 +28148,7 @@ export namespace Prisma {
   export const ArcOrderByRelevanceFieldEnum: {
     id: 'id',
     name: 'name',
+    summary: 'summary',
     bookId: 'bookId',
     nodeType: 'nodeType'
   };
@@ -20578,6 +28159,7 @@ export namespace Prisma {
   export const ChapterOrderByRelevanceFieldEnum: {
     id: 'id',
     name: 'name',
+    summary: 'summary',
     arcId: 'arcId',
     nodeType: 'nodeType'
   };
@@ -20588,9 +28170,12 @@ export namespace Prisma {
   export const SceneOrderByRelevanceFieldEnum: {
     id: 'id',
     name: 'name',
+    summary: 'summary',
     body: 'body',
     chapterId: 'chapterId',
-    nodeType: 'nodeType'
+    nodeType: 'nodeType',
+    protagonistId: 'protagonistId',
+    locationId: 'locationId'
   };
 
   export type SceneOrderByRelevanceFieldEnum = (typeof SceneOrderByRelevanceFieldEnum)[keyof typeof SceneOrderByRelevanceFieldEnum]
@@ -20602,6 +28187,23 @@ export namespace Prisma {
   };
 
   export type ParagraphOrderByRelevanceFieldEnum = (typeof ParagraphOrderByRelevanceFieldEnum)[keyof typeof ParagraphOrderByRelevanceFieldEnum]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+  export const QueryMode: {
+    default: 'default',
+    insensitive: 'insensitive'
+  };
+
+  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
   export const ParagraphRevisionOrderByRelevanceFieldEnum: {
@@ -20642,6 +28244,79 @@ export namespace Prisma {
   };
 
   export type ChapterPublishingOrderByRelevanceFieldEnum = (typeof ChapterPublishingOrderByRelevanceFieldEnum)[keyof typeof ChapterPublishingOrderByRelevanceFieldEnum]
+
+
+  export const CharacterOrderByRelevanceFieldEnum: {
+    id: 'id',
+    storyId: 'storyId',
+    pictureFileId: 'pictureFileId',
+    firstName: 'firstName',
+    middleName: 'middleName',
+    lastName: 'lastName',
+    nickname: 'nickname',
+    summary: 'summary',
+    background: 'background',
+    personality: 'personality',
+    personalityQuirks: 'personalityQuirks',
+    likes: 'likes',
+    dislikes: 'dislikes',
+    age: 'age',
+    gender: 'gender',
+    sexualOrientation: 'sexualOrientation',
+    hairColor: 'hairColor',
+    eyeColor: 'eyeColor',
+    distinguishingFeatures: 'distinguishingFeatures',
+    writingStyle: 'writingStyle',
+    laterVersionOfId: 'laterVersionOfId'
+  };
+
+  export type CharacterOrderByRelevanceFieldEnum = (typeof CharacterOrderByRelevanceFieldEnum)[keyof typeof CharacterOrderByRelevanceFieldEnum]
+
+
+  export const LocationOrderByRelevanceFieldEnum: {
+    id: 'id',
+    storyId: 'storyId',
+    name: 'name',
+    pictureFileId: 'pictureFileId',
+    description: 'description'
+  };
+
+  export type LocationOrderByRelevanceFieldEnum = (typeof LocationOrderByRelevanceFieldEnum)[keyof typeof LocationOrderByRelevanceFieldEnum]
+
+
+  export const PlotPointOrderByRelevanceFieldEnum: {
+    id: 'id',
+    storyId: 'storyId',
+    title: 'title',
+    summary: 'summary'
+  };
+
+  export type PlotPointOrderByRelevanceFieldEnum = (typeof PlotPointOrderByRelevanceFieldEnum)[keyof typeof PlotPointOrderByRelevanceFieldEnum]
+
+
+  export const ItemOrderByRelevanceFieldEnum: {
+    id: 'id',
+    storyId: 'storyId',
+    name: 'name'
+  };
+
+  export type ItemOrderByRelevanceFieldEnum = (typeof ItemOrderByRelevanceFieldEnum)[keyof typeof ItemOrderByRelevanceFieldEnum]
+
+
+  export const SceneCharacterOrderByRelevanceFieldEnum: {
+    sceneId: 'sceneId',
+    characterId: 'characterId'
+  };
+
+  export type SceneCharacterOrderByRelevanceFieldEnum = (typeof SceneCharacterOrderByRelevanceFieldEnum)[keyof typeof SceneCharacterOrderByRelevanceFieldEnum]
+
+
+  export const SceneReferredCharacterOrderByRelevanceFieldEnum: {
+    sceneId: 'sceneId',
+    characterId: 'characterId'
+  };
+
+  export type SceneReferredCharacterOrderByRelevanceFieldEnum = (typeof SceneReferredCharacterOrderByRelevanceFieldEnum)[keyof typeof SceneReferredCharacterOrderByRelevanceFieldEnum]
 
 
   /**
@@ -20699,6 +28374,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Perspective'
+   */
+  export type EnumPerspectiveFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Perspective'>
+    
+
+
+  /**
+   * Reference to a field of type 'ParagraphState'
+   */
+  export type EnumParagraphStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParagraphState'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
    * Reference to a field of type 'ParagraphCommentType'
    */
   export type EnumParagraphCommentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParagraphCommentType'>
@@ -20716,6 +28419,13 @@ export namespace Prisma {
    * Reference to a field of type 'PublishingStatus'
    */
   export type EnumPublishingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PublishingStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'PlotPointState'
+   */
+  export type EnumPlotPointStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlotPointState'>
     
 
 
@@ -21029,20 +28739,28 @@ export namespace Prisma {
     chapters?: IntNullableFilter<"Story"> | number | null
     firstChapterReleasedAt?: DateTimeNullableFilter<"Story"> | Date | string | null
     lastChapterReleasedAt?: DateTimeNullableFilter<"Story"> | Date | string | null
-    coverArtAsset?: StringFilter<"Story"> | string
+    coverArtFileId?: StringNullableFilter<"Story"> | string | null
     coverColor?: StringFilter<"Story"> | string
     coverTextColor?: StringFilter<"Story"> | string
     coverFontFamily?: StringFilter<"Story"> | string
+    defaultPerspective?: EnumPerspectiveNullableFilter<"Story"> | $Enums.Perspective | null
+    defaultProtagonistId?: StringNullableFilter<"Story"> | string | null
     createdAt?: DateTimeFilter<"Story"> | Date | string
     updatedAt?: DateTimeFilter<"Story"> | Date | string
     sortOrder?: IntFilter<"Story"> | number
     pages?: IntNullableFilter<"Story"> | number | null
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     bookShelfStories?: BookShelfStoryListRelationFilter
+    coverArtFile?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    defaultProtagonist?: XOR<CharacterNullableScalarRelationFilter, CharacterWhereInput> | null
     books?: BookListRelationFilter
     files?: FileListRelationFilter
     storyReadStatuses?: StoryReadStatusListRelationFilter
     storyTags?: StoryTagListRelationFilter
+    characters?: CharacterListRelationFilter
+    locations?: LocationListRelationFilter
+    plotPoints?: PlotPointListRelationFilter
+    items?: ItemListRelationFilter
   }
 
   export type StoryOrderByWithRelationInput = {
@@ -21059,20 +28777,28 @@ export namespace Prisma {
     chapters?: SortOrderInput | SortOrder
     firstChapterReleasedAt?: SortOrderInput | SortOrder
     lastChapterReleasedAt?: SortOrderInput | SortOrder
-    coverArtAsset?: SortOrder
+    coverArtFileId?: SortOrderInput | SortOrder
     coverColor?: SortOrder
     coverTextColor?: SortOrder
     coverFontFamily?: SortOrder
+    defaultPerspective?: SortOrderInput | SortOrder
+    defaultProtagonistId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     sortOrder?: SortOrder
     pages?: SortOrderInput | SortOrder
     owner?: UserOrderByWithRelationInput
     bookShelfStories?: BookShelfStoryOrderByRelationAggregateInput
+    coverArtFile?: FileOrderByWithRelationInput
+    defaultProtagonist?: CharacterOrderByWithRelationInput
     books?: BookOrderByRelationAggregateInput
     files?: FileOrderByRelationAggregateInput
     storyReadStatuses?: StoryReadStatusOrderByRelationAggregateInput
     storyTags?: StoryTagOrderByRelationAggregateInput
+    characters?: CharacterOrderByRelationAggregateInput
+    locations?: LocationOrderByRelationAggregateInput
+    plotPoints?: PlotPointOrderByRelationAggregateInput
+    items?: ItemOrderByRelationAggregateInput
     _relevance?: StoryOrderByRelevanceInput
   }
 
@@ -21093,20 +28819,28 @@ export namespace Prisma {
     chapters?: IntNullableFilter<"Story"> | number | null
     firstChapterReleasedAt?: DateTimeNullableFilter<"Story"> | Date | string | null
     lastChapterReleasedAt?: DateTimeNullableFilter<"Story"> | Date | string | null
-    coverArtAsset?: StringFilter<"Story"> | string
+    coverArtFileId?: StringNullableFilter<"Story"> | string | null
     coverColor?: StringFilter<"Story"> | string
     coverTextColor?: StringFilter<"Story"> | string
     coverFontFamily?: StringFilter<"Story"> | string
+    defaultPerspective?: EnumPerspectiveNullableFilter<"Story"> | $Enums.Perspective | null
+    defaultProtagonistId?: StringNullableFilter<"Story"> | string | null
     createdAt?: DateTimeFilter<"Story"> | Date | string
     updatedAt?: DateTimeFilter<"Story"> | Date | string
     sortOrder?: IntFilter<"Story"> | number
     pages?: IntNullableFilter<"Story"> | number | null
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     bookShelfStories?: BookShelfStoryListRelationFilter
+    coverArtFile?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    defaultProtagonist?: XOR<CharacterNullableScalarRelationFilter, CharacterWhereInput> | null
     books?: BookListRelationFilter
     files?: FileListRelationFilter
     storyReadStatuses?: StoryReadStatusListRelationFilter
     storyTags?: StoryTagListRelationFilter
+    characters?: CharacterListRelationFilter
+    locations?: LocationListRelationFilter
+    plotPoints?: PlotPointListRelationFilter
+    items?: ItemListRelationFilter
   }, "id" | "royalRoadId">
 
   export type StoryOrderByWithAggregationInput = {
@@ -21123,10 +28857,12 @@ export namespace Prisma {
     chapters?: SortOrderInput | SortOrder
     firstChapterReleasedAt?: SortOrderInput | SortOrder
     lastChapterReleasedAt?: SortOrderInput | SortOrder
-    coverArtAsset?: SortOrder
+    coverArtFileId?: SortOrderInput | SortOrder
     coverColor?: SortOrder
     coverTextColor?: SortOrder
     coverFontFamily?: SortOrder
+    defaultPerspective?: SortOrderInput | SortOrder
+    defaultProtagonistId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     sortOrder?: SortOrder
@@ -21155,10 +28891,12 @@ export namespace Prisma {
     chapters?: IntNullableWithAggregatesFilter<"Story"> | number | null
     firstChapterReleasedAt?: DateTimeNullableWithAggregatesFilter<"Story"> | Date | string | null
     lastChapterReleasedAt?: DateTimeNullableWithAggregatesFilter<"Story"> | Date | string | null
-    coverArtAsset?: StringWithAggregatesFilter<"Story"> | string
+    coverArtFileId?: StringNullableWithAggregatesFilter<"Story"> | string | null
     coverColor?: StringWithAggregatesFilter<"Story"> | string
     coverTextColor?: StringWithAggregatesFilter<"Story"> | string
     coverFontFamily?: StringWithAggregatesFilter<"Story"> | string
+    defaultPerspective?: EnumPerspectiveNullableWithAggregatesFilter<"Story"> | $Enums.Perspective | null
+    defaultProtagonistId?: StringNullableWithAggregatesFilter<"Story"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Story"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Story"> | Date | string
     sortOrder?: IntWithAggregatesFilter<"Story"> | number
@@ -21356,30 +29094,36 @@ export namespace Prisma {
     NOT?: BookWhereInput | BookWhereInput[]
     id?: StringFilter<"Book"> | string
     name?: StringFilter<"Book"> | string
+    summary?: StringNullableFilter<"Book"> | string | null
     storyId?: StringFilter<"Book"> | string
-    coverArtAsset?: StringFilter<"Book"> | string
-    spineArtAsset?: StringFilter<"Book"> | string
+    coverArtFileId?: StringNullableFilter<"Book"> | string | null
+    spineArtFileId?: StringNullableFilter<"Book"> | string | null
     pages?: IntNullableFilter<"Book"> | number | null
     sortOrder?: IntFilter<"Book"> | number
     nodeType?: StringFilter<"Book"> | string
     createdAt?: DateTimeFilter<"Book"> | Date | string
     updatedAt?: DateTimeFilter<"Book"> | Date | string
     story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+    coverArtFile?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    spineArtFile?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
     arcs?: ArcListRelationFilter
   }
 
   export type BookOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrderInput | SortOrder
     storyId?: SortOrder
-    coverArtAsset?: SortOrder
-    spineArtAsset?: SortOrder
+    coverArtFileId?: SortOrderInput | SortOrder
+    spineArtFileId?: SortOrderInput | SortOrder
     pages?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     story?: StoryOrderByWithRelationInput
+    coverArtFile?: FileOrderByWithRelationInput
+    spineArtFile?: FileOrderByWithRelationInput
     arcs?: ArcOrderByRelationAggregateInput
     _relevance?: BookOrderByRelevanceInput
   }
@@ -21390,24 +29134,28 @@ export namespace Prisma {
     OR?: BookWhereInput[]
     NOT?: BookWhereInput | BookWhereInput[]
     name?: StringFilter<"Book"> | string
+    summary?: StringNullableFilter<"Book"> | string | null
     storyId?: StringFilter<"Book"> | string
-    coverArtAsset?: StringFilter<"Book"> | string
-    spineArtAsset?: StringFilter<"Book"> | string
+    coverArtFileId?: StringNullableFilter<"Book"> | string | null
+    spineArtFileId?: StringNullableFilter<"Book"> | string | null
     pages?: IntNullableFilter<"Book"> | number | null
     sortOrder?: IntFilter<"Book"> | number
     nodeType?: StringFilter<"Book"> | string
     createdAt?: DateTimeFilter<"Book"> | Date | string
     updatedAt?: DateTimeFilter<"Book"> | Date | string
     story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+    coverArtFile?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    spineArtFile?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
     arcs?: ArcListRelationFilter
   }, "id">
 
   export type BookOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrderInput | SortOrder
     storyId?: SortOrder
-    coverArtAsset?: SortOrder
-    spineArtAsset?: SortOrder
+    coverArtFileId?: SortOrderInput | SortOrder
+    spineArtFileId?: SortOrderInput | SortOrder
     pages?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
@@ -21426,9 +29174,10 @@ export namespace Prisma {
     NOT?: BookScalarWhereWithAggregatesInput | BookScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Book"> | string
     name?: StringWithAggregatesFilter<"Book"> | string
+    summary?: StringNullableWithAggregatesFilter<"Book"> | string | null
     storyId?: StringWithAggregatesFilter<"Book"> | string
-    coverArtAsset?: StringWithAggregatesFilter<"Book"> | string
-    spineArtAsset?: StringWithAggregatesFilter<"Book"> | string
+    coverArtFileId?: StringNullableWithAggregatesFilter<"Book"> | string | null
+    spineArtFileId?: StringNullableWithAggregatesFilter<"Book"> | string | null
     pages?: IntNullableWithAggregatesFilter<"Book"> | number | null
     sortOrder?: IntWithAggregatesFilter<"Book"> | number
     nodeType?: StringWithAggregatesFilter<"Book"> | string
@@ -21442,6 +29191,7 @@ export namespace Prisma {
     NOT?: ArcWhereInput | ArcWhereInput[]
     id?: StringFilter<"Arc"> | string
     name?: StringFilter<"Arc"> | string
+    summary?: StringNullableFilter<"Arc"> | string | null
     bookId?: StringFilter<"Arc"> | string
     sortOrder?: IntFilter<"Arc"> | number
     nodeType?: StringFilter<"Arc"> | string
@@ -21454,6 +29204,7 @@ export namespace Prisma {
   export type ArcOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrderInput | SortOrder
     bookId?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
@@ -21470,6 +29221,7 @@ export namespace Prisma {
     OR?: ArcWhereInput[]
     NOT?: ArcWhereInput | ArcWhereInput[]
     name?: StringFilter<"Arc"> | string
+    summary?: StringNullableFilter<"Arc"> | string | null
     bookId?: StringFilter<"Arc"> | string
     sortOrder?: IntFilter<"Arc"> | number
     nodeType?: StringFilter<"Arc"> | string
@@ -21482,6 +29234,7 @@ export namespace Prisma {
   export type ArcOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrderInput | SortOrder
     bookId?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
@@ -21500,6 +29253,7 @@ export namespace Prisma {
     NOT?: ArcScalarWhereWithAggregatesInput | ArcScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Arc"> | string
     name?: StringWithAggregatesFilter<"Arc"> | string
+    summary?: StringNullableWithAggregatesFilter<"Arc"> | string | null
     bookId?: StringWithAggregatesFilter<"Arc"> | string
     sortOrder?: IntWithAggregatesFilter<"Arc"> | number
     nodeType?: StringWithAggregatesFilter<"Arc"> | string
@@ -21513,6 +29267,7 @@ export namespace Prisma {
     NOT?: ChapterWhereInput | ChapterWhereInput[]
     id?: StringFilter<"Chapter"> | string
     name?: StringFilter<"Chapter"> | string
+    summary?: StringNullableFilter<"Chapter"> | string | null
     arcId?: StringFilter<"Chapter"> | string
     publishedOn?: DateTimeNullableFilter<"Chapter"> | Date | string | null
     sortOrder?: IntFilter<"Chapter"> | number
@@ -21529,6 +29284,7 @@ export namespace Prisma {
   export type ChapterOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrderInput | SortOrder
     arcId?: SortOrder
     publishedOn?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
@@ -21549,6 +29305,7 @@ export namespace Prisma {
     OR?: ChapterWhereInput[]
     NOT?: ChapterWhereInput | ChapterWhereInput[]
     name?: StringFilter<"Chapter"> | string
+    summary?: StringNullableFilter<"Chapter"> | string | null
     arcId?: StringFilter<"Chapter"> | string
     publishedOn?: DateTimeNullableFilter<"Chapter"> | Date | string | null
     sortOrder?: IntFilter<"Chapter"> | number
@@ -21565,6 +29322,7 @@ export namespace Prisma {
   export type ChapterOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrderInput | SortOrder
     arcId?: SortOrder
     publishedOn?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
@@ -21585,6 +29343,7 @@ export namespace Prisma {
     NOT?: ChapterScalarWhereWithAggregatesInput | ChapterScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Chapter"> | string
     name?: StringWithAggregatesFilter<"Chapter"> | string
+    summary?: StringNullableWithAggregatesFilter<"Chapter"> | string | null
     arcId?: StringWithAggregatesFilter<"Chapter"> | string
     publishedOn?: DateTimeNullableWithAggregatesFilter<"Chapter"> | Date | string | null
     sortOrder?: IntWithAggregatesFilter<"Chapter"> | number
@@ -21600,27 +29359,43 @@ export namespace Prisma {
     NOT?: SceneWhereInput | SceneWhereInput[]
     id?: StringFilter<"Scene"> | string
     name?: StringFilter<"Scene"> | string
+    summary?: StringNullableFilter<"Scene"> | string | null
     body?: StringFilter<"Scene"> | string
     chapterId?: StringFilter<"Scene"> | string
     sortOrder?: IntFilter<"Scene"> | number
     nodeType?: StringFilter<"Scene"> | string
+    perspective?: EnumPerspectiveNullableFilter<"Scene"> | $Enums.Perspective | null
+    protagonistId?: StringNullableFilter<"Scene"> | string | null
+    locationId?: StringNullableFilter<"Scene"> | string | null
     createdAt?: DateTimeFilter<"Scene"> | Date | string
     updatedAt?: DateTimeFilter<"Scene"> | Date | string
     chapter?: XOR<ChapterScalarRelationFilter, ChapterWhereInput>
+    protagonist?: XOR<CharacterNullableScalarRelationFilter, CharacterWhereInput> | null
+    location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
     paragraphs?: ParagraphListRelationFilter
+    participatingCharacters?: SceneCharacterListRelationFilter
+    referredCharacters?: SceneReferredCharacterListRelationFilter
   }
 
   export type SceneOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrderInput | SortOrder
     body?: SortOrder
     chapterId?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
+    perspective?: SortOrderInput | SortOrder
+    protagonistId?: SortOrderInput | SortOrder
+    locationId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     chapter?: ChapterOrderByWithRelationInput
+    protagonist?: CharacterOrderByWithRelationInput
+    location?: LocationOrderByWithRelationInput
     paragraphs?: ParagraphOrderByRelationAggregateInput
+    participatingCharacters?: SceneCharacterOrderByRelationAggregateInput
+    referredCharacters?: SceneReferredCharacterOrderByRelationAggregateInput
     _relevance?: SceneOrderByRelevanceInput
   }
 
@@ -21630,23 +29405,35 @@ export namespace Prisma {
     OR?: SceneWhereInput[]
     NOT?: SceneWhereInput | SceneWhereInput[]
     name?: StringFilter<"Scene"> | string
+    summary?: StringNullableFilter<"Scene"> | string | null
     body?: StringFilter<"Scene"> | string
     chapterId?: StringFilter<"Scene"> | string
     sortOrder?: IntFilter<"Scene"> | number
     nodeType?: StringFilter<"Scene"> | string
+    perspective?: EnumPerspectiveNullableFilter<"Scene"> | $Enums.Perspective | null
+    protagonistId?: StringNullableFilter<"Scene"> | string | null
+    locationId?: StringNullableFilter<"Scene"> | string | null
     createdAt?: DateTimeFilter<"Scene"> | Date | string
     updatedAt?: DateTimeFilter<"Scene"> | Date | string
     chapter?: XOR<ChapterScalarRelationFilter, ChapterWhereInput>
+    protagonist?: XOR<CharacterNullableScalarRelationFilter, CharacterWhereInput> | null
+    location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
     paragraphs?: ParagraphListRelationFilter
+    participatingCharacters?: SceneCharacterListRelationFilter
+    referredCharacters?: SceneReferredCharacterListRelationFilter
   }, "id">
 
   export type SceneOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrderInput | SortOrder
     body?: SortOrder
     chapterId?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
+    perspective?: SortOrderInput | SortOrder
+    protagonistId?: SortOrderInput | SortOrder
+    locationId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: SceneCountOrderByAggregateInput
@@ -21662,10 +29449,14 @@ export namespace Prisma {
     NOT?: SceneScalarWhereWithAggregatesInput | SceneScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Scene"> | string
     name?: StringWithAggregatesFilter<"Scene"> | string
+    summary?: StringNullableWithAggregatesFilter<"Scene"> | string | null
     body?: StringWithAggregatesFilter<"Scene"> | string
     chapterId?: StringWithAggregatesFilter<"Scene"> | string
     sortOrder?: IntWithAggregatesFilter<"Scene"> | number
     nodeType?: StringWithAggregatesFilter<"Scene"> | string
+    perspective?: EnumPerspectiveNullableWithAggregatesFilter<"Scene"> | $Enums.Perspective | null
+    protagonistId?: StringNullableWithAggregatesFilter<"Scene"> | string | null
+    locationId?: StringNullableWithAggregatesFilter<"Scene"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Scene"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Scene"> | Date | string
   }
@@ -21740,6 +29531,11 @@ export namespace Prisma {
     body?: StringFilter<"ParagraphRevision"> | string
     contentSchema?: StringNullableFilter<"ParagraphRevision"> | string | null
     version?: IntFilter<"ParagraphRevision"> | number
+    state?: EnumParagraphStateNullableFilter<"ParagraphRevision"> | $Enums.ParagraphState | null
+    aiCharacters?: IntNullableFilter<"ParagraphRevision"> | number | null
+    humanCharacters?: IntNullableFilter<"ParagraphRevision"> | number | null
+    plotPointActions?: JsonNullableFilter<"ParagraphRevision">
+    inventoryActions?: JsonNullableFilter<"ParagraphRevision">
     createdAt?: DateTimeFilter<"ParagraphRevision"> | Date | string
     paragraph?: XOR<ParagraphScalarRelationFilter, ParagraphWhereInput>
     paragraphComment?: ParagraphCommentListRelationFilter
@@ -21751,6 +29547,11 @@ export namespace Prisma {
     body?: SortOrder
     contentSchema?: SortOrderInput | SortOrder
     version?: SortOrder
+    state?: SortOrderInput | SortOrder
+    aiCharacters?: SortOrderInput | SortOrder
+    humanCharacters?: SortOrderInput | SortOrder
+    plotPointActions?: SortOrderInput | SortOrder
+    inventoryActions?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     paragraph?: ParagraphOrderByWithRelationInput
     paragraphComment?: ParagraphCommentOrderByRelationAggregateInput
@@ -21766,6 +29567,11 @@ export namespace Prisma {
     body?: StringFilter<"ParagraphRevision"> | string
     contentSchema?: StringNullableFilter<"ParagraphRevision"> | string | null
     version?: IntFilter<"ParagraphRevision"> | number
+    state?: EnumParagraphStateNullableFilter<"ParagraphRevision"> | $Enums.ParagraphState | null
+    aiCharacters?: IntNullableFilter<"ParagraphRevision"> | number | null
+    humanCharacters?: IntNullableFilter<"ParagraphRevision"> | number | null
+    plotPointActions?: JsonNullableFilter<"ParagraphRevision">
+    inventoryActions?: JsonNullableFilter<"ParagraphRevision">
     createdAt?: DateTimeFilter<"ParagraphRevision"> | Date | string
     paragraph?: XOR<ParagraphScalarRelationFilter, ParagraphWhereInput>
     paragraphComment?: ParagraphCommentListRelationFilter
@@ -21777,6 +29583,11 @@ export namespace Prisma {
     body?: SortOrder
     contentSchema?: SortOrderInput | SortOrder
     version?: SortOrder
+    state?: SortOrderInput | SortOrder
+    aiCharacters?: SortOrderInput | SortOrder
+    humanCharacters?: SortOrderInput | SortOrder
+    plotPointActions?: SortOrderInput | SortOrder
+    inventoryActions?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: ParagraphRevisionCountOrderByAggregateInput
     _avg?: ParagraphRevisionAvgOrderByAggregateInput
@@ -21794,6 +29605,11 @@ export namespace Prisma {
     body?: StringWithAggregatesFilter<"ParagraphRevision"> | string
     contentSchema?: StringNullableWithAggregatesFilter<"ParagraphRevision"> | string | null
     version?: IntWithAggregatesFilter<"ParagraphRevision"> | number
+    state?: EnumParagraphStateNullableWithAggregatesFilter<"ParagraphRevision"> | $Enums.ParagraphState | null
+    aiCharacters?: IntNullableWithAggregatesFilter<"ParagraphRevision"> | number | null
+    humanCharacters?: IntNullableWithAggregatesFilter<"ParagraphRevision"> | number | null
+    plotPointActions?: JsonNullableWithAggregatesFilter<"ParagraphRevision">
+    inventoryActions?: JsonNullableWithAggregatesFilter<"ParagraphRevision">
     createdAt?: DateTimeWithAggregatesFilter<"ParagraphRevision"> | Date | string
   }
 
@@ -21886,6 +29702,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"File"> | Date | string
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     story?: XOR<StoryNullableScalarRelationFilter, StoryWhereInput> | null
+    storyCoverArt?: StoryListRelationFilter
+    bookCoverArt?: BookListRelationFilter
+    bookSpineArt?: BookListRelationFilter
+    characterPicture?: CharacterListRelationFilter
+    locationPicture?: LocationListRelationFilter
   }
 
   export type FileOrderByWithRelationInput = {
@@ -21903,6 +29724,11 @@ export namespace Prisma {
     updatedAt?: SortOrder
     owner?: UserOrderByWithRelationInput
     story?: StoryOrderByWithRelationInput
+    storyCoverArt?: StoryOrderByRelationAggregateInput
+    bookCoverArt?: BookOrderByRelationAggregateInput
+    bookSpineArt?: BookOrderByRelationAggregateInput
+    characterPicture?: CharacterOrderByRelationAggregateInput
+    locationPicture?: LocationOrderByRelationAggregateInput
     _relevance?: FileOrderByRelevanceInput
   }
 
@@ -21924,6 +29750,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"File"> | Date | string
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     story?: XOR<StoryNullableScalarRelationFilter, StoryWhereInput> | null
+    storyCoverArt?: StoryListRelationFilter
+    bookCoverArt?: BookListRelationFilter
+    bookSpineArt?: BookListRelationFilter
+    characterPicture?: CharacterListRelationFilter
+    locationPicture?: LocationListRelationFilter
   }, "id" | "path">
 
   export type FileOrderByWithAggregationInput = {
@@ -22045,6 +29876,485 @@ export namespace Prisma {
     errorMessage?: StringNullableWithAggregatesFilter<"ChapterPublishing"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ChapterPublishing"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ChapterPublishing"> | Date | string
+  }
+
+  export type CharacterWhereInput = {
+    AND?: CharacterWhereInput | CharacterWhereInput[]
+    OR?: CharacterWhereInput[]
+    NOT?: CharacterWhereInput | CharacterWhereInput[]
+    id?: StringFilter<"Character"> | string
+    storyId?: StringFilter<"Character"> | string
+    pictureFileId?: StringNullableFilter<"Character"> | string | null
+    firstName?: StringFilter<"Character"> | string
+    middleName?: StringNullableFilter<"Character"> | string | null
+    lastName?: StringNullableFilter<"Character"> | string | null
+    nickname?: StringNullableFilter<"Character"> | string | null
+    summary?: StringNullableFilter<"Character"> | string | null
+    background?: StringNullableFilter<"Character"> | string | null
+    personality?: StringNullableFilter<"Character"> | string | null
+    personalityQuirks?: StringNullableFilter<"Character"> | string | null
+    likes?: StringNullableFilter<"Character"> | string | null
+    dislikes?: StringNullableFilter<"Character"> | string | null
+    age?: StringNullableFilter<"Character"> | string | null
+    gender?: StringNullableFilter<"Character"> | string | null
+    sexualOrientation?: StringNullableFilter<"Character"> | string | null
+    height?: IntNullableFilter<"Character"> | number | null
+    hairColor?: StringNullableFilter<"Character"> | string | null
+    eyeColor?: StringNullableFilter<"Character"> | string | null
+    distinguishingFeatures?: StringNullableFilter<"Character"> | string | null
+    writingStyle?: StringNullableFilter<"Character"> | string | null
+    isMainCharacter?: BoolFilter<"Character"> | boolean
+    laterVersionOfId?: StringNullableFilter<"Character"> | string | null
+    significantActions?: JsonNullableFilter<"Character">
+    createdAt?: DateTimeFilter<"Character"> | Date | string
+    updatedAt?: DateTimeFilter<"Character"> | Date | string
+    story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+    pictureFile?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    laterVersionOf?: XOR<CharacterNullableScalarRelationFilter, CharacterWhereInput> | null
+    previousVersion?: CharacterListRelationFilter
+    defaultProtagonistForStory?: StoryListRelationFilter
+    sceneProtagonistIn?: SceneListRelationFilter
+    participatingInScenes?: SceneCharacterListRelationFilter
+    referredInScenes?: SceneReferredCharacterListRelationFilter
+  }
+
+  export type CharacterOrderByWithRelationInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    pictureFileId?: SortOrderInput | SortOrder
+    firstName?: SortOrder
+    middleName?: SortOrderInput | SortOrder
+    lastName?: SortOrderInput | SortOrder
+    nickname?: SortOrderInput | SortOrder
+    summary?: SortOrderInput | SortOrder
+    background?: SortOrderInput | SortOrder
+    personality?: SortOrderInput | SortOrder
+    personalityQuirks?: SortOrderInput | SortOrder
+    likes?: SortOrderInput | SortOrder
+    dislikes?: SortOrderInput | SortOrder
+    age?: SortOrderInput | SortOrder
+    gender?: SortOrderInput | SortOrder
+    sexualOrientation?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
+    hairColor?: SortOrderInput | SortOrder
+    eyeColor?: SortOrderInput | SortOrder
+    distinguishingFeatures?: SortOrderInput | SortOrder
+    writingStyle?: SortOrderInput | SortOrder
+    isMainCharacter?: SortOrder
+    laterVersionOfId?: SortOrderInput | SortOrder
+    significantActions?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    story?: StoryOrderByWithRelationInput
+    pictureFile?: FileOrderByWithRelationInput
+    laterVersionOf?: CharacterOrderByWithRelationInput
+    previousVersion?: CharacterOrderByRelationAggregateInput
+    defaultProtagonistForStory?: StoryOrderByRelationAggregateInput
+    sceneProtagonistIn?: SceneOrderByRelationAggregateInput
+    participatingInScenes?: SceneCharacterOrderByRelationAggregateInput
+    referredInScenes?: SceneReferredCharacterOrderByRelationAggregateInput
+    _relevance?: CharacterOrderByRelevanceInput
+  }
+
+  export type CharacterWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CharacterWhereInput | CharacterWhereInput[]
+    OR?: CharacterWhereInput[]
+    NOT?: CharacterWhereInput | CharacterWhereInput[]
+    storyId?: StringFilter<"Character"> | string
+    pictureFileId?: StringNullableFilter<"Character"> | string | null
+    firstName?: StringFilter<"Character"> | string
+    middleName?: StringNullableFilter<"Character"> | string | null
+    lastName?: StringNullableFilter<"Character"> | string | null
+    nickname?: StringNullableFilter<"Character"> | string | null
+    summary?: StringNullableFilter<"Character"> | string | null
+    background?: StringNullableFilter<"Character"> | string | null
+    personality?: StringNullableFilter<"Character"> | string | null
+    personalityQuirks?: StringNullableFilter<"Character"> | string | null
+    likes?: StringNullableFilter<"Character"> | string | null
+    dislikes?: StringNullableFilter<"Character"> | string | null
+    age?: StringNullableFilter<"Character"> | string | null
+    gender?: StringNullableFilter<"Character"> | string | null
+    sexualOrientation?: StringNullableFilter<"Character"> | string | null
+    height?: IntNullableFilter<"Character"> | number | null
+    hairColor?: StringNullableFilter<"Character"> | string | null
+    eyeColor?: StringNullableFilter<"Character"> | string | null
+    distinguishingFeatures?: StringNullableFilter<"Character"> | string | null
+    writingStyle?: StringNullableFilter<"Character"> | string | null
+    isMainCharacter?: BoolFilter<"Character"> | boolean
+    laterVersionOfId?: StringNullableFilter<"Character"> | string | null
+    significantActions?: JsonNullableFilter<"Character">
+    createdAt?: DateTimeFilter<"Character"> | Date | string
+    updatedAt?: DateTimeFilter<"Character"> | Date | string
+    story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+    pictureFile?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    laterVersionOf?: XOR<CharacterNullableScalarRelationFilter, CharacterWhereInput> | null
+    previousVersion?: CharacterListRelationFilter
+    defaultProtagonistForStory?: StoryListRelationFilter
+    sceneProtagonistIn?: SceneListRelationFilter
+    participatingInScenes?: SceneCharacterListRelationFilter
+    referredInScenes?: SceneReferredCharacterListRelationFilter
+  }, "id">
+
+  export type CharacterOrderByWithAggregationInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    pictureFileId?: SortOrderInput | SortOrder
+    firstName?: SortOrder
+    middleName?: SortOrderInput | SortOrder
+    lastName?: SortOrderInput | SortOrder
+    nickname?: SortOrderInput | SortOrder
+    summary?: SortOrderInput | SortOrder
+    background?: SortOrderInput | SortOrder
+    personality?: SortOrderInput | SortOrder
+    personalityQuirks?: SortOrderInput | SortOrder
+    likes?: SortOrderInput | SortOrder
+    dislikes?: SortOrderInput | SortOrder
+    age?: SortOrderInput | SortOrder
+    gender?: SortOrderInput | SortOrder
+    sexualOrientation?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
+    hairColor?: SortOrderInput | SortOrder
+    eyeColor?: SortOrderInput | SortOrder
+    distinguishingFeatures?: SortOrderInput | SortOrder
+    writingStyle?: SortOrderInput | SortOrder
+    isMainCharacter?: SortOrder
+    laterVersionOfId?: SortOrderInput | SortOrder
+    significantActions?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CharacterCountOrderByAggregateInput
+    _avg?: CharacterAvgOrderByAggregateInput
+    _max?: CharacterMaxOrderByAggregateInput
+    _min?: CharacterMinOrderByAggregateInput
+    _sum?: CharacterSumOrderByAggregateInput
+  }
+
+  export type CharacterScalarWhereWithAggregatesInput = {
+    AND?: CharacterScalarWhereWithAggregatesInput | CharacterScalarWhereWithAggregatesInput[]
+    OR?: CharacterScalarWhereWithAggregatesInput[]
+    NOT?: CharacterScalarWhereWithAggregatesInput | CharacterScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Character"> | string
+    storyId?: StringWithAggregatesFilter<"Character"> | string
+    pictureFileId?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    firstName?: StringWithAggregatesFilter<"Character"> | string
+    middleName?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    lastName?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    nickname?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    summary?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    background?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    personality?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    personalityQuirks?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    likes?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    dislikes?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    age?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    gender?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    sexualOrientation?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    height?: IntNullableWithAggregatesFilter<"Character"> | number | null
+    hairColor?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    eyeColor?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    distinguishingFeatures?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    writingStyle?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    isMainCharacter?: BoolWithAggregatesFilter<"Character"> | boolean
+    laterVersionOfId?: StringNullableWithAggregatesFilter<"Character"> | string | null
+    significantActions?: JsonNullableWithAggregatesFilter<"Character">
+    createdAt?: DateTimeWithAggregatesFilter<"Character"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Character"> | Date | string
+  }
+
+  export type LocationWhereInput = {
+    AND?: LocationWhereInput | LocationWhereInput[]
+    OR?: LocationWhereInput[]
+    NOT?: LocationWhereInput | LocationWhereInput[]
+    id?: StringFilter<"Location"> | string
+    storyId?: StringFilter<"Location"> | string
+    name?: StringFilter<"Location"> | string
+    pictureFileId?: StringNullableFilter<"Location"> | string | null
+    description?: StringNullableFilter<"Location"> | string | null
+    createdAt?: DateTimeFilter<"Location"> | Date | string
+    updatedAt?: DateTimeFilter<"Location"> | Date | string
+    story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+    pictureFile?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    scenes?: SceneListRelationFilter
+  }
+
+  export type LocationOrderByWithRelationInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    name?: SortOrder
+    pictureFileId?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    story?: StoryOrderByWithRelationInput
+    pictureFile?: FileOrderByWithRelationInput
+    scenes?: SceneOrderByRelationAggregateInput
+    _relevance?: LocationOrderByRelevanceInput
+  }
+
+  export type LocationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: LocationWhereInput | LocationWhereInput[]
+    OR?: LocationWhereInput[]
+    NOT?: LocationWhereInput | LocationWhereInput[]
+    storyId?: StringFilter<"Location"> | string
+    name?: StringFilter<"Location"> | string
+    pictureFileId?: StringNullableFilter<"Location"> | string | null
+    description?: StringNullableFilter<"Location"> | string | null
+    createdAt?: DateTimeFilter<"Location"> | Date | string
+    updatedAt?: DateTimeFilter<"Location"> | Date | string
+    story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+    pictureFile?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    scenes?: SceneListRelationFilter
+  }, "id">
+
+  export type LocationOrderByWithAggregationInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    name?: SortOrder
+    pictureFileId?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: LocationCountOrderByAggregateInput
+    _max?: LocationMaxOrderByAggregateInput
+    _min?: LocationMinOrderByAggregateInput
+  }
+
+  export type LocationScalarWhereWithAggregatesInput = {
+    AND?: LocationScalarWhereWithAggregatesInput | LocationScalarWhereWithAggregatesInput[]
+    OR?: LocationScalarWhereWithAggregatesInput[]
+    NOT?: LocationScalarWhereWithAggregatesInput | LocationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Location"> | string
+    storyId?: StringWithAggregatesFilter<"Location"> | string
+    name?: StringWithAggregatesFilter<"Location"> | string
+    pictureFileId?: StringNullableWithAggregatesFilter<"Location"> | string | null
+    description?: StringNullableWithAggregatesFilter<"Location"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Location"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Location"> | Date | string
+  }
+
+  export type PlotPointWhereInput = {
+    AND?: PlotPointWhereInput | PlotPointWhereInput[]
+    OR?: PlotPointWhereInput[]
+    NOT?: PlotPointWhereInput | PlotPointWhereInput[]
+    id?: StringFilter<"PlotPoint"> | string
+    storyId?: StringFilter<"PlotPoint"> | string
+    title?: StringFilter<"PlotPoint"> | string
+    summary?: StringNullableFilter<"PlotPoint"> | string | null
+    state?: EnumPlotPointStateFilter<"PlotPoint"> | $Enums.PlotPointState
+    createdAt?: DateTimeFilter<"PlotPoint"> | Date | string
+    updatedAt?: DateTimeFilter<"PlotPoint"> | Date | string
+    story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+  }
+
+  export type PlotPointOrderByWithRelationInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    title?: SortOrder
+    summary?: SortOrderInput | SortOrder
+    state?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    story?: StoryOrderByWithRelationInput
+    _relevance?: PlotPointOrderByRelevanceInput
+  }
+
+  export type PlotPointWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PlotPointWhereInput | PlotPointWhereInput[]
+    OR?: PlotPointWhereInput[]
+    NOT?: PlotPointWhereInput | PlotPointWhereInput[]
+    storyId?: StringFilter<"PlotPoint"> | string
+    title?: StringFilter<"PlotPoint"> | string
+    summary?: StringNullableFilter<"PlotPoint"> | string | null
+    state?: EnumPlotPointStateFilter<"PlotPoint"> | $Enums.PlotPointState
+    createdAt?: DateTimeFilter<"PlotPoint"> | Date | string
+    updatedAt?: DateTimeFilter<"PlotPoint"> | Date | string
+    story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+  }, "id">
+
+  export type PlotPointOrderByWithAggregationInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    title?: SortOrder
+    summary?: SortOrderInput | SortOrder
+    state?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PlotPointCountOrderByAggregateInput
+    _max?: PlotPointMaxOrderByAggregateInput
+    _min?: PlotPointMinOrderByAggregateInput
+  }
+
+  export type PlotPointScalarWhereWithAggregatesInput = {
+    AND?: PlotPointScalarWhereWithAggregatesInput | PlotPointScalarWhereWithAggregatesInput[]
+    OR?: PlotPointScalarWhereWithAggregatesInput[]
+    NOT?: PlotPointScalarWhereWithAggregatesInput | PlotPointScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PlotPoint"> | string
+    storyId?: StringWithAggregatesFilter<"PlotPoint"> | string
+    title?: StringWithAggregatesFilter<"PlotPoint"> | string
+    summary?: StringNullableWithAggregatesFilter<"PlotPoint"> | string | null
+    state?: EnumPlotPointStateWithAggregatesFilter<"PlotPoint"> | $Enums.PlotPointState
+    createdAt?: DateTimeWithAggregatesFilter<"PlotPoint"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PlotPoint"> | Date | string
+  }
+
+  export type ItemWhereInput = {
+    AND?: ItemWhereInput | ItemWhereInput[]
+    OR?: ItemWhereInput[]
+    NOT?: ItemWhereInput | ItemWhereInput[]
+    id?: StringFilter<"Item"> | string
+    storyId?: StringFilter<"Item"> | string
+    name?: StringFilter<"Item"> | string
+    createdAt?: DateTimeFilter<"Item"> | Date | string
+    updatedAt?: DateTimeFilter<"Item"> | Date | string
+    story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+  }
+
+  export type ItemOrderByWithRelationInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    story?: StoryOrderByWithRelationInput
+    _relevance?: ItemOrderByRelevanceInput
+  }
+
+  export type ItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    storyId_name?: ItemStoryIdNameCompoundUniqueInput
+    AND?: ItemWhereInput | ItemWhereInput[]
+    OR?: ItemWhereInput[]
+    NOT?: ItemWhereInput | ItemWhereInput[]
+    storyId?: StringFilter<"Item"> | string
+    name?: StringFilter<"Item"> | string
+    createdAt?: DateTimeFilter<"Item"> | Date | string
+    updatedAt?: DateTimeFilter<"Item"> | Date | string
+    story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+  }, "id" | "storyId_name">
+
+  export type ItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ItemCountOrderByAggregateInput
+    _max?: ItemMaxOrderByAggregateInput
+    _min?: ItemMinOrderByAggregateInput
+  }
+
+  export type ItemScalarWhereWithAggregatesInput = {
+    AND?: ItemScalarWhereWithAggregatesInput | ItemScalarWhereWithAggregatesInput[]
+    OR?: ItemScalarWhereWithAggregatesInput[]
+    NOT?: ItemScalarWhereWithAggregatesInput | ItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Item"> | string
+    storyId?: StringWithAggregatesFilter<"Item"> | string
+    name?: StringWithAggregatesFilter<"Item"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Item"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Item"> | Date | string
+  }
+
+  export type SceneCharacterWhereInput = {
+    AND?: SceneCharacterWhereInput | SceneCharacterWhereInput[]
+    OR?: SceneCharacterWhereInput[]
+    NOT?: SceneCharacterWhereInput | SceneCharacterWhereInput[]
+    sceneId?: StringFilter<"SceneCharacter"> | string
+    characterId?: StringFilter<"SceneCharacter"> | string
+    assignedAt?: DateTimeFilter<"SceneCharacter"> | Date | string
+    scene?: XOR<SceneScalarRelationFilter, SceneWhereInput>
+    character?: XOR<CharacterScalarRelationFilter, CharacterWhereInput>
+  }
+
+  export type SceneCharacterOrderByWithRelationInput = {
+    sceneId?: SortOrder
+    characterId?: SortOrder
+    assignedAt?: SortOrder
+    scene?: SceneOrderByWithRelationInput
+    character?: CharacterOrderByWithRelationInput
+    _relevance?: SceneCharacterOrderByRelevanceInput
+  }
+
+  export type SceneCharacterWhereUniqueInput = Prisma.AtLeast<{
+    sceneId_characterId?: SceneCharacterSceneIdCharacterIdCompoundUniqueInput
+    AND?: SceneCharacterWhereInput | SceneCharacterWhereInput[]
+    OR?: SceneCharacterWhereInput[]
+    NOT?: SceneCharacterWhereInput | SceneCharacterWhereInput[]
+    sceneId?: StringFilter<"SceneCharacter"> | string
+    characterId?: StringFilter<"SceneCharacter"> | string
+    assignedAt?: DateTimeFilter<"SceneCharacter"> | Date | string
+    scene?: XOR<SceneScalarRelationFilter, SceneWhereInput>
+    character?: XOR<CharacterScalarRelationFilter, CharacterWhereInput>
+  }, "sceneId_characterId">
+
+  export type SceneCharacterOrderByWithAggregationInput = {
+    sceneId?: SortOrder
+    characterId?: SortOrder
+    assignedAt?: SortOrder
+    _count?: SceneCharacterCountOrderByAggregateInput
+    _max?: SceneCharacterMaxOrderByAggregateInput
+    _min?: SceneCharacterMinOrderByAggregateInput
+  }
+
+  export type SceneCharacterScalarWhereWithAggregatesInput = {
+    AND?: SceneCharacterScalarWhereWithAggregatesInput | SceneCharacterScalarWhereWithAggregatesInput[]
+    OR?: SceneCharacterScalarWhereWithAggregatesInput[]
+    NOT?: SceneCharacterScalarWhereWithAggregatesInput | SceneCharacterScalarWhereWithAggregatesInput[]
+    sceneId?: StringWithAggregatesFilter<"SceneCharacter"> | string
+    characterId?: StringWithAggregatesFilter<"SceneCharacter"> | string
+    assignedAt?: DateTimeWithAggregatesFilter<"SceneCharacter"> | Date | string
+  }
+
+  export type SceneReferredCharacterWhereInput = {
+    AND?: SceneReferredCharacterWhereInput | SceneReferredCharacterWhereInput[]
+    OR?: SceneReferredCharacterWhereInput[]
+    NOT?: SceneReferredCharacterWhereInput | SceneReferredCharacterWhereInput[]
+    sceneId?: StringFilter<"SceneReferredCharacter"> | string
+    characterId?: StringFilter<"SceneReferredCharacter"> | string
+    assignedAt?: DateTimeFilter<"SceneReferredCharacter"> | Date | string
+    scene?: XOR<SceneScalarRelationFilter, SceneWhereInput>
+    character?: XOR<CharacterScalarRelationFilter, CharacterWhereInput>
+  }
+
+  export type SceneReferredCharacterOrderByWithRelationInput = {
+    sceneId?: SortOrder
+    characterId?: SortOrder
+    assignedAt?: SortOrder
+    scene?: SceneOrderByWithRelationInput
+    character?: CharacterOrderByWithRelationInput
+    _relevance?: SceneReferredCharacterOrderByRelevanceInput
+  }
+
+  export type SceneReferredCharacterWhereUniqueInput = Prisma.AtLeast<{
+    sceneId_characterId?: SceneReferredCharacterSceneIdCharacterIdCompoundUniqueInput
+    AND?: SceneReferredCharacterWhereInput | SceneReferredCharacterWhereInput[]
+    OR?: SceneReferredCharacterWhereInput[]
+    NOT?: SceneReferredCharacterWhereInput | SceneReferredCharacterWhereInput[]
+    sceneId?: StringFilter<"SceneReferredCharacter"> | string
+    characterId?: StringFilter<"SceneReferredCharacter"> | string
+    assignedAt?: DateTimeFilter<"SceneReferredCharacter"> | Date | string
+    scene?: XOR<SceneScalarRelationFilter, SceneWhereInput>
+    character?: XOR<CharacterScalarRelationFilter, CharacterWhereInput>
+  }, "sceneId_characterId">
+
+  export type SceneReferredCharacterOrderByWithAggregationInput = {
+    sceneId?: SortOrder
+    characterId?: SortOrder
+    assignedAt?: SortOrder
+    _count?: SceneReferredCharacterCountOrderByAggregateInput
+    _max?: SceneReferredCharacterMaxOrderByAggregateInput
+    _min?: SceneReferredCharacterMinOrderByAggregateInput
+  }
+
+  export type SceneReferredCharacterScalarWhereWithAggregatesInput = {
+    AND?: SceneReferredCharacterScalarWhereWithAggregatesInput | SceneReferredCharacterScalarWhereWithAggregatesInput[]
+    OR?: SceneReferredCharacterScalarWhereWithAggregatesInput[]
+    NOT?: SceneReferredCharacterScalarWhereWithAggregatesInput | SceneReferredCharacterScalarWhereWithAggregatesInput[]
+    sceneId?: StringWithAggregatesFilter<"SceneReferredCharacter"> | string
+    characterId?: StringWithAggregatesFilter<"SceneReferredCharacter"> | string
+    assignedAt?: DateTimeWithAggregatesFilter<"SceneReferredCharacter"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -22341,20 +30651,26 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
     pages?: number | null
     owner: UserCreateNestedOneWithoutOwnedStoriesInput
     bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
     books?: BookCreateNestedManyWithoutStoryInput
     files?: FileCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
   }
 
   export type StoryUncheckedCreateInput = {
@@ -22371,10 +30687,12 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
+    coverArtFileId?: string | null
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
@@ -22384,6 +30702,10 @@ export namespace Prisma {
     files?: FileUncheckedCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
   }
 
   export type StoryUpdateInput = {
@@ -22399,20 +30721,26 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
     bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
     books?: BookUpdateManyWithoutStoryNestedInput
     files?: FileUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
   }
 
   export type StoryUncheckedUpdateInput = {
@@ -22429,10 +30757,12 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -22442,6 +30772,10 @@ export namespace Prisma {
     files?: FileUncheckedUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
   }
 
   export type StoryCreateManyInput = {
@@ -22458,10 +30792,12 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
+    coverArtFileId?: string | null
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
@@ -22481,10 +30817,10 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -22505,10 +30841,12 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -22692,23 +31030,25 @@ export namespace Prisma {
   export type BookCreateInput = {
     id?: string
     name?: string
-    coverArtAsset: string
-    spineArtAsset: string
+    summary?: string | null
     pages?: number | null
     sortOrder: number
     nodeType?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     story: StoryCreateNestedOneWithoutBooksInput
+    coverArtFile?: FileCreateNestedOneWithoutBookCoverArtInput
+    spineArtFile?: FileCreateNestedOneWithoutBookSpineArtInput
     arcs?: ArcCreateNestedManyWithoutBookInput
   }
 
   export type BookUncheckedCreateInput = {
     id?: string
     name?: string
+    summary?: string | null
     storyId: string
-    coverArtAsset: string
-    spineArtAsset: string
+    coverArtFileId?: string | null
+    spineArtFileId?: string | null
     pages?: number | null
     sortOrder: number
     nodeType?: string
@@ -22720,23 +31060,25 @@ export namespace Prisma {
   export type BookUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
-    spineArtAsset?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     story?: StoryUpdateOneRequiredWithoutBooksNestedInput
+    coverArtFile?: FileUpdateOneWithoutBookCoverArtNestedInput
+    spineArtFile?: FileUpdateOneWithoutBookSpineArtNestedInput
     arcs?: ArcUpdateManyWithoutBookNestedInput
   }
 
   export type BookUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     storyId?: StringFieldUpdateOperationsInput | string
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
-    spineArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    spineArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
@@ -22748,9 +31090,10 @@ export namespace Prisma {
   export type BookCreateManyInput = {
     id?: string
     name?: string
+    summary?: string | null
     storyId: string
-    coverArtAsset: string
-    spineArtAsset: string
+    coverArtFileId?: string | null
+    spineArtFileId?: string | null
     pages?: number | null
     sortOrder: number
     nodeType?: string
@@ -22761,8 +31104,7 @@ export namespace Prisma {
   export type BookUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
-    spineArtAsset?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
@@ -22773,9 +31115,10 @@ export namespace Prisma {
   export type BookUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     storyId?: StringFieldUpdateOperationsInput | string
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
-    spineArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    spineArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
@@ -22786,6 +31129,7 @@ export namespace Prisma {
   export type ArcCreateInput = {
     id?: string
     name?: string
+    summary?: string | null
     sortOrder: number
     nodeType?: string
     createdAt?: Date | string
@@ -22797,6 +31141,7 @@ export namespace Prisma {
   export type ArcUncheckedCreateInput = {
     id?: string
     name?: string
+    summary?: string | null
     bookId: string
     sortOrder: number
     nodeType?: string
@@ -22808,6 +31153,7 @@ export namespace Prisma {
   export type ArcUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22819,6 +31165,7 @@ export namespace Prisma {
   export type ArcUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     bookId?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
@@ -22830,6 +31177,7 @@ export namespace Prisma {
   export type ArcCreateManyInput = {
     id?: string
     name?: string
+    summary?: string | null
     bookId: string
     sortOrder: number
     nodeType?: string
@@ -22840,6 +31188,7 @@ export namespace Prisma {
   export type ArcUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22849,6 +31198,7 @@ export namespace Prisma {
   export type ArcUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     bookId?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
@@ -22859,6 +31209,7 @@ export namespace Prisma {
   export type ChapterCreateInput = {
     id?: string
     name?: string
+    summary?: string | null
     publishedOn?: Date | string | null
     sortOrder: number
     royalRoadId?: number | null
@@ -22874,6 +31225,7 @@ export namespace Prisma {
   export type ChapterUncheckedCreateInput = {
     id?: string
     name?: string
+    summary?: string | null
     arcId: string
     publishedOn?: Date | string | null
     sortOrder: number
@@ -22889,6 +31241,7 @@ export namespace Prisma {
   export type ChapterUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -22904,6 +31257,7 @@ export namespace Prisma {
   export type ChapterUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     arcId?: StringFieldUpdateOperationsInput | string
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -22919,6 +31273,7 @@ export namespace Prisma {
   export type ChapterCreateManyInput = {
     id?: string
     name?: string
+    summary?: string | null
     arcId: string
     publishedOn?: Date | string | null
     sortOrder: number
@@ -22931,6 +31286,7 @@ export namespace Prisma {
   export type ChapterUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -22942,6 +31298,7 @@ export namespace Prisma {
   export type ChapterUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     arcId?: StringFieldUpdateOperationsInput | string
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -22954,58 +31311,86 @@ export namespace Prisma {
   export type SceneCreateInput = {
     id?: string
     name?: string
+    summary?: string | null
     body: string
     sortOrder: number
     nodeType?: string
+    perspective?: $Enums.Perspective | null
     createdAt?: Date | string
     updatedAt?: Date | string
     chapter: ChapterCreateNestedOneWithoutScenesInput
+    protagonist?: CharacterCreateNestedOneWithoutSceneProtagonistInInput
+    location?: LocationCreateNestedOneWithoutScenesInput
     paragraphs?: ParagraphCreateNestedManyWithoutSceneInput
+    participatingCharacters?: SceneCharacterCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterCreateNestedManyWithoutSceneInput
   }
 
   export type SceneUncheckedCreateInput = {
     id?: string
     name?: string
+    summary?: string | null
     body: string
     chapterId: string
     sortOrder: number
     nodeType?: string
+    perspective?: $Enums.Perspective | null
+    protagonistId?: string | null
+    locationId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paragraphs?: ParagraphUncheckedCreateNestedManyWithoutSceneInput
+    participatingCharacters?: SceneCharacterUncheckedCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterUncheckedCreateNestedManyWithoutSceneInput
   }
 
   export type SceneUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     body?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chapter?: ChapterUpdateOneRequiredWithoutScenesNestedInput
+    protagonist?: CharacterUpdateOneWithoutSceneProtagonistInNestedInput
+    location?: LocationUpdateOneWithoutScenesNestedInput
     paragraphs?: ParagraphUpdateManyWithoutSceneNestedInput
+    participatingCharacters?: SceneCharacterUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUpdateManyWithoutSceneNestedInput
   }
 
   export type SceneUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     body?: StringFieldUpdateOperationsInput | string
     chapterId?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    protagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paragraphs?: ParagraphUncheckedUpdateManyWithoutSceneNestedInput
+    participatingCharacters?: SceneCharacterUncheckedUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUncheckedUpdateManyWithoutSceneNestedInput
   }
 
   export type SceneCreateManyInput = {
     id?: string
     name?: string
+    summary?: string | null
     body: string
     chapterId: string
     sortOrder: number
     nodeType?: string
+    perspective?: $Enums.Perspective | null
+    protagonistId?: string | null
+    locationId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23013,9 +31398,11 @@ export namespace Prisma {
   export type SceneUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     body?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23023,10 +31410,14 @@ export namespace Prisma {
   export type SceneUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     body?: StringFieldUpdateOperationsInput | string
     chapterId?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    protagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23095,6 +31486,11 @@ export namespace Prisma {
     body: string
     contentSchema?: string | null
     version?: number
+    state?: $Enums.ParagraphState | null
+    aiCharacters?: number | null
+    humanCharacters?: number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     paragraph: ParagraphCreateNestedOneWithoutParagraphRevisionsInput
     paragraphComment?: ParagraphCommentCreateNestedManyWithoutParagraphRevisionInput
@@ -23106,6 +31502,11 @@ export namespace Prisma {
     body: string
     contentSchema?: string | null
     version?: number
+    state?: $Enums.ParagraphState | null
+    aiCharacters?: number | null
+    humanCharacters?: number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     paragraphComment?: ParagraphCommentUncheckedCreateNestedManyWithoutParagraphRevisionInput
   }
@@ -23115,6 +31516,11 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     contentSchema?: NullableStringFieldUpdateOperationsInput | string | null
     version?: IntFieldUpdateOperationsInput | number
+    state?: NullableEnumParagraphStateFieldUpdateOperationsInput | $Enums.ParagraphState | null
+    aiCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    humanCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paragraph?: ParagraphUpdateOneRequiredWithoutParagraphRevisionsNestedInput
     paragraphComment?: ParagraphCommentUpdateManyWithoutParagraphRevisionNestedInput
@@ -23126,6 +31532,11 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     contentSchema?: NullableStringFieldUpdateOperationsInput | string | null
     version?: IntFieldUpdateOperationsInput | number
+    state?: NullableEnumParagraphStateFieldUpdateOperationsInput | $Enums.ParagraphState | null
+    aiCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    humanCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paragraphComment?: ParagraphCommentUncheckedUpdateManyWithoutParagraphRevisionNestedInput
   }
@@ -23136,6 +31547,11 @@ export namespace Prisma {
     body: string
     contentSchema?: string | null
     version?: number
+    state?: $Enums.ParagraphState | null
+    aiCharacters?: number | null
+    humanCharacters?: number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -23144,6 +31560,11 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     contentSchema?: NullableStringFieldUpdateOperationsInput | string | null
     version?: IntFieldUpdateOperationsInput | number
+    state?: NullableEnumParagraphStateFieldUpdateOperationsInput | $Enums.ParagraphState | null
+    aiCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    humanCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23153,6 +31574,11 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     contentSchema?: NullableStringFieldUpdateOperationsInput | string | null
     version?: IntFieldUpdateOperationsInput | number
+    state?: NullableEnumParagraphStateFieldUpdateOperationsInput | $Enums.ParagraphState | null
+    aiCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    humanCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23234,6 +31660,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     owner: UserCreateNestedOneWithoutFilesInput
     story?: StoryCreateNestedOneWithoutFilesInput
+    storyCoverArt?: StoryCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationCreateNestedManyWithoutPictureFileInput
   }
 
   export type FileUncheckedCreateInput = {
@@ -23249,6 +31680,11 @@ export namespace Prisma {
     mimeType: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    storyCoverArt?: StoryUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookUncheckedCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterUncheckedCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationUncheckedCreateNestedManyWithoutPictureFileInput
   }
 
   export type FileUpdateInput = {
@@ -23264,6 +31700,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: UserUpdateOneRequiredWithoutFilesNestedInput
     story?: StoryUpdateOneWithoutFilesNestedInput
+    storyCoverArt?: StoryUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUpdateManyWithoutPictureFileNestedInput
   }
 
   export type FileUncheckedUpdateInput = {
@@ -23279,6 +31720,11 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    storyCoverArt?: StoryUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUncheckedUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUncheckedUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUncheckedUpdateManyWithoutPictureFileNestedInput
   }
 
   export type FileCreateManyInput = {
@@ -23412,6 +31858,502 @@ export namespace Prisma {
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CharacterCreateInput = {
+    id?: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutCharactersInput
+    pictureFile?: FileCreateNestedOneWithoutCharacterPictureInput
+    laterVersionOf?: CharacterCreateNestedOneWithoutPreviousVersionInput
+    previousVersion?: CharacterCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterUncheckedCreateInput = {
+    id?: string
+    storyId: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    previousVersion?: CharacterUncheckedCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryUncheckedCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneUncheckedCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterUncheckedCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterUncheckedCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutCharactersNestedInput
+    pictureFile?: FileUpdateOneWithoutCharacterPictureNestedInput
+    laterVersionOf?: CharacterUpdateOneWithoutPreviousVersionNestedInput
+    previousVersion?: CharacterUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousVersion?: CharacterUncheckedUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUncheckedUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUncheckedUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterCreateManyInput = {
+    id?: string
+    storyId: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CharacterUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CharacterUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocationCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutLocationsInput
+    pictureFile?: FileCreateNestedOneWithoutLocationPictureInput
+    scenes?: SceneCreateNestedManyWithoutLocationInput
+  }
+
+  export type LocationUncheckedCreateInput = {
+    id?: string
+    storyId: string
+    name: string
+    pictureFileId?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    scenes?: SceneUncheckedCreateNestedManyWithoutLocationInput
+  }
+
+  export type LocationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutLocationsNestedInput
+    pictureFile?: FileUpdateOneWithoutLocationPictureNestedInput
+    scenes?: SceneUpdateManyWithoutLocationNestedInput
+  }
+
+  export type LocationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    scenes?: SceneUncheckedUpdateManyWithoutLocationNestedInput
+  }
+
+  export type LocationCreateManyInput = {
+    id?: string
+    storyId: string
+    name: string
+    pictureFileId?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LocationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlotPointCreateInput = {
+    id?: string
+    title: string
+    summary?: string | null
+    state?: $Enums.PlotPointState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutPlotPointsInput
+  }
+
+  export type PlotPointUncheckedCreateInput = {
+    id?: string
+    storyId: string
+    title: string
+    summary?: string | null
+    state?: $Enums.PlotPointState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlotPointUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: EnumPlotPointStateFieldUpdateOperationsInput | $Enums.PlotPointState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutPlotPointsNestedInput
+  }
+
+  export type PlotPointUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: EnumPlotPointStateFieldUpdateOperationsInput | $Enums.PlotPointState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlotPointCreateManyInput = {
+    id?: string
+    storyId: string
+    title: string
+    summary?: string | null
+    state?: $Enums.PlotPointState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlotPointUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: EnumPlotPointStateFieldUpdateOperationsInput | $Enums.PlotPointState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlotPointUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: EnumPlotPointStateFieldUpdateOperationsInput | $Enums.PlotPointState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemCreateInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutItemsInput
+  }
+
+  export type ItemUncheckedCreateInput = {
+    id?: string
+    storyId: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutItemsNestedInput
+  }
+
+  export type ItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemCreateManyInput = {
+    id?: string
+    storyId: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneCharacterCreateInput = {
+    assignedAt?: Date | string
+    scene: SceneCreateNestedOneWithoutParticipatingCharactersInput
+    character: CharacterCreateNestedOneWithoutParticipatingInScenesInput
+  }
+
+  export type SceneCharacterUncheckedCreateInput = {
+    sceneId: string
+    characterId: string
+    assignedAt?: Date | string
+  }
+
+  export type SceneCharacterUpdateInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    scene?: SceneUpdateOneRequiredWithoutParticipatingCharactersNestedInput
+    character?: CharacterUpdateOneRequiredWithoutParticipatingInScenesNestedInput
+  }
+
+  export type SceneCharacterUncheckedUpdateInput = {
+    sceneId?: StringFieldUpdateOperationsInput | string
+    characterId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneCharacterCreateManyInput = {
+    sceneId: string
+    characterId: string
+    assignedAt?: Date | string
+  }
+
+  export type SceneCharacterUpdateManyMutationInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneCharacterUncheckedUpdateManyInput = {
+    sceneId?: StringFieldUpdateOperationsInput | string
+    characterId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneReferredCharacterCreateInput = {
+    assignedAt?: Date | string
+    scene: SceneCreateNestedOneWithoutReferredCharactersInput
+    character: CharacterCreateNestedOneWithoutReferredInScenesInput
+  }
+
+  export type SceneReferredCharacterUncheckedCreateInput = {
+    sceneId: string
+    characterId: string
+    assignedAt?: Date | string
+  }
+
+  export type SceneReferredCharacterUpdateInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    scene?: SceneUpdateOneRequiredWithoutReferredCharactersNestedInput
+    character?: CharacterUpdateOneRequiredWithoutReferredInScenesNestedInput
+  }
+
+  export type SceneReferredCharacterUncheckedUpdateInput = {
+    sceneId?: StringFieldUpdateOperationsInput | string
+    characterId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneReferredCharacterCreateManyInput = {
+    sceneId: string
+    characterId: string
+    assignedAt?: Date | string
+  }
+
+  export type SceneReferredCharacterUpdateManyMutationInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneReferredCharacterUncheckedUpdateManyInput = {
+    sceneId?: StringFieldUpdateOperationsInput | string
+    characterId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -23863,6 +32805,23 @@ export namespace Prisma {
     not?: NestedEnumStoryTypeFilter<$PrismaModel> | $Enums.StoryType
   }
 
+  export type EnumPerspectiveNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Perspective | EnumPerspectiveFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Perspective[] | null
+    notIn?: $Enums.Perspective[] | null
+    not?: NestedEnumPerspectiveNullableFilter<$PrismaModel> | $Enums.Perspective | null
+  }
+
+  export type FileNullableScalarRelationFilter = {
+    is?: FileWhereInput | null
+    isNot?: FileWhereInput | null
+  }
+
+  export type CharacterNullableScalarRelationFilter = {
+    is?: CharacterWhereInput | null
+    isNot?: CharacterWhereInput | null
+  }
+
   export type BookListRelationFilter = {
     every?: BookWhereInput
     some?: BookWhereInput
@@ -23875,11 +32834,51 @@ export namespace Prisma {
     none?: StoryTagWhereInput
   }
 
+  export type CharacterListRelationFilter = {
+    every?: CharacterWhereInput
+    some?: CharacterWhereInput
+    none?: CharacterWhereInput
+  }
+
+  export type LocationListRelationFilter = {
+    every?: LocationWhereInput
+    some?: LocationWhereInput
+    none?: LocationWhereInput
+  }
+
+  export type PlotPointListRelationFilter = {
+    every?: PlotPointWhereInput
+    some?: PlotPointWhereInput
+    none?: PlotPointWhereInput
+  }
+
+  export type ItemListRelationFilter = {
+    every?: ItemWhereInput
+    some?: ItemWhereInput
+    none?: ItemWhereInput
+  }
+
   export type BookOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type StoryTagOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CharacterOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type LocationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PlotPointOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23903,10 +32902,12 @@ export namespace Prisma {
     chapters?: SortOrder
     firstChapterReleasedAt?: SortOrder
     lastChapterReleasedAt?: SortOrder
-    coverArtAsset?: SortOrder
+    coverArtFileId?: SortOrder
     coverColor?: SortOrder
     coverTextColor?: SortOrder
     coverFontFamily?: SortOrder
+    defaultPerspective?: SortOrder
+    defaultProtagonistId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     sortOrder?: SortOrder
@@ -23937,10 +32938,12 @@ export namespace Prisma {
     chapters?: SortOrder
     firstChapterReleasedAt?: SortOrder
     lastChapterReleasedAt?: SortOrder
-    coverArtAsset?: SortOrder
+    coverArtFileId?: SortOrder
     coverColor?: SortOrder
     coverTextColor?: SortOrder
     coverFontFamily?: SortOrder
+    defaultPerspective?: SortOrder
+    defaultProtagonistId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     sortOrder?: SortOrder
@@ -23961,10 +32964,12 @@ export namespace Prisma {
     chapters?: SortOrder
     firstChapterReleasedAt?: SortOrder
     lastChapterReleasedAt?: SortOrder
-    coverArtAsset?: SortOrder
+    coverArtFileId?: SortOrder
     coverColor?: SortOrder
     coverTextColor?: SortOrder
     coverFontFamily?: SortOrder
+    defaultPerspective?: SortOrder
+    defaultProtagonistId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     sortOrder?: SortOrder
@@ -24023,6 +33028,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumStoryTypeFilter<$PrismaModel>
     _max?: NestedEnumStoryTypeFilter<$PrismaModel>
+  }
+
+  export type EnumPerspectiveNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Perspective | EnumPerspectiveFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Perspective[] | null
+    notIn?: $Enums.Perspective[] | null
+    not?: NestedEnumPerspectiveNullableWithAggregatesFilter<$PrismaModel> | $Enums.Perspective | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumPerspectiveNullableFilter<$PrismaModel>
+    _max?: NestedEnumPerspectiveNullableFilter<$PrismaModel>
   }
 
   export type TagOrderByRelevanceInput = {
@@ -24160,9 +33175,10 @@ export namespace Prisma {
   export type BookCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     storyId?: SortOrder
-    coverArtAsset?: SortOrder
-    spineArtAsset?: SortOrder
+    coverArtFileId?: SortOrder
+    spineArtFileId?: SortOrder
     pages?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
@@ -24178,9 +33194,10 @@ export namespace Prisma {
   export type BookMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     storyId?: SortOrder
-    coverArtAsset?: SortOrder
-    spineArtAsset?: SortOrder
+    coverArtFileId?: SortOrder
+    spineArtFileId?: SortOrder
     pages?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
@@ -24191,9 +33208,10 @@ export namespace Prisma {
   export type BookMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     storyId?: SortOrder
-    coverArtAsset?: SortOrder
-    spineArtAsset?: SortOrder
+    coverArtFileId?: SortOrder
+    spineArtFileId?: SortOrder
     pages?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
@@ -24230,6 +33248,7 @@ export namespace Prisma {
   export type ArcCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     bookId?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
@@ -24244,6 +33263,7 @@ export namespace Prisma {
   export type ArcMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     bookId?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
@@ -24254,6 +33274,7 @@ export namespace Prisma {
   export type ArcMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     bookId?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
@@ -24299,6 +33320,7 @@ export namespace Prisma {
   export type ChapterCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     arcId?: SortOrder
     publishedOn?: SortOrder
     sortOrder?: SortOrder
@@ -24316,6 +33338,7 @@ export namespace Prisma {
   export type ChapterMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     arcId?: SortOrder
     publishedOn?: SortOrder
     sortOrder?: SortOrder
@@ -24328,6 +33351,7 @@ export namespace Prisma {
   export type ChapterMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     arcId?: SortOrder
     publishedOn?: SortOrder
     sortOrder?: SortOrder
@@ -24347,13 +33371,38 @@ export namespace Prisma {
     isNot?: ChapterWhereInput
   }
 
+  export type LocationNullableScalarRelationFilter = {
+    is?: LocationWhereInput | null
+    isNot?: LocationWhereInput | null
+  }
+
   export type ParagraphListRelationFilter = {
     every?: ParagraphWhereInput
     some?: ParagraphWhereInput
     none?: ParagraphWhereInput
   }
 
+  export type SceneCharacterListRelationFilter = {
+    every?: SceneCharacterWhereInput
+    some?: SceneCharacterWhereInput
+    none?: SceneCharacterWhereInput
+  }
+
+  export type SceneReferredCharacterListRelationFilter = {
+    every?: SceneReferredCharacterWhereInput
+    some?: SceneReferredCharacterWhereInput
+    none?: SceneReferredCharacterWhereInput
+  }
+
   export type ParagraphOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SceneCharacterOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SceneReferredCharacterOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -24366,10 +33415,14 @@ export namespace Prisma {
   export type SceneCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     body?: SortOrder
     chapterId?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
+    perspective?: SortOrder
+    protagonistId?: SortOrder
+    locationId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -24381,10 +33434,14 @@ export namespace Prisma {
   export type SceneMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     body?: SortOrder
     chapterId?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
+    perspective?: SortOrder
+    protagonistId?: SortOrder
+    locationId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -24392,10 +33449,14 @@ export namespace Prisma {
   export type SceneMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    summary?: SortOrder
     body?: SortOrder
     chapterId?: SortOrder
     sortOrder?: SortOrder
     nodeType?: SortOrder
+    perspective?: SortOrder
+    protagonistId?: SortOrder
+    locationId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -24457,6 +33518,36 @@ export namespace Prisma {
     sortOrder?: SortOrder
   }
 
+  export type EnumParagraphStateNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ParagraphState | EnumParagraphStateFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ParagraphState[] | null
+    notIn?: $Enums.ParagraphState[] | null
+    not?: NestedEnumParagraphStateNullableFilter<$PrismaModel> | $Enums.ParagraphState | null
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue
+    lte?: InputJsonValue
+    gt?: InputJsonValue
+    gte?: InputJsonValue
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
   export type ParagraphScalarRelationFilter = {
     is?: ParagraphWhereInput
     isNot?: ParagraphWhereInput
@@ -24474,11 +33565,18 @@ export namespace Prisma {
     body?: SortOrder
     contentSchema?: SortOrder
     version?: SortOrder
+    state?: SortOrder
+    aiCharacters?: SortOrder
+    humanCharacters?: SortOrder
+    plotPointActions?: SortOrder
+    inventoryActions?: SortOrder
     createdAt?: SortOrder
   }
 
   export type ParagraphRevisionAvgOrderByAggregateInput = {
     version?: SortOrder
+    aiCharacters?: SortOrder
+    humanCharacters?: SortOrder
   }
 
   export type ParagraphRevisionMaxOrderByAggregateInput = {
@@ -24487,6 +33585,9 @@ export namespace Prisma {
     body?: SortOrder
     contentSchema?: SortOrder
     version?: SortOrder
+    state?: SortOrder
+    aiCharacters?: SortOrder
+    humanCharacters?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -24496,11 +33597,52 @@ export namespace Prisma {
     body?: SortOrder
     contentSchema?: SortOrder
     version?: SortOrder
+    state?: SortOrder
+    aiCharacters?: SortOrder
+    humanCharacters?: SortOrder
     createdAt?: SortOrder
   }
 
   export type ParagraphRevisionSumOrderByAggregateInput = {
     version?: SortOrder
+    aiCharacters?: SortOrder
+    humanCharacters?: SortOrder
+  }
+
+  export type EnumParagraphStateNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ParagraphState | EnumParagraphStateFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ParagraphState[] | null
+    notIn?: $Enums.ParagraphState[] | null
+    not?: NestedEnumParagraphStateNullableWithAggregatesFilter<$PrismaModel> | $Enums.ParagraphState | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumParagraphStateNullableFilter<$PrismaModel>
+    _max?: NestedEnumParagraphStateNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue
+    lte?: InputJsonValue
+    gt?: InputJsonValue
+    gte?: InputJsonValue
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumParagraphCommentTypeFilter<$PrismaModel = never> = {
@@ -24728,6 +33870,292 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPublishingStatusFilter<$PrismaModel>
     _max?: NestedEnumPublishingStatusFilter<$PrismaModel>
+  }
+
+  export type CharacterOrderByRelevanceInput = {
+    fields: CharacterOrderByRelevanceFieldEnum | CharacterOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type CharacterCountOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    pictureFileId?: SortOrder
+    firstName?: SortOrder
+    middleName?: SortOrder
+    lastName?: SortOrder
+    nickname?: SortOrder
+    summary?: SortOrder
+    background?: SortOrder
+    personality?: SortOrder
+    personalityQuirks?: SortOrder
+    likes?: SortOrder
+    dislikes?: SortOrder
+    age?: SortOrder
+    gender?: SortOrder
+    sexualOrientation?: SortOrder
+    height?: SortOrder
+    hairColor?: SortOrder
+    eyeColor?: SortOrder
+    distinguishingFeatures?: SortOrder
+    writingStyle?: SortOrder
+    isMainCharacter?: SortOrder
+    laterVersionOfId?: SortOrder
+    significantActions?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CharacterAvgOrderByAggregateInput = {
+    height?: SortOrder
+  }
+
+  export type CharacterMaxOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    pictureFileId?: SortOrder
+    firstName?: SortOrder
+    middleName?: SortOrder
+    lastName?: SortOrder
+    nickname?: SortOrder
+    summary?: SortOrder
+    background?: SortOrder
+    personality?: SortOrder
+    personalityQuirks?: SortOrder
+    likes?: SortOrder
+    dislikes?: SortOrder
+    age?: SortOrder
+    gender?: SortOrder
+    sexualOrientation?: SortOrder
+    height?: SortOrder
+    hairColor?: SortOrder
+    eyeColor?: SortOrder
+    distinguishingFeatures?: SortOrder
+    writingStyle?: SortOrder
+    isMainCharacter?: SortOrder
+    laterVersionOfId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CharacterMinOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    pictureFileId?: SortOrder
+    firstName?: SortOrder
+    middleName?: SortOrder
+    lastName?: SortOrder
+    nickname?: SortOrder
+    summary?: SortOrder
+    background?: SortOrder
+    personality?: SortOrder
+    personalityQuirks?: SortOrder
+    likes?: SortOrder
+    dislikes?: SortOrder
+    age?: SortOrder
+    gender?: SortOrder
+    sexualOrientation?: SortOrder
+    height?: SortOrder
+    hairColor?: SortOrder
+    eyeColor?: SortOrder
+    distinguishingFeatures?: SortOrder
+    writingStyle?: SortOrder
+    isMainCharacter?: SortOrder
+    laterVersionOfId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CharacterSumOrderByAggregateInput = {
+    height?: SortOrder
+  }
+
+  export type LocationOrderByRelevanceInput = {
+    fields: LocationOrderByRelevanceFieldEnum | LocationOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type LocationCountOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    name?: SortOrder
+    pictureFileId?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LocationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    name?: SortOrder
+    pictureFileId?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LocationMinOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    name?: SortOrder
+    pictureFileId?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumPlotPointStateFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlotPointState | EnumPlotPointStateFieldRefInput<$PrismaModel>
+    in?: $Enums.PlotPointState[]
+    notIn?: $Enums.PlotPointState[]
+    not?: NestedEnumPlotPointStateFilter<$PrismaModel> | $Enums.PlotPointState
+  }
+
+  export type PlotPointOrderByRelevanceInput = {
+    fields: PlotPointOrderByRelevanceFieldEnum | PlotPointOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type PlotPointCountOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    state?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PlotPointMaxOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    state?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PlotPointMinOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    state?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumPlotPointStateWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlotPointState | EnumPlotPointStateFieldRefInput<$PrismaModel>
+    in?: $Enums.PlotPointState[]
+    notIn?: $Enums.PlotPointState[]
+    not?: NestedEnumPlotPointStateWithAggregatesFilter<$PrismaModel> | $Enums.PlotPointState
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlotPointStateFilter<$PrismaModel>
+    _max?: NestedEnumPlotPointStateFilter<$PrismaModel>
+  }
+
+  export type ItemOrderByRelevanceInput = {
+    fields: ItemOrderByRelevanceFieldEnum | ItemOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type ItemStoryIdNameCompoundUniqueInput = {
+    storyId: string
+    name: string
+  }
+
+  export type ItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    storyId?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CharacterScalarRelationFilter = {
+    is?: CharacterWhereInput
+    isNot?: CharacterWhereInput
+  }
+
+  export type SceneCharacterOrderByRelevanceInput = {
+    fields: SceneCharacterOrderByRelevanceFieldEnum | SceneCharacterOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type SceneCharacterSceneIdCharacterIdCompoundUniqueInput = {
+    sceneId: string
+    characterId: string
+  }
+
+  export type SceneCharacterCountOrderByAggregateInput = {
+    sceneId?: SortOrder
+    characterId?: SortOrder
+    assignedAt?: SortOrder
+  }
+
+  export type SceneCharacterMaxOrderByAggregateInput = {
+    sceneId?: SortOrder
+    characterId?: SortOrder
+    assignedAt?: SortOrder
+  }
+
+  export type SceneCharacterMinOrderByAggregateInput = {
+    sceneId?: SortOrder
+    characterId?: SortOrder
+    assignedAt?: SortOrder
+  }
+
+  export type SceneReferredCharacterOrderByRelevanceInput = {
+    fields: SceneReferredCharacterOrderByRelevanceFieldEnum | SceneReferredCharacterOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type SceneReferredCharacterSceneIdCharacterIdCompoundUniqueInput = {
+    sceneId: string
+    characterId: string
+  }
+
+  export type SceneReferredCharacterCountOrderByAggregateInput = {
+    sceneId?: SortOrder
+    characterId?: SortOrder
+    assignedAt?: SortOrder
+  }
+
+  export type SceneReferredCharacterMaxOrderByAggregateInput = {
+    sceneId?: SortOrder
+    characterId?: SortOrder
+    assignedAt?: SortOrder
+  }
+
+  export type SceneReferredCharacterMinOrderByAggregateInput = {
+    sceneId?: SortOrder
+    characterId?: SortOrder
+    assignedAt?: SortOrder
   }
 
   export type StoryCreateNestedManyWithoutOwnerInput = {
@@ -25121,6 +34549,18 @@ export namespace Prisma {
     connect?: BookShelfStoryWhereUniqueInput | BookShelfStoryWhereUniqueInput[]
   }
 
+  export type FileCreateNestedOneWithoutStoryCoverArtInput = {
+    create?: XOR<FileCreateWithoutStoryCoverArtInput, FileUncheckedCreateWithoutStoryCoverArtInput>
+    connectOrCreate?: FileCreateOrConnectWithoutStoryCoverArtInput
+    connect?: FileWhereUniqueInput
+  }
+
+  export type CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput = {
+    create?: XOR<CharacterCreateWithoutDefaultProtagonistForStoryInput, CharacterUncheckedCreateWithoutDefaultProtagonistForStoryInput>
+    connectOrCreate?: CharacterCreateOrConnectWithoutDefaultProtagonistForStoryInput
+    connect?: CharacterWhereUniqueInput
+  }
+
   export type BookCreateNestedManyWithoutStoryInput = {
     create?: XOR<BookCreateWithoutStoryInput, BookUncheckedCreateWithoutStoryInput> | BookCreateWithoutStoryInput[] | BookUncheckedCreateWithoutStoryInput[]
     connectOrCreate?: BookCreateOrConnectWithoutStoryInput | BookCreateOrConnectWithoutStoryInput[]
@@ -25147,6 +34587,34 @@ export namespace Prisma {
     connectOrCreate?: StoryTagCreateOrConnectWithoutStoryInput | StoryTagCreateOrConnectWithoutStoryInput[]
     createMany?: StoryTagCreateManyStoryInputEnvelope
     connect?: StoryTagWhereUniqueInput | StoryTagWhereUniqueInput[]
+  }
+
+  export type CharacterCreateNestedManyWithoutStoryInput = {
+    create?: XOR<CharacterCreateWithoutStoryInput, CharacterUncheckedCreateWithoutStoryInput> | CharacterCreateWithoutStoryInput[] | CharacterUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutStoryInput | CharacterCreateOrConnectWithoutStoryInput[]
+    createMany?: CharacterCreateManyStoryInputEnvelope
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+  }
+
+  export type LocationCreateNestedManyWithoutStoryInput = {
+    create?: XOR<LocationCreateWithoutStoryInput, LocationUncheckedCreateWithoutStoryInput> | LocationCreateWithoutStoryInput[] | LocationUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: LocationCreateOrConnectWithoutStoryInput | LocationCreateOrConnectWithoutStoryInput[]
+    createMany?: LocationCreateManyStoryInputEnvelope
+    connect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+  }
+
+  export type PlotPointCreateNestedManyWithoutStoryInput = {
+    create?: XOR<PlotPointCreateWithoutStoryInput, PlotPointUncheckedCreateWithoutStoryInput> | PlotPointCreateWithoutStoryInput[] | PlotPointUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: PlotPointCreateOrConnectWithoutStoryInput | PlotPointCreateOrConnectWithoutStoryInput[]
+    createMany?: PlotPointCreateManyStoryInputEnvelope
+    connect?: PlotPointWhereUniqueInput | PlotPointWhereUniqueInput[]
+  }
+
+  export type ItemCreateNestedManyWithoutStoryInput = {
+    create?: XOR<ItemCreateWithoutStoryInput, ItemUncheckedCreateWithoutStoryInput> | ItemCreateWithoutStoryInput[] | ItemUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: ItemCreateOrConnectWithoutStoryInput | ItemCreateOrConnectWithoutStoryInput[]
+    createMany?: ItemCreateManyStoryInputEnvelope
+    connect?: ItemWhereUniqueInput | ItemWhereUniqueInput[]
   }
 
   export type BookShelfStoryUncheckedCreateNestedManyWithoutStoryInput = {
@@ -25184,6 +34652,34 @@ export namespace Prisma {
     connect?: StoryTagWhereUniqueInput | StoryTagWhereUniqueInput[]
   }
 
+  export type CharacterUncheckedCreateNestedManyWithoutStoryInput = {
+    create?: XOR<CharacterCreateWithoutStoryInput, CharacterUncheckedCreateWithoutStoryInput> | CharacterCreateWithoutStoryInput[] | CharacterUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutStoryInput | CharacterCreateOrConnectWithoutStoryInput[]
+    createMany?: CharacterCreateManyStoryInputEnvelope
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+  }
+
+  export type LocationUncheckedCreateNestedManyWithoutStoryInput = {
+    create?: XOR<LocationCreateWithoutStoryInput, LocationUncheckedCreateWithoutStoryInput> | LocationCreateWithoutStoryInput[] | LocationUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: LocationCreateOrConnectWithoutStoryInput | LocationCreateOrConnectWithoutStoryInput[]
+    createMany?: LocationCreateManyStoryInputEnvelope
+    connect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+  }
+
+  export type PlotPointUncheckedCreateNestedManyWithoutStoryInput = {
+    create?: XOR<PlotPointCreateWithoutStoryInput, PlotPointUncheckedCreateWithoutStoryInput> | PlotPointCreateWithoutStoryInput[] | PlotPointUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: PlotPointCreateOrConnectWithoutStoryInput | PlotPointCreateOrConnectWithoutStoryInput[]
+    createMany?: PlotPointCreateManyStoryInputEnvelope
+    connect?: PlotPointWhereUniqueInput | PlotPointWhereUniqueInput[]
+  }
+
+  export type ItemUncheckedCreateNestedManyWithoutStoryInput = {
+    create?: XOR<ItemCreateWithoutStoryInput, ItemUncheckedCreateWithoutStoryInput> | ItemCreateWithoutStoryInput[] | ItemUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: ItemCreateOrConnectWithoutStoryInput | ItemCreateOrConnectWithoutStoryInput[]
+    createMany?: ItemCreateManyStoryInputEnvelope
+    connect?: ItemWhereUniqueInput | ItemWhereUniqueInput[]
+  }
+
   export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -25202,6 +34698,10 @@ export namespace Prisma {
 
   export type EnumStoryTypeFieldUpdateOperationsInput = {
     set?: $Enums.StoryType
+  }
+
+  export type NullableEnumPerspectiveFieldUpdateOperationsInput = {
+    set?: $Enums.Perspective | null
   }
 
   export type UserUpdateOneRequiredWithoutOwnedStoriesNestedInput = {
@@ -25224,6 +34724,26 @@ export namespace Prisma {
     update?: BookShelfStoryUpdateWithWhereUniqueWithoutStoryInput | BookShelfStoryUpdateWithWhereUniqueWithoutStoryInput[]
     updateMany?: BookShelfStoryUpdateManyWithWhereWithoutStoryInput | BookShelfStoryUpdateManyWithWhereWithoutStoryInput[]
     deleteMany?: BookShelfStoryScalarWhereInput | BookShelfStoryScalarWhereInput[]
+  }
+
+  export type FileUpdateOneWithoutStoryCoverArtNestedInput = {
+    create?: XOR<FileCreateWithoutStoryCoverArtInput, FileUncheckedCreateWithoutStoryCoverArtInput>
+    connectOrCreate?: FileCreateOrConnectWithoutStoryCoverArtInput
+    upsert?: FileUpsertWithoutStoryCoverArtInput
+    disconnect?: FileWhereInput | boolean
+    delete?: FileWhereInput | boolean
+    connect?: FileWhereUniqueInput
+    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutStoryCoverArtInput, FileUpdateWithoutStoryCoverArtInput>, FileUncheckedUpdateWithoutStoryCoverArtInput>
+  }
+
+  export type CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput = {
+    create?: XOR<CharacterCreateWithoutDefaultProtagonistForStoryInput, CharacterUncheckedCreateWithoutDefaultProtagonistForStoryInput>
+    connectOrCreate?: CharacterCreateOrConnectWithoutDefaultProtagonistForStoryInput
+    upsert?: CharacterUpsertWithoutDefaultProtagonistForStoryInput
+    disconnect?: CharacterWhereInput | boolean
+    delete?: CharacterWhereInput | boolean
+    connect?: CharacterWhereUniqueInput
+    update?: XOR<XOR<CharacterUpdateToOneWithWhereWithoutDefaultProtagonistForStoryInput, CharacterUpdateWithoutDefaultProtagonistForStoryInput>, CharacterUncheckedUpdateWithoutDefaultProtagonistForStoryInput>
   }
 
   export type BookUpdateManyWithoutStoryNestedInput = {
@@ -25280,6 +34800,62 @@ export namespace Prisma {
     update?: StoryTagUpdateWithWhereUniqueWithoutStoryInput | StoryTagUpdateWithWhereUniqueWithoutStoryInput[]
     updateMany?: StoryTagUpdateManyWithWhereWithoutStoryInput | StoryTagUpdateManyWithWhereWithoutStoryInput[]
     deleteMany?: StoryTagScalarWhereInput | StoryTagScalarWhereInput[]
+  }
+
+  export type CharacterUpdateManyWithoutStoryNestedInput = {
+    create?: XOR<CharacterCreateWithoutStoryInput, CharacterUncheckedCreateWithoutStoryInput> | CharacterCreateWithoutStoryInput[] | CharacterUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutStoryInput | CharacterCreateOrConnectWithoutStoryInput[]
+    upsert?: CharacterUpsertWithWhereUniqueWithoutStoryInput | CharacterUpsertWithWhereUniqueWithoutStoryInput[]
+    createMany?: CharacterCreateManyStoryInputEnvelope
+    set?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    disconnect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    delete?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    update?: CharacterUpdateWithWhereUniqueWithoutStoryInput | CharacterUpdateWithWhereUniqueWithoutStoryInput[]
+    updateMany?: CharacterUpdateManyWithWhereWithoutStoryInput | CharacterUpdateManyWithWhereWithoutStoryInput[]
+    deleteMany?: CharacterScalarWhereInput | CharacterScalarWhereInput[]
+  }
+
+  export type LocationUpdateManyWithoutStoryNestedInput = {
+    create?: XOR<LocationCreateWithoutStoryInput, LocationUncheckedCreateWithoutStoryInput> | LocationCreateWithoutStoryInput[] | LocationUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: LocationCreateOrConnectWithoutStoryInput | LocationCreateOrConnectWithoutStoryInput[]
+    upsert?: LocationUpsertWithWhereUniqueWithoutStoryInput | LocationUpsertWithWhereUniqueWithoutStoryInput[]
+    createMany?: LocationCreateManyStoryInputEnvelope
+    set?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    disconnect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    delete?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    connect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    update?: LocationUpdateWithWhereUniqueWithoutStoryInput | LocationUpdateWithWhereUniqueWithoutStoryInput[]
+    updateMany?: LocationUpdateManyWithWhereWithoutStoryInput | LocationUpdateManyWithWhereWithoutStoryInput[]
+    deleteMany?: LocationScalarWhereInput | LocationScalarWhereInput[]
+  }
+
+  export type PlotPointUpdateManyWithoutStoryNestedInput = {
+    create?: XOR<PlotPointCreateWithoutStoryInput, PlotPointUncheckedCreateWithoutStoryInput> | PlotPointCreateWithoutStoryInput[] | PlotPointUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: PlotPointCreateOrConnectWithoutStoryInput | PlotPointCreateOrConnectWithoutStoryInput[]
+    upsert?: PlotPointUpsertWithWhereUniqueWithoutStoryInput | PlotPointUpsertWithWhereUniqueWithoutStoryInput[]
+    createMany?: PlotPointCreateManyStoryInputEnvelope
+    set?: PlotPointWhereUniqueInput | PlotPointWhereUniqueInput[]
+    disconnect?: PlotPointWhereUniqueInput | PlotPointWhereUniqueInput[]
+    delete?: PlotPointWhereUniqueInput | PlotPointWhereUniqueInput[]
+    connect?: PlotPointWhereUniqueInput | PlotPointWhereUniqueInput[]
+    update?: PlotPointUpdateWithWhereUniqueWithoutStoryInput | PlotPointUpdateWithWhereUniqueWithoutStoryInput[]
+    updateMany?: PlotPointUpdateManyWithWhereWithoutStoryInput | PlotPointUpdateManyWithWhereWithoutStoryInput[]
+    deleteMany?: PlotPointScalarWhereInput | PlotPointScalarWhereInput[]
+  }
+
+  export type ItemUpdateManyWithoutStoryNestedInput = {
+    create?: XOR<ItemCreateWithoutStoryInput, ItemUncheckedCreateWithoutStoryInput> | ItemCreateWithoutStoryInput[] | ItemUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: ItemCreateOrConnectWithoutStoryInput | ItemCreateOrConnectWithoutStoryInput[]
+    upsert?: ItemUpsertWithWhereUniqueWithoutStoryInput | ItemUpsertWithWhereUniqueWithoutStoryInput[]
+    createMany?: ItemCreateManyStoryInputEnvelope
+    set?: ItemWhereUniqueInput | ItemWhereUniqueInput[]
+    disconnect?: ItemWhereUniqueInput | ItemWhereUniqueInput[]
+    delete?: ItemWhereUniqueInput | ItemWhereUniqueInput[]
+    connect?: ItemWhereUniqueInput | ItemWhereUniqueInput[]
+    update?: ItemUpdateWithWhereUniqueWithoutStoryInput | ItemUpdateWithWhereUniqueWithoutStoryInput[]
+    updateMany?: ItemUpdateManyWithWhereWithoutStoryInput | ItemUpdateManyWithWhereWithoutStoryInput[]
+    deleteMany?: ItemScalarWhereInput | ItemScalarWhereInput[]
   }
 
   export type BookShelfStoryUncheckedUpdateManyWithoutStoryNestedInput = {
@@ -25350,6 +34926,62 @@ export namespace Prisma {
     update?: StoryTagUpdateWithWhereUniqueWithoutStoryInput | StoryTagUpdateWithWhereUniqueWithoutStoryInput[]
     updateMany?: StoryTagUpdateManyWithWhereWithoutStoryInput | StoryTagUpdateManyWithWhereWithoutStoryInput[]
     deleteMany?: StoryTagScalarWhereInput | StoryTagScalarWhereInput[]
+  }
+
+  export type CharacterUncheckedUpdateManyWithoutStoryNestedInput = {
+    create?: XOR<CharacterCreateWithoutStoryInput, CharacterUncheckedCreateWithoutStoryInput> | CharacterCreateWithoutStoryInput[] | CharacterUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutStoryInput | CharacterCreateOrConnectWithoutStoryInput[]
+    upsert?: CharacterUpsertWithWhereUniqueWithoutStoryInput | CharacterUpsertWithWhereUniqueWithoutStoryInput[]
+    createMany?: CharacterCreateManyStoryInputEnvelope
+    set?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    disconnect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    delete?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    update?: CharacterUpdateWithWhereUniqueWithoutStoryInput | CharacterUpdateWithWhereUniqueWithoutStoryInput[]
+    updateMany?: CharacterUpdateManyWithWhereWithoutStoryInput | CharacterUpdateManyWithWhereWithoutStoryInput[]
+    deleteMany?: CharacterScalarWhereInput | CharacterScalarWhereInput[]
+  }
+
+  export type LocationUncheckedUpdateManyWithoutStoryNestedInput = {
+    create?: XOR<LocationCreateWithoutStoryInput, LocationUncheckedCreateWithoutStoryInput> | LocationCreateWithoutStoryInput[] | LocationUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: LocationCreateOrConnectWithoutStoryInput | LocationCreateOrConnectWithoutStoryInput[]
+    upsert?: LocationUpsertWithWhereUniqueWithoutStoryInput | LocationUpsertWithWhereUniqueWithoutStoryInput[]
+    createMany?: LocationCreateManyStoryInputEnvelope
+    set?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    disconnect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    delete?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    connect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    update?: LocationUpdateWithWhereUniqueWithoutStoryInput | LocationUpdateWithWhereUniqueWithoutStoryInput[]
+    updateMany?: LocationUpdateManyWithWhereWithoutStoryInput | LocationUpdateManyWithWhereWithoutStoryInput[]
+    deleteMany?: LocationScalarWhereInput | LocationScalarWhereInput[]
+  }
+
+  export type PlotPointUncheckedUpdateManyWithoutStoryNestedInput = {
+    create?: XOR<PlotPointCreateWithoutStoryInput, PlotPointUncheckedCreateWithoutStoryInput> | PlotPointCreateWithoutStoryInput[] | PlotPointUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: PlotPointCreateOrConnectWithoutStoryInput | PlotPointCreateOrConnectWithoutStoryInput[]
+    upsert?: PlotPointUpsertWithWhereUniqueWithoutStoryInput | PlotPointUpsertWithWhereUniqueWithoutStoryInput[]
+    createMany?: PlotPointCreateManyStoryInputEnvelope
+    set?: PlotPointWhereUniqueInput | PlotPointWhereUniqueInput[]
+    disconnect?: PlotPointWhereUniqueInput | PlotPointWhereUniqueInput[]
+    delete?: PlotPointWhereUniqueInput | PlotPointWhereUniqueInput[]
+    connect?: PlotPointWhereUniqueInput | PlotPointWhereUniqueInput[]
+    update?: PlotPointUpdateWithWhereUniqueWithoutStoryInput | PlotPointUpdateWithWhereUniqueWithoutStoryInput[]
+    updateMany?: PlotPointUpdateManyWithWhereWithoutStoryInput | PlotPointUpdateManyWithWhereWithoutStoryInput[]
+    deleteMany?: PlotPointScalarWhereInput | PlotPointScalarWhereInput[]
+  }
+
+  export type ItemUncheckedUpdateManyWithoutStoryNestedInput = {
+    create?: XOR<ItemCreateWithoutStoryInput, ItemUncheckedCreateWithoutStoryInput> | ItemCreateWithoutStoryInput[] | ItemUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: ItemCreateOrConnectWithoutStoryInput | ItemCreateOrConnectWithoutStoryInput[]
+    upsert?: ItemUpsertWithWhereUniqueWithoutStoryInput | ItemUpsertWithWhereUniqueWithoutStoryInput[]
+    createMany?: ItemCreateManyStoryInputEnvelope
+    set?: ItemWhereUniqueInput | ItemWhereUniqueInput[]
+    disconnect?: ItemWhereUniqueInput | ItemWhereUniqueInput[]
+    delete?: ItemWhereUniqueInput | ItemWhereUniqueInput[]
+    connect?: ItemWhereUniqueInput | ItemWhereUniqueInput[]
+    update?: ItemUpdateWithWhereUniqueWithoutStoryInput | ItemUpdateWithWhereUniqueWithoutStoryInput[]
+    updateMany?: ItemUpdateManyWithWhereWithoutStoryInput | ItemUpdateManyWithWhereWithoutStoryInput[]
+    deleteMany?: ItemScalarWhereInput | ItemScalarWhereInput[]
   }
 
   export type StoryTagCreateNestedManyWithoutTagInput = {
@@ -25472,6 +35104,18 @@ export namespace Prisma {
     connect?: StoryWhereUniqueInput
   }
 
+  export type FileCreateNestedOneWithoutBookCoverArtInput = {
+    create?: XOR<FileCreateWithoutBookCoverArtInput, FileUncheckedCreateWithoutBookCoverArtInput>
+    connectOrCreate?: FileCreateOrConnectWithoutBookCoverArtInput
+    connect?: FileWhereUniqueInput
+  }
+
+  export type FileCreateNestedOneWithoutBookSpineArtInput = {
+    create?: XOR<FileCreateWithoutBookSpineArtInput, FileUncheckedCreateWithoutBookSpineArtInput>
+    connectOrCreate?: FileCreateOrConnectWithoutBookSpineArtInput
+    connect?: FileWhereUniqueInput
+  }
+
   export type ArcCreateNestedManyWithoutBookInput = {
     create?: XOR<ArcCreateWithoutBookInput, ArcUncheckedCreateWithoutBookInput> | ArcCreateWithoutBookInput[] | ArcUncheckedCreateWithoutBookInput[]
     connectOrCreate?: ArcCreateOrConnectWithoutBookInput | ArcCreateOrConnectWithoutBookInput[]
@@ -25492,6 +35136,26 @@ export namespace Prisma {
     upsert?: StoryUpsertWithoutBooksInput
     connect?: StoryWhereUniqueInput
     update?: XOR<XOR<StoryUpdateToOneWithWhereWithoutBooksInput, StoryUpdateWithoutBooksInput>, StoryUncheckedUpdateWithoutBooksInput>
+  }
+
+  export type FileUpdateOneWithoutBookCoverArtNestedInput = {
+    create?: XOR<FileCreateWithoutBookCoverArtInput, FileUncheckedCreateWithoutBookCoverArtInput>
+    connectOrCreate?: FileCreateOrConnectWithoutBookCoverArtInput
+    upsert?: FileUpsertWithoutBookCoverArtInput
+    disconnect?: FileWhereInput | boolean
+    delete?: FileWhereInput | boolean
+    connect?: FileWhereUniqueInput
+    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutBookCoverArtInput, FileUpdateWithoutBookCoverArtInput>, FileUncheckedUpdateWithoutBookCoverArtInput>
+  }
+
+  export type FileUpdateOneWithoutBookSpineArtNestedInput = {
+    create?: XOR<FileCreateWithoutBookSpineArtInput, FileUncheckedCreateWithoutBookSpineArtInput>
+    connectOrCreate?: FileCreateOrConnectWithoutBookSpineArtInput
+    upsert?: FileUpsertWithoutBookSpineArtInput
+    disconnect?: FileWhereInput | boolean
+    delete?: FileWhereInput | boolean
+    connect?: FileWhereUniqueInput
+    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutBookSpineArtInput, FileUpdateWithoutBookSpineArtInput>, FileUncheckedUpdateWithoutBookSpineArtInput>
   }
 
   export type ArcUpdateManyWithoutBookNestedInput = {
@@ -25724,11 +35388,37 @@ export namespace Prisma {
     connect?: ChapterWhereUniqueInput
   }
 
+  export type CharacterCreateNestedOneWithoutSceneProtagonistInInput = {
+    create?: XOR<CharacterCreateWithoutSceneProtagonistInInput, CharacterUncheckedCreateWithoutSceneProtagonistInInput>
+    connectOrCreate?: CharacterCreateOrConnectWithoutSceneProtagonistInInput
+    connect?: CharacterWhereUniqueInput
+  }
+
+  export type LocationCreateNestedOneWithoutScenesInput = {
+    create?: XOR<LocationCreateWithoutScenesInput, LocationUncheckedCreateWithoutScenesInput>
+    connectOrCreate?: LocationCreateOrConnectWithoutScenesInput
+    connect?: LocationWhereUniqueInput
+  }
+
   export type ParagraphCreateNestedManyWithoutSceneInput = {
     create?: XOR<ParagraphCreateWithoutSceneInput, ParagraphUncheckedCreateWithoutSceneInput> | ParagraphCreateWithoutSceneInput[] | ParagraphUncheckedCreateWithoutSceneInput[]
     connectOrCreate?: ParagraphCreateOrConnectWithoutSceneInput | ParagraphCreateOrConnectWithoutSceneInput[]
     createMany?: ParagraphCreateManySceneInputEnvelope
     connect?: ParagraphWhereUniqueInput | ParagraphWhereUniqueInput[]
+  }
+
+  export type SceneCharacterCreateNestedManyWithoutSceneInput = {
+    create?: XOR<SceneCharacterCreateWithoutSceneInput, SceneCharacterUncheckedCreateWithoutSceneInput> | SceneCharacterCreateWithoutSceneInput[] | SceneCharacterUncheckedCreateWithoutSceneInput[]
+    connectOrCreate?: SceneCharacterCreateOrConnectWithoutSceneInput | SceneCharacterCreateOrConnectWithoutSceneInput[]
+    createMany?: SceneCharacterCreateManySceneInputEnvelope
+    connect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+  }
+
+  export type SceneReferredCharacterCreateNestedManyWithoutSceneInput = {
+    create?: XOR<SceneReferredCharacterCreateWithoutSceneInput, SceneReferredCharacterUncheckedCreateWithoutSceneInput> | SceneReferredCharacterCreateWithoutSceneInput[] | SceneReferredCharacterUncheckedCreateWithoutSceneInput[]
+    connectOrCreate?: SceneReferredCharacterCreateOrConnectWithoutSceneInput | SceneReferredCharacterCreateOrConnectWithoutSceneInput[]
+    createMany?: SceneReferredCharacterCreateManySceneInputEnvelope
+    connect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
   }
 
   export type ParagraphUncheckedCreateNestedManyWithoutSceneInput = {
@@ -25738,12 +35428,46 @@ export namespace Prisma {
     connect?: ParagraphWhereUniqueInput | ParagraphWhereUniqueInput[]
   }
 
+  export type SceneCharacterUncheckedCreateNestedManyWithoutSceneInput = {
+    create?: XOR<SceneCharacterCreateWithoutSceneInput, SceneCharacterUncheckedCreateWithoutSceneInput> | SceneCharacterCreateWithoutSceneInput[] | SceneCharacterUncheckedCreateWithoutSceneInput[]
+    connectOrCreate?: SceneCharacterCreateOrConnectWithoutSceneInput | SceneCharacterCreateOrConnectWithoutSceneInput[]
+    createMany?: SceneCharacterCreateManySceneInputEnvelope
+    connect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+  }
+
+  export type SceneReferredCharacterUncheckedCreateNestedManyWithoutSceneInput = {
+    create?: XOR<SceneReferredCharacterCreateWithoutSceneInput, SceneReferredCharacterUncheckedCreateWithoutSceneInput> | SceneReferredCharacterCreateWithoutSceneInput[] | SceneReferredCharacterUncheckedCreateWithoutSceneInput[]
+    connectOrCreate?: SceneReferredCharacterCreateOrConnectWithoutSceneInput | SceneReferredCharacterCreateOrConnectWithoutSceneInput[]
+    createMany?: SceneReferredCharacterCreateManySceneInputEnvelope
+    connect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+  }
+
   export type ChapterUpdateOneRequiredWithoutScenesNestedInput = {
     create?: XOR<ChapterCreateWithoutScenesInput, ChapterUncheckedCreateWithoutScenesInput>
     connectOrCreate?: ChapterCreateOrConnectWithoutScenesInput
     upsert?: ChapterUpsertWithoutScenesInput
     connect?: ChapterWhereUniqueInput
     update?: XOR<XOR<ChapterUpdateToOneWithWhereWithoutScenesInput, ChapterUpdateWithoutScenesInput>, ChapterUncheckedUpdateWithoutScenesInput>
+  }
+
+  export type CharacterUpdateOneWithoutSceneProtagonistInNestedInput = {
+    create?: XOR<CharacterCreateWithoutSceneProtagonistInInput, CharacterUncheckedCreateWithoutSceneProtagonistInInput>
+    connectOrCreate?: CharacterCreateOrConnectWithoutSceneProtagonistInInput
+    upsert?: CharacterUpsertWithoutSceneProtagonistInInput
+    disconnect?: CharacterWhereInput | boolean
+    delete?: CharacterWhereInput | boolean
+    connect?: CharacterWhereUniqueInput
+    update?: XOR<XOR<CharacterUpdateToOneWithWhereWithoutSceneProtagonistInInput, CharacterUpdateWithoutSceneProtagonistInInput>, CharacterUncheckedUpdateWithoutSceneProtagonistInInput>
+  }
+
+  export type LocationUpdateOneWithoutScenesNestedInput = {
+    create?: XOR<LocationCreateWithoutScenesInput, LocationUncheckedCreateWithoutScenesInput>
+    connectOrCreate?: LocationCreateOrConnectWithoutScenesInput
+    upsert?: LocationUpsertWithoutScenesInput
+    disconnect?: LocationWhereInput | boolean
+    delete?: LocationWhereInput | boolean
+    connect?: LocationWhereUniqueInput
+    update?: XOR<XOR<LocationUpdateToOneWithWhereWithoutScenesInput, LocationUpdateWithoutScenesInput>, LocationUncheckedUpdateWithoutScenesInput>
   }
 
   export type ParagraphUpdateManyWithoutSceneNestedInput = {
@@ -25760,6 +35484,34 @@ export namespace Prisma {
     deleteMany?: ParagraphScalarWhereInput | ParagraphScalarWhereInput[]
   }
 
+  export type SceneCharacterUpdateManyWithoutSceneNestedInput = {
+    create?: XOR<SceneCharacterCreateWithoutSceneInput, SceneCharacterUncheckedCreateWithoutSceneInput> | SceneCharacterCreateWithoutSceneInput[] | SceneCharacterUncheckedCreateWithoutSceneInput[]
+    connectOrCreate?: SceneCharacterCreateOrConnectWithoutSceneInput | SceneCharacterCreateOrConnectWithoutSceneInput[]
+    upsert?: SceneCharacterUpsertWithWhereUniqueWithoutSceneInput | SceneCharacterUpsertWithWhereUniqueWithoutSceneInput[]
+    createMany?: SceneCharacterCreateManySceneInputEnvelope
+    set?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    disconnect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    delete?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    connect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    update?: SceneCharacterUpdateWithWhereUniqueWithoutSceneInput | SceneCharacterUpdateWithWhereUniqueWithoutSceneInput[]
+    updateMany?: SceneCharacterUpdateManyWithWhereWithoutSceneInput | SceneCharacterUpdateManyWithWhereWithoutSceneInput[]
+    deleteMany?: SceneCharacterScalarWhereInput | SceneCharacterScalarWhereInput[]
+  }
+
+  export type SceneReferredCharacterUpdateManyWithoutSceneNestedInput = {
+    create?: XOR<SceneReferredCharacterCreateWithoutSceneInput, SceneReferredCharacterUncheckedCreateWithoutSceneInput> | SceneReferredCharacterCreateWithoutSceneInput[] | SceneReferredCharacterUncheckedCreateWithoutSceneInput[]
+    connectOrCreate?: SceneReferredCharacterCreateOrConnectWithoutSceneInput | SceneReferredCharacterCreateOrConnectWithoutSceneInput[]
+    upsert?: SceneReferredCharacterUpsertWithWhereUniqueWithoutSceneInput | SceneReferredCharacterUpsertWithWhereUniqueWithoutSceneInput[]
+    createMany?: SceneReferredCharacterCreateManySceneInputEnvelope
+    set?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    disconnect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    delete?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    connect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    update?: SceneReferredCharacterUpdateWithWhereUniqueWithoutSceneInput | SceneReferredCharacterUpdateWithWhereUniqueWithoutSceneInput[]
+    updateMany?: SceneReferredCharacterUpdateManyWithWhereWithoutSceneInput | SceneReferredCharacterUpdateManyWithWhereWithoutSceneInput[]
+    deleteMany?: SceneReferredCharacterScalarWhereInput | SceneReferredCharacterScalarWhereInput[]
+  }
+
   export type ParagraphUncheckedUpdateManyWithoutSceneNestedInput = {
     create?: XOR<ParagraphCreateWithoutSceneInput, ParagraphUncheckedCreateWithoutSceneInput> | ParagraphCreateWithoutSceneInput[] | ParagraphUncheckedCreateWithoutSceneInput[]
     connectOrCreate?: ParagraphCreateOrConnectWithoutSceneInput | ParagraphCreateOrConnectWithoutSceneInput[]
@@ -25772,6 +35524,34 @@ export namespace Prisma {
     update?: ParagraphUpdateWithWhereUniqueWithoutSceneInput | ParagraphUpdateWithWhereUniqueWithoutSceneInput[]
     updateMany?: ParagraphUpdateManyWithWhereWithoutSceneInput | ParagraphUpdateManyWithWhereWithoutSceneInput[]
     deleteMany?: ParagraphScalarWhereInput | ParagraphScalarWhereInput[]
+  }
+
+  export type SceneCharacterUncheckedUpdateManyWithoutSceneNestedInput = {
+    create?: XOR<SceneCharacterCreateWithoutSceneInput, SceneCharacterUncheckedCreateWithoutSceneInput> | SceneCharacterCreateWithoutSceneInput[] | SceneCharacterUncheckedCreateWithoutSceneInput[]
+    connectOrCreate?: SceneCharacterCreateOrConnectWithoutSceneInput | SceneCharacterCreateOrConnectWithoutSceneInput[]
+    upsert?: SceneCharacterUpsertWithWhereUniqueWithoutSceneInput | SceneCharacterUpsertWithWhereUniqueWithoutSceneInput[]
+    createMany?: SceneCharacterCreateManySceneInputEnvelope
+    set?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    disconnect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    delete?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    connect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    update?: SceneCharacterUpdateWithWhereUniqueWithoutSceneInput | SceneCharacterUpdateWithWhereUniqueWithoutSceneInput[]
+    updateMany?: SceneCharacterUpdateManyWithWhereWithoutSceneInput | SceneCharacterUpdateManyWithWhereWithoutSceneInput[]
+    deleteMany?: SceneCharacterScalarWhereInput | SceneCharacterScalarWhereInput[]
+  }
+
+  export type SceneReferredCharacterUncheckedUpdateManyWithoutSceneNestedInput = {
+    create?: XOR<SceneReferredCharacterCreateWithoutSceneInput, SceneReferredCharacterUncheckedCreateWithoutSceneInput> | SceneReferredCharacterCreateWithoutSceneInput[] | SceneReferredCharacterUncheckedCreateWithoutSceneInput[]
+    connectOrCreate?: SceneReferredCharacterCreateOrConnectWithoutSceneInput | SceneReferredCharacterCreateOrConnectWithoutSceneInput[]
+    upsert?: SceneReferredCharacterUpsertWithWhereUniqueWithoutSceneInput | SceneReferredCharacterUpsertWithWhereUniqueWithoutSceneInput[]
+    createMany?: SceneReferredCharacterCreateManySceneInputEnvelope
+    set?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    disconnect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    delete?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    connect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    update?: SceneReferredCharacterUpdateWithWhereUniqueWithoutSceneInput | SceneReferredCharacterUpdateWithWhereUniqueWithoutSceneInput[]
+    updateMany?: SceneReferredCharacterUpdateManyWithWhereWithoutSceneInput | SceneReferredCharacterUpdateManyWithWhereWithoutSceneInput[]
+    deleteMany?: SceneReferredCharacterScalarWhereInput | SceneReferredCharacterScalarWhereInput[]
   }
 
   export type SceneCreateNestedOneWithoutParagraphsInput = {
@@ -25848,6 +35628,10 @@ export namespace Prisma {
     connectOrCreate?: ParagraphCommentCreateOrConnectWithoutParagraphRevisionInput | ParagraphCommentCreateOrConnectWithoutParagraphRevisionInput[]
     createMany?: ParagraphCommentCreateManyParagraphRevisionInputEnvelope
     connect?: ParagraphCommentWhereUniqueInput | ParagraphCommentWhereUniqueInput[]
+  }
+
+  export type NullableEnumParagraphStateFieldUpdateOperationsInput = {
+    set?: $Enums.ParagraphState | null
   }
 
   export type ParagraphUpdateOneRequiredWithoutParagraphRevisionsNestedInput = {
@@ -25930,6 +35714,76 @@ export namespace Prisma {
     connect?: StoryWhereUniqueInput
   }
 
+  export type StoryCreateNestedManyWithoutCoverArtFileInput = {
+    create?: XOR<StoryCreateWithoutCoverArtFileInput, StoryUncheckedCreateWithoutCoverArtFileInput> | StoryCreateWithoutCoverArtFileInput[] | StoryUncheckedCreateWithoutCoverArtFileInput[]
+    connectOrCreate?: StoryCreateOrConnectWithoutCoverArtFileInput | StoryCreateOrConnectWithoutCoverArtFileInput[]
+    createMany?: StoryCreateManyCoverArtFileInputEnvelope
+    connect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+  }
+
+  export type BookCreateNestedManyWithoutCoverArtFileInput = {
+    create?: XOR<BookCreateWithoutCoverArtFileInput, BookUncheckedCreateWithoutCoverArtFileInput> | BookCreateWithoutCoverArtFileInput[] | BookUncheckedCreateWithoutCoverArtFileInput[]
+    connectOrCreate?: BookCreateOrConnectWithoutCoverArtFileInput | BookCreateOrConnectWithoutCoverArtFileInput[]
+    createMany?: BookCreateManyCoverArtFileInputEnvelope
+    connect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+  }
+
+  export type BookCreateNestedManyWithoutSpineArtFileInput = {
+    create?: XOR<BookCreateWithoutSpineArtFileInput, BookUncheckedCreateWithoutSpineArtFileInput> | BookCreateWithoutSpineArtFileInput[] | BookUncheckedCreateWithoutSpineArtFileInput[]
+    connectOrCreate?: BookCreateOrConnectWithoutSpineArtFileInput | BookCreateOrConnectWithoutSpineArtFileInput[]
+    createMany?: BookCreateManySpineArtFileInputEnvelope
+    connect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+  }
+
+  export type CharacterCreateNestedManyWithoutPictureFileInput = {
+    create?: XOR<CharacterCreateWithoutPictureFileInput, CharacterUncheckedCreateWithoutPictureFileInput> | CharacterCreateWithoutPictureFileInput[] | CharacterUncheckedCreateWithoutPictureFileInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutPictureFileInput | CharacterCreateOrConnectWithoutPictureFileInput[]
+    createMany?: CharacterCreateManyPictureFileInputEnvelope
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+  }
+
+  export type LocationCreateNestedManyWithoutPictureFileInput = {
+    create?: XOR<LocationCreateWithoutPictureFileInput, LocationUncheckedCreateWithoutPictureFileInput> | LocationCreateWithoutPictureFileInput[] | LocationUncheckedCreateWithoutPictureFileInput[]
+    connectOrCreate?: LocationCreateOrConnectWithoutPictureFileInput | LocationCreateOrConnectWithoutPictureFileInput[]
+    createMany?: LocationCreateManyPictureFileInputEnvelope
+    connect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+  }
+
+  export type StoryUncheckedCreateNestedManyWithoutCoverArtFileInput = {
+    create?: XOR<StoryCreateWithoutCoverArtFileInput, StoryUncheckedCreateWithoutCoverArtFileInput> | StoryCreateWithoutCoverArtFileInput[] | StoryUncheckedCreateWithoutCoverArtFileInput[]
+    connectOrCreate?: StoryCreateOrConnectWithoutCoverArtFileInput | StoryCreateOrConnectWithoutCoverArtFileInput[]
+    createMany?: StoryCreateManyCoverArtFileInputEnvelope
+    connect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+  }
+
+  export type BookUncheckedCreateNestedManyWithoutCoverArtFileInput = {
+    create?: XOR<BookCreateWithoutCoverArtFileInput, BookUncheckedCreateWithoutCoverArtFileInput> | BookCreateWithoutCoverArtFileInput[] | BookUncheckedCreateWithoutCoverArtFileInput[]
+    connectOrCreate?: BookCreateOrConnectWithoutCoverArtFileInput | BookCreateOrConnectWithoutCoverArtFileInput[]
+    createMany?: BookCreateManyCoverArtFileInputEnvelope
+    connect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+  }
+
+  export type BookUncheckedCreateNestedManyWithoutSpineArtFileInput = {
+    create?: XOR<BookCreateWithoutSpineArtFileInput, BookUncheckedCreateWithoutSpineArtFileInput> | BookCreateWithoutSpineArtFileInput[] | BookUncheckedCreateWithoutSpineArtFileInput[]
+    connectOrCreate?: BookCreateOrConnectWithoutSpineArtFileInput | BookCreateOrConnectWithoutSpineArtFileInput[]
+    createMany?: BookCreateManySpineArtFileInputEnvelope
+    connect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+  }
+
+  export type CharacterUncheckedCreateNestedManyWithoutPictureFileInput = {
+    create?: XOR<CharacterCreateWithoutPictureFileInput, CharacterUncheckedCreateWithoutPictureFileInput> | CharacterCreateWithoutPictureFileInput[] | CharacterUncheckedCreateWithoutPictureFileInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutPictureFileInput | CharacterCreateOrConnectWithoutPictureFileInput[]
+    createMany?: CharacterCreateManyPictureFileInputEnvelope
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+  }
+
+  export type LocationUncheckedCreateNestedManyWithoutPictureFileInput = {
+    create?: XOR<LocationCreateWithoutPictureFileInput, LocationUncheckedCreateWithoutPictureFileInput> | LocationCreateWithoutPictureFileInput[] | LocationUncheckedCreateWithoutPictureFileInput[]
+    connectOrCreate?: LocationCreateOrConnectWithoutPictureFileInput | LocationCreateOrConnectWithoutPictureFileInput[]
+    createMany?: LocationCreateManyPictureFileInputEnvelope
+    connect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+  }
+
   export type UserUpdateOneRequiredWithoutFilesNestedInput = {
     create?: XOR<UserCreateWithoutFilesInput, UserUncheckedCreateWithoutFilesInput>
     connectOrCreate?: UserCreateOrConnectWithoutFilesInput
@@ -25946,6 +35800,146 @@ export namespace Prisma {
     delete?: StoryWhereInput | boolean
     connect?: StoryWhereUniqueInput
     update?: XOR<XOR<StoryUpdateToOneWithWhereWithoutFilesInput, StoryUpdateWithoutFilesInput>, StoryUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type StoryUpdateManyWithoutCoverArtFileNestedInput = {
+    create?: XOR<StoryCreateWithoutCoverArtFileInput, StoryUncheckedCreateWithoutCoverArtFileInput> | StoryCreateWithoutCoverArtFileInput[] | StoryUncheckedCreateWithoutCoverArtFileInput[]
+    connectOrCreate?: StoryCreateOrConnectWithoutCoverArtFileInput | StoryCreateOrConnectWithoutCoverArtFileInput[]
+    upsert?: StoryUpsertWithWhereUniqueWithoutCoverArtFileInput | StoryUpsertWithWhereUniqueWithoutCoverArtFileInput[]
+    createMany?: StoryCreateManyCoverArtFileInputEnvelope
+    set?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    disconnect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    delete?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    connect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    update?: StoryUpdateWithWhereUniqueWithoutCoverArtFileInput | StoryUpdateWithWhereUniqueWithoutCoverArtFileInput[]
+    updateMany?: StoryUpdateManyWithWhereWithoutCoverArtFileInput | StoryUpdateManyWithWhereWithoutCoverArtFileInput[]
+    deleteMany?: StoryScalarWhereInput | StoryScalarWhereInput[]
+  }
+
+  export type BookUpdateManyWithoutCoverArtFileNestedInput = {
+    create?: XOR<BookCreateWithoutCoverArtFileInput, BookUncheckedCreateWithoutCoverArtFileInput> | BookCreateWithoutCoverArtFileInput[] | BookUncheckedCreateWithoutCoverArtFileInput[]
+    connectOrCreate?: BookCreateOrConnectWithoutCoverArtFileInput | BookCreateOrConnectWithoutCoverArtFileInput[]
+    upsert?: BookUpsertWithWhereUniqueWithoutCoverArtFileInput | BookUpsertWithWhereUniqueWithoutCoverArtFileInput[]
+    createMany?: BookCreateManyCoverArtFileInputEnvelope
+    set?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    disconnect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    delete?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    connect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    update?: BookUpdateWithWhereUniqueWithoutCoverArtFileInput | BookUpdateWithWhereUniqueWithoutCoverArtFileInput[]
+    updateMany?: BookUpdateManyWithWhereWithoutCoverArtFileInput | BookUpdateManyWithWhereWithoutCoverArtFileInput[]
+    deleteMany?: BookScalarWhereInput | BookScalarWhereInput[]
+  }
+
+  export type BookUpdateManyWithoutSpineArtFileNestedInput = {
+    create?: XOR<BookCreateWithoutSpineArtFileInput, BookUncheckedCreateWithoutSpineArtFileInput> | BookCreateWithoutSpineArtFileInput[] | BookUncheckedCreateWithoutSpineArtFileInput[]
+    connectOrCreate?: BookCreateOrConnectWithoutSpineArtFileInput | BookCreateOrConnectWithoutSpineArtFileInput[]
+    upsert?: BookUpsertWithWhereUniqueWithoutSpineArtFileInput | BookUpsertWithWhereUniqueWithoutSpineArtFileInput[]
+    createMany?: BookCreateManySpineArtFileInputEnvelope
+    set?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    disconnect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    delete?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    connect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    update?: BookUpdateWithWhereUniqueWithoutSpineArtFileInput | BookUpdateWithWhereUniqueWithoutSpineArtFileInput[]
+    updateMany?: BookUpdateManyWithWhereWithoutSpineArtFileInput | BookUpdateManyWithWhereWithoutSpineArtFileInput[]
+    deleteMany?: BookScalarWhereInput | BookScalarWhereInput[]
+  }
+
+  export type CharacterUpdateManyWithoutPictureFileNestedInput = {
+    create?: XOR<CharacterCreateWithoutPictureFileInput, CharacterUncheckedCreateWithoutPictureFileInput> | CharacterCreateWithoutPictureFileInput[] | CharacterUncheckedCreateWithoutPictureFileInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutPictureFileInput | CharacterCreateOrConnectWithoutPictureFileInput[]
+    upsert?: CharacterUpsertWithWhereUniqueWithoutPictureFileInput | CharacterUpsertWithWhereUniqueWithoutPictureFileInput[]
+    createMany?: CharacterCreateManyPictureFileInputEnvelope
+    set?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    disconnect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    delete?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    update?: CharacterUpdateWithWhereUniqueWithoutPictureFileInput | CharacterUpdateWithWhereUniqueWithoutPictureFileInput[]
+    updateMany?: CharacterUpdateManyWithWhereWithoutPictureFileInput | CharacterUpdateManyWithWhereWithoutPictureFileInput[]
+    deleteMany?: CharacterScalarWhereInput | CharacterScalarWhereInput[]
+  }
+
+  export type LocationUpdateManyWithoutPictureFileNestedInput = {
+    create?: XOR<LocationCreateWithoutPictureFileInput, LocationUncheckedCreateWithoutPictureFileInput> | LocationCreateWithoutPictureFileInput[] | LocationUncheckedCreateWithoutPictureFileInput[]
+    connectOrCreate?: LocationCreateOrConnectWithoutPictureFileInput | LocationCreateOrConnectWithoutPictureFileInput[]
+    upsert?: LocationUpsertWithWhereUniqueWithoutPictureFileInput | LocationUpsertWithWhereUniqueWithoutPictureFileInput[]
+    createMany?: LocationCreateManyPictureFileInputEnvelope
+    set?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    disconnect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    delete?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    connect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    update?: LocationUpdateWithWhereUniqueWithoutPictureFileInput | LocationUpdateWithWhereUniqueWithoutPictureFileInput[]
+    updateMany?: LocationUpdateManyWithWhereWithoutPictureFileInput | LocationUpdateManyWithWhereWithoutPictureFileInput[]
+    deleteMany?: LocationScalarWhereInput | LocationScalarWhereInput[]
+  }
+
+  export type StoryUncheckedUpdateManyWithoutCoverArtFileNestedInput = {
+    create?: XOR<StoryCreateWithoutCoverArtFileInput, StoryUncheckedCreateWithoutCoverArtFileInput> | StoryCreateWithoutCoverArtFileInput[] | StoryUncheckedCreateWithoutCoverArtFileInput[]
+    connectOrCreate?: StoryCreateOrConnectWithoutCoverArtFileInput | StoryCreateOrConnectWithoutCoverArtFileInput[]
+    upsert?: StoryUpsertWithWhereUniqueWithoutCoverArtFileInput | StoryUpsertWithWhereUniqueWithoutCoverArtFileInput[]
+    createMany?: StoryCreateManyCoverArtFileInputEnvelope
+    set?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    disconnect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    delete?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    connect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    update?: StoryUpdateWithWhereUniqueWithoutCoverArtFileInput | StoryUpdateWithWhereUniqueWithoutCoverArtFileInput[]
+    updateMany?: StoryUpdateManyWithWhereWithoutCoverArtFileInput | StoryUpdateManyWithWhereWithoutCoverArtFileInput[]
+    deleteMany?: StoryScalarWhereInput | StoryScalarWhereInput[]
+  }
+
+  export type BookUncheckedUpdateManyWithoutCoverArtFileNestedInput = {
+    create?: XOR<BookCreateWithoutCoverArtFileInput, BookUncheckedCreateWithoutCoverArtFileInput> | BookCreateWithoutCoverArtFileInput[] | BookUncheckedCreateWithoutCoverArtFileInput[]
+    connectOrCreate?: BookCreateOrConnectWithoutCoverArtFileInput | BookCreateOrConnectWithoutCoverArtFileInput[]
+    upsert?: BookUpsertWithWhereUniqueWithoutCoverArtFileInput | BookUpsertWithWhereUniqueWithoutCoverArtFileInput[]
+    createMany?: BookCreateManyCoverArtFileInputEnvelope
+    set?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    disconnect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    delete?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    connect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    update?: BookUpdateWithWhereUniqueWithoutCoverArtFileInput | BookUpdateWithWhereUniqueWithoutCoverArtFileInput[]
+    updateMany?: BookUpdateManyWithWhereWithoutCoverArtFileInput | BookUpdateManyWithWhereWithoutCoverArtFileInput[]
+    deleteMany?: BookScalarWhereInput | BookScalarWhereInput[]
+  }
+
+  export type BookUncheckedUpdateManyWithoutSpineArtFileNestedInput = {
+    create?: XOR<BookCreateWithoutSpineArtFileInput, BookUncheckedCreateWithoutSpineArtFileInput> | BookCreateWithoutSpineArtFileInput[] | BookUncheckedCreateWithoutSpineArtFileInput[]
+    connectOrCreate?: BookCreateOrConnectWithoutSpineArtFileInput | BookCreateOrConnectWithoutSpineArtFileInput[]
+    upsert?: BookUpsertWithWhereUniqueWithoutSpineArtFileInput | BookUpsertWithWhereUniqueWithoutSpineArtFileInput[]
+    createMany?: BookCreateManySpineArtFileInputEnvelope
+    set?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    disconnect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    delete?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    connect?: BookWhereUniqueInput | BookWhereUniqueInput[]
+    update?: BookUpdateWithWhereUniqueWithoutSpineArtFileInput | BookUpdateWithWhereUniqueWithoutSpineArtFileInput[]
+    updateMany?: BookUpdateManyWithWhereWithoutSpineArtFileInput | BookUpdateManyWithWhereWithoutSpineArtFileInput[]
+    deleteMany?: BookScalarWhereInput | BookScalarWhereInput[]
+  }
+
+  export type CharacterUncheckedUpdateManyWithoutPictureFileNestedInput = {
+    create?: XOR<CharacterCreateWithoutPictureFileInput, CharacterUncheckedCreateWithoutPictureFileInput> | CharacterCreateWithoutPictureFileInput[] | CharacterUncheckedCreateWithoutPictureFileInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutPictureFileInput | CharacterCreateOrConnectWithoutPictureFileInput[]
+    upsert?: CharacterUpsertWithWhereUniqueWithoutPictureFileInput | CharacterUpsertWithWhereUniqueWithoutPictureFileInput[]
+    createMany?: CharacterCreateManyPictureFileInputEnvelope
+    set?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    disconnect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    delete?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    update?: CharacterUpdateWithWhereUniqueWithoutPictureFileInput | CharacterUpdateWithWhereUniqueWithoutPictureFileInput[]
+    updateMany?: CharacterUpdateManyWithWhereWithoutPictureFileInput | CharacterUpdateManyWithWhereWithoutPictureFileInput[]
+    deleteMany?: CharacterScalarWhereInput | CharacterScalarWhereInput[]
+  }
+
+  export type LocationUncheckedUpdateManyWithoutPictureFileNestedInput = {
+    create?: XOR<LocationCreateWithoutPictureFileInput, LocationUncheckedCreateWithoutPictureFileInput> | LocationCreateWithoutPictureFileInput[] | LocationUncheckedCreateWithoutPictureFileInput[]
+    connectOrCreate?: LocationCreateOrConnectWithoutPictureFileInput | LocationCreateOrConnectWithoutPictureFileInput[]
+    upsert?: LocationUpsertWithWhereUniqueWithoutPictureFileInput | LocationUpsertWithWhereUniqueWithoutPictureFileInput[]
+    createMany?: LocationCreateManyPictureFileInputEnvelope
+    set?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    disconnect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    delete?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    connect?: LocationWhereUniqueInput | LocationWhereUniqueInput[]
+    update?: LocationUpdateWithWhereUniqueWithoutPictureFileInput | LocationUpdateWithWhereUniqueWithoutPictureFileInput[]
+    updateMany?: LocationUpdateManyWithWhereWithoutPictureFileInput | LocationUpdateManyWithWhereWithoutPictureFileInput[]
+    deleteMany?: LocationScalarWhereInput | LocationScalarWhereInput[]
   }
 
   export type ChapterCreateNestedOneWithoutPublishingStatusInput = {
@@ -25968,6 +35962,422 @@ export namespace Prisma {
     upsert?: ChapterUpsertWithoutPublishingStatusInput
     connect?: ChapterWhereUniqueInput
     update?: XOR<XOR<ChapterUpdateToOneWithWhereWithoutPublishingStatusInput, ChapterUpdateWithoutPublishingStatusInput>, ChapterUncheckedUpdateWithoutPublishingStatusInput>
+  }
+
+  export type StoryCreateNestedOneWithoutCharactersInput = {
+    create?: XOR<StoryCreateWithoutCharactersInput, StoryUncheckedCreateWithoutCharactersInput>
+    connectOrCreate?: StoryCreateOrConnectWithoutCharactersInput
+    connect?: StoryWhereUniqueInput
+  }
+
+  export type FileCreateNestedOneWithoutCharacterPictureInput = {
+    create?: XOR<FileCreateWithoutCharacterPictureInput, FileUncheckedCreateWithoutCharacterPictureInput>
+    connectOrCreate?: FileCreateOrConnectWithoutCharacterPictureInput
+    connect?: FileWhereUniqueInput
+  }
+
+  export type CharacterCreateNestedOneWithoutPreviousVersionInput = {
+    create?: XOR<CharacterCreateWithoutPreviousVersionInput, CharacterUncheckedCreateWithoutPreviousVersionInput>
+    connectOrCreate?: CharacterCreateOrConnectWithoutPreviousVersionInput
+    connect?: CharacterWhereUniqueInput
+  }
+
+  export type CharacterCreateNestedManyWithoutLaterVersionOfInput = {
+    create?: XOR<CharacterCreateWithoutLaterVersionOfInput, CharacterUncheckedCreateWithoutLaterVersionOfInput> | CharacterCreateWithoutLaterVersionOfInput[] | CharacterUncheckedCreateWithoutLaterVersionOfInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutLaterVersionOfInput | CharacterCreateOrConnectWithoutLaterVersionOfInput[]
+    createMany?: CharacterCreateManyLaterVersionOfInputEnvelope
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+  }
+
+  export type StoryCreateNestedManyWithoutDefaultProtagonistInput = {
+    create?: XOR<StoryCreateWithoutDefaultProtagonistInput, StoryUncheckedCreateWithoutDefaultProtagonistInput> | StoryCreateWithoutDefaultProtagonistInput[] | StoryUncheckedCreateWithoutDefaultProtagonistInput[]
+    connectOrCreate?: StoryCreateOrConnectWithoutDefaultProtagonistInput | StoryCreateOrConnectWithoutDefaultProtagonistInput[]
+    createMany?: StoryCreateManyDefaultProtagonistInputEnvelope
+    connect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+  }
+
+  export type SceneCreateNestedManyWithoutProtagonistInput = {
+    create?: XOR<SceneCreateWithoutProtagonistInput, SceneUncheckedCreateWithoutProtagonistInput> | SceneCreateWithoutProtagonistInput[] | SceneUncheckedCreateWithoutProtagonistInput[]
+    connectOrCreate?: SceneCreateOrConnectWithoutProtagonistInput | SceneCreateOrConnectWithoutProtagonistInput[]
+    createMany?: SceneCreateManyProtagonistInputEnvelope
+    connect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+  }
+
+  export type SceneCharacterCreateNestedManyWithoutCharacterInput = {
+    create?: XOR<SceneCharacterCreateWithoutCharacterInput, SceneCharacterUncheckedCreateWithoutCharacterInput> | SceneCharacterCreateWithoutCharacterInput[] | SceneCharacterUncheckedCreateWithoutCharacterInput[]
+    connectOrCreate?: SceneCharacterCreateOrConnectWithoutCharacterInput | SceneCharacterCreateOrConnectWithoutCharacterInput[]
+    createMany?: SceneCharacterCreateManyCharacterInputEnvelope
+    connect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+  }
+
+  export type SceneReferredCharacterCreateNestedManyWithoutCharacterInput = {
+    create?: XOR<SceneReferredCharacterCreateWithoutCharacterInput, SceneReferredCharacterUncheckedCreateWithoutCharacterInput> | SceneReferredCharacterCreateWithoutCharacterInput[] | SceneReferredCharacterUncheckedCreateWithoutCharacterInput[]
+    connectOrCreate?: SceneReferredCharacterCreateOrConnectWithoutCharacterInput | SceneReferredCharacterCreateOrConnectWithoutCharacterInput[]
+    createMany?: SceneReferredCharacterCreateManyCharacterInputEnvelope
+    connect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+  }
+
+  export type CharacterUncheckedCreateNestedManyWithoutLaterVersionOfInput = {
+    create?: XOR<CharacterCreateWithoutLaterVersionOfInput, CharacterUncheckedCreateWithoutLaterVersionOfInput> | CharacterCreateWithoutLaterVersionOfInput[] | CharacterUncheckedCreateWithoutLaterVersionOfInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutLaterVersionOfInput | CharacterCreateOrConnectWithoutLaterVersionOfInput[]
+    createMany?: CharacterCreateManyLaterVersionOfInputEnvelope
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+  }
+
+  export type StoryUncheckedCreateNestedManyWithoutDefaultProtagonistInput = {
+    create?: XOR<StoryCreateWithoutDefaultProtagonistInput, StoryUncheckedCreateWithoutDefaultProtagonistInput> | StoryCreateWithoutDefaultProtagonistInput[] | StoryUncheckedCreateWithoutDefaultProtagonistInput[]
+    connectOrCreate?: StoryCreateOrConnectWithoutDefaultProtagonistInput | StoryCreateOrConnectWithoutDefaultProtagonistInput[]
+    createMany?: StoryCreateManyDefaultProtagonistInputEnvelope
+    connect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+  }
+
+  export type SceneUncheckedCreateNestedManyWithoutProtagonistInput = {
+    create?: XOR<SceneCreateWithoutProtagonistInput, SceneUncheckedCreateWithoutProtagonistInput> | SceneCreateWithoutProtagonistInput[] | SceneUncheckedCreateWithoutProtagonistInput[]
+    connectOrCreate?: SceneCreateOrConnectWithoutProtagonistInput | SceneCreateOrConnectWithoutProtagonistInput[]
+    createMany?: SceneCreateManyProtagonistInputEnvelope
+    connect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+  }
+
+  export type SceneCharacterUncheckedCreateNestedManyWithoutCharacterInput = {
+    create?: XOR<SceneCharacterCreateWithoutCharacterInput, SceneCharacterUncheckedCreateWithoutCharacterInput> | SceneCharacterCreateWithoutCharacterInput[] | SceneCharacterUncheckedCreateWithoutCharacterInput[]
+    connectOrCreate?: SceneCharacterCreateOrConnectWithoutCharacterInput | SceneCharacterCreateOrConnectWithoutCharacterInput[]
+    createMany?: SceneCharacterCreateManyCharacterInputEnvelope
+    connect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+  }
+
+  export type SceneReferredCharacterUncheckedCreateNestedManyWithoutCharacterInput = {
+    create?: XOR<SceneReferredCharacterCreateWithoutCharacterInput, SceneReferredCharacterUncheckedCreateWithoutCharacterInput> | SceneReferredCharacterCreateWithoutCharacterInput[] | SceneReferredCharacterUncheckedCreateWithoutCharacterInput[]
+    connectOrCreate?: SceneReferredCharacterCreateOrConnectWithoutCharacterInput | SceneReferredCharacterCreateOrConnectWithoutCharacterInput[]
+    createMany?: SceneReferredCharacterCreateManyCharacterInputEnvelope
+    connect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+  }
+
+  export type StoryUpdateOneRequiredWithoutCharactersNestedInput = {
+    create?: XOR<StoryCreateWithoutCharactersInput, StoryUncheckedCreateWithoutCharactersInput>
+    connectOrCreate?: StoryCreateOrConnectWithoutCharactersInput
+    upsert?: StoryUpsertWithoutCharactersInput
+    connect?: StoryWhereUniqueInput
+    update?: XOR<XOR<StoryUpdateToOneWithWhereWithoutCharactersInput, StoryUpdateWithoutCharactersInput>, StoryUncheckedUpdateWithoutCharactersInput>
+  }
+
+  export type FileUpdateOneWithoutCharacterPictureNestedInput = {
+    create?: XOR<FileCreateWithoutCharacterPictureInput, FileUncheckedCreateWithoutCharacterPictureInput>
+    connectOrCreate?: FileCreateOrConnectWithoutCharacterPictureInput
+    upsert?: FileUpsertWithoutCharacterPictureInput
+    disconnect?: FileWhereInput | boolean
+    delete?: FileWhereInput | boolean
+    connect?: FileWhereUniqueInput
+    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutCharacterPictureInput, FileUpdateWithoutCharacterPictureInput>, FileUncheckedUpdateWithoutCharacterPictureInput>
+  }
+
+  export type CharacterUpdateOneWithoutPreviousVersionNestedInput = {
+    create?: XOR<CharacterCreateWithoutPreviousVersionInput, CharacterUncheckedCreateWithoutPreviousVersionInput>
+    connectOrCreate?: CharacterCreateOrConnectWithoutPreviousVersionInput
+    upsert?: CharacterUpsertWithoutPreviousVersionInput
+    disconnect?: CharacterWhereInput | boolean
+    delete?: CharacterWhereInput | boolean
+    connect?: CharacterWhereUniqueInput
+    update?: XOR<XOR<CharacterUpdateToOneWithWhereWithoutPreviousVersionInput, CharacterUpdateWithoutPreviousVersionInput>, CharacterUncheckedUpdateWithoutPreviousVersionInput>
+  }
+
+  export type CharacterUpdateManyWithoutLaterVersionOfNestedInput = {
+    create?: XOR<CharacterCreateWithoutLaterVersionOfInput, CharacterUncheckedCreateWithoutLaterVersionOfInput> | CharacterCreateWithoutLaterVersionOfInput[] | CharacterUncheckedCreateWithoutLaterVersionOfInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutLaterVersionOfInput | CharacterCreateOrConnectWithoutLaterVersionOfInput[]
+    upsert?: CharacterUpsertWithWhereUniqueWithoutLaterVersionOfInput | CharacterUpsertWithWhereUniqueWithoutLaterVersionOfInput[]
+    createMany?: CharacterCreateManyLaterVersionOfInputEnvelope
+    set?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    disconnect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    delete?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    update?: CharacterUpdateWithWhereUniqueWithoutLaterVersionOfInput | CharacterUpdateWithWhereUniqueWithoutLaterVersionOfInput[]
+    updateMany?: CharacterUpdateManyWithWhereWithoutLaterVersionOfInput | CharacterUpdateManyWithWhereWithoutLaterVersionOfInput[]
+    deleteMany?: CharacterScalarWhereInput | CharacterScalarWhereInput[]
+  }
+
+  export type StoryUpdateManyWithoutDefaultProtagonistNestedInput = {
+    create?: XOR<StoryCreateWithoutDefaultProtagonistInput, StoryUncheckedCreateWithoutDefaultProtagonistInput> | StoryCreateWithoutDefaultProtagonistInput[] | StoryUncheckedCreateWithoutDefaultProtagonistInput[]
+    connectOrCreate?: StoryCreateOrConnectWithoutDefaultProtagonistInput | StoryCreateOrConnectWithoutDefaultProtagonistInput[]
+    upsert?: StoryUpsertWithWhereUniqueWithoutDefaultProtagonistInput | StoryUpsertWithWhereUniqueWithoutDefaultProtagonistInput[]
+    createMany?: StoryCreateManyDefaultProtagonistInputEnvelope
+    set?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    disconnect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    delete?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    connect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    update?: StoryUpdateWithWhereUniqueWithoutDefaultProtagonistInput | StoryUpdateWithWhereUniqueWithoutDefaultProtagonistInput[]
+    updateMany?: StoryUpdateManyWithWhereWithoutDefaultProtagonistInput | StoryUpdateManyWithWhereWithoutDefaultProtagonistInput[]
+    deleteMany?: StoryScalarWhereInput | StoryScalarWhereInput[]
+  }
+
+  export type SceneUpdateManyWithoutProtagonistNestedInput = {
+    create?: XOR<SceneCreateWithoutProtagonistInput, SceneUncheckedCreateWithoutProtagonistInput> | SceneCreateWithoutProtagonistInput[] | SceneUncheckedCreateWithoutProtagonistInput[]
+    connectOrCreate?: SceneCreateOrConnectWithoutProtagonistInput | SceneCreateOrConnectWithoutProtagonistInput[]
+    upsert?: SceneUpsertWithWhereUniqueWithoutProtagonistInput | SceneUpsertWithWhereUniqueWithoutProtagonistInput[]
+    createMany?: SceneCreateManyProtagonistInputEnvelope
+    set?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    disconnect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    delete?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    connect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    update?: SceneUpdateWithWhereUniqueWithoutProtagonistInput | SceneUpdateWithWhereUniqueWithoutProtagonistInput[]
+    updateMany?: SceneUpdateManyWithWhereWithoutProtagonistInput | SceneUpdateManyWithWhereWithoutProtagonistInput[]
+    deleteMany?: SceneScalarWhereInput | SceneScalarWhereInput[]
+  }
+
+  export type SceneCharacterUpdateManyWithoutCharacterNestedInput = {
+    create?: XOR<SceneCharacterCreateWithoutCharacterInput, SceneCharacterUncheckedCreateWithoutCharacterInput> | SceneCharacterCreateWithoutCharacterInput[] | SceneCharacterUncheckedCreateWithoutCharacterInput[]
+    connectOrCreate?: SceneCharacterCreateOrConnectWithoutCharacterInput | SceneCharacterCreateOrConnectWithoutCharacterInput[]
+    upsert?: SceneCharacterUpsertWithWhereUniqueWithoutCharacterInput | SceneCharacterUpsertWithWhereUniqueWithoutCharacterInput[]
+    createMany?: SceneCharacterCreateManyCharacterInputEnvelope
+    set?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    disconnect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    delete?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    connect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    update?: SceneCharacterUpdateWithWhereUniqueWithoutCharacterInput | SceneCharacterUpdateWithWhereUniqueWithoutCharacterInput[]
+    updateMany?: SceneCharacterUpdateManyWithWhereWithoutCharacterInput | SceneCharacterUpdateManyWithWhereWithoutCharacterInput[]
+    deleteMany?: SceneCharacterScalarWhereInput | SceneCharacterScalarWhereInput[]
+  }
+
+  export type SceneReferredCharacterUpdateManyWithoutCharacterNestedInput = {
+    create?: XOR<SceneReferredCharacterCreateWithoutCharacterInput, SceneReferredCharacterUncheckedCreateWithoutCharacterInput> | SceneReferredCharacterCreateWithoutCharacterInput[] | SceneReferredCharacterUncheckedCreateWithoutCharacterInput[]
+    connectOrCreate?: SceneReferredCharacterCreateOrConnectWithoutCharacterInput | SceneReferredCharacterCreateOrConnectWithoutCharacterInput[]
+    upsert?: SceneReferredCharacterUpsertWithWhereUniqueWithoutCharacterInput | SceneReferredCharacterUpsertWithWhereUniqueWithoutCharacterInput[]
+    createMany?: SceneReferredCharacterCreateManyCharacterInputEnvelope
+    set?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    disconnect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    delete?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    connect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    update?: SceneReferredCharacterUpdateWithWhereUniqueWithoutCharacterInput | SceneReferredCharacterUpdateWithWhereUniqueWithoutCharacterInput[]
+    updateMany?: SceneReferredCharacterUpdateManyWithWhereWithoutCharacterInput | SceneReferredCharacterUpdateManyWithWhereWithoutCharacterInput[]
+    deleteMany?: SceneReferredCharacterScalarWhereInput | SceneReferredCharacterScalarWhereInput[]
+  }
+
+  export type CharacterUncheckedUpdateManyWithoutLaterVersionOfNestedInput = {
+    create?: XOR<CharacterCreateWithoutLaterVersionOfInput, CharacterUncheckedCreateWithoutLaterVersionOfInput> | CharacterCreateWithoutLaterVersionOfInput[] | CharacterUncheckedCreateWithoutLaterVersionOfInput[]
+    connectOrCreate?: CharacterCreateOrConnectWithoutLaterVersionOfInput | CharacterCreateOrConnectWithoutLaterVersionOfInput[]
+    upsert?: CharacterUpsertWithWhereUniqueWithoutLaterVersionOfInput | CharacterUpsertWithWhereUniqueWithoutLaterVersionOfInput[]
+    createMany?: CharacterCreateManyLaterVersionOfInputEnvelope
+    set?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    disconnect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    delete?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    connect?: CharacterWhereUniqueInput | CharacterWhereUniqueInput[]
+    update?: CharacterUpdateWithWhereUniqueWithoutLaterVersionOfInput | CharacterUpdateWithWhereUniqueWithoutLaterVersionOfInput[]
+    updateMany?: CharacterUpdateManyWithWhereWithoutLaterVersionOfInput | CharacterUpdateManyWithWhereWithoutLaterVersionOfInput[]
+    deleteMany?: CharacterScalarWhereInput | CharacterScalarWhereInput[]
+  }
+
+  export type StoryUncheckedUpdateManyWithoutDefaultProtagonistNestedInput = {
+    create?: XOR<StoryCreateWithoutDefaultProtagonistInput, StoryUncheckedCreateWithoutDefaultProtagonistInput> | StoryCreateWithoutDefaultProtagonistInput[] | StoryUncheckedCreateWithoutDefaultProtagonistInput[]
+    connectOrCreate?: StoryCreateOrConnectWithoutDefaultProtagonistInput | StoryCreateOrConnectWithoutDefaultProtagonistInput[]
+    upsert?: StoryUpsertWithWhereUniqueWithoutDefaultProtagonistInput | StoryUpsertWithWhereUniqueWithoutDefaultProtagonistInput[]
+    createMany?: StoryCreateManyDefaultProtagonistInputEnvelope
+    set?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    disconnect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    delete?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    connect?: StoryWhereUniqueInput | StoryWhereUniqueInput[]
+    update?: StoryUpdateWithWhereUniqueWithoutDefaultProtagonistInput | StoryUpdateWithWhereUniqueWithoutDefaultProtagonistInput[]
+    updateMany?: StoryUpdateManyWithWhereWithoutDefaultProtagonistInput | StoryUpdateManyWithWhereWithoutDefaultProtagonistInput[]
+    deleteMany?: StoryScalarWhereInput | StoryScalarWhereInput[]
+  }
+
+  export type SceneUncheckedUpdateManyWithoutProtagonistNestedInput = {
+    create?: XOR<SceneCreateWithoutProtagonistInput, SceneUncheckedCreateWithoutProtagonistInput> | SceneCreateWithoutProtagonistInput[] | SceneUncheckedCreateWithoutProtagonistInput[]
+    connectOrCreate?: SceneCreateOrConnectWithoutProtagonistInput | SceneCreateOrConnectWithoutProtagonistInput[]
+    upsert?: SceneUpsertWithWhereUniqueWithoutProtagonistInput | SceneUpsertWithWhereUniqueWithoutProtagonistInput[]
+    createMany?: SceneCreateManyProtagonistInputEnvelope
+    set?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    disconnect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    delete?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    connect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    update?: SceneUpdateWithWhereUniqueWithoutProtagonistInput | SceneUpdateWithWhereUniqueWithoutProtagonistInput[]
+    updateMany?: SceneUpdateManyWithWhereWithoutProtagonistInput | SceneUpdateManyWithWhereWithoutProtagonistInput[]
+    deleteMany?: SceneScalarWhereInput | SceneScalarWhereInput[]
+  }
+
+  export type SceneCharacterUncheckedUpdateManyWithoutCharacterNestedInput = {
+    create?: XOR<SceneCharacterCreateWithoutCharacterInput, SceneCharacterUncheckedCreateWithoutCharacterInput> | SceneCharacterCreateWithoutCharacterInput[] | SceneCharacterUncheckedCreateWithoutCharacterInput[]
+    connectOrCreate?: SceneCharacterCreateOrConnectWithoutCharacterInput | SceneCharacterCreateOrConnectWithoutCharacterInput[]
+    upsert?: SceneCharacterUpsertWithWhereUniqueWithoutCharacterInput | SceneCharacterUpsertWithWhereUniqueWithoutCharacterInput[]
+    createMany?: SceneCharacterCreateManyCharacterInputEnvelope
+    set?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    disconnect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    delete?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    connect?: SceneCharacterWhereUniqueInput | SceneCharacterWhereUniqueInput[]
+    update?: SceneCharacterUpdateWithWhereUniqueWithoutCharacterInput | SceneCharacterUpdateWithWhereUniqueWithoutCharacterInput[]
+    updateMany?: SceneCharacterUpdateManyWithWhereWithoutCharacterInput | SceneCharacterUpdateManyWithWhereWithoutCharacterInput[]
+    deleteMany?: SceneCharacterScalarWhereInput | SceneCharacterScalarWhereInput[]
+  }
+
+  export type SceneReferredCharacterUncheckedUpdateManyWithoutCharacterNestedInput = {
+    create?: XOR<SceneReferredCharacterCreateWithoutCharacterInput, SceneReferredCharacterUncheckedCreateWithoutCharacterInput> | SceneReferredCharacterCreateWithoutCharacterInput[] | SceneReferredCharacterUncheckedCreateWithoutCharacterInput[]
+    connectOrCreate?: SceneReferredCharacterCreateOrConnectWithoutCharacterInput | SceneReferredCharacterCreateOrConnectWithoutCharacterInput[]
+    upsert?: SceneReferredCharacterUpsertWithWhereUniqueWithoutCharacterInput | SceneReferredCharacterUpsertWithWhereUniqueWithoutCharacterInput[]
+    createMany?: SceneReferredCharacterCreateManyCharacterInputEnvelope
+    set?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    disconnect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    delete?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    connect?: SceneReferredCharacterWhereUniqueInput | SceneReferredCharacterWhereUniqueInput[]
+    update?: SceneReferredCharacterUpdateWithWhereUniqueWithoutCharacterInput | SceneReferredCharacterUpdateWithWhereUniqueWithoutCharacterInput[]
+    updateMany?: SceneReferredCharacterUpdateManyWithWhereWithoutCharacterInput | SceneReferredCharacterUpdateManyWithWhereWithoutCharacterInput[]
+    deleteMany?: SceneReferredCharacterScalarWhereInput | SceneReferredCharacterScalarWhereInput[]
+  }
+
+  export type StoryCreateNestedOneWithoutLocationsInput = {
+    create?: XOR<StoryCreateWithoutLocationsInput, StoryUncheckedCreateWithoutLocationsInput>
+    connectOrCreate?: StoryCreateOrConnectWithoutLocationsInput
+    connect?: StoryWhereUniqueInput
+  }
+
+  export type FileCreateNestedOneWithoutLocationPictureInput = {
+    create?: XOR<FileCreateWithoutLocationPictureInput, FileUncheckedCreateWithoutLocationPictureInput>
+    connectOrCreate?: FileCreateOrConnectWithoutLocationPictureInput
+    connect?: FileWhereUniqueInput
+  }
+
+  export type SceneCreateNestedManyWithoutLocationInput = {
+    create?: XOR<SceneCreateWithoutLocationInput, SceneUncheckedCreateWithoutLocationInput> | SceneCreateWithoutLocationInput[] | SceneUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: SceneCreateOrConnectWithoutLocationInput | SceneCreateOrConnectWithoutLocationInput[]
+    createMany?: SceneCreateManyLocationInputEnvelope
+    connect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+  }
+
+  export type SceneUncheckedCreateNestedManyWithoutLocationInput = {
+    create?: XOR<SceneCreateWithoutLocationInput, SceneUncheckedCreateWithoutLocationInput> | SceneCreateWithoutLocationInput[] | SceneUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: SceneCreateOrConnectWithoutLocationInput | SceneCreateOrConnectWithoutLocationInput[]
+    createMany?: SceneCreateManyLocationInputEnvelope
+    connect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+  }
+
+  export type StoryUpdateOneRequiredWithoutLocationsNestedInput = {
+    create?: XOR<StoryCreateWithoutLocationsInput, StoryUncheckedCreateWithoutLocationsInput>
+    connectOrCreate?: StoryCreateOrConnectWithoutLocationsInput
+    upsert?: StoryUpsertWithoutLocationsInput
+    connect?: StoryWhereUniqueInput
+    update?: XOR<XOR<StoryUpdateToOneWithWhereWithoutLocationsInput, StoryUpdateWithoutLocationsInput>, StoryUncheckedUpdateWithoutLocationsInput>
+  }
+
+  export type FileUpdateOneWithoutLocationPictureNestedInput = {
+    create?: XOR<FileCreateWithoutLocationPictureInput, FileUncheckedCreateWithoutLocationPictureInput>
+    connectOrCreate?: FileCreateOrConnectWithoutLocationPictureInput
+    upsert?: FileUpsertWithoutLocationPictureInput
+    disconnect?: FileWhereInput | boolean
+    delete?: FileWhereInput | boolean
+    connect?: FileWhereUniqueInput
+    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutLocationPictureInput, FileUpdateWithoutLocationPictureInput>, FileUncheckedUpdateWithoutLocationPictureInput>
+  }
+
+  export type SceneUpdateManyWithoutLocationNestedInput = {
+    create?: XOR<SceneCreateWithoutLocationInput, SceneUncheckedCreateWithoutLocationInput> | SceneCreateWithoutLocationInput[] | SceneUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: SceneCreateOrConnectWithoutLocationInput | SceneCreateOrConnectWithoutLocationInput[]
+    upsert?: SceneUpsertWithWhereUniqueWithoutLocationInput | SceneUpsertWithWhereUniqueWithoutLocationInput[]
+    createMany?: SceneCreateManyLocationInputEnvelope
+    set?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    disconnect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    delete?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    connect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    update?: SceneUpdateWithWhereUniqueWithoutLocationInput | SceneUpdateWithWhereUniqueWithoutLocationInput[]
+    updateMany?: SceneUpdateManyWithWhereWithoutLocationInput | SceneUpdateManyWithWhereWithoutLocationInput[]
+    deleteMany?: SceneScalarWhereInput | SceneScalarWhereInput[]
+  }
+
+  export type SceneUncheckedUpdateManyWithoutLocationNestedInput = {
+    create?: XOR<SceneCreateWithoutLocationInput, SceneUncheckedCreateWithoutLocationInput> | SceneCreateWithoutLocationInput[] | SceneUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: SceneCreateOrConnectWithoutLocationInput | SceneCreateOrConnectWithoutLocationInput[]
+    upsert?: SceneUpsertWithWhereUniqueWithoutLocationInput | SceneUpsertWithWhereUniqueWithoutLocationInput[]
+    createMany?: SceneCreateManyLocationInputEnvelope
+    set?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    disconnect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    delete?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    connect?: SceneWhereUniqueInput | SceneWhereUniqueInput[]
+    update?: SceneUpdateWithWhereUniqueWithoutLocationInput | SceneUpdateWithWhereUniqueWithoutLocationInput[]
+    updateMany?: SceneUpdateManyWithWhereWithoutLocationInput | SceneUpdateManyWithWhereWithoutLocationInput[]
+    deleteMany?: SceneScalarWhereInput | SceneScalarWhereInput[]
+  }
+
+  export type StoryCreateNestedOneWithoutPlotPointsInput = {
+    create?: XOR<StoryCreateWithoutPlotPointsInput, StoryUncheckedCreateWithoutPlotPointsInput>
+    connectOrCreate?: StoryCreateOrConnectWithoutPlotPointsInput
+    connect?: StoryWhereUniqueInput
+  }
+
+  export type EnumPlotPointStateFieldUpdateOperationsInput = {
+    set?: $Enums.PlotPointState
+  }
+
+  export type StoryUpdateOneRequiredWithoutPlotPointsNestedInput = {
+    create?: XOR<StoryCreateWithoutPlotPointsInput, StoryUncheckedCreateWithoutPlotPointsInput>
+    connectOrCreate?: StoryCreateOrConnectWithoutPlotPointsInput
+    upsert?: StoryUpsertWithoutPlotPointsInput
+    connect?: StoryWhereUniqueInput
+    update?: XOR<XOR<StoryUpdateToOneWithWhereWithoutPlotPointsInput, StoryUpdateWithoutPlotPointsInput>, StoryUncheckedUpdateWithoutPlotPointsInput>
+  }
+
+  export type StoryCreateNestedOneWithoutItemsInput = {
+    create?: XOR<StoryCreateWithoutItemsInput, StoryUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: StoryCreateOrConnectWithoutItemsInput
+    connect?: StoryWhereUniqueInput
+  }
+
+  export type StoryUpdateOneRequiredWithoutItemsNestedInput = {
+    create?: XOR<StoryCreateWithoutItemsInput, StoryUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: StoryCreateOrConnectWithoutItemsInput
+    upsert?: StoryUpsertWithoutItemsInput
+    connect?: StoryWhereUniqueInput
+    update?: XOR<XOR<StoryUpdateToOneWithWhereWithoutItemsInput, StoryUpdateWithoutItemsInput>, StoryUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type SceneCreateNestedOneWithoutParticipatingCharactersInput = {
+    create?: XOR<SceneCreateWithoutParticipatingCharactersInput, SceneUncheckedCreateWithoutParticipatingCharactersInput>
+    connectOrCreate?: SceneCreateOrConnectWithoutParticipatingCharactersInput
+    connect?: SceneWhereUniqueInput
+  }
+
+  export type CharacterCreateNestedOneWithoutParticipatingInScenesInput = {
+    create?: XOR<CharacterCreateWithoutParticipatingInScenesInput, CharacterUncheckedCreateWithoutParticipatingInScenesInput>
+    connectOrCreate?: CharacterCreateOrConnectWithoutParticipatingInScenesInput
+    connect?: CharacterWhereUniqueInput
+  }
+
+  export type SceneUpdateOneRequiredWithoutParticipatingCharactersNestedInput = {
+    create?: XOR<SceneCreateWithoutParticipatingCharactersInput, SceneUncheckedCreateWithoutParticipatingCharactersInput>
+    connectOrCreate?: SceneCreateOrConnectWithoutParticipatingCharactersInput
+    upsert?: SceneUpsertWithoutParticipatingCharactersInput
+    connect?: SceneWhereUniqueInput
+    update?: XOR<XOR<SceneUpdateToOneWithWhereWithoutParticipatingCharactersInput, SceneUpdateWithoutParticipatingCharactersInput>, SceneUncheckedUpdateWithoutParticipatingCharactersInput>
+  }
+
+  export type CharacterUpdateOneRequiredWithoutParticipatingInScenesNestedInput = {
+    create?: XOR<CharacterCreateWithoutParticipatingInScenesInput, CharacterUncheckedCreateWithoutParticipatingInScenesInput>
+    connectOrCreate?: CharacterCreateOrConnectWithoutParticipatingInScenesInput
+    upsert?: CharacterUpsertWithoutParticipatingInScenesInput
+    connect?: CharacterWhereUniqueInput
+    update?: XOR<XOR<CharacterUpdateToOneWithWhereWithoutParticipatingInScenesInput, CharacterUpdateWithoutParticipatingInScenesInput>, CharacterUncheckedUpdateWithoutParticipatingInScenesInput>
+  }
+
+  export type SceneCreateNestedOneWithoutReferredCharactersInput = {
+    create?: XOR<SceneCreateWithoutReferredCharactersInput, SceneUncheckedCreateWithoutReferredCharactersInput>
+    connectOrCreate?: SceneCreateOrConnectWithoutReferredCharactersInput
+    connect?: SceneWhereUniqueInput
+  }
+
+  export type CharacterCreateNestedOneWithoutReferredInScenesInput = {
+    create?: XOR<CharacterCreateWithoutReferredInScenesInput, CharacterUncheckedCreateWithoutReferredInScenesInput>
+    connectOrCreate?: CharacterCreateOrConnectWithoutReferredInScenesInput
+    connect?: CharacterWhereUniqueInput
+  }
+
+  export type SceneUpdateOneRequiredWithoutReferredCharactersNestedInput = {
+    create?: XOR<SceneCreateWithoutReferredCharactersInput, SceneUncheckedCreateWithoutReferredCharactersInput>
+    connectOrCreate?: SceneCreateOrConnectWithoutReferredCharactersInput
+    upsert?: SceneUpsertWithoutReferredCharactersInput
+    connect?: SceneWhereUniqueInput
+    update?: XOR<XOR<SceneUpdateToOneWithWhereWithoutReferredCharactersInput, SceneUpdateWithoutReferredCharactersInput>, SceneUncheckedUpdateWithoutReferredCharactersInput>
+  }
+
+  export type CharacterUpdateOneRequiredWithoutReferredInScenesNestedInput = {
+    create?: XOR<CharacterCreateWithoutReferredInScenesInput, CharacterUncheckedCreateWithoutReferredInScenesInput>
+    connectOrCreate?: CharacterCreateOrConnectWithoutReferredInScenesInput
+    upsert?: CharacterUpsertWithoutReferredInScenesInput
+    connect?: CharacterWhereUniqueInput
+    update?: XOR<XOR<CharacterUpdateToOneWithWhereWithoutReferredInScenesInput, CharacterUpdateWithoutReferredInScenesInput>, CharacterUncheckedUpdateWithoutReferredInScenesInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -26171,6 +36581,13 @@ export namespace Prisma {
     not?: NestedEnumStoryTypeFilter<$PrismaModel> | $Enums.StoryType
   }
 
+  export type NestedEnumPerspectiveNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Perspective | EnumPerspectiveFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Perspective[] | null
+    notIn?: $Enums.Perspective[] | null
+    not?: NestedEnumPerspectiveNullableFilter<$PrismaModel> | $Enums.Perspective | null
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | null
@@ -26226,6 +36643,56 @@ export namespace Prisma {
     _max?: NestedEnumStoryTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumPerspectiveNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Perspective | EnumPerspectiveFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Perspective[] | null
+    notIn?: $Enums.Perspective[] | null
+    not?: NestedEnumPerspectiveNullableWithAggregatesFilter<$PrismaModel> | $Enums.Perspective | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumPerspectiveNullableFilter<$PrismaModel>
+    _max?: NestedEnumPerspectiveNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumParagraphStateNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ParagraphState | EnumParagraphStateFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ParagraphState[] | null
+    notIn?: $Enums.ParagraphState[] | null
+    not?: NestedEnumParagraphStateNullableFilter<$PrismaModel> | $Enums.ParagraphState | null
+  }
+
+  export type NestedEnumParagraphStateNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ParagraphState | EnumParagraphStateFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ParagraphState[] | null
+    notIn?: $Enums.ParagraphState[] | null
+    not?: NestedEnumParagraphStateNullableWithAggregatesFilter<$PrismaModel> | $Enums.ParagraphState | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumParagraphStateNullableFilter<$PrismaModel>
+    _max?: NestedEnumParagraphStateNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue
+    lte?: InputJsonValue
+    gt?: InputJsonValue
+    gte?: InputJsonValue
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
   export type NestedEnumParagraphCommentTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ParagraphCommentType | EnumParagraphCommentTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ParagraphCommentType[]
@@ -26277,6 +36744,23 @@ export namespace Prisma {
     _max?: NestedEnumPublishingStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumPlotPointStateFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlotPointState | EnumPlotPointStateFieldRefInput<$PrismaModel>
+    in?: $Enums.PlotPointState[]
+    notIn?: $Enums.PlotPointState[]
+    not?: NestedEnumPlotPointStateFilter<$PrismaModel> | $Enums.PlotPointState
+  }
+
+  export type NestedEnumPlotPointStateWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlotPointState | EnumPlotPointStateFieldRefInput<$PrismaModel>
+    in?: $Enums.PlotPointState[]
+    notIn?: $Enums.PlotPointState[]
+    not?: NestedEnumPlotPointStateWithAggregatesFilter<$PrismaModel> | $Enums.PlotPointState
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlotPointStateFilter<$PrismaModel>
+    _max?: NestedEnumPlotPointStateFilter<$PrismaModel>
+  }
+
   export type StoryCreateWithoutOwnerInput = {
     id?: string
     name?: string
@@ -26290,19 +36774,25 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
     pages?: number | null
     bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
     books?: BookCreateNestedManyWithoutStoryInput
     files?: FileCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
   }
 
   export type StoryUncheckedCreateWithoutOwnerInput = {
@@ -26318,10 +36808,12 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
+    coverArtFileId?: string | null
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
@@ -26331,6 +36823,10 @@ export namespace Prisma {
     files?: FileUncheckedCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
   }
 
   export type StoryCreateOrConnectWithoutOwnerInput = {
@@ -26436,6 +36932,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     story?: StoryCreateNestedOneWithoutFilesInput
+    storyCoverArt?: StoryCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationCreateNestedManyWithoutPictureFileInput
   }
 
   export type FileUncheckedCreateWithoutOwnerInput = {
@@ -26450,6 +36951,11 @@ export namespace Prisma {
     mimeType: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    storyCoverArt?: StoryUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookUncheckedCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterUncheckedCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationUncheckedCreateNestedManyWithoutPictureFileInput
   }
 
   export type FileCreateOrConnectWithoutOwnerInput = {
@@ -26547,10 +37053,12 @@ export namespace Prisma {
     chapters?: IntNullableFilter<"Story"> | number | null
     firstChapterReleasedAt?: DateTimeNullableFilter<"Story"> | Date | string | null
     lastChapterReleasedAt?: DateTimeNullableFilter<"Story"> | Date | string | null
-    coverArtAsset?: StringFilter<"Story"> | string
+    coverArtFileId?: StringNullableFilter<"Story"> | string | null
     coverColor?: StringFilter<"Story"> | string
     coverTextColor?: StringFilter<"Story"> | string
     coverFontFamily?: StringFilter<"Story"> | string
+    defaultPerspective?: EnumPerspectiveNullableFilter<"Story"> | $Enums.Perspective | null
+    defaultProtagonistId?: StringNullableFilter<"Story"> | string | null
     createdAt?: DateTimeFilter<"Story"> | Date | string
     updatedAt?: DateTimeFilter<"Story"> | Date | string
     sortOrder?: IntFilter<"Story"> | number
@@ -26939,19 +37447,25 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
     pages?: number | null
     owner: UserCreateNestedOneWithoutOwnedStoriesInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
     books?: BookCreateNestedManyWithoutStoryInput
     files?: FileCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
   }
 
   export type StoryUncheckedCreateWithoutBookShelfStoriesInput = {
@@ -26968,10 +37482,12 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
+    coverArtFileId?: string | null
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
@@ -26980,6 +37496,10 @@ export namespace Prisma {
     files?: FileUncheckedCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
   }
 
   export type StoryCreateOrConnectWithoutBookShelfStoriesInput = {
@@ -27053,19 +37573,25 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
     books?: BookUpdateManyWithoutStoryNestedInput
     files?: FileUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
   }
 
   export type StoryUncheckedUpdateWithoutBookShelfStoriesInput = {
@@ -27082,10 +37608,12 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -27094,6 +37622,10 @@ export namespace Prisma {
     files?: FileUncheckedUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
   }
 
   export type UserCreateWithoutOwnedStoriesInput = {
@@ -27159,24 +37691,140 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FileCreateWithoutStoryCoverArtInput = {
+    id?: string
+    localPath?: string | null
+    path: string
+    sha256?: string
+    width?: number | null
+    height?: number | null
+    bytes?: number | null
+    mimeType: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: UserCreateNestedOneWithoutFilesInput
+    story?: StoryCreateNestedOneWithoutFilesInput
+    bookCoverArt?: BookCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationCreateNestedManyWithoutPictureFileInput
+  }
+
+  export type FileUncheckedCreateWithoutStoryCoverArtInput = {
+    id?: string
+    ownerId: number
+    storyId?: string | null
+    localPath?: string | null
+    path: string
+    sha256?: string
+    width?: number | null
+    height?: number | null
+    bytes?: number | null
+    mimeType: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bookCoverArt?: BookUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookUncheckedCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterUncheckedCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationUncheckedCreateNestedManyWithoutPictureFileInput
+  }
+
+  export type FileCreateOrConnectWithoutStoryCoverArtInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutStoryCoverArtInput, FileUncheckedCreateWithoutStoryCoverArtInput>
+  }
+
+  export type CharacterCreateWithoutDefaultProtagonistForStoryInput = {
+    id?: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutCharactersInput
+    pictureFile?: FileCreateNestedOneWithoutCharacterPictureInput
+    laterVersionOf?: CharacterCreateNestedOneWithoutPreviousVersionInput
+    previousVersion?: CharacterCreateNestedManyWithoutLaterVersionOfInput
+    sceneProtagonistIn?: SceneCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterUncheckedCreateWithoutDefaultProtagonistForStoryInput = {
+    id?: string
+    storyId: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    previousVersion?: CharacterUncheckedCreateNestedManyWithoutLaterVersionOfInput
+    sceneProtagonistIn?: SceneUncheckedCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterUncheckedCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterUncheckedCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterCreateOrConnectWithoutDefaultProtagonistForStoryInput = {
+    where: CharacterWhereUniqueInput
+    create: XOR<CharacterCreateWithoutDefaultProtagonistForStoryInput, CharacterUncheckedCreateWithoutDefaultProtagonistForStoryInput>
+  }
+
   export type BookCreateWithoutStoryInput = {
     id?: string
     name?: string
-    coverArtAsset: string
-    spineArtAsset: string
+    summary?: string | null
     pages?: number | null
     sortOrder: number
     nodeType?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    coverArtFile?: FileCreateNestedOneWithoutBookCoverArtInput
+    spineArtFile?: FileCreateNestedOneWithoutBookSpineArtInput
     arcs?: ArcCreateNestedManyWithoutBookInput
   }
 
   export type BookUncheckedCreateWithoutStoryInput = {
     id?: string
     name?: string
-    coverArtAsset: string
-    spineArtAsset: string
+    summary?: string | null
+    coverArtFileId?: string | null
+    spineArtFileId?: string | null
     pages?: number | null
     sortOrder: number
     nodeType?: string
@@ -27207,6 +37855,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: UserCreateNestedOneWithoutFilesInput
+    storyCoverArt?: StoryCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationCreateNestedManyWithoutPictureFileInput
   }
 
   export type FileUncheckedCreateWithoutStoryInput = {
@@ -27221,6 +37874,11 @@ export namespace Prisma {
     mimeType: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    storyCoverArt?: StoryUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookUncheckedCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterUncheckedCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationUncheckedCreateNestedManyWithoutPictureFileInput
   }
 
   export type FileCreateOrConnectWithoutStoryInput = {
@@ -27285,6 +37943,164 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CharacterCreateWithoutStoryInput = {
+    id?: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    pictureFile?: FileCreateNestedOneWithoutCharacterPictureInput
+    laterVersionOf?: CharacterCreateNestedOneWithoutPreviousVersionInput
+    previousVersion?: CharacterCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterUncheckedCreateWithoutStoryInput = {
+    id?: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    previousVersion?: CharacterUncheckedCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryUncheckedCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneUncheckedCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterUncheckedCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterUncheckedCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterCreateOrConnectWithoutStoryInput = {
+    where: CharacterWhereUniqueInput
+    create: XOR<CharacterCreateWithoutStoryInput, CharacterUncheckedCreateWithoutStoryInput>
+  }
+
+  export type CharacterCreateManyStoryInputEnvelope = {
+    data: CharacterCreateManyStoryInput | CharacterCreateManyStoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type LocationCreateWithoutStoryInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    pictureFile?: FileCreateNestedOneWithoutLocationPictureInput
+    scenes?: SceneCreateNestedManyWithoutLocationInput
+  }
+
+  export type LocationUncheckedCreateWithoutStoryInput = {
+    id?: string
+    name: string
+    pictureFileId?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    scenes?: SceneUncheckedCreateNestedManyWithoutLocationInput
+  }
+
+  export type LocationCreateOrConnectWithoutStoryInput = {
+    where: LocationWhereUniqueInput
+    create: XOR<LocationCreateWithoutStoryInput, LocationUncheckedCreateWithoutStoryInput>
+  }
+
+  export type LocationCreateManyStoryInputEnvelope = {
+    data: LocationCreateManyStoryInput | LocationCreateManyStoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PlotPointCreateWithoutStoryInput = {
+    id?: string
+    title: string
+    summary?: string | null
+    state?: $Enums.PlotPointState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlotPointUncheckedCreateWithoutStoryInput = {
+    id?: string
+    title: string
+    summary?: string | null
+    state?: $Enums.PlotPointState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlotPointCreateOrConnectWithoutStoryInput = {
+    where: PlotPointWhereUniqueInput
+    create: XOR<PlotPointCreateWithoutStoryInput, PlotPointUncheckedCreateWithoutStoryInput>
+  }
+
+  export type PlotPointCreateManyStoryInputEnvelope = {
+    data: PlotPointCreateManyStoryInput | PlotPointCreateManyStoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ItemCreateWithoutStoryInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemUncheckedCreateWithoutStoryInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemCreateOrConnectWithoutStoryInput = {
+    where: ItemWhereUniqueInput
+    create: XOR<ItemCreateWithoutStoryInput, ItemUncheckedCreateWithoutStoryInput>
+  }
+
+  export type ItemCreateManyStoryInputEnvelope = {
+    data: ItemCreateManyStoryInput | ItemCreateManyStoryInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutOwnedStoriesInput = {
     update: XOR<UserUpdateWithoutOwnedStoriesInput, UserUncheckedUpdateWithoutOwnedStoriesInput>
     create: XOR<UserCreateWithoutOwnedStoriesInput, UserUncheckedCreateWithoutOwnedStoriesInput>
@@ -27343,6 +38159,132 @@ export namespace Prisma {
     data: XOR<BookShelfStoryUpdateManyMutationInput, BookShelfStoryUncheckedUpdateManyWithoutStoryInput>
   }
 
+  export type FileUpsertWithoutStoryCoverArtInput = {
+    update: XOR<FileUpdateWithoutStoryCoverArtInput, FileUncheckedUpdateWithoutStoryCoverArtInput>
+    create: XOR<FileCreateWithoutStoryCoverArtInput, FileUncheckedCreateWithoutStoryCoverArtInput>
+    where?: FileWhereInput
+  }
+
+  export type FileUpdateToOneWithWhereWithoutStoryCoverArtInput = {
+    where?: FileWhereInput
+    data: XOR<FileUpdateWithoutStoryCoverArtInput, FileUncheckedUpdateWithoutStoryCoverArtInput>
+  }
+
+  export type FileUpdateWithoutStoryCoverArtInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    localPath?: NullableStringFieldUpdateOperationsInput | string | null
+    path?: StringFieldUpdateOperationsInput | string
+    sha256?: StringFieldUpdateOperationsInput | string
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    bytes?: NullableIntFieldUpdateOperationsInput | number | null
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutFilesNestedInput
+    story?: StoryUpdateOneWithoutFilesNestedInput
+    bookCoverArt?: BookUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUpdateManyWithoutPictureFileNestedInput
+  }
+
+  export type FileUncheckedUpdateWithoutStoryCoverArtInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ownerId?: IntFieldUpdateOperationsInput | number
+    storyId?: NullableStringFieldUpdateOperationsInput | string | null
+    localPath?: NullableStringFieldUpdateOperationsInput | string | null
+    path?: StringFieldUpdateOperationsInput | string
+    sha256?: StringFieldUpdateOperationsInput | string
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    bytes?: NullableIntFieldUpdateOperationsInput | number | null
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookCoverArt?: BookUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUncheckedUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUncheckedUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUncheckedUpdateManyWithoutPictureFileNestedInput
+  }
+
+  export type CharacterUpsertWithoutDefaultProtagonistForStoryInput = {
+    update: XOR<CharacterUpdateWithoutDefaultProtagonistForStoryInput, CharacterUncheckedUpdateWithoutDefaultProtagonistForStoryInput>
+    create: XOR<CharacterCreateWithoutDefaultProtagonistForStoryInput, CharacterUncheckedCreateWithoutDefaultProtagonistForStoryInput>
+    where?: CharacterWhereInput
+  }
+
+  export type CharacterUpdateToOneWithWhereWithoutDefaultProtagonistForStoryInput = {
+    where?: CharacterWhereInput
+    data: XOR<CharacterUpdateWithoutDefaultProtagonistForStoryInput, CharacterUncheckedUpdateWithoutDefaultProtagonistForStoryInput>
+  }
+
+  export type CharacterUpdateWithoutDefaultProtagonistForStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutCharactersNestedInput
+    pictureFile?: FileUpdateOneWithoutCharacterPictureNestedInput
+    laterVersionOf?: CharacterUpdateOneWithoutPreviousVersionNestedInput
+    previousVersion?: CharacterUpdateManyWithoutLaterVersionOfNestedInput
+    sceneProtagonistIn?: SceneUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateWithoutDefaultProtagonistForStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousVersion?: CharacterUncheckedUpdateManyWithoutLaterVersionOfNestedInput
+    sceneProtagonistIn?: SceneUncheckedUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+  }
+
   export type BookUpsertWithWhereUniqueWithoutStoryInput = {
     where: BookWhereUniqueInput
     update: XOR<BookUpdateWithoutStoryInput, BookUncheckedUpdateWithoutStoryInput>
@@ -27365,9 +38307,10 @@ export namespace Prisma {
     NOT?: BookScalarWhereInput | BookScalarWhereInput[]
     id?: StringFilter<"Book"> | string
     name?: StringFilter<"Book"> | string
+    summary?: StringNullableFilter<"Book"> | string | null
     storyId?: StringFilter<"Book"> | string
-    coverArtAsset?: StringFilter<"Book"> | string
-    spineArtAsset?: StringFilter<"Book"> | string
+    coverArtFileId?: StringNullableFilter<"Book"> | string | null
+    spineArtFileId?: StringNullableFilter<"Book"> | string | null
     pages?: IntNullableFilter<"Book"> | number | null
     sortOrder?: IntFilter<"Book"> | number
     nodeType?: StringFilter<"Book"> | string
@@ -27434,6 +38377,139 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"StoryTag"> | Date | string
   }
 
+  export type CharacterUpsertWithWhereUniqueWithoutStoryInput = {
+    where: CharacterWhereUniqueInput
+    update: XOR<CharacterUpdateWithoutStoryInput, CharacterUncheckedUpdateWithoutStoryInput>
+    create: XOR<CharacterCreateWithoutStoryInput, CharacterUncheckedCreateWithoutStoryInput>
+  }
+
+  export type CharacterUpdateWithWhereUniqueWithoutStoryInput = {
+    where: CharacterWhereUniqueInput
+    data: XOR<CharacterUpdateWithoutStoryInput, CharacterUncheckedUpdateWithoutStoryInput>
+  }
+
+  export type CharacterUpdateManyWithWhereWithoutStoryInput = {
+    where: CharacterScalarWhereInput
+    data: XOR<CharacterUpdateManyMutationInput, CharacterUncheckedUpdateManyWithoutStoryInput>
+  }
+
+  export type CharacterScalarWhereInput = {
+    AND?: CharacterScalarWhereInput | CharacterScalarWhereInput[]
+    OR?: CharacterScalarWhereInput[]
+    NOT?: CharacterScalarWhereInput | CharacterScalarWhereInput[]
+    id?: StringFilter<"Character"> | string
+    storyId?: StringFilter<"Character"> | string
+    pictureFileId?: StringNullableFilter<"Character"> | string | null
+    firstName?: StringFilter<"Character"> | string
+    middleName?: StringNullableFilter<"Character"> | string | null
+    lastName?: StringNullableFilter<"Character"> | string | null
+    nickname?: StringNullableFilter<"Character"> | string | null
+    summary?: StringNullableFilter<"Character"> | string | null
+    background?: StringNullableFilter<"Character"> | string | null
+    personality?: StringNullableFilter<"Character"> | string | null
+    personalityQuirks?: StringNullableFilter<"Character"> | string | null
+    likes?: StringNullableFilter<"Character"> | string | null
+    dislikes?: StringNullableFilter<"Character"> | string | null
+    age?: StringNullableFilter<"Character"> | string | null
+    gender?: StringNullableFilter<"Character"> | string | null
+    sexualOrientation?: StringNullableFilter<"Character"> | string | null
+    height?: IntNullableFilter<"Character"> | number | null
+    hairColor?: StringNullableFilter<"Character"> | string | null
+    eyeColor?: StringNullableFilter<"Character"> | string | null
+    distinguishingFeatures?: StringNullableFilter<"Character"> | string | null
+    writingStyle?: StringNullableFilter<"Character"> | string | null
+    isMainCharacter?: BoolFilter<"Character"> | boolean
+    laterVersionOfId?: StringNullableFilter<"Character"> | string | null
+    significantActions?: JsonNullableFilter<"Character">
+    createdAt?: DateTimeFilter<"Character"> | Date | string
+    updatedAt?: DateTimeFilter<"Character"> | Date | string
+  }
+
+  export type LocationUpsertWithWhereUniqueWithoutStoryInput = {
+    where: LocationWhereUniqueInput
+    update: XOR<LocationUpdateWithoutStoryInput, LocationUncheckedUpdateWithoutStoryInput>
+    create: XOR<LocationCreateWithoutStoryInput, LocationUncheckedCreateWithoutStoryInput>
+  }
+
+  export type LocationUpdateWithWhereUniqueWithoutStoryInput = {
+    where: LocationWhereUniqueInput
+    data: XOR<LocationUpdateWithoutStoryInput, LocationUncheckedUpdateWithoutStoryInput>
+  }
+
+  export type LocationUpdateManyWithWhereWithoutStoryInput = {
+    where: LocationScalarWhereInput
+    data: XOR<LocationUpdateManyMutationInput, LocationUncheckedUpdateManyWithoutStoryInput>
+  }
+
+  export type LocationScalarWhereInput = {
+    AND?: LocationScalarWhereInput | LocationScalarWhereInput[]
+    OR?: LocationScalarWhereInput[]
+    NOT?: LocationScalarWhereInput | LocationScalarWhereInput[]
+    id?: StringFilter<"Location"> | string
+    storyId?: StringFilter<"Location"> | string
+    name?: StringFilter<"Location"> | string
+    pictureFileId?: StringNullableFilter<"Location"> | string | null
+    description?: StringNullableFilter<"Location"> | string | null
+    createdAt?: DateTimeFilter<"Location"> | Date | string
+    updatedAt?: DateTimeFilter<"Location"> | Date | string
+  }
+
+  export type PlotPointUpsertWithWhereUniqueWithoutStoryInput = {
+    where: PlotPointWhereUniqueInput
+    update: XOR<PlotPointUpdateWithoutStoryInput, PlotPointUncheckedUpdateWithoutStoryInput>
+    create: XOR<PlotPointCreateWithoutStoryInput, PlotPointUncheckedCreateWithoutStoryInput>
+  }
+
+  export type PlotPointUpdateWithWhereUniqueWithoutStoryInput = {
+    where: PlotPointWhereUniqueInput
+    data: XOR<PlotPointUpdateWithoutStoryInput, PlotPointUncheckedUpdateWithoutStoryInput>
+  }
+
+  export type PlotPointUpdateManyWithWhereWithoutStoryInput = {
+    where: PlotPointScalarWhereInput
+    data: XOR<PlotPointUpdateManyMutationInput, PlotPointUncheckedUpdateManyWithoutStoryInput>
+  }
+
+  export type PlotPointScalarWhereInput = {
+    AND?: PlotPointScalarWhereInput | PlotPointScalarWhereInput[]
+    OR?: PlotPointScalarWhereInput[]
+    NOT?: PlotPointScalarWhereInput | PlotPointScalarWhereInput[]
+    id?: StringFilter<"PlotPoint"> | string
+    storyId?: StringFilter<"PlotPoint"> | string
+    title?: StringFilter<"PlotPoint"> | string
+    summary?: StringNullableFilter<"PlotPoint"> | string | null
+    state?: EnumPlotPointStateFilter<"PlotPoint"> | $Enums.PlotPointState
+    createdAt?: DateTimeFilter<"PlotPoint"> | Date | string
+    updatedAt?: DateTimeFilter<"PlotPoint"> | Date | string
+  }
+
+  export type ItemUpsertWithWhereUniqueWithoutStoryInput = {
+    where: ItemWhereUniqueInput
+    update: XOR<ItemUpdateWithoutStoryInput, ItemUncheckedUpdateWithoutStoryInput>
+    create: XOR<ItemCreateWithoutStoryInput, ItemUncheckedCreateWithoutStoryInput>
+  }
+
+  export type ItemUpdateWithWhereUniqueWithoutStoryInput = {
+    where: ItemWhereUniqueInput
+    data: XOR<ItemUpdateWithoutStoryInput, ItemUncheckedUpdateWithoutStoryInput>
+  }
+
+  export type ItemUpdateManyWithWhereWithoutStoryInput = {
+    where: ItemScalarWhereInput
+    data: XOR<ItemUpdateManyMutationInput, ItemUncheckedUpdateManyWithoutStoryInput>
+  }
+
+  export type ItemScalarWhereInput = {
+    AND?: ItemScalarWhereInput | ItemScalarWhereInput[]
+    OR?: ItemScalarWhereInput[]
+    NOT?: ItemScalarWhereInput | ItemScalarWhereInput[]
+    id?: StringFilter<"Item"> | string
+    storyId?: StringFilter<"Item"> | string
+    name?: StringFilter<"Item"> | string
+    createdAt?: DateTimeFilter<"Item"> | Date | string
+    updatedAt?: DateTimeFilter<"Item"> | Date | string
+  }
+
   export type StoryTagCreateWithoutTagInput = {
     id?: string
     createdAt?: Date | string
@@ -27487,19 +38563,25 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
     pages?: number | null
     owner: UserCreateNestedOneWithoutOwnedStoriesInput
     bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
     books?: BookCreateNestedManyWithoutStoryInput
     files?: FileCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
   }
 
   export type StoryUncheckedCreateWithoutStoryTagsInput = {
@@ -27516,10 +38598,12 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
+    coverArtFileId?: string | null
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
@@ -27528,6 +38612,10 @@ export namespace Prisma {
     books?: BookUncheckedCreateNestedManyWithoutStoryInput
     files?: FileUncheckedCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
   }
 
   export type StoryCreateOrConnectWithoutStoryTagsInput = {
@@ -27578,19 +38666,25 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
     bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
     books?: BookUpdateManyWithoutStoryNestedInput
     files?: FileUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
   }
 
   export type StoryUncheckedUpdateWithoutStoryTagsInput = {
@@ -27607,10 +38701,12 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -27619,6 +38715,10 @@ export namespace Prisma {
     books?: BookUncheckedUpdateManyWithoutStoryNestedInput
     files?: FileUncheckedUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
   }
 
   export type TagUpsertWithoutStoryTagsInput = {
@@ -27659,19 +38759,25 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
     pages?: number | null
     owner: UserCreateNestedOneWithoutOwnedStoriesInput
     bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
     books?: BookCreateNestedManyWithoutStoryInput
     files?: FileCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
   }
 
   export type StoryUncheckedCreateWithoutStoryReadStatusesInput = {
@@ -27688,10 +38794,12 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
+    coverArtFileId?: string | null
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
@@ -27700,6 +38808,10 @@ export namespace Prisma {
     books?: BookUncheckedCreateNestedManyWithoutStoryInput
     files?: FileUncheckedCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
   }
 
   export type StoryCreateOrConnectWithoutStoryReadStatusesInput = {
@@ -27746,6 +38858,7 @@ export namespace Prisma {
   export type ChapterCreateWithoutStoryReadStatusInput = {
     id?: string
     name?: string
+    summary?: string | null
     publishedOn?: Date | string | null
     sortOrder: number
     royalRoadId?: number | null
@@ -27760,6 +38873,7 @@ export namespace Prisma {
   export type ChapterUncheckedCreateWithoutStoryReadStatusInput = {
     id?: string
     name?: string
+    summary?: string | null
     arcId: string
     publishedOn?: Date | string | null
     sortOrder: number
@@ -27800,19 +38914,25 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
     bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
     books?: BookUpdateManyWithoutStoryNestedInput
     files?: FileUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
   }
 
   export type StoryUncheckedUpdateWithoutStoryReadStatusesInput = {
@@ -27829,10 +38949,12 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -27841,6 +38963,10 @@ export namespace Prisma {
     books?: BookUncheckedUpdateManyWithoutStoryNestedInput
     files?: FileUncheckedUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
   }
 
   export type UserUpsertWithoutStoryReadStatusesInput = {
@@ -27899,6 +39025,7 @@ export namespace Prisma {
   export type ChapterUpdateWithoutStoryReadStatusInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -27913,6 +39040,7 @@ export namespace Prisma {
   export type ChapterUncheckedUpdateWithoutStoryReadStatusInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     arcId?: StringFieldUpdateOperationsInput | string
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -27937,19 +39065,25 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
     pages?: number | null
     owner: UserCreateNestedOneWithoutOwnedStoriesInput
     bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
     files?: FileCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
   }
 
   export type StoryUncheckedCreateWithoutBooksInput = {
@@ -27966,10 +39100,12 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
+    coverArtFileId?: string | null
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
@@ -27978,6 +39114,10 @@ export namespace Prisma {
     files?: FileUncheckedCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
   }
 
   export type StoryCreateOrConnectWithoutBooksInput = {
@@ -27985,9 +39125,96 @@ export namespace Prisma {
     create: XOR<StoryCreateWithoutBooksInput, StoryUncheckedCreateWithoutBooksInput>
   }
 
+  export type FileCreateWithoutBookCoverArtInput = {
+    id?: string
+    localPath?: string | null
+    path: string
+    sha256?: string
+    width?: number | null
+    height?: number | null
+    bytes?: number | null
+    mimeType: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: UserCreateNestedOneWithoutFilesInput
+    story?: StoryCreateNestedOneWithoutFilesInput
+    storyCoverArt?: StoryCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationCreateNestedManyWithoutPictureFileInput
+  }
+
+  export type FileUncheckedCreateWithoutBookCoverArtInput = {
+    id?: string
+    ownerId: number
+    storyId?: string | null
+    localPath?: string | null
+    path: string
+    sha256?: string
+    width?: number | null
+    height?: number | null
+    bytes?: number | null
+    mimeType: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    storyCoverArt?: StoryUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookUncheckedCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterUncheckedCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationUncheckedCreateNestedManyWithoutPictureFileInput
+  }
+
+  export type FileCreateOrConnectWithoutBookCoverArtInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutBookCoverArtInput, FileUncheckedCreateWithoutBookCoverArtInput>
+  }
+
+  export type FileCreateWithoutBookSpineArtInput = {
+    id?: string
+    localPath?: string | null
+    path: string
+    sha256?: string
+    width?: number | null
+    height?: number | null
+    bytes?: number | null
+    mimeType: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: UserCreateNestedOneWithoutFilesInput
+    story?: StoryCreateNestedOneWithoutFilesInput
+    storyCoverArt?: StoryCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookCreateNestedManyWithoutCoverArtFileInput
+    characterPicture?: CharacterCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationCreateNestedManyWithoutPictureFileInput
+  }
+
+  export type FileUncheckedCreateWithoutBookSpineArtInput = {
+    id?: string
+    ownerId: number
+    storyId?: string | null
+    localPath?: string | null
+    path: string
+    sha256?: string
+    width?: number | null
+    height?: number | null
+    bytes?: number | null
+    mimeType: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    storyCoverArt?: StoryUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookUncheckedCreateNestedManyWithoutCoverArtFileInput
+    characterPicture?: CharacterUncheckedCreateNestedManyWithoutPictureFileInput
+    locationPicture?: LocationUncheckedCreateNestedManyWithoutPictureFileInput
+  }
+
+  export type FileCreateOrConnectWithoutBookSpineArtInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutBookSpineArtInput, FileUncheckedCreateWithoutBookSpineArtInput>
+  }
+
   export type ArcCreateWithoutBookInput = {
     id?: string
     name?: string
+    summary?: string | null
     sortOrder: number
     nodeType?: string
     createdAt?: Date | string
@@ -27998,6 +39225,7 @@ export namespace Prisma {
   export type ArcUncheckedCreateWithoutBookInput = {
     id?: string
     name?: string
+    summary?: string | null
     sortOrder: number
     nodeType?: string
     createdAt?: Date | string
@@ -28039,19 +39267,25 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
     bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
     files?: FileUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
   }
 
   export type StoryUncheckedUpdateWithoutBooksInput = {
@@ -28068,10 +39302,12 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -28080,6 +39316,108 @@ export namespace Prisma {
     files?: FileUncheckedUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
+  }
+
+  export type FileUpsertWithoutBookCoverArtInput = {
+    update: XOR<FileUpdateWithoutBookCoverArtInput, FileUncheckedUpdateWithoutBookCoverArtInput>
+    create: XOR<FileCreateWithoutBookCoverArtInput, FileUncheckedCreateWithoutBookCoverArtInput>
+    where?: FileWhereInput
+  }
+
+  export type FileUpdateToOneWithWhereWithoutBookCoverArtInput = {
+    where?: FileWhereInput
+    data: XOR<FileUpdateWithoutBookCoverArtInput, FileUncheckedUpdateWithoutBookCoverArtInput>
+  }
+
+  export type FileUpdateWithoutBookCoverArtInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    localPath?: NullableStringFieldUpdateOperationsInput | string | null
+    path?: StringFieldUpdateOperationsInput | string
+    sha256?: StringFieldUpdateOperationsInput | string
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    bytes?: NullableIntFieldUpdateOperationsInput | number | null
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutFilesNestedInput
+    story?: StoryUpdateOneWithoutFilesNestedInput
+    storyCoverArt?: StoryUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUpdateManyWithoutPictureFileNestedInput
+  }
+
+  export type FileUncheckedUpdateWithoutBookCoverArtInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ownerId?: IntFieldUpdateOperationsInput | number
+    storyId?: NullableStringFieldUpdateOperationsInput | string | null
+    localPath?: NullableStringFieldUpdateOperationsInput | string | null
+    path?: StringFieldUpdateOperationsInput | string
+    sha256?: StringFieldUpdateOperationsInput | string
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    bytes?: NullableIntFieldUpdateOperationsInput | number | null
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    storyCoverArt?: StoryUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUncheckedUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUncheckedUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUncheckedUpdateManyWithoutPictureFileNestedInput
+  }
+
+  export type FileUpsertWithoutBookSpineArtInput = {
+    update: XOR<FileUpdateWithoutBookSpineArtInput, FileUncheckedUpdateWithoutBookSpineArtInput>
+    create: XOR<FileCreateWithoutBookSpineArtInput, FileUncheckedCreateWithoutBookSpineArtInput>
+    where?: FileWhereInput
+  }
+
+  export type FileUpdateToOneWithWhereWithoutBookSpineArtInput = {
+    where?: FileWhereInput
+    data: XOR<FileUpdateWithoutBookSpineArtInput, FileUncheckedUpdateWithoutBookSpineArtInput>
+  }
+
+  export type FileUpdateWithoutBookSpineArtInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    localPath?: NullableStringFieldUpdateOperationsInput | string | null
+    path?: StringFieldUpdateOperationsInput | string
+    sha256?: StringFieldUpdateOperationsInput | string
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    bytes?: NullableIntFieldUpdateOperationsInput | number | null
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutFilesNestedInput
+    story?: StoryUpdateOneWithoutFilesNestedInput
+    storyCoverArt?: StoryUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUpdateManyWithoutCoverArtFileNestedInput
+    characterPicture?: CharacterUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUpdateManyWithoutPictureFileNestedInput
+  }
+
+  export type FileUncheckedUpdateWithoutBookSpineArtInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ownerId?: IntFieldUpdateOperationsInput | number
+    storyId?: NullableStringFieldUpdateOperationsInput | string | null
+    localPath?: NullableStringFieldUpdateOperationsInput | string | null
+    path?: StringFieldUpdateOperationsInput | string
+    sha256?: StringFieldUpdateOperationsInput | string
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    bytes?: NullableIntFieldUpdateOperationsInput | number | null
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    storyCoverArt?: StoryUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    characterPicture?: CharacterUncheckedUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUncheckedUpdateManyWithoutPictureFileNestedInput
   }
 
   export type ArcUpsertWithWhereUniqueWithoutBookInput = {
@@ -28104,6 +39442,7 @@ export namespace Prisma {
     NOT?: ArcScalarWhereInput | ArcScalarWhereInput[]
     id?: StringFilter<"Arc"> | string
     name?: StringFilter<"Arc"> | string
+    summary?: StringNullableFilter<"Arc"> | string | null
     bookId?: StringFilter<"Arc"> | string
     sortOrder?: IntFilter<"Arc"> | number
     nodeType?: StringFilter<"Arc"> | string
@@ -28114,22 +39453,24 @@ export namespace Prisma {
   export type BookCreateWithoutArcsInput = {
     id?: string
     name?: string
-    coverArtAsset: string
-    spineArtAsset: string
+    summary?: string | null
     pages?: number | null
     sortOrder: number
     nodeType?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     story: StoryCreateNestedOneWithoutBooksInput
+    coverArtFile?: FileCreateNestedOneWithoutBookCoverArtInput
+    spineArtFile?: FileCreateNestedOneWithoutBookSpineArtInput
   }
 
   export type BookUncheckedCreateWithoutArcsInput = {
     id?: string
     name?: string
+    summary?: string | null
     storyId: string
-    coverArtAsset: string
-    spineArtAsset: string
+    coverArtFileId?: string | null
+    spineArtFileId?: string | null
     pages?: number | null
     sortOrder: number
     nodeType?: string
@@ -28145,6 +39486,7 @@ export namespace Prisma {
   export type ChapterCreateWithoutArcInput = {
     id?: string
     name?: string
+    summary?: string | null
     publishedOn?: Date | string | null
     sortOrder: number
     royalRoadId?: number | null
@@ -28159,6 +39501,7 @@ export namespace Prisma {
   export type ChapterUncheckedCreateWithoutArcInput = {
     id?: string
     name?: string
+    summary?: string | null
     publishedOn?: Date | string | null
     sortOrder: number
     royalRoadId?: number | null
@@ -28194,22 +39537,24 @@ export namespace Prisma {
   export type BookUpdateWithoutArcsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
-    spineArtAsset?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     story?: StoryUpdateOneRequiredWithoutBooksNestedInput
+    coverArtFile?: FileUpdateOneWithoutBookCoverArtNestedInput
+    spineArtFile?: FileUpdateOneWithoutBookSpineArtNestedInput
   }
 
   export type BookUncheckedUpdateWithoutArcsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     storyId?: StringFieldUpdateOperationsInput | string
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
-    spineArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    spineArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
@@ -28239,6 +39584,7 @@ export namespace Prisma {
     NOT?: ChapterScalarWhereInput | ChapterScalarWhereInput[]
     id?: StringFilter<"Chapter"> | string
     name?: StringFilter<"Chapter"> | string
+    summary?: StringNullableFilter<"Chapter"> | string | null
     arcId?: StringFilter<"Chapter"> | string
     publishedOn?: DateTimeNullableFilter<"Chapter"> | Date | string | null
     sortOrder?: IntFilter<"Chapter"> | number
@@ -28251,6 +39597,7 @@ export namespace Prisma {
   export type ArcCreateWithoutChaptersInput = {
     id?: string
     name?: string
+    summary?: string | null
     sortOrder: number
     nodeType?: string
     createdAt?: Date | string
@@ -28261,6 +39608,7 @@ export namespace Prisma {
   export type ArcUncheckedCreateWithoutChaptersInput = {
     id?: string
     name?: string
+    summary?: string | null
     bookId: string
     sortOrder: number
     nodeType?: string
@@ -28276,23 +39624,35 @@ export namespace Prisma {
   export type SceneCreateWithoutChapterInput = {
     id?: string
     name?: string
+    summary?: string | null
     body: string
     sortOrder: number
     nodeType?: string
+    perspective?: $Enums.Perspective | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    protagonist?: CharacterCreateNestedOneWithoutSceneProtagonistInInput
+    location?: LocationCreateNestedOneWithoutScenesInput
     paragraphs?: ParagraphCreateNestedManyWithoutSceneInput
+    participatingCharacters?: SceneCharacterCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterCreateNestedManyWithoutSceneInput
   }
 
   export type SceneUncheckedCreateWithoutChapterInput = {
     id?: string
     name?: string
+    summary?: string | null
     body: string
     sortOrder: number
     nodeType?: string
+    perspective?: $Enums.Perspective | null
+    protagonistId?: string | null
+    locationId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paragraphs?: ParagraphUncheckedCreateNestedManyWithoutSceneInput
+    participatingCharacters?: SceneCharacterUncheckedCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterUncheckedCreateNestedManyWithoutSceneInput
   }
 
   export type SceneCreateOrConnectWithoutChapterInput = {
@@ -28381,6 +39741,7 @@ export namespace Prisma {
   export type ArcUpdateWithoutChaptersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28391,6 +39752,7 @@ export namespace Prisma {
   export type ArcUncheckedUpdateWithoutChaptersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     bookId?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
@@ -28420,10 +39782,14 @@ export namespace Prisma {
     NOT?: SceneScalarWhereInput | SceneScalarWhereInput[]
     id?: StringFilter<"Scene"> | string
     name?: StringFilter<"Scene"> | string
+    summary?: StringNullableFilter<"Scene"> | string | null
     body?: StringFilter<"Scene"> | string
     chapterId?: StringFilter<"Scene"> | string
     sortOrder?: IntFilter<"Scene"> | number
     nodeType?: StringFilter<"Scene"> | string
+    perspective?: EnumPerspectiveNullableFilter<"Scene"> | $Enums.Perspective | null
+    protagonistId?: StringNullableFilter<"Scene"> | string | null
+    locationId?: StringNullableFilter<"Scene"> | string | null
     createdAt?: DateTimeFilter<"Scene"> | Date | string
     updatedAt?: DateTimeFilter<"Scene"> | Date | string
   }
@@ -28479,6 +39845,7 @@ export namespace Prisma {
   export type ChapterCreateWithoutScenesInput = {
     id?: string
     name?: string
+    summary?: string | null
     publishedOn?: Date | string | null
     sortOrder: number
     royalRoadId?: number | null
@@ -28493,6 +39860,7 @@ export namespace Prisma {
   export type ChapterUncheckedCreateWithoutScenesInput = {
     id?: string
     name?: string
+    summary?: string | null
     arcId: string
     publishedOn?: Date | string | null
     sortOrder: number
@@ -28507,6 +39875,102 @@ export namespace Prisma {
   export type ChapterCreateOrConnectWithoutScenesInput = {
     where: ChapterWhereUniqueInput
     create: XOR<ChapterCreateWithoutScenesInput, ChapterUncheckedCreateWithoutScenesInput>
+  }
+
+  export type CharacterCreateWithoutSceneProtagonistInInput = {
+    id?: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutCharactersInput
+    pictureFile?: FileCreateNestedOneWithoutCharacterPictureInput
+    laterVersionOf?: CharacterCreateNestedOneWithoutPreviousVersionInput
+    previousVersion?: CharacterCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryCreateNestedManyWithoutDefaultProtagonistInput
+    participatingInScenes?: SceneCharacterCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterUncheckedCreateWithoutSceneProtagonistInInput = {
+    id?: string
+    storyId: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    previousVersion?: CharacterUncheckedCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryUncheckedCreateNestedManyWithoutDefaultProtagonistInput
+    participatingInScenes?: SceneCharacterUncheckedCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterUncheckedCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterCreateOrConnectWithoutSceneProtagonistInInput = {
+    where: CharacterWhereUniqueInput
+    create: XOR<CharacterCreateWithoutSceneProtagonistInInput, CharacterUncheckedCreateWithoutSceneProtagonistInInput>
+  }
+
+  export type LocationCreateWithoutScenesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutLocationsInput
+    pictureFile?: FileCreateNestedOneWithoutLocationPictureInput
+  }
+
+  export type LocationUncheckedCreateWithoutScenesInput = {
+    id?: string
+    storyId: string
+    name: string
+    pictureFileId?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LocationCreateOrConnectWithoutScenesInput = {
+    where: LocationWhereUniqueInput
+    create: XOR<LocationCreateWithoutScenesInput, LocationUncheckedCreateWithoutScenesInput>
   }
 
   export type ParagraphCreateWithoutSceneInput = {
@@ -28535,6 +39999,46 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SceneCharacterCreateWithoutSceneInput = {
+    assignedAt?: Date | string
+    character: CharacterCreateNestedOneWithoutParticipatingInScenesInput
+  }
+
+  export type SceneCharacterUncheckedCreateWithoutSceneInput = {
+    characterId: string
+    assignedAt?: Date | string
+  }
+
+  export type SceneCharacterCreateOrConnectWithoutSceneInput = {
+    where: SceneCharacterWhereUniqueInput
+    create: XOR<SceneCharacterCreateWithoutSceneInput, SceneCharacterUncheckedCreateWithoutSceneInput>
+  }
+
+  export type SceneCharacterCreateManySceneInputEnvelope = {
+    data: SceneCharacterCreateManySceneInput | SceneCharacterCreateManySceneInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SceneReferredCharacterCreateWithoutSceneInput = {
+    assignedAt?: Date | string
+    character: CharacterCreateNestedOneWithoutReferredInScenesInput
+  }
+
+  export type SceneReferredCharacterUncheckedCreateWithoutSceneInput = {
+    characterId: string
+    assignedAt?: Date | string
+  }
+
+  export type SceneReferredCharacterCreateOrConnectWithoutSceneInput = {
+    where: SceneReferredCharacterWhereUniqueInput
+    create: XOR<SceneReferredCharacterCreateWithoutSceneInput, SceneReferredCharacterUncheckedCreateWithoutSceneInput>
+  }
+
+  export type SceneReferredCharacterCreateManySceneInputEnvelope = {
+    data: SceneReferredCharacterCreateManySceneInput | SceneReferredCharacterCreateManySceneInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ChapterUpsertWithoutScenesInput = {
     update: XOR<ChapterUpdateWithoutScenesInput, ChapterUncheckedUpdateWithoutScenesInput>
     create: XOR<ChapterCreateWithoutScenesInput, ChapterUncheckedCreateWithoutScenesInput>
@@ -28549,6 +40053,7 @@ export namespace Prisma {
   export type ChapterUpdateWithoutScenesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -28563,6 +40068,7 @@ export namespace Prisma {
   export type ChapterUncheckedUpdateWithoutScenesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     arcId?: StringFieldUpdateOperationsInput | string
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -28572,6 +40078,114 @@ export namespace Prisma {
     nodeType?: StringFieldUpdateOperationsInput | string
     StoryReadStatus?: StoryReadStatusUncheckedUpdateManyWithoutLastChapterNestedInput
     publishingStatus?: ChapterPublishingUncheckedUpdateManyWithoutChapterNestedInput
+  }
+
+  export type CharacterUpsertWithoutSceneProtagonistInInput = {
+    update: XOR<CharacterUpdateWithoutSceneProtagonistInInput, CharacterUncheckedUpdateWithoutSceneProtagonistInInput>
+    create: XOR<CharacterCreateWithoutSceneProtagonistInInput, CharacterUncheckedCreateWithoutSceneProtagonistInInput>
+    where?: CharacterWhereInput
+  }
+
+  export type CharacterUpdateToOneWithWhereWithoutSceneProtagonistInInput = {
+    where?: CharacterWhereInput
+    data: XOR<CharacterUpdateWithoutSceneProtagonistInInput, CharacterUncheckedUpdateWithoutSceneProtagonistInInput>
+  }
+
+  export type CharacterUpdateWithoutSceneProtagonistInInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutCharactersNestedInput
+    pictureFile?: FileUpdateOneWithoutCharacterPictureNestedInput
+    laterVersionOf?: CharacterUpdateOneWithoutPreviousVersionNestedInput
+    previousVersion?: CharacterUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUpdateManyWithoutDefaultProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateWithoutSceneProtagonistInInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousVersion?: CharacterUncheckedUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUncheckedUpdateManyWithoutDefaultProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type LocationUpsertWithoutScenesInput = {
+    update: XOR<LocationUpdateWithoutScenesInput, LocationUncheckedUpdateWithoutScenesInput>
+    create: XOR<LocationCreateWithoutScenesInput, LocationUncheckedCreateWithoutScenesInput>
+    where?: LocationWhereInput
+  }
+
+  export type LocationUpdateToOneWithWhereWithoutScenesInput = {
+    where?: LocationWhereInput
+    data: XOR<LocationUpdateWithoutScenesInput, LocationUncheckedUpdateWithoutScenesInput>
+  }
+
+  export type LocationUpdateWithoutScenesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutLocationsNestedInput
+    pictureFile?: FileUpdateOneWithoutLocationPictureNestedInput
+  }
+
+  export type LocationUncheckedUpdateWithoutScenesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ParagraphUpsertWithWhereUniqueWithoutSceneInput = {
@@ -28601,26 +40215,88 @@ export namespace Prisma {
     sortOrder?: IntFilter<"Paragraph"> | number
   }
 
+  export type SceneCharacterUpsertWithWhereUniqueWithoutSceneInput = {
+    where: SceneCharacterWhereUniqueInput
+    update: XOR<SceneCharacterUpdateWithoutSceneInput, SceneCharacterUncheckedUpdateWithoutSceneInput>
+    create: XOR<SceneCharacterCreateWithoutSceneInput, SceneCharacterUncheckedCreateWithoutSceneInput>
+  }
+
+  export type SceneCharacterUpdateWithWhereUniqueWithoutSceneInput = {
+    where: SceneCharacterWhereUniqueInput
+    data: XOR<SceneCharacterUpdateWithoutSceneInput, SceneCharacterUncheckedUpdateWithoutSceneInput>
+  }
+
+  export type SceneCharacterUpdateManyWithWhereWithoutSceneInput = {
+    where: SceneCharacterScalarWhereInput
+    data: XOR<SceneCharacterUpdateManyMutationInput, SceneCharacterUncheckedUpdateManyWithoutSceneInput>
+  }
+
+  export type SceneCharacterScalarWhereInput = {
+    AND?: SceneCharacterScalarWhereInput | SceneCharacterScalarWhereInput[]
+    OR?: SceneCharacterScalarWhereInput[]
+    NOT?: SceneCharacterScalarWhereInput | SceneCharacterScalarWhereInput[]
+    sceneId?: StringFilter<"SceneCharacter"> | string
+    characterId?: StringFilter<"SceneCharacter"> | string
+    assignedAt?: DateTimeFilter<"SceneCharacter"> | Date | string
+  }
+
+  export type SceneReferredCharacterUpsertWithWhereUniqueWithoutSceneInput = {
+    where: SceneReferredCharacterWhereUniqueInput
+    update: XOR<SceneReferredCharacterUpdateWithoutSceneInput, SceneReferredCharacterUncheckedUpdateWithoutSceneInput>
+    create: XOR<SceneReferredCharacterCreateWithoutSceneInput, SceneReferredCharacterUncheckedCreateWithoutSceneInput>
+  }
+
+  export type SceneReferredCharacterUpdateWithWhereUniqueWithoutSceneInput = {
+    where: SceneReferredCharacterWhereUniqueInput
+    data: XOR<SceneReferredCharacterUpdateWithoutSceneInput, SceneReferredCharacterUncheckedUpdateWithoutSceneInput>
+  }
+
+  export type SceneReferredCharacterUpdateManyWithWhereWithoutSceneInput = {
+    where: SceneReferredCharacterScalarWhereInput
+    data: XOR<SceneReferredCharacterUpdateManyMutationInput, SceneReferredCharacterUncheckedUpdateManyWithoutSceneInput>
+  }
+
+  export type SceneReferredCharacterScalarWhereInput = {
+    AND?: SceneReferredCharacterScalarWhereInput | SceneReferredCharacterScalarWhereInput[]
+    OR?: SceneReferredCharacterScalarWhereInput[]
+    NOT?: SceneReferredCharacterScalarWhereInput | SceneReferredCharacterScalarWhereInput[]
+    sceneId?: StringFilter<"SceneReferredCharacter"> | string
+    characterId?: StringFilter<"SceneReferredCharacter"> | string
+    assignedAt?: DateTimeFilter<"SceneReferredCharacter"> | Date | string
+  }
+
   export type SceneCreateWithoutParagraphsInput = {
     id?: string
     name?: string
+    summary?: string | null
     body: string
     sortOrder: number
     nodeType?: string
+    perspective?: $Enums.Perspective | null
     createdAt?: Date | string
     updatedAt?: Date | string
     chapter: ChapterCreateNestedOneWithoutScenesInput
+    protagonist?: CharacterCreateNestedOneWithoutSceneProtagonistInInput
+    location?: LocationCreateNestedOneWithoutScenesInput
+    participatingCharacters?: SceneCharacterCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterCreateNestedManyWithoutSceneInput
   }
 
   export type SceneUncheckedCreateWithoutParagraphsInput = {
     id?: string
     name?: string
+    summary?: string | null
     body: string
     chapterId: string
     sortOrder: number
     nodeType?: string
+    perspective?: $Enums.Perspective | null
+    protagonistId?: string | null
+    locationId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    participatingCharacters?: SceneCharacterUncheckedCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterUncheckedCreateNestedManyWithoutSceneInput
   }
 
   export type SceneCreateOrConnectWithoutParagraphsInput = {
@@ -28633,6 +40309,11 @@ export namespace Prisma {
     body: string
     contentSchema?: string | null
     version?: number
+    state?: $Enums.ParagraphState | null
+    aiCharacters?: number | null
+    humanCharacters?: number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     paragraphComment?: ParagraphCommentCreateNestedManyWithoutParagraphRevisionInput
   }
@@ -28642,6 +40323,11 @@ export namespace Prisma {
     body: string
     contentSchema?: string | null
     version?: number
+    state?: $Enums.ParagraphState | null
+    aiCharacters?: number | null
+    humanCharacters?: number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     paragraphComment?: ParagraphCommentUncheckedCreateNestedManyWithoutParagraphRevisionInput
   }
@@ -28670,23 +40356,35 @@ export namespace Prisma {
   export type SceneUpdateWithoutParagraphsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     body?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chapter?: ChapterUpdateOneRequiredWithoutScenesNestedInput
+    protagonist?: CharacterUpdateOneWithoutSceneProtagonistInNestedInput
+    location?: LocationUpdateOneWithoutScenesNestedInput
+    participatingCharacters?: SceneCharacterUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUpdateManyWithoutSceneNestedInput
   }
 
   export type SceneUncheckedUpdateWithoutParagraphsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     body?: StringFieldUpdateOperationsInput | string
     chapterId?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    protagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    participatingCharacters?: SceneCharacterUncheckedUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUncheckedUpdateManyWithoutSceneNestedInput
   }
 
   export type ParagraphRevisionUpsertWithWhereUniqueWithoutParagraphInput = {
@@ -28714,6 +40412,11 @@ export namespace Prisma {
     body?: StringFilter<"ParagraphRevision"> | string
     contentSchema?: StringNullableFilter<"ParagraphRevision"> | string | null
     version?: IntFilter<"ParagraphRevision"> | number
+    state?: EnumParagraphStateNullableFilter<"ParagraphRevision"> | $Enums.ParagraphState | null
+    aiCharacters?: IntNullableFilter<"ParagraphRevision"> | number | null
+    humanCharacters?: IntNullableFilter<"ParagraphRevision"> | number | null
+    plotPointActions?: JsonNullableFilter<"ParagraphRevision">
+    inventoryActions?: JsonNullableFilter<"ParagraphRevision">
     createdAt?: DateTimeFilter<"ParagraphRevision"> | Date | string
   }
 
@@ -28813,6 +40516,11 @@ export namespace Prisma {
     body: string
     contentSchema?: string | null
     version?: number
+    state?: $Enums.ParagraphState | null
+    aiCharacters?: number | null
+    humanCharacters?: number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     paragraph: ParagraphCreateNestedOneWithoutParagraphRevisionsInput
   }
@@ -28823,6 +40531,11 @@ export namespace Prisma {
     body: string
     contentSchema?: string | null
     version?: number
+    state?: $Enums.ParagraphState | null
+    aiCharacters?: number | null
+    humanCharacters?: number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -28883,6 +40596,11 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     contentSchema?: NullableStringFieldUpdateOperationsInput | string | null
     version?: IntFieldUpdateOperationsInput | number
+    state?: NullableEnumParagraphStateFieldUpdateOperationsInput | $Enums.ParagraphState | null
+    aiCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    humanCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paragraph?: ParagraphUpdateOneRequiredWithoutParagraphRevisionsNestedInput
   }
@@ -28893,6 +40611,11 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     contentSchema?: NullableStringFieldUpdateOperationsInput | string | null
     version?: IntFieldUpdateOperationsInput | number
+    state?: NullableEnumParagraphStateFieldUpdateOperationsInput | $Enums.ParagraphState | null
+    aiCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    humanCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28987,19 +40710,25 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
     pages?: number | null
     owner: UserCreateNestedOneWithoutOwnedStoriesInput
     bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
     books?: BookCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
   }
 
   export type StoryUncheckedCreateWithoutFilesInput = {
@@ -29016,10 +40745,12 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
+    coverArtFileId?: string | null
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
@@ -29028,11 +40759,275 @@ export namespace Prisma {
     books?: BookUncheckedCreateNestedManyWithoutStoryInput
     storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
     storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
   }
 
   export type StoryCreateOrConnectWithoutFilesInput = {
     where: StoryWhereUniqueInput
     create: XOR<StoryCreateWithoutFilesInput, StoryUncheckedCreateWithoutFilesInput>
+  }
+
+  export type StoryCreateWithoutCoverArtFileInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    owner: UserCreateNestedOneWithoutOwnedStoriesInput
+    bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
+    books?: BookCreateNestedManyWithoutStoryInput
+    files?: FileCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryUncheckedCreateWithoutCoverArtFileInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    ownerId: number
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    bookShelfStories?: BookShelfStoryUncheckedCreateNestedManyWithoutStoryInput
+    books?: BookUncheckedCreateNestedManyWithoutStoryInput
+    files?: FileUncheckedCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryCreateOrConnectWithoutCoverArtFileInput = {
+    where: StoryWhereUniqueInput
+    create: XOR<StoryCreateWithoutCoverArtFileInput, StoryUncheckedCreateWithoutCoverArtFileInput>
+  }
+
+  export type StoryCreateManyCoverArtFileInputEnvelope = {
+    data: StoryCreateManyCoverArtFileInput | StoryCreateManyCoverArtFileInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BookCreateWithoutCoverArtFileInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    pages?: number | null
+    sortOrder: number
+    nodeType?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutBooksInput
+    spineArtFile?: FileCreateNestedOneWithoutBookSpineArtInput
+    arcs?: ArcCreateNestedManyWithoutBookInput
+  }
+
+  export type BookUncheckedCreateWithoutCoverArtFileInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    storyId: string
+    spineArtFileId?: string | null
+    pages?: number | null
+    sortOrder: number
+    nodeType?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    arcs?: ArcUncheckedCreateNestedManyWithoutBookInput
+  }
+
+  export type BookCreateOrConnectWithoutCoverArtFileInput = {
+    where: BookWhereUniqueInput
+    create: XOR<BookCreateWithoutCoverArtFileInput, BookUncheckedCreateWithoutCoverArtFileInput>
+  }
+
+  export type BookCreateManyCoverArtFileInputEnvelope = {
+    data: BookCreateManyCoverArtFileInput | BookCreateManyCoverArtFileInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BookCreateWithoutSpineArtFileInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    pages?: number | null
+    sortOrder: number
+    nodeType?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutBooksInput
+    coverArtFile?: FileCreateNestedOneWithoutBookCoverArtInput
+    arcs?: ArcCreateNestedManyWithoutBookInput
+  }
+
+  export type BookUncheckedCreateWithoutSpineArtFileInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    storyId: string
+    coverArtFileId?: string | null
+    pages?: number | null
+    sortOrder: number
+    nodeType?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    arcs?: ArcUncheckedCreateNestedManyWithoutBookInput
+  }
+
+  export type BookCreateOrConnectWithoutSpineArtFileInput = {
+    where: BookWhereUniqueInput
+    create: XOR<BookCreateWithoutSpineArtFileInput, BookUncheckedCreateWithoutSpineArtFileInput>
+  }
+
+  export type BookCreateManySpineArtFileInputEnvelope = {
+    data: BookCreateManySpineArtFileInput | BookCreateManySpineArtFileInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CharacterCreateWithoutPictureFileInput = {
+    id?: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutCharactersInput
+    laterVersionOf?: CharacterCreateNestedOneWithoutPreviousVersionInput
+    previousVersion?: CharacterCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterUncheckedCreateWithoutPictureFileInput = {
+    id?: string
+    storyId: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    previousVersion?: CharacterUncheckedCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryUncheckedCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneUncheckedCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterUncheckedCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterUncheckedCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterCreateOrConnectWithoutPictureFileInput = {
+    where: CharacterWhereUniqueInput
+    create: XOR<CharacterCreateWithoutPictureFileInput, CharacterUncheckedCreateWithoutPictureFileInput>
+  }
+
+  export type CharacterCreateManyPictureFileInputEnvelope = {
+    data: CharacterCreateManyPictureFileInput | CharacterCreateManyPictureFileInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type LocationCreateWithoutPictureFileInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutLocationsInput
+    scenes?: SceneCreateNestedManyWithoutLocationInput
+  }
+
+  export type LocationUncheckedCreateWithoutPictureFileInput = {
+    id?: string
+    storyId: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    scenes?: SceneUncheckedCreateNestedManyWithoutLocationInput
+  }
+
+  export type LocationCreateOrConnectWithoutPictureFileInput = {
+    where: LocationWhereUniqueInput
+    create: XOR<LocationCreateWithoutPictureFileInput, LocationUncheckedCreateWithoutPictureFileInput>
+  }
+
+  export type LocationCreateManyPictureFileInputEnvelope = {
+    data: LocationCreateManyPictureFileInput | LocationCreateManyPictureFileInput[]
+    skipDuplicates?: boolean
   }
 
   export type UserUpsertWithoutFilesInput = {
@@ -29101,19 +41096,25 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
     bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
     books?: BookUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
   }
 
   export type StoryUncheckedUpdateWithoutFilesInput = {
@@ -29130,10 +41131,12 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -29142,11 +41145,96 @@ export namespace Prisma {
     books?: BookUncheckedUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryUpsertWithWhereUniqueWithoutCoverArtFileInput = {
+    where: StoryWhereUniqueInput
+    update: XOR<StoryUpdateWithoutCoverArtFileInput, StoryUncheckedUpdateWithoutCoverArtFileInput>
+    create: XOR<StoryCreateWithoutCoverArtFileInput, StoryUncheckedCreateWithoutCoverArtFileInput>
+  }
+
+  export type StoryUpdateWithWhereUniqueWithoutCoverArtFileInput = {
+    where: StoryWhereUniqueInput
+    data: XOR<StoryUpdateWithoutCoverArtFileInput, StoryUncheckedUpdateWithoutCoverArtFileInput>
+  }
+
+  export type StoryUpdateManyWithWhereWithoutCoverArtFileInput = {
+    where: StoryScalarWhereInput
+    data: XOR<StoryUpdateManyMutationInput, StoryUncheckedUpdateManyWithoutCoverArtFileInput>
+  }
+
+  export type BookUpsertWithWhereUniqueWithoutCoverArtFileInput = {
+    where: BookWhereUniqueInput
+    update: XOR<BookUpdateWithoutCoverArtFileInput, BookUncheckedUpdateWithoutCoverArtFileInput>
+    create: XOR<BookCreateWithoutCoverArtFileInput, BookUncheckedCreateWithoutCoverArtFileInput>
+  }
+
+  export type BookUpdateWithWhereUniqueWithoutCoverArtFileInput = {
+    where: BookWhereUniqueInput
+    data: XOR<BookUpdateWithoutCoverArtFileInput, BookUncheckedUpdateWithoutCoverArtFileInput>
+  }
+
+  export type BookUpdateManyWithWhereWithoutCoverArtFileInput = {
+    where: BookScalarWhereInput
+    data: XOR<BookUpdateManyMutationInput, BookUncheckedUpdateManyWithoutCoverArtFileInput>
+  }
+
+  export type BookUpsertWithWhereUniqueWithoutSpineArtFileInput = {
+    where: BookWhereUniqueInput
+    update: XOR<BookUpdateWithoutSpineArtFileInput, BookUncheckedUpdateWithoutSpineArtFileInput>
+    create: XOR<BookCreateWithoutSpineArtFileInput, BookUncheckedCreateWithoutSpineArtFileInput>
+  }
+
+  export type BookUpdateWithWhereUniqueWithoutSpineArtFileInput = {
+    where: BookWhereUniqueInput
+    data: XOR<BookUpdateWithoutSpineArtFileInput, BookUncheckedUpdateWithoutSpineArtFileInput>
+  }
+
+  export type BookUpdateManyWithWhereWithoutSpineArtFileInput = {
+    where: BookScalarWhereInput
+    data: XOR<BookUpdateManyMutationInput, BookUncheckedUpdateManyWithoutSpineArtFileInput>
+  }
+
+  export type CharacterUpsertWithWhereUniqueWithoutPictureFileInput = {
+    where: CharacterWhereUniqueInput
+    update: XOR<CharacterUpdateWithoutPictureFileInput, CharacterUncheckedUpdateWithoutPictureFileInput>
+    create: XOR<CharacterCreateWithoutPictureFileInput, CharacterUncheckedCreateWithoutPictureFileInput>
+  }
+
+  export type CharacterUpdateWithWhereUniqueWithoutPictureFileInput = {
+    where: CharacterWhereUniqueInput
+    data: XOR<CharacterUpdateWithoutPictureFileInput, CharacterUncheckedUpdateWithoutPictureFileInput>
+  }
+
+  export type CharacterUpdateManyWithWhereWithoutPictureFileInput = {
+    where: CharacterScalarWhereInput
+    data: XOR<CharacterUpdateManyMutationInput, CharacterUncheckedUpdateManyWithoutPictureFileInput>
+  }
+
+  export type LocationUpsertWithWhereUniqueWithoutPictureFileInput = {
+    where: LocationWhereUniqueInput
+    update: XOR<LocationUpdateWithoutPictureFileInput, LocationUncheckedUpdateWithoutPictureFileInput>
+    create: XOR<LocationCreateWithoutPictureFileInput, LocationUncheckedCreateWithoutPictureFileInput>
+  }
+
+  export type LocationUpdateWithWhereUniqueWithoutPictureFileInput = {
+    where: LocationWhereUniqueInput
+    data: XOR<LocationUpdateWithoutPictureFileInput, LocationUncheckedUpdateWithoutPictureFileInput>
+  }
+
+  export type LocationUpdateManyWithWhereWithoutPictureFileInput = {
+    where: LocationScalarWhereInput
+    data: XOR<LocationUpdateManyMutationInput, LocationUncheckedUpdateManyWithoutPictureFileInput>
   }
 
   export type ChapterCreateWithoutPublishingStatusInput = {
     id?: string
     name?: string
+    summary?: string | null
     publishedOn?: Date | string | null
     sortOrder: number
     royalRoadId?: number | null
@@ -29161,6 +41249,7 @@ export namespace Prisma {
   export type ChapterUncheckedCreateWithoutPublishingStatusInput = {
     id?: string
     name?: string
+    summary?: string | null
     arcId: string
     publishedOn?: Date | string | null
     sortOrder: number
@@ -29191,6 +41280,7 @@ export namespace Prisma {
   export type ChapterUpdateWithoutPublishingStatusInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -29205,6 +41295,7 @@ export namespace Prisma {
   export type ChapterUncheckedUpdateWithoutPublishingStatusInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     arcId?: StringFieldUpdateOperationsInput | string
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -29214,6 +41305,1788 @@ export namespace Prisma {
     nodeType?: StringFieldUpdateOperationsInput | string
     scenes?: SceneUncheckedUpdateManyWithoutChapterNestedInput
     StoryReadStatus?: StoryReadStatusUncheckedUpdateManyWithoutLastChapterNestedInput
+  }
+
+  export type StoryCreateWithoutCharactersInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    owner: UserCreateNestedOneWithoutOwnedStoriesInput
+    bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
+    books?: BookCreateNestedManyWithoutStoryInput
+    files?: FileCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryUncheckedCreateWithoutCharactersInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    ownerId: number
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverArtFileId?: string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    bookShelfStories?: BookShelfStoryUncheckedCreateNestedManyWithoutStoryInput
+    books?: BookUncheckedCreateNestedManyWithoutStoryInput
+    files?: FileUncheckedCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryCreateOrConnectWithoutCharactersInput = {
+    where: StoryWhereUniqueInput
+    create: XOR<StoryCreateWithoutCharactersInput, StoryUncheckedCreateWithoutCharactersInput>
+  }
+
+  export type FileCreateWithoutCharacterPictureInput = {
+    id?: string
+    localPath?: string | null
+    path: string
+    sha256?: string
+    width?: number | null
+    height?: number | null
+    bytes?: number | null
+    mimeType: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: UserCreateNestedOneWithoutFilesInput
+    story?: StoryCreateNestedOneWithoutFilesInput
+    storyCoverArt?: StoryCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookCreateNestedManyWithoutSpineArtFileInput
+    locationPicture?: LocationCreateNestedManyWithoutPictureFileInput
+  }
+
+  export type FileUncheckedCreateWithoutCharacterPictureInput = {
+    id?: string
+    ownerId: number
+    storyId?: string | null
+    localPath?: string | null
+    path: string
+    sha256?: string
+    width?: number | null
+    height?: number | null
+    bytes?: number | null
+    mimeType: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    storyCoverArt?: StoryUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookUncheckedCreateNestedManyWithoutSpineArtFileInput
+    locationPicture?: LocationUncheckedCreateNestedManyWithoutPictureFileInput
+  }
+
+  export type FileCreateOrConnectWithoutCharacterPictureInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutCharacterPictureInput, FileUncheckedCreateWithoutCharacterPictureInput>
+  }
+
+  export type CharacterCreateWithoutPreviousVersionInput = {
+    id?: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutCharactersInput
+    pictureFile?: FileCreateNestedOneWithoutCharacterPictureInput
+    laterVersionOf?: CharacterCreateNestedOneWithoutPreviousVersionInput
+    defaultProtagonistForStory?: StoryCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterUncheckedCreateWithoutPreviousVersionInput = {
+    id?: string
+    storyId: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    defaultProtagonistForStory?: StoryUncheckedCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneUncheckedCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterUncheckedCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterUncheckedCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterCreateOrConnectWithoutPreviousVersionInput = {
+    where: CharacterWhereUniqueInput
+    create: XOR<CharacterCreateWithoutPreviousVersionInput, CharacterUncheckedCreateWithoutPreviousVersionInput>
+  }
+
+  export type CharacterCreateWithoutLaterVersionOfInput = {
+    id?: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutCharactersInput
+    pictureFile?: FileCreateNestedOneWithoutCharacterPictureInput
+    previousVersion?: CharacterCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterUncheckedCreateWithoutLaterVersionOfInput = {
+    id?: string
+    storyId: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    previousVersion?: CharacterUncheckedCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryUncheckedCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneUncheckedCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterUncheckedCreateNestedManyWithoutCharacterInput
+    referredInScenes?: SceneReferredCharacterUncheckedCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterCreateOrConnectWithoutLaterVersionOfInput = {
+    where: CharacterWhereUniqueInput
+    create: XOR<CharacterCreateWithoutLaterVersionOfInput, CharacterUncheckedCreateWithoutLaterVersionOfInput>
+  }
+
+  export type CharacterCreateManyLaterVersionOfInputEnvelope = {
+    data: CharacterCreateManyLaterVersionOfInput | CharacterCreateManyLaterVersionOfInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StoryCreateWithoutDefaultProtagonistInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    owner: UserCreateNestedOneWithoutOwnedStoriesInput
+    bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    books?: BookCreateNestedManyWithoutStoryInput
+    files?: FileCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryUncheckedCreateWithoutDefaultProtagonistInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    ownerId: number
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverArtFileId?: string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    bookShelfStories?: BookShelfStoryUncheckedCreateNestedManyWithoutStoryInput
+    books?: BookUncheckedCreateNestedManyWithoutStoryInput
+    files?: FileUncheckedCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryCreateOrConnectWithoutDefaultProtagonistInput = {
+    where: StoryWhereUniqueInput
+    create: XOR<StoryCreateWithoutDefaultProtagonistInput, StoryUncheckedCreateWithoutDefaultProtagonistInput>
+  }
+
+  export type StoryCreateManyDefaultProtagonistInputEnvelope = {
+    data: StoryCreateManyDefaultProtagonistInput | StoryCreateManyDefaultProtagonistInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SceneCreateWithoutProtagonistInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    body: string
+    sortOrder: number
+    nodeType?: string
+    perspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chapter: ChapterCreateNestedOneWithoutScenesInput
+    location?: LocationCreateNestedOneWithoutScenesInput
+    paragraphs?: ParagraphCreateNestedManyWithoutSceneInput
+    participatingCharacters?: SceneCharacterCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterCreateNestedManyWithoutSceneInput
+  }
+
+  export type SceneUncheckedCreateWithoutProtagonistInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    body: string
+    chapterId: string
+    sortOrder: number
+    nodeType?: string
+    perspective?: $Enums.Perspective | null
+    locationId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    paragraphs?: ParagraphUncheckedCreateNestedManyWithoutSceneInput
+    participatingCharacters?: SceneCharacterUncheckedCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterUncheckedCreateNestedManyWithoutSceneInput
+  }
+
+  export type SceneCreateOrConnectWithoutProtagonistInput = {
+    where: SceneWhereUniqueInput
+    create: XOR<SceneCreateWithoutProtagonistInput, SceneUncheckedCreateWithoutProtagonistInput>
+  }
+
+  export type SceneCreateManyProtagonistInputEnvelope = {
+    data: SceneCreateManyProtagonistInput | SceneCreateManyProtagonistInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SceneCharacterCreateWithoutCharacterInput = {
+    assignedAt?: Date | string
+    scene: SceneCreateNestedOneWithoutParticipatingCharactersInput
+  }
+
+  export type SceneCharacterUncheckedCreateWithoutCharacterInput = {
+    sceneId: string
+    assignedAt?: Date | string
+  }
+
+  export type SceneCharacterCreateOrConnectWithoutCharacterInput = {
+    where: SceneCharacterWhereUniqueInput
+    create: XOR<SceneCharacterCreateWithoutCharacterInput, SceneCharacterUncheckedCreateWithoutCharacterInput>
+  }
+
+  export type SceneCharacterCreateManyCharacterInputEnvelope = {
+    data: SceneCharacterCreateManyCharacterInput | SceneCharacterCreateManyCharacterInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SceneReferredCharacterCreateWithoutCharacterInput = {
+    assignedAt?: Date | string
+    scene: SceneCreateNestedOneWithoutReferredCharactersInput
+  }
+
+  export type SceneReferredCharacterUncheckedCreateWithoutCharacterInput = {
+    sceneId: string
+    assignedAt?: Date | string
+  }
+
+  export type SceneReferredCharacterCreateOrConnectWithoutCharacterInput = {
+    where: SceneReferredCharacterWhereUniqueInput
+    create: XOR<SceneReferredCharacterCreateWithoutCharacterInput, SceneReferredCharacterUncheckedCreateWithoutCharacterInput>
+  }
+
+  export type SceneReferredCharacterCreateManyCharacterInputEnvelope = {
+    data: SceneReferredCharacterCreateManyCharacterInput | SceneReferredCharacterCreateManyCharacterInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StoryUpsertWithoutCharactersInput = {
+    update: XOR<StoryUpdateWithoutCharactersInput, StoryUncheckedUpdateWithoutCharactersInput>
+    create: XOR<StoryCreateWithoutCharactersInput, StoryUncheckedCreateWithoutCharactersInput>
+    where?: StoryWhereInput
+  }
+
+  export type StoryUpdateToOneWithWhereWithoutCharactersInput = {
+    where?: StoryWhereInput
+    data: XOR<StoryUpdateWithoutCharactersInput, StoryUncheckedUpdateWithoutCharactersInput>
+  }
+
+  export type StoryUpdateWithoutCharactersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
+    bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
+    books?: BookUpdateManyWithoutStoryNestedInput
+    files?: FileUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryUncheckedUpdateWithoutCharactersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: IntFieldUpdateOperationsInput | number
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    bookShelfStories?: BookShelfStoryUncheckedUpdateManyWithoutStoryNestedInput
+    books?: BookUncheckedUpdateManyWithoutStoryNestedInput
+    files?: FileUncheckedUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
+  }
+
+  export type FileUpsertWithoutCharacterPictureInput = {
+    update: XOR<FileUpdateWithoutCharacterPictureInput, FileUncheckedUpdateWithoutCharacterPictureInput>
+    create: XOR<FileCreateWithoutCharacterPictureInput, FileUncheckedCreateWithoutCharacterPictureInput>
+    where?: FileWhereInput
+  }
+
+  export type FileUpdateToOneWithWhereWithoutCharacterPictureInput = {
+    where?: FileWhereInput
+    data: XOR<FileUpdateWithoutCharacterPictureInput, FileUncheckedUpdateWithoutCharacterPictureInput>
+  }
+
+  export type FileUpdateWithoutCharacterPictureInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    localPath?: NullableStringFieldUpdateOperationsInput | string | null
+    path?: StringFieldUpdateOperationsInput | string
+    sha256?: StringFieldUpdateOperationsInput | string
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    bytes?: NullableIntFieldUpdateOperationsInput | number | null
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutFilesNestedInput
+    story?: StoryUpdateOneWithoutFilesNestedInput
+    storyCoverArt?: StoryUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUpdateManyWithoutSpineArtFileNestedInput
+    locationPicture?: LocationUpdateManyWithoutPictureFileNestedInput
+  }
+
+  export type FileUncheckedUpdateWithoutCharacterPictureInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ownerId?: IntFieldUpdateOperationsInput | number
+    storyId?: NullableStringFieldUpdateOperationsInput | string | null
+    localPath?: NullableStringFieldUpdateOperationsInput | string | null
+    path?: StringFieldUpdateOperationsInput | string
+    sha256?: StringFieldUpdateOperationsInput | string
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    bytes?: NullableIntFieldUpdateOperationsInput | number | null
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    storyCoverArt?: StoryUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUncheckedUpdateManyWithoutSpineArtFileNestedInput
+    locationPicture?: LocationUncheckedUpdateManyWithoutPictureFileNestedInput
+  }
+
+  export type CharacterUpsertWithoutPreviousVersionInput = {
+    update: XOR<CharacterUpdateWithoutPreviousVersionInput, CharacterUncheckedUpdateWithoutPreviousVersionInput>
+    create: XOR<CharacterCreateWithoutPreviousVersionInput, CharacterUncheckedCreateWithoutPreviousVersionInput>
+    where?: CharacterWhereInput
+  }
+
+  export type CharacterUpdateToOneWithWhereWithoutPreviousVersionInput = {
+    where?: CharacterWhereInput
+    data: XOR<CharacterUpdateWithoutPreviousVersionInput, CharacterUncheckedUpdateWithoutPreviousVersionInput>
+  }
+
+  export type CharacterUpdateWithoutPreviousVersionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutCharactersNestedInput
+    pictureFile?: FileUpdateOneWithoutCharacterPictureNestedInput
+    laterVersionOf?: CharacterUpdateOneWithoutPreviousVersionNestedInput
+    defaultProtagonistForStory?: StoryUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateWithoutPreviousVersionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    defaultProtagonistForStory?: StoryUncheckedUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUncheckedUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUpsertWithWhereUniqueWithoutLaterVersionOfInput = {
+    where: CharacterWhereUniqueInput
+    update: XOR<CharacterUpdateWithoutLaterVersionOfInput, CharacterUncheckedUpdateWithoutLaterVersionOfInput>
+    create: XOR<CharacterCreateWithoutLaterVersionOfInput, CharacterUncheckedCreateWithoutLaterVersionOfInput>
+  }
+
+  export type CharacterUpdateWithWhereUniqueWithoutLaterVersionOfInput = {
+    where: CharacterWhereUniqueInput
+    data: XOR<CharacterUpdateWithoutLaterVersionOfInput, CharacterUncheckedUpdateWithoutLaterVersionOfInput>
+  }
+
+  export type CharacterUpdateManyWithWhereWithoutLaterVersionOfInput = {
+    where: CharacterScalarWhereInput
+    data: XOR<CharacterUpdateManyMutationInput, CharacterUncheckedUpdateManyWithoutLaterVersionOfInput>
+  }
+
+  export type StoryUpsertWithWhereUniqueWithoutDefaultProtagonistInput = {
+    where: StoryWhereUniqueInput
+    update: XOR<StoryUpdateWithoutDefaultProtagonistInput, StoryUncheckedUpdateWithoutDefaultProtagonistInput>
+    create: XOR<StoryCreateWithoutDefaultProtagonistInput, StoryUncheckedCreateWithoutDefaultProtagonistInput>
+  }
+
+  export type StoryUpdateWithWhereUniqueWithoutDefaultProtagonistInput = {
+    where: StoryWhereUniqueInput
+    data: XOR<StoryUpdateWithoutDefaultProtagonistInput, StoryUncheckedUpdateWithoutDefaultProtagonistInput>
+  }
+
+  export type StoryUpdateManyWithWhereWithoutDefaultProtagonistInput = {
+    where: StoryScalarWhereInput
+    data: XOR<StoryUpdateManyMutationInput, StoryUncheckedUpdateManyWithoutDefaultProtagonistInput>
+  }
+
+  export type SceneUpsertWithWhereUniqueWithoutProtagonistInput = {
+    where: SceneWhereUniqueInput
+    update: XOR<SceneUpdateWithoutProtagonistInput, SceneUncheckedUpdateWithoutProtagonistInput>
+    create: XOR<SceneCreateWithoutProtagonistInput, SceneUncheckedCreateWithoutProtagonistInput>
+  }
+
+  export type SceneUpdateWithWhereUniqueWithoutProtagonistInput = {
+    where: SceneWhereUniqueInput
+    data: XOR<SceneUpdateWithoutProtagonistInput, SceneUncheckedUpdateWithoutProtagonistInput>
+  }
+
+  export type SceneUpdateManyWithWhereWithoutProtagonistInput = {
+    where: SceneScalarWhereInput
+    data: XOR<SceneUpdateManyMutationInput, SceneUncheckedUpdateManyWithoutProtagonistInput>
+  }
+
+  export type SceneCharacterUpsertWithWhereUniqueWithoutCharacterInput = {
+    where: SceneCharacterWhereUniqueInput
+    update: XOR<SceneCharacterUpdateWithoutCharacterInput, SceneCharacterUncheckedUpdateWithoutCharacterInput>
+    create: XOR<SceneCharacterCreateWithoutCharacterInput, SceneCharacterUncheckedCreateWithoutCharacterInput>
+  }
+
+  export type SceneCharacterUpdateWithWhereUniqueWithoutCharacterInput = {
+    where: SceneCharacterWhereUniqueInput
+    data: XOR<SceneCharacterUpdateWithoutCharacterInput, SceneCharacterUncheckedUpdateWithoutCharacterInput>
+  }
+
+  export type SceneCharacterUpdateManyWithWhereWithoutCharacterInput = {
+    where: SceneCharacterScalarWhereInput
+    data: XOR<SceneCharacterUpdateManyMutationInput, SceneCharacterUncheckedUpdateManyWithoutCharacterInput>
+  }
+
+  export type SceneReferredCharacterUpsertWithWhereUniqueWithoutCharacterInput = {
+    where: SceneReferredCharacterWhereUniqueInput
+    update: XOR<SceneReferredCharacterUpdateWithoutCharacterInput, SceneReferredCharacterUncheckedUpdateWithoutCharacterInput>
+    create: XOR<SceneReferredCharacterCreateWithoutCharacterInput, SceneReferredCharacterUncheckedCreateWithoutCharacterInput>
+  }
+
+  export type SceneReferredCharacterUpdateWithWhereUniqueWithoutCharacterInput = {
+    where: SceneReferredCharacterWhereUniqueInput
+    data: XOR<SceneReferredCharacterUpdateWithoutCharacterInput, SceneReferredCharacterUncheckedUpdateWithoutCharacterInput>
+  }
+
+  export type SceneReferredCharacterUpdateManyWithWhereWithoutCharacterInput = {
+    where: SceneReferredCharacterScalarWhereInput
+    data: XOR<SceneReferredCharacterUpdateManyMutationInput, SceneReferredCharacterUncheckedUpdateManyWithoutCharacterInput>
+  }
+
+  export type StoryCreateWithoutLocationsInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    owner: UserCreateNestedOneWithoutOwnedStoriesInput
+    bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
+    books?: BookCreateNestedManyWithoutStoryInput
+    files?: FileCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryUncheckedCreateWithoutLocationsInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    ownerId: number
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverArtFileId?: string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    bookShelfStories?: BookShelfStoryUncheckedCreateNestedManyWithoutStoryInput
+    books?: BookUncheckedCreateNestedManyWithoutStoryInput
+    files?: FileUncheckedCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryCreateOrConnectWithoutLocationsInput = {
+    where: StoryWhereUniqueInput
+    create: XOR<StoryCreateWithoutLocationsInput, StoryUncheckedCreateWithoutLocationsInput>
+  }
+
+  export type FileCreateWithoutLocationPictureInput = {
+    id?: string
+    localPath?: string | null
+    path: string
+    sha256?: string
+    width?: number | null
+    height?: number | null
+    bytes?: number | null
+    mimeType: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: UserCreateNestedOneWithoutFilesInput
+    story?: StoryCreateNestedOneWithoutFilesInput
+    storyCoverArt?: StoryCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterCreateNestedManyWithoutPictureFileInput
+  }
+
+  export type FileUncheckedCreateWithoutLocationPictureInput = {
+    id?: string
+    ownerId: number
+    storyId?: string | null
+    localPath?: string | null
+    path: string
+    sha256?: string
+    width?: number | null
+    height?: number | null
+    bytes?: number | null
+    mimeType: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    storyCoverArt?: StoryUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookCoverArt?: BookUncheckedCreateNestedManyWithoutCoverArtFileInput
+    bookSpineArt?: BookUncheckedCreateNestedManyWithoutSpineArtFileInput
+    characterPicture?: CharacterUncheckedCreateNestedManyWithoutPictureFileInput
+  }
+
+  export type FileCreateOrConnectWithoutLocationPictureInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutLocationPictureInput, FileUncheckedCreateWithoutLocationPictureInput>
+  }
+
+  export type SceneCreateWithoutLocationInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    body: string
+    sortOrder: number
+    nodeType?: string
+    perspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chapter: ChapterCreateNestedOneWithoutScenesInput
+    protagonist?: CharacterCreateNestedOneWithoutSceneProtagonistInInput
+    paragraphs?: ParagraphCreateNestedManyWithoutSceneInput
+    participatingCharacters?: SceneCharacterCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterCreateNestedManyWithoutSceneInput
+  }
+
+  export type SceneUncheckedCreateWithoutLocationInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    body: string
+    chapterId: string
+    sortOrder: number
+    nodeType?: string
+    perspective?: $Enums.Perspective | null
+    protagonistId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    paragraphs?: ParagraphUncheckedCreateNestedManyWithoutSceneInput
+    participatingCharacters?: SceneCharacterUncheckedCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterUncheckedCreateNestedManyWithoutSceneInput
+  }
+
+  export type SceneCreateOrConnectWithoutLocationInput = {
+    where: SceneWhereUniqueInput
+    create: XOR<SceneCreateWithoutLocationInput, SceneUncheckedCreateWithoutLocationInput>
+  }
+
+  export type SceneCreateManyLocationInputEnvelope = {
+    data: SceneCreateManyLocationInput | SceneCreateManyLocationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StoryUpsertWithoutLocationsInput = {
+    update: XOR<StoryUpdateWithoutLocationsInput, StoryUncheckedUpdateWithoutLocationsInput>
+    create: XOR<StoryCreateWithoutLocationsInput, StoryUncheckedCreateWithoutLocationsInput>
+    where?: StoryWhereInput
+  }
+
+  export type StoryUpdateToOneWithWhereWithoutLocationsInput = {
+    where?: StoryWhereInput
+    data: XOR<StoryUpdateWithoutLocationsInput, StoryUncheckedUpdateWithoutLocationsInput>
+  }
+
+  export type StoryUpdateWithoutLocationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
+    bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
+    books?: BookUpdateManyWithoutStoryNestedInput
+    files?: FileUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryUncheckedUpdateWithoutLocationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: IntFieldUpdateOperationsInput | number
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    bookShelfStories?: BookShelfStoryUncheckedUpdateManyWithoutStoryNestedInput
+    books?: BookUncheckedUpdateManyWithoutStoryNestedInput
+    files?: FileUncheckedUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
+  }
+
+  export type FileUpsertWithoutLocationPictureInput = {
+    update: XOR<FileUpdateWithoutLocationPictureInput, FileUncheckedUpdateWithoutLocationPictureInput>
+    create: XOR<FileCreateWithoutLocationPictureInput, FileUncheckedCreateWithoutLocationPictureInput>
+    where?: FileWhereInput
+  }
+
+  export type FileUpdateToOneWithWhereWithoutLocationPictureInput = {
+    where?: FileWhereInput
+    data: XOR<FileUpdateWithoutLocationPictureInput, FileUncheckedUpdateWithoutLocationPictureInput>
+  }
+
+  export type FileUpdateWithoutLocationPictureInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    localPath?: NullableStringFieldUpdateOperationsInput | string | null
+    path?: StringFieldUpdateOperationsInput | string
+    sha256?: StringFieldUpdateOperationsInput | string
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    bytes?: NullableIntFieldUpdateOperationsInput | number | null
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutFilesNestedInput
+    story?: StoryUpdateOneWithoutFilesNestedInput
+    storyCoverArt?: StoryUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUpdateManyWithoutPictureFileNestedInput
+  }
+
+  export type FileUncheckedUpdateWithoutLocationPictureInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ownerId?: IntFieldUpdateOperationsInput | number
+    storyId?: NullableStringFieldUpdateOperationsInput | string | null
+    localPath?: NullableStringFieldUpdateOperationsInput | string | null
+    path?: StringFieldUpdateOperationsInput | string
+    sha256?: StringFieldUpdateOperationsInput | string
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    bytes?: NullableIntFieldUpdateOperationsInput | number | null
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    storyCoverArt?: StoryUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUncheckedUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUncheckedUpdateManyWithoutPictureFileNestedInput
+  }
+
+  export type SceneUpsertWithWhereUniqueWithoutLocationInput = {
+    where: SceneWhereUniqueInput
+    update: XOR<SceneUpdateWithoutLocationInput, SceneUncheckedUpdateWithoutLocationInput>
+    create: XOR<SceneCreateWithoutLocationInput, SceneUncheckedCreateWithoutLocationInput>
+  }
+
+  export type SceneUpdateWithWhereUniqueWithoutLocationInput = {
+    where: SceneWhereUniqueInput
+    data: XOR<SceneUpdateWithoutLocationInput, SceneUncheckedUpdateWithoutLocationInput>
+  }
+
+  export type SceneUpdateManyWithWhereWithoutLocationInput = {
+    where: SceneScalarWhereInput
+    data: XOR<SceneUpdateManyMutationInput, SceneUncheckedUpdateManyWithoutLocationInput>
+  }
+
+  export type StoryCreateWithoutPlotPointsInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    owner: UserCreateNestedOneWithoutOwnedStoriesInput
+    bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
+    books?: BookCreateNestedManyWithoutStoryInput
+    files?: FileCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    items?: ItemCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryUncheckedCreateWithoutPlotPointsInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    ownerId: number
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverArtFileId?: string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    bookShelfStories?: BookShelfStoryUncheckedCreateNestedManyWithoutStoryInput
+    books?: BookUncheckedCreateNestedManyWithoutStoryInput
+    files?: FileUncheckedCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    items?: ItemUncheckedCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryCreateOrConnectWithoutPlotPointsInput = {
+    where: StoryWhereUniqueInput
+    create: XOR<StoryCreateWithoutPlotPointsInput, StoryUncheckedCreateWithoutPlotPointsInput>
+  }
+
+  export type StoryUpsertWithoutPlotPointsInput = {
+    update: XOR<StoryUpdateWithoutPlotPointsInput, StoryUncheckedUpdateWithoutPlotPointsInput>
+    create: XOR<StoryCreateWithoutPlotPointsInput, StoryUncheckedCreateWithoutPlotPointsInput>
+    where?: StoryWhereInput
+  }
+
+  export type StoryUpdateToOneWithWhereWithoutPlotPointsInput = {
+    where?: StoryWhereInput
+    data: XOR<StoryUpdateWithoutPlotPointsInput, StoryUncheckedUpdateWithoutPlotPointsInput>
+  }
+
+  export type StoryUpdateWithoutPlotPointsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
+    bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
+    books?: BookUpdateManyWithoutStoryNestedInput
+    files?: FileUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryUncheckedUpdateWithoutPlotPointsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: IntFieldUpdateOperationsInput | number
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    bookShelfStories?: BookShelfStoryUncheckedUpdateManyWithoutStoryNestedInput
+    books?: BookUncheckedUpdateManyWithoutStoryNestedInput
+    files?: FileUncheckedUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryCreateWithoutItemsInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    owner: UserCreateNestedOneWithoutOwnedStoriesInput
+    bookShelfStories?: BookShelfStoryCreateNestedManyWithoutStoryInput
+    coverArtFile?: FileCreateNestedOneWithoutStoryCoverArtInput
+    defaultProtagonist?: CharacterCreateNestedOneWithoutDefaultProtagonistForStoryInput
+    books?: BookCreateNestedManyWithoutStoryInput
+    files?: FileCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagCreateNestedManyWithoutStoryInput
+    characters?: CharacterCreateNestedManyWithoutStoryInput
+    locations?: LocationCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryUncheckedCreateWithoutItemsInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    ownerId: number
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverArtFileId?: string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+    bookShelfStories?: BookShelfStoryUncheckedCreateNestedManyWithoutStoryInput
+    books?: BookUncheckedCreateNestedManyWithoutStoryInput
+    files?: FileUncheckedCreateNestedManyWithoutStoryInput
+    storyReadStatuses?: StoryReadStatusUncheckedCreateNestedManyWithoutStoryInput
+    storyTags?: StoryTagUncheckedCreateNestedManyWithoutStoryInput
+    characters?: CharacterUncheckedCreateNestedManyWithoutStoryInput
+    locations?: LocationUncheckedCreateNestedManyWithoutStoryInput
+    plotPoints?: PlotPointUncheckedCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryCreateOrConnectWithoutItemsInput = {
+    where: StoryWhereUniqueInput
+    create: XOR<StoryCreateWithoutItemsInput, StoryUncheckedCreateWithoutItemsInput>
+  }
+
+  export type StoryUpsertWithoutItemsInput = {
+    update: XOR<StoryUpdateWithoutItemsInput, StoryUncheckedUpdateWithoutItemsInput>
+    create: XOR<StoryCreateWithoutItemsInput, StoryUncheckedCreateWithoutItemsInput>
+    where?: StoryWhereInput
+  }
+
+  export type StoryUpdateToOneWithWhereWithoutItemsInput = {
+    where?: StoryWhereInput
+    data: XOR<StoryUpdateWithoutItemsInput, StoryUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type StoryUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
+    bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
+    books?: BookUpdateManyWithoutStoryNestedInput
+    files?: FileUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryUncheckedUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: IntFieldUpdateOperationsInput | number
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    bookShelfStories?: BookShelfStoryUncheckedUpdateManyWithoutStoryNestedInput
+    books?: BookUncheckedUpdateManyWithoutStoryNestedInput
+    files?: FileUncheckedUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+  }
+
+  export type SceneCreateWithoutParticipatingCharactersInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    body: string
+    sortOrder: number
+    nodeType?: string
+    perspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chapter: ChapterCreateNestedOneWithoutScenesInput
+    protagonist?: CharacterCreateNestedOneWithoutSceneProtagonistInInput
+    location?: LocationCreateNestedOneWithoutScenesInput
+    paragraphs?: ParagraphCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterCreateNestedManyWithoutSceneInput
+  }
+
+  export type SceneUncheckedCreateWithoutParticipatingCharactersInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    body: string
+    chapterId: string
+    sortOrder: number
+    nodeType?: string
+    perspective?: $Enums.Perspective | null
+    protagonistId?: string | null
+    locationId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    paragraphs?: ParagraphUncheckedCreateNestedManyWithoutSceneInput
+    referredCharacters?: SceneReferredCharacterUncheckedCreateNestedManyWithoutSceneInput
+  }
+
+  export type SceneCreateOrConnectWithoutParticipatingCharactersInput = {
+    where: SceneWhereUniqueInput
+    create: XOR<SceneCreateWithoutParticipatingCharactersInput, SceneUncheckedCreateWithoutParticipatingCharactersInput>
+  }
+
+  export type CharacterCreateWithoutParticipatingInScenesInput = {
+    id?: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutCharactersInput
+    pictureFile?: FileCreateNestedOneWithoutCharacterPictureInput
+    laterVersionOf?: CharacterCreateNestedOneWithoutPreviousVersionInput
+    previousVersion?: CharacterCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneCreateNestedManyWithoutProtagonistInput
+    referredInScenes?: SceneReferredCharacterCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterUncheckedCreateWithoutParticipatingInScenesInput = {
+    id?: string
+    storyId: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    previousVersion?: CharacterUncheckedCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryUncheckedCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneUncheckedCreateNestedManyWithoutProtagonistInput
+    referredInScenes?: SceneReferredCharacterUncheckedCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterCreateOrConnectWithoutParticipatingInScenesInput = {
+    where: CharacterWhereUniqueInput
+    create: XOR<CharacterCreateWithoutParticipatingInScenesInput, CharacterUncheckedCreateWithoutParticipatingInScenesInput>
+  }
+
+  export type SceneUpsertWithoutParticipatingCharactersInput = {
+    update: XOR<SceneUpdateWithoutParticipatingCharactersInput, SceneUncheckedUpdateWithoutParticipatingCharactersInput>
+    create: XOR<SceneCreateWithoutParticipatingCharactersInput, SceneUncheckedCreateWithoutParticipatingCharactersInput>
+    where?: SceneWhereInput
+  }
+
+  export type SceneUpdateToOneWithWhereWithoutParticipatingCharactersInput = {
+    where?: SceneWhereInput
+    data: XOR<SceneUpdateWithoutParticipatingCharactersInput, SceneUncheckedUpdateWithoutParticipatingCharactersInput>
+  }
+
+  export type SceneUpdateWithoutParticipatingCharactersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chapter?: ChapterUpdateOneRequiredWithoutScenesNestedInput
+    protagonist?: CharacterUpdateOneWithoutSceneProtagonistInNestedInput
+    location?: LocationUpdateOneWithoutScenesNestedInput
+    paragraphs?: ParagraphUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUpdateManyWithoutSceneNestedInput
+  }
+
+  export type SceneUncheckedUpdateWithoutParticipatingCharactersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    chapterId?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    protagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    paragraphs?: ParagraphUncheckedUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUncheckedUpdateManyWithoutSceneNestedInput
+  }
+
+  export type CharacterUpsertWithoutParticipatingInScenesInput = {
+    update: XOR<CharacterUpdateWithoutParticipatingInScenesInput, CharacterUncheckedUpdateWithoutParticipatingInScenesInput>
+    create: XOR<CharacterCreateWithoutParticipatingInScenesInput, CharacterUncheckedCreateWithoutParticipatingInScenesInput>
+    where?: CharacterWhereInput
+  }
+
+  export type CharacterUpdateToOneWithWhereWithoutParticipatingInScenesInput = {
+    where?: CharacterWhereInput
+    data: XOR<CharacterUpdateWithoutParticipatingInScenesInput, CharacterUncheckedUpdateWithoutParticipatingInScenesInput>
+  }
+
+  export type CharacterUpdateWithoutParticipatingInScenesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutCharactersNestedInput
+    pictureFile?: FileUpdateOneWithoutCharacterPictureNestedInput
+    laterVersionOf?: CharacterUpdateOneWithoutPreviousVersionNestedInput
+    previousVersion?: CharacterUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUpdateManyWithoutProtagonistNestedInput
+    referredInScenes?: SceneReferredCharacterUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateWithoutParticipatingInScenesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousVersion?: CharacterUncheckedUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUncheckedUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUncheckedUpdateManyWithoutProtagonistNestedInput
+    referredInScenes?: SceneReferredCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type SceneCreateWithoutReferredCharactersInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    body: string
+    sortOrder: number
+    nodeType?: string
+    perspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chapter: ChapterCreateNestedOneWithoutScenesInput
+    protagonist?: CharacterCreateNestedOneWithoutSceneProtagonistInInput
+    location?: LocationCreateNestedOneWithoutScenesInput
+    paragraphs?: ParagraphCreateNestedManyWithoutSceneInput
+    participatingCharacters?: SceneCharacterCreateNestedManyWithoutSceneInput
+  }
+
+  export type SceneUncheckedCreateWithoutReferredCharactersInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    body: string
+    chapterId: string
+    sortOrder: number
+    nodeType?: string
+    perspective?: $Enums.Perspective | null
+    protagonistId?: string | null
+    locationId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    paragraphs?: ParagraphUncheckedCreateNestedManyWithoutSceneInput
+    participatingCharacters?: SceneCharacterUncheckedCreateNestedManyWithoutSceneInput
+  }
+
+  export type SceneCreateOrConnectWithoutReferredCharactersInput = {
+    where: SceneWhereUniqueInput
+    create: XOR<SceneCreateWithoutReferredCharactersInput, SceneUncheckedCreateWithoutReferredCharactersInput>
+  }
+
+  export type CharacterCreateWithoutReferredInScenesInput = {
+    id?: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutCharactersInput
+    pictureFile?: FileCreateNestedOneWithoutCharacterPictureInput
+    laterVersionOf?: CharacterCreateNestedOneWithoutPreviousVersionInput
+    previousVersion?: CharacterCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterUncheckedCreateWithoutReferredInScenesInput = {
+    id?: string
+    storyId: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    previousVersion?: CharacterUncheckedCreateNestedManyWithoutLaterVersionOfInput
+    defaultProtagonistForStory?: StoryUncheckedCreateNestedManyWithoutDefaultProtagonistInput
+    sceneProtagonistIn?: SceneUncheckedCreateNestedManyWithoutProtagonistInput
+    participatingInScenes?: SceneCharacterUncheckedCreateNestedManyWithoutCharacterInput
+  }
+
+  export type CharacterCreateOrConnectWithoutReferredInScenesInput = {
+    where: CharacterWhereUniqueInput
+    create: XOR<CharacterCreateWithoutReferredInScenesInput, CharacterUncheckedCreateWithoutReferredInScenesInput>
+  }
+
+  export type SceneUpsertWithoutReferredCharactersInput = {
+    update: XOR<SceneUpdateWithoutReferredCharactersInput, SceneUncheckedUpdateWithoutReferredCharactersInput>
+    create: XOR<SceneCreateWithoutReferredCharactersInput, SceneUncheckedCreateWithoutReferredCharactersInput>
+    where?: SceneWhereInput
+  }
+
+  export type SceneUpdateToOneWithWhereWithoutReferredCharactersInput = {
+    where?: SceneWhereInput
+    data: XOR<SceneUpdateWithoutReferredCharactersInput, SceneUncheckedUpdateWithoutReferredCharactersInput>
+  }
+
+  export type SceneUpdateWithoutReferredCharactersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chapter?: ChapterUpdateOneRequiredWithoutScenesNestedInput
+    protagonist?: CharacterUpdateOneWithoutSceneProtagonistInNestedInput
+    location?: LocationUpdateOneWithoutScenesNestedInput
+    paragraphs?: ParagraphUpdateManyWithoutSceneNestedInput
+    participatingCharacters?: SceneCharacterUpdateManyWithoutSceneNestedInput
+  }
+
+  export type SceneUncheckedUpdateWithoutReferredCharactersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    chapterId?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    protagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    paragraphs?: ParagraphUncheckedUpdateManyWithoutSceneNestedInput
+    participatingCharacters?: SceneCharacterUncheckedUpdateManyWithoutSceneNestedInput
+  }
+
+  export type CharacterUpsertWithoutReferredInScenesInput = {
+    update: XOR<CharacterUpdateWithoutReferredInScenesInput, CharacterUncheckedUpdateWithoutReferredInScenesInput>
+    create: XOR<CharacterCreateWithoutReferredInScenesInput, CharacterUncheckedCreateWithoutReferredInScenesInput>
+    where?: CharacterWhereInput
+  }
+
+  export type CharacterUpdateToOneWithWhereWithoutReferredInScenesInput = {
+    where?: CharacterWhereInput
+    data: XOR<CharacterUpdateWithoutReferredInScenesInput, CharacterUncheckedUpdateWithoutReferredInScenesInput>
+  }
+
+  export type CharacterUpdateWithoutReferredInScenesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutCharactersNestedInput
+    pictureFile?: FileUpdateOneWithoutCharacterPictureNestedInput
+    laterVersionOf?: CharacterUpdateOneWithoutPreviousVersionNestedInput
+    previousVersion?: CharacterUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateWithoutReferredInScenesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousVersion?: CharacterUncheckedUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUncheckedUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUncheckedUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUncheckedUpdateManyWithoutCharacterNestedInput
   }
 
   export type StoryCreateManyOwnerInput = {
@@ -29229,10 +43102,12 @@ export namespace Prisma {
     chapters?: number | null
     firstChapterReleasedAt?: Date | string | null
     lastChapterReleasedAt?: Date | string | null
-    coverArtAsset: string
+    coverArtFileId?: string | null
     coverColor?: string
     coverTextColor?: string
     coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sortOrder?: number
@@ -29309,19 +43184,25 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
     books?: BookUpdateManyWithoutStoryNestedInput
     files?: FileUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
   }
 
   export type StoryUncheckedUpdateWithoutOwnerInput = {
@@ -29337,10 +43218,12 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -29350,6 +43233,10 @@ export namespace Prisma {
     files?: FileUncheckedUpdateManyWithoutStoryNestedInput
     storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
     storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
   }
 
   export type StoryUncheckedUpdateManyWithoutOwnerInput = {
@@ -29365,10 +43252,12 @@ export namespace Prisma {
     chapters?: NullableIntFieldUpdateOperationsInput | number | null
     firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: StringFieldUpdateOperationsInput | string
     coverTextColor?: StringFieldUpdateOperationsInput | string
     coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -29465,6 +43354,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     story?: StoryUpdateOneWithoutFilesNestedInput
+    storyCoverArt?: StoryUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUpdateManyWithoutPictureFileNestedInput
   }
 
   export type FileUncheckedUpdateWithoutOwnerInput = {
@@ -29479,6 +43373,11 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    storyCoverArt?: StoryUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUncheckedUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUncheckedUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUncheckedUpdateManyWithoutPictureFileNestedInput
   }
 
   export type FileUncheckedUpdateManyWithoutOwnerInput = {
@@ -29555,8 +43454,9 @@ export namespace Prisma {
   export type BookCreateManyStoryInput = {
     id?: string
     name?: string
-    coverArtAsset: string
-    spineArtAsset: string
+    summary?: string | null
+    coverArtFileId?: string | null
+    spineArtFileId?: string | null
     pages?: number | null
     sortOrder: number
     nodeType?: string
@@ -29594,6 +43494,59 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type CharacterCreateManyStoryInput = {
+    id?: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LocationCreateManyStoryInput = {
+    id?: string
+    name: string
+    pictureFileId?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlotPointCreateManyStoryInput = {
+    id?: string
+    title: string
+    summary?: string | null
+    state?: $Enums.PlotPointState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ItemCreateManyStoryInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type BookShelfStoryUpdateWithoutStoryInput = {
     name?: StringFieldUpdateOperationsInput | string
     kind?: EnumSavedTypeFieldUpdateOperationsInput | $Enums.SavedType
@@ -29623,21 +43576,23 @@ export namespace Prisma {
   export type BookUpdateWithoutStoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
-    spineArtAsset?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    coverArtFile?: FileUpdateOneWithoutBookCoverArtNestedInput
+    spineArtFile?: FileUpdateOneWithoutBookSpineArtNestedInput
     arcs?: ArcUpdateManyWithoutBookNestedInput
   }
 
   export type BookUncheckedUpdateWithoutStoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
-    spineArtAsset?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    spineArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
@@ -29649,8 +43604,9 @@ export namespace Prisma {
   export type BookUncheckedUpdateManyWithoutStoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    coverArtAsset?: StringFieldUpdateOperationsInput | string
-    spineArtAsset?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    spineArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
     pages?: NullableIntFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
@@ -29670,6 +43626,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: UserUpdateOneRequiredWithoutFilesNestedInput
+    storyCoverArt?: StoryUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUpdateManyWithoutPictureFileNestedInput
   }
 
   export type FileUncheckedUpdateWithoutStoryInput = {
@@ -29684,6 +43645,11 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    storyCoverArt?: StoryUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookCoverArt?: BookUncheckedUpdateManyWithoutCoverArtFileNestedInput
+    bookSpineArt?: BookUncheckedUpdateManyWithoutSpineArtFileNestedInput
+    characterPicture?: CharacterUncheckedUpdateManyWithoutPictureFileNestedInput
+    locationPicture?: LocationUncheckedUpdateManyWithoutPictureFileNestedInput
   }
 
   export type FileUncheckedUpdateManyWithoutStoryInput = {
@@ -29748,6 +43714,177 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CharacterUpdateWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pictureFile?: FileUpdateOneWithoutCharacterPictureNestedInput
+    laterVersionOf?: CharacterUpdateOneWithoutPreviousVersionNestedInput
+    previousVersion?: CharacterUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousVersion?: CharacterUncheckedUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUncheckedUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUncheckedUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateManyWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocationUpdateWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pictureFile?: FileUpdateOneWithoutLocationPictureNestedInput
+    scenes?: SceneUpdateManyWithoutLocationNestedInput
+  }
+
+  export type LocationUncheckedUpdateWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    scenes?: SceneUncheckedUpdateManyWithoutLocationNestedInput
+  }
+
+  export type LocationUncheckedUpdateManyWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlotPointUpdateWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: EnumPlotPointStateFieldUpdateOperationsInput | $Enums.PlotPointState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlotPointUncheckedUpdateWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: EnumPlotPointStateFieldUpdateOperationsInput | $Enums.PlotPointState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlotPointUncheckedUpdateManyWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: EnumPlotPointStateFieldUpdateOperationsInput | $Enums.PlotPointState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemUpdateWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemUncheckedUpdateWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ItemUncheckedUpdateManyWithoutStoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StoryTagCreateManyTagInput = {
     id?: string
     storyId: string
@@ -29779,6 +43916,7 @@ export namespace Prisma {
   export type ArcCreateManyBookInput = {
     id?: string
     name?: string
+    summary?: string | null
     sortOrder: number
     nodeType?: string
     createdAt?: Date | string
@@ -29788,6 +43926,7 @@ export namespace Prisma {
   export type ArcUpdateWithoutBookInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29798,6 +43937,7 @@ export namespace Prisma {
   export type ArcUncheckedUpdateWithoutBookInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29808,6 +43948,7 @@ export namespace Prisma {
   export type ArcUncheckedUpdateManyWithoutBookInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29817,6 +43958,7 @@ export namespace Prisma {
   export type ChapterCreateManyArcInput = {
     id?: string
     name?: string
+    summary?: string | null
     publishedOn?: Date | string | null
     sortOrder: number
     royalRoadId?: number | null
@@ -29828,6 +43970,7 @@ export namespace Prisma {
   export type ChapterUpdateWithoutArcInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -29842,6 +43985,7 @@ export namespace Prisma {
   export type ChapterUncheckedUpdateWithoutArcInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -29856,6 +44000,7 @@ export namespace Prisma {
   export type ChapterUncheckedUpdateManyWithoutArcInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     publishedOn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -29867,9 +44012,13 @@ export namespace Prisma {
   export type SceneCreateManyChapterInput = {
     id?: string
     name?: string
+    summary?: string | null
     body: string
     sortOrder: number
     nodeType?: string
+    perspective?: $Enums.Perspective | null
+    protagonistId?: string | null
+    locationId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29898,31 +44047,47 @@ export namespace Prisma {
   export type SceneUpdateWithoutChapterInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     body?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    protagonist?: CharacterUpdateOneWithoutSceneProtagonistInNestedInput
+    location?: LocationUpdateOneWithoutScenesNestedInput
     paragraphs?: ParagraphUpdateManyWithoutSceneNestedInput
+    participatingCharacters?: SceneCharacterUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUpdateManyWithoutSceneNestedInput
   }
 
   export type SceneUncheckedUpdateWithoutChapterInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     body?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    protagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paragraphs?: ParagraphUncheckedUpdateManyWithoutSceneNestedInput
+    participatingCharacters?: SceneCharacterUncheckedUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUncheckedUpdateManyWithoutSceneNestedInput
   }
 
   export type SceneUncheckedUpdateManyWithoutChapterInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     body?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
     nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    protagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29997,6 +44162,16 @@ export namespace Prisma {
     sortOrder: number
   }
 
+  export type SceneCharacterCreateManySceneInput = {
+    characterId: string
+    assignedAt?: Date | string
+  }
+
+  export type SceneReferredCharacterCreateManySceneInput = {
+    characterId: string
+    assignedAt?: Date | string
+  }
+
   export type ParagraphUpdateWithoutSceneInput = {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30020,11 +44195,46 @@ export namespace Prisma {
     sortOrder?: IntFieldUpdateOperationsInput | number
   }
 
+  export type SceneCharacterUpdateWithoutSceneInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    character?: CharacterUpdateOneRequiredWithoutParticipatingInScenesNestedInput
+  }
+
+  export type SceneCharacterUncheckedUpdateWithoutSceneInput = {
+    characterId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneCharacterUncheckedUpdateManyWithoutSceneInput = {
+    characterId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneReferredCharacterUpdateWithoutSceneInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    character?: CharacterUpdateOneRequiredWithoutReferredInScenesNestedInput
+  }
+
+  export type SceneReferredCharacterUncheckedUpdateWithoutSceneInput = {
+    characterId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneReferredCharacterUncheckedUpdateManyWithoutSceneInput = {
+    characterId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ParagraphRevisionCreateManyParagraphInput = {
     id?: string
     body: string
     contentSchema?: string | null
     version?: number
+    state?: $Enums.ParagraphState | null
+    aiCharacters?: number | null
+    humanCharacters?: number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -30033,6 +44243,11 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     contentSchema?: NullableStringFieldUpdateOperationsInput | string | null
     version?: IntFieldUpdateOperationsInput | number
+    state?: NullableEnumParagraphStateFieldUpdateOperationsInput | $Enums.ParagraphState | null
+    aiCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    humanCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paragraphComment?: ParagraphCommentUpdateManyWithoutParagraphRevisionNestedInput
   }
@@ -30042,6 +44257,11 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     contentSchema?: NullableStringFieldUpdateOperationsInput | string | null
     version?: IntFieldUpdateOperationsInput | number
+    state?: NullableEnumParagraphStateFieldUpdateOperationsInput | $Enums.ParagraphState | null
+    aiCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    humanCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paragraphComment?: ParagraphCommentUncheckedUpdateManyWithoutParagraphRevisionNestedInput
   }
@@ -30051,6 +44271,11 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     contentSchema?: NullableStringFieldUpdateOperationsInput | string | null
     version?: IntFieldUpdateOperationsInput | number
+    state?: NullableEnumParagraphStateFieldUpdateOperationsInput | $Enums.ParagraphState | null
+    aiCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    humanCharacters?: NullableIntFieldUpdateOperationsInput | number | null
+    plotPointActions?: NullableJsonNullValueInput | InputJsonValue
+    inventoryActions?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -30085,6 +44310,796 @@ export namespace Prisma {
     ownerId?: IntFieldUpdateOperationsInput | number
     body?: StringFieldUpdateOperationsInput | string
     type?: EnumParagraphCommentTypeFieldUpdateOperationsInput | $Enums.ParagraphCommentType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryCreateManyCoverArtFileInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    ownerId: number
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    defaultProtagonistId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+  }
+
+  export type BookCreateManyCoverArtFileInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    storyId: string
+    spineArtFileId?: string | null
+    pages?: number | null
+    sortOrder: number
+    nodeType?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BookCreateManySpineArtFileInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    storyId: string
+    coverArtFileId?: string | null
+    pages?: number | null
+    sortOrder: number
+    nodeType?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CharacterCreateManyPictureFileInput = {
+    id?: string
+    storyId: string
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    laterVersionOfId?: string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LocationCreateManyPictureFileInput = {
+    id?: string
+    storyId: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StoryUpdateWithoutCoverArtFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
+    bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    defaultProtagonist?: CharacterUpdateOneWithoutDefaultProtagonistForStoryNestedInput
+    books?: BookUpdateManyWithoutStoryNestedInput
+    files?: FileUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryUncheckedUpdateWithoutCoverArtFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: IntFieldUpdateOperationsInput | number
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    bookShelfStories?: BookShelfStoryUncheckedUpdateManyWithoutStoryNestedInput
+    books?: BookUncheckedUpdateManyWithoutStoryNestedInput
+    files?: FileUncheckedUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryUncheckedUpdateManyWithoutCoverArtFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: IntFieldUpdateOperationsInput | number
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    defaultProtagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type BookUpdateWithoutCoverArtFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutBooksNestedInput
+    spineArtFile?: FileUpdateOneWithoutBookSpineArtNestedInput
+    arcs?: ArcUpdateManyWithoutBookNestedInput
+  }
+
+  export type BookUncheckedUpdateWithoutCoverArtFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    storyId?: StringFieldUpdateOperationsInput | string
+    spineArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    arcs?: ArcUncheckedUpdateManyWithoutBookNestedInput
+  }
+
+  export type BookUncheckedUpdateManyWithoutCoverArtFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    storyId?: StringFieldUpdateOperationsInput | string
+    spineArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BookUpdateWithoutSpineArtFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutBooksNestedInput
+    coverArtFile?: FileUpdateOneWithoutBookCoverArtNestedInput
+    arcs?: ArcUpdateManyWithoutBookNestedInput
+  }
+
+  export type BookUncheckedUpdateWithoutSpineArtFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    storyId?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    arcs?: ArcUncheckedUpdateManyWithoutBookNestedInput
+  }
+
+  export type BookUncheckedUpdateManyWithoutSpineArtFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    storyId?: StringFieldUpdateOperationsInput | string
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CharacterUpdateWithoutPictureFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutCharactersNestedInput
+    laterVersionOf?: CharacterUpdateOneWithoutPreviousVersionNestedInput
+    previousVersion?: CharacterUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateWithoutPictureFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousVersion?: CharacterUncheckedUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUncheckedUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUncheckedUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateManyWithoutPictureFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    laterVersionOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocationUpdateWithoutPictureFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutLocationsNestedInput
+    scenes?: SceneUpdateManyWithoutLocationNestedInput
+  }
+
+  export type LocationUncheckedUpdateWithoutPictureFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    scenes?: SceneUncheckedUpdateManyWithoutLocationNestedInput
+  }
+
+  export type LocationUncheckedUpdateManyWithoutPictureFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CharacterCreateManyLaterVersionOfInput = {
+    id?: string
+    storyId: string
+    pictureFileId?: string | null
+    firstName: string
+    middleName?: string | null
+    lastName?: string | null
+    nickname?: string | null
+    summary?: string | null
+    background?: string | null
+    personality?: string | null
+    personalityQuirks?: string | null
+    likes?: string | null
+    dislikes?: string | null
+    age?: string | null
+    gender?: string | null
+    sexualOrientation?: string | null
+    height?: number | null
+    hairColor?: string | null
+    eyeColor?: string | null
+    distinguishingFeatures?: string | null
+    writingStyle?: string | null
+    isMainCharacter?: boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StoryCreateManyDefaultProtagonistInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    ownerId: number
+    royalRoadId?: number | null
+    published?: boolean
+    status?: $Enums.StoryStatus
+    type?: $Enums.StoryType
+    wordsPerWeek?: number | null
+    spellingLevel?: number | null
+    chapters?: number | null
+    firstChapterReleasedAt?: Date | string | null
+    lastChapterReleasedAt?: Date | string | null
+    coverArtFileId?: string | null
+    coverColor?: string
+    coverTextColor?: string
+    coverFontFamily?: string
+    defaultPerspective?: $Enums.Perspective | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sortOrder?: number
+    pages?: number | null
+  }
+
+  export type SceneCreateManyProtagonistInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    body: string
+    chapterId: string
+    sortOrder: number
+    nodeType?: string
+    perspective?: $Enums.Perspective | null
+    locationId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SceneCharacterCreateManyCharacterInput = {
+    sceneId: string
+    assignedAt?: Date | string
+  }
+
+  export type SceneReferredCharacterCreateManyCharacterInput = {
+    sceneId: string
+    assignedAt?: Date | string
+  }
+
+  export type CharacterUpdateWithoutLaterVersionOfInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutCharactersNestedInput
+    pictureFile?: FileUpdateOneWithoutCharacterPictureNestedInput
+    previousVersion?: CharacterUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateWithoutLaterVersionOfInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousVersion?: CharacterUncheckedUpdateManyWithoutLaterVersionOfNestedInput
+    defaultProtagonistForStory?: StoryUncheckedUpdateManyWithoutDefaultProtagonistNestedInput
+    sceneProtagonistIn?: SceneUncheckedUpdateManyWithoutProtagonistNestedInput
+    participatingInScenes?: SceneCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+    referredInScenes?: SceneReferredCharacterUncheckedUpdateManyWithoutCharacterNestedInput
+  }
+
+  export type CharacterUncheckedUpdateManyWithoutLaterVersionOfInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    pictureFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    personality?: NullableStringFieldUpdateOperationsInput | string | null
+    personalityQuirks?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: NullableStringFieldUpdateOperationsInput | string | null
+    dislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    sexualOrientation?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
+    eyeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    distinguishingFeatures?: NullableStringFieldUpdateOperationsInput | string | null
+    writingStyle?: NullableStringFieldUpdateOperationsInput | string | null
+    isMainCharacter?: BoolFieldUpdateOperationsInput | boolean
+    significantActions?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryUpdateWithoutDefaultProtagonistInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    owner?: UserUpdateOneRequiredWithoutOwnedStoriesNestedInput
+    bookShelfStories?: BookShelfStoryUpdateManyWithoutStoryNestedInput
+    coverArtFile?: FileUpdateOneWithoutStoryCoverArtNestedInput
+    books?: BookUpdateManyWithoutStoryNestedInput
+    files?: FileUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUpdateManyWithoutStoryNestedInput
+    locations?: LocationUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUpdateManyWithoutStoryNestedInput
+    items?: ItemUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryUncheckedUpdateWithoutDefaultProtagonistInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: IntFieldUpdateOperationsInput | number
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+    bookShelfStories?: BookShelfStoryUncheckedUpdateManyWithoutStoryNestedInput
+    books?: BookUncheckedUpdateManyWithoutStoryNestedInput
+    files?: FileUncheckedUpdateManyWithoutStoryNestedInput
+    storyReadStatuses?: StoryReadStatusUncheckedUpdateManyWithoutStoryNestedInput
+    storyTags?: StoryTagUncheckedUpdateManyWithoutStoryNestedInput
+    characters?: CharacterUncheckedUpdateManyWithoutStoryNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutStoryNestedInput
+    plotPoints?: PlotPointUncheckedUpdateManyWithoutStoryNestedInput
+    items?: ItemUncheckedUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryUncheckedUpdateManyWithoutDefaultProtagonistInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: IntFieldUpdateOperationsInput | number
+    royalRoadId?: NullableIntFieldUpdateOperationsInput | number | null
+    published?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    wordsPerWeek?: NullableIntFieldUpdateOperationsInput | number | null
+    spellingLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    chapters?: NullableIntFieldUpdateOperationsInput | number | null
+    firstChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastChapterReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    coverArtFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: StringFieldUpdateOperationsInput | string
+    coverTextColor?: StringFieldUpdateOperationsInput | string
+    coverFontFamily?: StringFieldUpdateOperationsInput | string
+    defaultPerspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    pages?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type SceneUpdateWithoutProtagonistInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chapter?: ChapterUpdateOneRequiredWithoutScenesNestedInput
+    location?: LocationUpdateOneWithoutScenesNestedInput
+    paragraphs?: ParagraphUpdateManyWithoutSceneNestedInput
+    participatingCharacters?: SceneCharacterUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUpdateManyWithoutSceneNestedInput
+  }
+
+  export type SceneUncheckedUpdateWithoutProtagonistInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    chapterId?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    paragraphs?: ParagraphUncheckedUpdateManyWithoutSceneNestedInput
+    participatingCharacters?: SceneCharacterUncheckedUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUncheckedUpdateManyWithoutSceneNestedInput
+  }
+
+  export type SceneUncheckedUpdateManyWithoutProtagonistInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    chapterId?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneCharacterUpdateWithoutCharacterInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    scene?: SceneUpdateOneRequiredWithoutParticipatingCharactersNestedInput
+  }
+
+  export type SceneCharacterUncheckedUpdateWithoutCharacterInput = {
+    sceneId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneCharacterUncheckedUpdateManyWithoutCharacterInput = {
+    sceneId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneReferredCharacterUpdateWithoutCharacterInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    scene?: SceneUpdateOneRequiredWithoutReferredCharactersNestedInput
+  }
+
+  export type SceneReferredCharacterUncheckedUpdateWithoutCharacterInput = {
+    sceneId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneReferredCharacterUncheckedUpdateManyWithoutCharacterInput = {
+    sceneId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SceneCreateManyLocationInput = {
+    id?: string
+    name?: string
+    summary?: string | null
+    body: string
+    chapterId: string
+    sortOrder: number
+    nodeType?: string
+    perspective?: $Enums.Perspective | null
+    protagonistId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SceneUpdateWithoutLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chapter?: ChapterUpdateOneRequiredWithoutScenesNestedInput
+    protagonist?: CharacterUpdateOneWithoutSceneProtagonistInNestedInput
+    paragraphs?: ParagraphUpdateManyWithoutSceneNestedInput
+    participatingCharacters?: SceneCharacterUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUpdateManyWithoutSceneNestedInput
+  }
+
+  export type SceneUncheckedUpdateWithoutLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    chapterId?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    protagonistId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    paragraphs?: ParagraphUncheckedUpdateManyWithoutSceneNestedInput
+    participatingCharacters?: SceneCharacterUncheckedUpdateManyWithoutSceneNestedInput
+    referredCharacters?: SceneReferredCharacterUncheckedUpdateManyWithoutSceneNestedInput
+  }
+
+  export type SceneUncheckedUpdateManyWithoutLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    chapterId?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    nodeType?: StringFieldUpdateOperationsInput | string
+    perspective?: NullableEnumPerspectiveFieldUpdateOperationsInput | $Enums.Perspective | null
+    protagonistId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

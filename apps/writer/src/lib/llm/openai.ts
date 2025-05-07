@@ -56,9 +56,8 @@ export class OpenAI implements LlmInterface {
             : text,
         },
       ],
-      max_tokens: 2000,
-      temperature: 0.6,
-      frequency_penalty: 0.5,
+      max_completion_tokens: 2000,
+      temperature: 1,
       model: this.model ?? "",
     });
 

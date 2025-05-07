@@ -16,6 +16,7 @@
     "@anthropic-ai/sdk": "^0.39.0",
     "@ark-ui/solid": "^4.10.2",
     "@chakra-ui/utils": "2.0.8",
+    "@google/genai": "^0.10.0",
     "@google/generative-ai": "^0.2.1",
     "@kobalte/core": "^0.13.9",
     "@langchain/anthropic": "^0.3.18",
