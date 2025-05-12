@@ -660,7 +660,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/bart/Projects/writer2/apps/server/src/generated/prisma/client",
+      "value": "/Users/bart.riepe/Projects/writer2/apps/server/src/generated/prisma/client",
       "fromEnvVar": null
     },
     "config": {
@@ -669,12 +669,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "darwin-arm64",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/bart/Projects/writer2/apps/server/prisma/schema.prisma",
+    "sourceFilePath": "/Users/bart.riepe/Projects/writer2/apps/server/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -688,12 +688,11 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "mysql://root:kiwi@localhost:3306/writer2"
       }
     }
   },
@@ -737,8 +736,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
-path.join(process.cwd(), "src/generated/prisma/client/libquery_engine-debian-openssl-3.0.x.so.node")
+path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
+path.join(process.cwd(), "src/generated/prisma/client/libquery_engine-darwin-arm64.dylib.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "src/generated/prisma/client/schema.prisma")

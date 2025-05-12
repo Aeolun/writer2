@@ -4,7 +4,7 @@ export const storycardFields: Prisma.StorySelect = {
   id: true,
   name: true,
   summary: true,
-  coverArtAsset: true,
+  coverArtFile: true,
   coverColor: true,
   coverTextColor: true,
   coverFontFamily: true,

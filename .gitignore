@@ -39,3 +39,5 @@ stories/*.json
 *.sqlite
 .idea
 audio
+
+**/.claude/settings.local.json

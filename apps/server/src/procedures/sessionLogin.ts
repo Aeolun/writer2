@@ -18,21 +18,36 @@ export const sessionLogin = publicProcedure
       where: {
         email: input.email,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatarUrl: true,
+        password: true,
+      },
     });
 
     const [hashedValue, salt] = emailUser.password.split(".");
     const buf = (await scryptAsync(input.password, salt, 64)) as Buffer;
 
     if (hashedValue === buf.toString("hex")) {
-      const newAccessKey = await prisma.session.create({
+      const newSession = await prisma.session.create({
         data: {
           owner: {
-            connect: emailUser,
+            connect: { id: emailUser.id },
           },
           validUntil: new Date(Date.now() + 1000 * 60 * 60 * 24),
         },
       });
-      return newAccessKey.id;
+      return {
+        token: newSession.id,
+        user: {
+          id: emailUser.id,
+          name: emailUser.name,
+          email: emailUser.email,
+          avatarUrl: emailUser.avatarUrl,
+        },
+      };
     }
     return undefined;
   });

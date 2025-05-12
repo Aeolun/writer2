@@ -659,7 +659,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/bart/Projects/writer2/apps/server/src/generated/prisma/client",
+      "value": "/Users/bart.riepe/Projects/writer2/apps/server/src/generated/prisma/client",
       "fromEnvVar": null
     },
     "config": {
@@ -668,12 +668,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "darwin-arm64",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/bart/Projects/writer2/apps/server/prisma/schema.prisma",
+    "sourceFilePath": "/Users/bart.riepe/Projects/writer2/apps/server/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -687,12 +687,11 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "mysql://root:kiwi@localhost:3306/writer2"
       }
     }
   },

@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { prisma } from "../prisma.js";
 import { publicProcedure } from "../trpc.js";
 import { createHash, randomBytes, scrypt } from "node:crypto";
-import { promisify } from "util";
+import { promisify } from "node:util";
 import z from "zod";
 
 const scryptAsync = promisify(scrypt);
@@ -20,6 +20,13 @@ export const login = publicProcedure
       where: {
         email: input.email,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatarUrl: true,
+        password: true,
+      },
     });
 
     const [hashedValue, salt] = emailUser.password.split(".");
@@ -31,11 +38,19 @@ export const login = publicProcedure
           key: randomBytes(64).toString("hex"),
           description: input.description,
           owner: {
-            connect: emailUser,
+            connect: { id: emailUser.id },
           },
         },
       });
-      return newAccessKey.key;
+      return {
+        token: newAccessKey.key,
+        user: {
+          id: emailUser.id,
+          name: emailUser.name,
+          email: emailUser.email,
+          avatarUrl: emailUser.avatarUrl,
+        },
+      };
     }
     throw new TRPCError({
       code: "UNAUTHORIZED",
