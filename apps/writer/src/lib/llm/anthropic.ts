@@ -28,6 +28,10 @@ export class Anthropic implements LlmInterface {
   async listModels() {
     await this.init();
     return [
+      "claude-opus-4-0",
+      "claude-sonnet-4-0",
+      "claude-opus-4-20250514",
+      "claude-sonnet-4-20250514",
       "claude-3-7-sonnet-latest",
       "claude-3-5-sonnet-latest",
       "claude-3-5-sonnet-20241022",
@@ -104,7 +108,7 @@ export class Anthropic implements LlmInterface {
               ],
             },
           ],
-      max_tokens: 2000,
+      max_tokens: 3000,
       temperature: 1.0,
 
       model: this.model ?? "",

@@ -90,3 +90,8 @@ export const removeCharacter = (characterId: string) => {
     },
   );
 };
+
+export const getCharacterName = (characterId: string) => {
+  const character = charactersState.characters[characterId];
+  return character?.firstName + " " + character?.middleName + " " + character?.lastName + (character?.nickname ? ` "(${character.nickname})"` : "");
+};

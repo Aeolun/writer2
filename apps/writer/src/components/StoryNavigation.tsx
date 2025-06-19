@@ -125,11 +125,12 @@ const renderNode = (node: Node & { isDndShadowItem?: boolean }) => {
       </div>
       <Show when={node.isOpen && node.children}>
         <div
-          class="flex flex-col"
+          class="flex flex-col min-h-2"
           use:dndzone={{
             items: () => node.children,
             type: node.type,
             flipDurationMs: 0,
+            centreDraggedOnCursor: true,
           }}
           on:consider={dndEvent}
           on:finalize={dndEvent}
@@ -234,9 +235,10 @@ export const StoryNavigation = () => {
       on:finalize={dndEvent}
     >
       <For each={treeState.structure}>{renderNode}</For>
+
       <button
         type="button"
-        class="flex items-center gap-2 justify-center py-2 mt-auto border-t border-gray-200 hover:bg-gray-50"
+        class="flex items-center gap-2 mt-6 justify-center py-2 border-t border-gray-200 hover:bg-gray-50"
         onClick={createBook}
       >
         <AiFillPlusCircle />

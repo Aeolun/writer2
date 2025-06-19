@@ -14,8 +14,19 @@ interface ImportDialogState {
   complete: boolean;
 }
 
+export interface AiCallLog {
+  timestamp: number;
+  kind: string;
+  inputText: string;
+  outputText: string;
+  provider: string;
+  model: string;
+  systemPrompt?: string;
+}
+
 export interface UIState {
   selectedImageChapter?: string;
+  selectedParagraphId?: string;
   imagePath?: string;
   currentId?: string;
   selectedEntity?: "book" | "arc" | "chapter" | "scene";
@@ -46,11 +57,16 @@ export interface UIState {
   isMenuOpen: boolean;
   showFiles: boolean;
   showPreview: boolean;
+  selectedChapterScenes: Record<string, boolean>;
+  aiCallHistory: AiCallLog[];
+  showAiLogPopup: boolean;
+  generateBetweenText?: string;
 }
 
 export const uiStateDefault: UIState = {
   stories: [],
   aiPopupOpen: false,
+  selectedParagraphId: undefined,
   signinPopupOpen: false,
   showInventory: false,
   saving: false,
@@ -77,6 +93,10 @@ export const uiStateDefault: UIState = {
   isMenuOpen: false,
   showFiles: false,
   showPreview: false,
+  selectedChapterScenes: {},
+  aiCallHistory: [],
+  showAiLogPopup: false,
+  generateBetweenText: undefined,
 };
 
 export const [uiState, setUIState] = createStore<UIState>(uiStateDefault);
@@ -116,6 +136,8 @@ export const setSelectedImageChapter = (chapter: string) =>
   setUIState("selectedImageChapter", chapter);
 export const setImagePath = (path: string) => setUIState("imagePath", path);
 export const setCurrentId = (id?: string) => setUIState("currentId", id);
+export const setSelectedParagraphId = (id?: string) =>
+  setUIState("selectedParagraphId", id);
 export const addAiResponse = (response: string) =>
   setUIState("aiResponseHistory", (prev) => [
     response,
@@ -180,3 +202,13 @@ export const closeMenu = () => setUIState("isMenuOpen", false);
 
 export const toggleFiles = () => setUIState("showFiles", (prev) => !prev);
 export const togglePreview = () => setUIState("showPreview", (prev) => !prev);
+
+// Context settings for GenerateNext
+export const setSelectedChapterScene = (sceneId: string, selected: boolean) =>
+  setUIState("selectedChapterScenes", sceneId, selected);
+
+export const addAiCallLog = (log: AiCallLog) =>
+  setUIState("aiCallHistory", (prev) => [log, ...prev.slice(0, 49)]); // Keep last 50 logs
+
+export const setShowAiLogPopup = (show: boolean) =>
+  setUIState("showAiLogPopup", show);

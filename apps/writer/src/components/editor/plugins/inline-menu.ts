@@ -20,7 +20,13 @@ function createInlineMenu(
   const menu = document.createElement("div");
   menu.className = "inline-menu";
   menu.style.position = "absolute";
-  menu.style.top = `${coords.top - 30}px`; // Adjust y-offset as needed
+  
+  // Position menu well above the selection to avoid overlap
+  const menuHeight = 40; // Approximate menu height
+  const offset = 60; // Increased offset for better clearance
+  const menuTop = Math.max(10, coords.top - offset); // Ensure it doesn't go off-screen
+  
+  menu.style.top = `${menuTop}px`;
   menu.style.left = `${coords.left}px`;
 
   const boldButton = document.createElement("button");

@@ -2,21 +2,33 @@ import { Schema } from "prosemirror-model";
 
 export const contentSchema = new Schema({
   nodes: {
-    doc: { content: "block" },
+    doc: { content: "block+" },
     paragraph: {
       group: "block",
       content: "text*",
       // not draggable or selectable for now, need to combine them into a single dataset for that
       marks: "_",
-      attrs: { id: { default: null } },
+      attrs: { 
+        id: { default: null },
+        extra: { default: null },
+        extraLoading: { default: null }
+      },
       toDOM(node) {
-        return ["p", { id: node.attrs.id || "" }, 0];
+        return ["p", { 
+          id: node.attrs.id || "",
+          "data-extra": node.attrs.extra || "",
+          "data-extra-loading": node.attrs.extraLoading || ""
+        }, 0];
       },
       parseDOM: [
         {
           tag: "p",
           getAttrs(dom) {
-            return { id: dom.getAttribute("id") };
+            return { 
+              id: dom.getAttribute("id"),
+              extra: dom.getAttribute("data-extra") || null,
+              extraLoading: dom.getAttribute("data-extra-loading") || null
+            };
           },
         },
       ],

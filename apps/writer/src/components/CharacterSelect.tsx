@@ -21,6 +21,10 @@ export const CharacterSelect = (props: CharacterSelectProps) => {
       chars = chars.filter(props.filter);
     }
 
+    chars = chars.sort((a, b) => {
+      return a.firstName.localeCompare(b.firstName);
+    });
+
     return chars;
   };
 

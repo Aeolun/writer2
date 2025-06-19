@@ -1,6 +1,11 @@
 import { sensoryDetailsInstruction } from "./ai-instructions/sensory-details";
 import { ragQueriesInstruction } from "./ai-instructions/rag-queries";
 import { snowflakeExpandBookInstruction } from "./ai-instructions/snowflake-expand-book";
+import { summarizeInstruction } from "./ai-instructions/summarize";
+import { generateOptionsInstruction } from "./ai-instructions/generate-options";
+import { rewriteSpellingInstruction } from "./ai-instructions/rewrite-spelling";
+import { rewriteSimilarInstruction } from "./ai-instructions/rewrite-similar";
+import { rewriteInstruction } from "./ai-instructions/rewrite";
 
 export const instructions = {
   suggest_title:
@@ -11,12 +16,9 @@ export const instructions = {
     "You are a writing assistant. When prompted with a set of paragraphs, you will interpret the summary given between brackets (e.g. [ and ]) and write a few paragraphs based on them. There is no need to leave the paragraph open ended or make it needlessly positive in an otherwise grim situation. Do not rush the story along. There is time to describe things and reflect for the characters.",
   critique:
     "You are a writing assistant, try to give constructive advice. When prompted with a set of paragraphs, you will output a concerns you might have about the writing. This could be anything from grammar to plot holes to character inconsistencies.",
-  rewrite_spelling:
-    "You are a writing assistant. When prompted with paragraphs in XML tags, you will output a rewritten version of ONLY the paragraph in the <current_paragraph> tag. Only output the rewritten paragraph. Correct all improper spelling and grammar, but change nothing else about the sentences or paragraph. Do not change profanity! The context includes multiple previous paragraphs (if available) and the next paragraph to help you understand the flow of the story.",
-  rewrite_similar:
-    "You are a writing assistant. When prompted with paragraphs in XML tags, you will output a rewritten version of ONLY the paragraph in the <current_paragraph> tag. Only output the rewritten paragraph. Where possible, try to stick to the original meaning. Do not add new information, do not change the tense, and especially do not change the tone. Output only the rewritten paragraph. The context includes multiple previous paragraphs (if available) and the next paragraph to help you understand the flow of the story.",
-  rewrite:
-    "You are a writing assistant. When prompted with paragraphs in XML tags, you will output a rewritten version of ONLY the paragraph in the <current_paragraph> tag. Only output the rewritten paragraph. Try to change all sections where something is being described to show that thing instead (show don't tell). Do not invent extra events. Try to keep the length the same. Preserve the original meaning and intent of the paragraph. Do not change the tone or tense. The context includes multiple previous paragraphs (if available) and the next paragraph to help you understand the flow of the story.",
+  rewrite_spelling: rewriteSpellingInstruction,
+  rewrite_similar: rewriteSimilarInstruction,
+  rewrite: rewriteInstruction,
   add_sensory_details: sensoryDetailsInstruction,
   synopsis:
     "You are a writing assistant, try to give constructive advice. When prompted with a set of paragraphs, you will output a summary of the given paragraphs.",
@@ -24,8 +26,7 @@ export const instructions = {
     "You are a writing assistant, try to give constructive advice. When prompted you will output a list of possible concerns with the storyline based on the information you've received. If they exist, focus specifically on inconsistencies and or plot holes. Try to provide ways the issues could be resolved or mitigated. Consider the full scope of the information presented, not just the information at the end.",
   improvements:
     "You are a writing assistant/editor. You will get presented with a set of paragraphs, and are supposed to give suggestions on how to make the writing more vibrant and exciting. Pay special attention to places where what the protagonist senses can be better described.",
-  summarize:
-    "You are a writing assistant. When prompted with a set of paragraphs, you will output a summary of the given paragraphs. Only output the summary. Do not include any other text.",
+  summarize: summarizeInstruction,
   free: "You are a writing assistant. Help answer the stated question.",
   suggestions:
     'You are a writing assistant. You will be prompted with a paragraph and the context, and are expected to give advice on how to improve the writing in question. Do not care about profanity. Consider especially the writing adage of "show don\'t tell". Only make suggestions if they are a significant improvement. Return answer to the format:\n\n[current]: [suggestion] ([reason])\n\nExample:\n\nI freeze like a deer in headlights: icy panic seizes me, my feet glued to the ground (The phrase "freeze like a deer in headlights" is a common cliché)\n\nKeep the suggestions to less than a sentence each. Order from most important to least, maximum of three.',
@@ -857,6 +858,7 @@ Example changes:
 
 CRITICAL: Your response must contain ONLY the complete converted text. Do not include any other text, explanations, or formatting.`,
   rag_queries: ragQueriesInstruction,
+  generate_options: generateOptionsInstruction,
 };
 
 export type HelpKind =
@@ -891,4 +893,5 @@ export type HelpKind =
   | "snowflake_extract_character_actions"
   | "generate_between"
   | "snowflake_convert_perspective"
-  | "rag_queries";
+  | "rag_queries"
+  | "generate_options";

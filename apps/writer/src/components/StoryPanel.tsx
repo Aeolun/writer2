@@ -2,7 +2,7 @@ import { createEffect, createSignal, JSX, onCleanup } from "solid-js";
 import { LanguageForm } from "./LanguageForm";
 import { SceneButtons } from "./SceneButtons";
 import { ParagraphsList } from "./ParagraphsList";
-import { GenerateNext } from "./GenerateNext";
+import { GenerateNext } from "./generation/GenerateNext";
 import { getItemsAtParagraph } from "../lib/stores/retrieval/get-items-at-paragraph";
 import { setShowInventory, uiState } from "../lib/stores/ui";
 import {
@@ -17,12 +17,13 @@ import { Editor } from "./editor/Editor";
 import { createShortcut } from "@solid-primitives/keyboard";
 import type { SceneParagraph } from "@writer/shared";
 import shortUUID from "short-uuid";
+import { SceneParagraphsList } from "./SceneParagraphsList";
 
 const isElementInViewport = (element: HTMLElement) => {
   const rect = element.getBoundingClientRect();
   const parentRect = element.parentElement?.getBoundingClientRect();
   if (!parentRect) return false;
-  
+
   return (
     rect.top >= parentRect.top &&
     rect.left >= parentRect.left &&
@@ -91,7 +92,7 @@ export const StoryPanel = () => {
       ) : null}
       <div class="flex flex-row flex-1 gap-4 h-full overflow-hidden justify-around">
         <div class="flex-1 overflow-auto flex flex-col items-start pb-48 p-4">
-          <ParagraphsList />
+          <SceneParagraphsList />
           {/* <Editor onChange={() => {}} /> */}
           <GenerateNext />
           <div class="min-h-96 w-full" />

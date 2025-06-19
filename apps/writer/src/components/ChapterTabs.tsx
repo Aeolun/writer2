@@ -1,48 +1,13 @@
-import { createSignal } from "solid-js";
+import { createSignal, ErrorBoundary } from "solid-js";
 import moment from "moment";
-import type { HelpKind } from "../lib/ai-instructions";
-import { useAi } from "../lib/use-ai";
 import { currentChapter } from "../lib/stores/retrieval/current-chapter";
 import { deleteChapter, updateChapter } from "../lib/stores/chapters";
-import { sortedObjects } from "../lib/stores/retrieval/sorted-objects";
 import { trpc } from "../lib/trpc";
-import { updateNode } from "../lib/stores/tree";
-import { settingsState } from "../lib/stores/settings";
-import { storyState } from "../lib/stores/story";
-import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
-import { FormField } from "./styled/FormField";
-import { Show } from "solid-js";
-import { NodeTypeButtons } from "./NodeTypeButtons";
 import { DateTimePicker } from "./DateTimePicker";
+import { ChapterPanel } from "./ChapterPanel";
 
 export const ChapterTabs = () => {
   const [selectedTab, setSelectedTab] = createSignal("overview");
-  const help = (helpKind: "suggest_title" | "rewrite_spelling", extra = false) => {
-    const chapterId = currentChapter()?.id;
-
-    if (!chapterId) {
-      return;
-    }
-    const paragraphs = sortedObjects(chapterId, true)
-      ?.filter((i) => i.type === "paragraph")
-      .map((i) => i.plainText)
-      .join("\n\n");
-
-    useAi(helpKind, paragraphs ?? "", false).then((res) => {
-      if (helpKind === "suggest_title") {
-        updateChapter(chapterId, {
-          title: res ?? undefined,
-        });
-        updateNode(chapterId, {
-          name: res ?? undefined,
-        });
-      } else {
-        updateChapter(chapterId, {
-          extra: res,
-        });
-      }
-    });
-  };
 
   // Format the date properly to avoid undefined
   const formatDate = (dateString: string | undefined) => {
@@ -94,125 +59,10 @@ export const ChapterTabs = () => {
         </button>
       </div>
       {selectedTab() === "overview" && (
-        <div class="flex flex-col flex-1 overflow-hidden">
-          <div class="flex-1 p-0 overflow-hidden">
-            <div class="flex-1 p-4 h-full overflow-auto">
-              <div>ID: {currentChapter()?.id}</div>
-              <div class="form-control">
-                <label class="label" for="chapter-title">Title</label>
-                <input
-                  id="chapter-title"
-                  class="input input-bordered"
-                  placeholder="title"
-                  onInput={(e) => {
-                    const chapterId = currentChapter()?.id;
-                    if (chapterId) {
-                      updateChapter(chapterId, {
-                        title: e.target.value,
-                      });
-                      updateNode(chapterId, {
-                        name: e.target.value,
-                      });
-                    }
-                  }}
-                  value={currentChapter()?.title ?? ""}
-                />
-              </div>
-              <div class="form-control">
-                <label class="label" for="chapter-summary">Summary</label>
-                <textarea
-                  id="chapter-summary"
-                  class="textarea textarea-bordered mt-2"
-                  onInput={(e) => {
-                    const chapterId = currentChapter()?.id;
-                    if (chapterId) {
-                      updateChapter(chapterId, {
-                        summary: e.target.value,
-                      });
-                      updateNode(chapterId, {
-                        oneliner: e.target.value,
-                      });
-                    }
-                  }}
-                  placeholder="summary"
-                  style={{ height: "300px" }}
-                  value={currentChapter()?.summary ?? ""}
-                />
-              </div>
-              <div class="form-control">
-                <label class="label" for="chapter-start-date">Start date</label>
-                <input
-                  id="chapter-start-date"
-                  class="input input-bordered mt-2"
-                  onInput={(e) => {
-                    const chapterId = currentChapter()?.id;
-                    if (chapterId) {
-                      updateChapter(chapterId, {
-                        start_date: e.target.value,
-                      });
-                    }
-                  }}
-                  placeholder="start date"
-                  value={currentChapter()?.start_date ?? ""}
-                />
-                <p class="text-sm text-gray-500">
-                  This is the date the chapter starts in story time.
-                </p>
-              </div>
-              <Show when={currentChapter()?.id}>
-                {(id) => <NodeTypeButtons nodeId={id()} />}
-              </Show>
-              {currentChapter()?.extra ? (
-                <FormField label="Extra">
-                  <textarea
-                    class="textarea textarea-bordered"
-                    onChange={(e) => {
-                      const chapterId = currentChapter()?.id;
-                      if (chapterId) {
-                        updateChapter(chapterId, {
-                          extra: e.target.value,
-                        });
-                      }
-                    }}
-                    rows={18}
-                    placeholder="extra"
-                    style={{ width: "100%" }}
-                    value={currentChapter()?.extra ?? ""}
-                  />
-                </FormField>
-              ) : null}
-              <button
-                type="button"
-                class="btn btn-blue"
-                onClick={() => {
-                  help("suggest_title");
-                }}
-              >
-                [AI] Suggest title
-              </button>
-              <button
-                type="button"
-                class="btn btn-blue"
-                onClick={() => {
-                  help("rewrite_spelling");
-                }}
-              >
-                [AI] Spelling
-              </button>
-              <button
-                type="button"
-                class="btn btn-error"
-                onClick={() => {
-                  const chapterId = currentChapter()?.id;
-                  if (chapterId) {
-                    deleteChapter(chapterId);
-                  }
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
+        <div class="flex-1 p-0 overflow-hidden">
+          <ErrorBoundary fallback={<div>Something went terribly wrong with ChapterPanel</div>}>
+            <ChapterPanel />
+          </ErrorBoundary>
         </div>
       )}
       {selectedTab() === "publishing" && (

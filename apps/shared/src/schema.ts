@@ -187,6 +187,17 @@ const sceneSchema = treeDataSchema.extend({
   referredCharacterIds: z.array(z.string()).optional(),
   locationId: z.string().optional(),
   selectedContextNodes: z.array(z.string()).optional(),
+  highlights: z
+    .array(
+      z.object({
+        text: z.string(),
+        importance: z.string(),
+        category: z.enum(["character", "plot", "setting", "theme"]),
+        timestamp: z.number(),
+      }),
+    )
+    .optional(),
+  lastHighlightsGenerated: z.number().optional(),
   generationApproaches: z
     .array(
       z.object({

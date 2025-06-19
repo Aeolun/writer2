@@ -187,6 +187,37 @@ export const getItemsInOrder = (type: Node["type"]) => {
   return items;
 };
 
+export const getItemsInOrderContainedInId = (
+  type: Node["type"],
+  parentId: string,
+  options?: {
+    onlyStoryNodes?: boolean;
+  },
+) => {
+  const items: Node[] = [];
+
+  const traverse = (node: Node, parentIsContainedInId = false) => {
+    if (
+      node.type === type &&
+      parentIsContainedInId &&
+      node.nodeType === "story"
+    ) {
+      items.push(node);
+    }
+    if (node.children) {
+      for (const child of node.children) {
+        traverse(child, parentIsContainedInId || child.id === parentId);
+      }
+    }
+  };
+
+  for (const node of treeState.structure) {
+    traverse(node, node.id === parentId);
+  }
+
+  return items;
+};
+
 export const setTreeItemOpen = (id: string, isOpen: boolean) => {
   updateNode(id, { isOpen });
 };

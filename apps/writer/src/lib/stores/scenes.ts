@@ -18,6 +18,7 @@ import {
 import { removeEntityFromEmbeddingsCache } from "../embeddings/load-story-to-embeddings";
 import { setChaptersState } from "./chapters";
 import { setStoryState } from "./story";
+import { setSelectedParagraphId } from "./ui";
 
 const scenesStateDefault = {
   scenes: {},
@@ -91,6 +92,7 @@ export const updateSceneSelectedParagraph = (
   paragraphId: string,
 ) => {
   setScenesState("scenes", sceneId, "selectedParagraph", paragraphId);
+  setSelectedParagraphId(paragraphId);
 };
 
 export const getWordCount = (
@@ -140,6 +142,11 @@ export const splitScene = (sceneId: string, paragraphId: string) => {
     throw new Error(`Scene ${sceneId} has no parent`);
   }
 
+  const nextIndex = scene.title.match(/Part (\d+)/)?.[1];
+  const newTitle = nextIndex
+    ? scene.title.replace(/Part \d+/, `Part ${Number(nextIndex) + 1}`)
+    : `${scene.title} (Part 2)`;
+
   const newSceneId = shortUUID.generate();
   const newSceneParagraphs = scene.paragraphs.slice(paragraphIndex);
   const oldSceneParagraphs = scene.paragraphs.slice(0, paragraphIndex);
@@ -153,11 +160,15 @@ export const splitScene = (sceneId: string, paragraphId: string) => {
 
   setScenesState("scenes", newSceneId, {
     id: newSceneId,
-    title: `${scene.title} (Part 2)`,
+    title: newTitle,
     words: newSceneParagraphs.reduce((acc, p) => acc + (p.words ?? 0), 0),
     hasAI: newSceneParagraphs.some((p) => p.state === "ai"),
     paragraphs: newSceneParagraphs,
     plot_point_actions: [],
+    characterIds: scene.characterIds,
+    referredCharacterIds: scene.referredCharacterIds,
+    perspective: scene.perspective,
+    protagonistId: scene.protagonistId,
     text: "",
     summary: "",
     modifiedAt: Date.now(),
@@ -167,7 +178,7 @@ export const splitScene = (sceneId: string, paragraphId: string) => {
     {
       id: newSceneId,
       type: "scene",
-      name: `${scene.title} (Part 2)`,
+      name: newTitle,
       isOpen: true,
       nodeType: "story",
     },
@@ -272,13 +283,18 @@ export const updateSceneParagraphData = (
   }
 
   if (data.text) {
-    const allWords = scenesState.scenes[sceneId].paragraphs
+    removeEntityFromEmbeddingsCache(`paragraph/${paragraphId}`);
+    updateSceneWordCount(sceneId);
+  }
+};
+
+export const updateSceneWordCount = (sceneId: string) => {
+  const allWords = scenesState.scenes[sceneId].paragraphs
       .map((p) => p.words)
       .reduce((acc, words) => (acc ?? 0) + (words ?? 0), 0);
     const hasAi = scenesState.scenes[sceneId].paragraphs.some(
       (p) => p.state === "ai",
     );
-    removeEntityFromEmbeddingsCache(`paragraph/${paragraphId}`);
     setScenesState(
       "scenes",
       sceneId,
@@ -289,7 +305,6 @@ export const updateSceneParagraphData = (
           hasAI: hasAi,
         }) satisfies Partial<Scene>,
     );
-  }
 };
 
 export const removePlotpointFromSceneParagraph = (
@@ -392,6 +407,7 @@ export const removeSceneParagraph = (sceneId: string, paragraphId: string) => {
     return p.filter((p) => p.id !== paragraphId);
   });
   setStoryState("story", "modifiedTime", Date.now());
+  updateSceneWordCount(sceneId);
 };
 
 export const createSceneParagraph = (
@@ -417,17 +433,13 @@ export const createSceneParagraph = (
 
   setScenesState("scenes", sceneId, "paragraphs", (p) => [
     ...(p ?? []).slice(0, insertIndex),
-    paragraph,
+    {
+      ...paragraph,
+      words: paragraph.text ? getWordCount(paragraph.text).words : 0,
+    },
     ...(p ?? []).slice(insertIndex),
   ]);
-  const words = getWordCount(paragraph.text);
-  setScenesState("scenes", sceneId, (s) => {
-    return {
-      cursor: 0,
-      words: (s.words ?? 0) + (words.words ?? 0),
-      selectedParagraph: paragraph.id,
-    };
-  });
+  updateSceneWordCount(sceneId);
   setStoryState("story", "modifiedTime", Date.now());
 };
 

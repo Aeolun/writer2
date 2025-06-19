@@ -1,4 +1,4 @@
-import { Show, For } from "solid-js";
+import { Show, For, createSignal } from "solid-js";
 import type { HelpKind } from "../lib/ai-instructions";
 import { currentScene } from "../lib/stores/retrieval/current-scene";
 import { deleteScene, updateSceneData } from "../lib/stores/scenes";
@@ -7,24 +7,34 @@ import { FormField } from "./styled/FormField";
 import { findNode, updateNode } from "../lib/stores/tree";
 import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
 import { storyState } from "../lib/stores/story";
-import { charactersState } from "../lib/stores/characters";
+import { charactersState, getCharacterName } from "../lib/stores/characters";
 import { CharacterSelect } from "./CharacterSelect";
 import { LocationList } from "./snowflake/LocationList";
 import { CharacterList } from "./snowflake/CharacterList";
 import type { Node } from "@writer/shared";
 import { NodeTypeButtons } from "./NodeTypeButtons";
+import { extractSceneHighlights, needsHighlightsRegeneration } from "../lib/generation/extractSceneHighlights";
 
 export const ScenePanel = () => {
-  const help = (
+  const [extractingHighlights, setExtractingHighlights] = createSignal(false);
+  const [isAiLoading, setIsAiLoading] = createSignal(false);
+
+  const help = async (
     helpKind: "summarize" | "improvements" | "suggest_title",
     extra = false,
   ) => {
-    const text = `Scene text:\n\n${currentScene()
+    const protagonist = charactersState.characters[currentScene()?.protagonistId ?? ""];
+    const protagonistName = protagonist ? getCharacterName(protagonist.id) : "the protagonist";
+    const protagonistGender = protagonist?.gender ?? "male";
+
+    const text = `Protagonist: ${protagonistName} (${protagonistGender})\n\nScene text:\n\n${currentScene()
       ?.paragraphs.map((p) =>
         typeof p.text === "string" ? p.text : contentSchemaToText(p.text),
       )
       .join("\n\n")}\n\nOutput only the summary.`;
-    useAi(helpKind, text).then((res) => {
+    setIsAiLoading(true);
+    try {
+      const res = await useAi(helpKind, text);
       const sceneId = currentScene()?.id;
       if (sceneId && extra) {
         updateSceneData(sceneId, { extra: res ?? undefined });
@@ -36,7 +46,9 @@ export const ScenePanel = () => {
           updateNode(sceneId, { oneliner: res ?? undefined });
         }
       }
-    });
+    } finally {
+      setIsAiLoading(false);
+    }
   };
 
   const sceneAsNode = (): Node | undefined => {
@@ -176,6 +188,66 @@ export const ScenePanel = () => {
           <span class="label-text">Uploaded</span>
         </label>
       </FormField>
+      {/* Scene Highlights Section */}
+      <Show when={currentScene()}>
+        <FormField label="Scene Highlights">
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600">
+                {currentScene()?.highlights?.length ?
+                  `${currentScene()?.highlights?.length} highlight(s) found` :
+                  'No highlights generated yet'}
+              </span>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline"
+                disabled={extractingHighlights()}
+                onClick={async () => {
+                  const scene = currentScene();
+                  if (!scene) return;
+
+                  setExtractingHighlights(true);
+                  try {
+                    await extractSceneHighlights(scene.id);
+                  } finally {
+                    setExtractingHighlights(false);
+                  }
+                }}
+              >
+                {extractingHighlights() ?
+                  <span class="loading loading-spinner loading-xs mr-2" /> : null}
+                {needsHighlightsRegeneration(currentScene()?.id ?? "") ? "Generate Highlights" : "Regenerate Highlights"}
+              </button>
+            </div>
+
+            <Show when={currentScene()?.highlights?.length}>
+              <div class="bg-base-200 p-2 rounded-lg max-h-48 overflow-y-auto">
+                <For each={currentScene()?.highlights}>
+                  {(highlight) => (
+                    <div class="mb-2 p-2 bg-base-100 rounded">
+                      <div class="flex justify-between">
+                        <span class={`badge badge-sm ${highlight.category === "character" ? "badge-primary" :
+                          highlight.category === "plot" ? "badge-secondary" :
+                            highlight.category === "setting" ? "badge-accent" :
+                              "badge-neutral"
+                          }`}>
+                          {highlight.category}
+                        </span>
+                        <span class="text-xs text-gray-500">
+                          {new Date(highlight.timestamp).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p class="mt-1 text-sm font-medium">{highlight.text}</p>
+                      <p class="text-xs text-gray-600">{highlight.importance}</p>
+                    </div>
+                  )}
+                </For>
+              </div>
+            </Show>
+          </div>
+        </FormField>
+      </Show>
+
       <Show when={currentScene()?.id}>
         {(id) => <NodeTypeButtons nodeId={id()} />}
       </Show>
@@ -183,28 +255,40 @@ export const ScenePanel = () => {
         <button
           type="button"
           class="btn btn-primary"
+          disabled={isAiLoading() || extractingHighlights()}
           onClick={() => {
             help("suggest_title");
           }}
         >
+          <Show when={isAiLoading() && !extractingHighlights()}>
+            <span class="loading loading-spinner loading-xs mr-2" />
+          </Show>
           [AI] Suggest Title
         </button>
         <button
           type="button"
           class="btn btn-primary"
+          disabled={isAiLoading() || extractingHighlights()}
           onClick={() => {
             help("summarize");
           }}
         >
+          <Show when={isAiLoading() && !extractingHighlights()}>
+            <span class="loading loading-spinner loading-xs mr-2" />
+          </Show>
           [AI] Summarize
         </button>
         <button
           type="button"
           class="btn btn-primary"
+          disabled={isAiLoading() || extractingHighlights()}
           onClick={() => {
             help("improvements", true);
           }}
         >
+          <Show when={isAiLoading() && !extractingHighlights()}>
+            <span class="loading loading-spinner loading-xs mr-2" />
+          </Show>
           [AI] Improvements
         </button>
         <button
@@ -217,6 +301,6 @@ export const ScenePanel = () => {
           Delete
         </button>
       </div>
-    </div>
+    </div >
   ) : null;
 };

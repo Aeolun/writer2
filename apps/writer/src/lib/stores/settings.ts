@@ -18,6 +18,7 @@ export interface SettingsState {
   serverUrl: string;
   serverAuths: ServerAuth[]; // New field to store auth per server
   aiSource: LLMName | "";
+  imageAiSource: "openai" | "";
   aiModel: string;
   royalRoadEmail: string;
   royalRoadPassword: string;
@@ -34,6 +35,7 @@ const initialSettings: SettingsState = {
   serverUrl: "https://writer.serial-experiments.com/trpc",
   serverAuths: [],
   aiSource: "",
+  imageAiSource: "",
   aiModel: "",
   royalRoadEmail: "",
   royalRoadPassword: "",

@@ -1,11 +1,11 @@
 import { createMemo, createSignal, Show } from "solid-js";
 import { setSignedInUser, userState } from "../lib/stores/user";
 import { trpc } from "../lib/trpc";
-import { FiMenu, FiSettings, FiUploadCloud, FiDownloadCloud, FiAlertTriangle, FiInfo } from "solid-icons/fi";
+import { FiMenu, FiSettings, FiUploadCloud, FiDownloadCloud, FiAlertTriangle, FiInfo, FiDatabase } from "solid-icons/fi";
 import { NotificationManager } from "./NotificationManager";
 import { A, useNavigate } from "@solidjs/router";
 import { storyState, unloadStory } from "../lib/stores/story";
-import { setAiPopupOpen, uiState, setShowSyncStatusDialog } from "../lib/stores/ui";
+import { setAiPopupOpen, uiState, setShowSyncStatusDialog, setShowAiLogPopup } from "../lib/stores/ui";
 import { uploadStory } from "../lib/persistence/upload-story";
 import { importRoyalRoad } from "../lib/persistence/import-royal-road";
 import { setSetting } from "../lib/stores/settings";
@@ -14,6 +14,7 @@ import { addNotification } from "../lib/stores/notifications";
 import { unloadState } from "../lib/persistence/unload-state";
 import { loadStoryFromServer } from "../lib/persistence/load-story-from-server";
 import { LoadFromServerConflictDialog } from "./LoadFromServerConflictDialog";
+import { AiLogPopup } from "./AiLogPopup";
 
 // Define Sync Status types
 type SyncStatus = "unknown" | "in-sync" | "local-changes" | "server-changes" | "conflict";
@@ -98,6 +99,7 @@ export const WriteHeaderMenu = () => {
   return (
     <>
       <NotificationManager />
+      <AiLogPopup />
       <div class="bg-white flex justify-between shadow-lg z-20">
         <div class="px-2 py-1 flex items-center gap-1">
           <div
@@ -244,6 +246,17 @@ export const WriteHeaderMenu = () => {
               }}
             >
               AI Question
+            </button>
+
+            <button
+              class="btn btn-ghost"
+              type="button"
+              title="View AI Call History"
+              onClick={() => {
+                setShowAiLogPopup(true);
+              }}
+            >
+              <FiDatabase />
             </button>
 
             <button

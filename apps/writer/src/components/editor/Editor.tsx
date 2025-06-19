@@ -30,6 +30,7 @@ export const Editor = (props: {
   let view: EditorView | undefined;
 
   onCleanup(() => {
+    console.log("onCleanup", props.paragraphId);
     if (props.paragraphId) {
       unregisterEditor(props.paragraphId);
     }
@@ -39,6 +40,7 @@ export const Editor = (props: {
   });
 
   createEffect(() => {
+    console.log("createEffect", props.paragraphId);
     if (!props.paragraphId || view) return;
 
     // Create a new div element for the editor

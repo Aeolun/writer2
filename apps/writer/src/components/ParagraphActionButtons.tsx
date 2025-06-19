@@ -1,4 +1,4 @@
-import { FiArrowDown, FiArrowUp, FiPlus, FiTrash, FiMenu } from "solid-icons/fi";
+import { FiArrowDown, FiArrowUp, FiPlus, FiTrash, FiMenu, FiEye } from "solid-icons/fi";
 import { TbBuildingStore, TbTimeline } from "solid-icons/tb";
 import { ImMagicWand, ImPlay2 } from "solid-icons/im";
 import { BsSpellcheck } from "solid-icons/bs";
@@ -225,7 +225,7 @@ export const ParagraphActionButtons = (props: ParagraphActionButtonsProps) => {
             disabled={scenesState.scenes[props.sceneId].protagonistId === undefined}
             title="Add sensory details"
           >
-            <RiSystemEye2Line />
+            <FiEye />
           </button>
         </div>
 

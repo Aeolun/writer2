@@ -6,12 +6,14 @@ import { findPathToNode } from "../../lib/stores/tree";
 import { CharacterSelect } from "../CharacterSelect";
 import { addNotification } from "../../lib/stores/notifications";
 import { charactersState } from "../../lib/stores/characters";
+import { extractCharactersFromScene } from "./actions/extractCharactersFromScene";
 
 // Add character selection UI to SnowflakeItem
 export const CharacterList = (props: { node: Node }) => {
   const scene = scenesState.scenes[props.node.id];
   const characters = () => scene?.characterIds ?? [];
   const referredCharacters = () => scene?.referredCharacterIds ?? [];
+  const [extractingCharacters, setExtractingCharacters] = createSignal(false);
   const [openDropdowns, setOpenDropdowns] = createSignal<
     Record<"perspective" | "present" | "referred", boolean>
   >({
@@ -111,7 +113,7 @@ export const CharacterList = (props: { node: Node }) => {
       <div class="flex items-center gap-2">
         <span class="text-sm font-semibold">Characters Present:</span>
         <div
-          class="dropdown dropdown-end"
+          class="dropdown dropdown-start"
           classList={{
             "dropdown-open": openDropdowns().present,
           }}
@@ -159,6 +161,30 @@ export const CharacterList = (props: { node: Node }) => {
           title="Copy characters from previous scene"
         >
           ⬆️
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost btn-xs"
+          disabled={extractingCharacters()}
+          onClick={async () => {
+            setExtractingCharacters(true);
+            try {
+              await extractCharactersFromScene(props.node);
+            } catch (error) {
+              addNotification({
+                type: "error",
+                title: "Error extracting characters",
+                message: error instanceof Error ? error.message : "Unknown error"
+              });
+            } finally {
+              setExtractingCharacters(false);
+            }
+          }}
+          title="Extract characters from scene content"
+        >
+          {extractingCharacters() ?
+            <span class="loading loading-spinner loading-xs"></span> :
+            "🔍"}
         </button>
         <div
           class="dropdown dropdown-end"
@@ -232,20 +258,18 @@ export const CharacterList = (props: { node: Node }) => {
 
             return (
               <div
-                class={`badge gap-1 ${
-                  character.id === scene.protagonistId
-                    ? "badge-secondary" // Perspective character
-                    : (character.isMainCharacter ?? true)
-                      ? "badge-primary"
-                      : "badge-accent"
-                }`}
-                title={`${
-                  character.id === scene.protagonistId
-                    ? "Perspective"
-                    : (character.isMainCharacter ?? true)
-                      ? "Main"
-                      : "Side"
-                } character`}
+                class={`badge gap-1 ${character.id === scene.protagonistId
+                  ? "badge-secondary" // Perspective character
+                  : (character.isMainCharacter ?? true)
+                    ? "badge-primary"
+                    : "badge-accent"
+                  }`}
+                title={`${character.id === scene.protagonistId
+                  ? "Perspective"
+                  : (character.isMainCharacter ?? true)
+                    ? "Main"
+                    : "Side"
+                  } character`}
               >
                 {character.id === scene.protagonistId && "👁️ "}
                 {fullName}
@@ -276,7 +300,7 @@ export const CharacterList = (props: { node: Node }) => {
       <div class="flex items-center gap-2">
         <span class="text-sm font-semibold">Characters Referred To:</span>
         <div
-          class="dropdown dropdown-end"
+          class="dropdown dropdown-start"
           classList={{
             "dropdown-open": openDropdowns().referred,
           }}

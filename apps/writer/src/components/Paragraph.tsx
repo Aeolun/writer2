@@ -24,6 +24,7 @@ import { contentSchemaToText } from "../lib/persistence/content-schema-to-html";
 import { charactersState } from "../lib/stores/characters.ts";
 import { locationsState } from "../lib/stores/locations.ts";
 import { ParagraphActionButtons } from "./ParagraphActionButtons";
+import { uiState } from "../lib/stores/ui.ts";
 
 const statusColor: Record<SceneParagraph["state"], string> = {
   draft: "border-yellow-500",
@@ -206,11 +207,11 @@ export const Paragraph = (props: {
         borderColor={statusColor[props.paragraph.state] ?? undefined}
         main={
           <>
-            {currentScene()?.selectedParagraph === props.paragraph.id ? (
+            {uiState.selectedParagraphId === props.paragraph.id ? (
               <ParagraphActionButtons
                 sceneId={props.sceneId}
                 paragraphId={props.paragraph.id}
-                scene={currentScene()}
+                scene={scenesState.scenes[props.sceneId]}
                 text={props.paragraph.text}
                 onGenerateBetween={() => setGenerateBetweenOpen(true)}
                 aiCharacters={props.paragraph.aiCharacters?.toString()}

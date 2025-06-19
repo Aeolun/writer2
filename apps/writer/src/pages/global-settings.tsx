@@ -191,6 +191,27 @@ const GlobalSettings = () => {
               </FormField>
 
               <FormField
+                label="Image Generation Provider"
+                helpText="Which AI provider is used for image generation (separate from text generation)"
+              >
+                <select
+                  class="select select-bordered"
+                  value={settingsState.imageAiSource || ""}
+                  onChange={(e) => {
+                    setSetting("imageAiSource", e.currentTarget.value as "openai" | "");
+                  }}
+                >
+                  <option value={""}>None</option>
+                  <option
+                    value="openai"
+                    disabled={!hasProviderKey("openai")}
+                  >
+                    OpenAI {!hasProviderKey("openai") ? "(No API Key)" : ""}
+                  </option>
+                </select>
+              </FormField>
+
+              <FormField
                 label="AI Model"
                 helpText="Which AI model is used to do completions"
               >
