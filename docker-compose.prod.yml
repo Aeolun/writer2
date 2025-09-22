@@ -15,13 +15,21 @@ services:
       caddy: writer.serial-experiments.com
       caddy.reverse_proxy: "{{upstreams 2022}}"
   reader:
+    build:
+      context: .
+      dockerfile: apps/reader-solid/Dockerfile
     image: aeolun/writer-reader:latest
+    environment:
+      - READER_TRPC_URL=http://server:2022
+      - SESSION_SECRET=${READER_SESSION_SECRET}
+    expose:
+      - "3000"
     networks:
       - default
       - caddy
     labels:
       caddy: reader.serial-experiments.com
-      caddy.reverse_proxy: "{{upstreams 80}}"
+      caddy.reverse_proxy: "{{upstreams 3000}}"
   redis:
     image: redis:latest
 
