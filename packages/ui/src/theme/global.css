@@ -1,0 +1,26 @@
+/*
+ * Font Stack Reference
+ *
+ * This design system expects the following fonts to be available:
+ * - Inter (UI text): https://rsms.me/inter/
+ * - Crimson Pro (Chronicle reading): https://fonts.google.com/specimen/Crimson+Pro
+ * - Source Serif Pro (Starlight reading): https://fonts.google.com/specimen/Source+Serif+Pro
+ * - JetBrains Mono (code): https://www.jetbrains.com/lp/mono/
+ *
+ * The consuming application should download and serve these fonts locally.
+ * Place font files in your app's public/fonts directory and use @font-face declarations.
+ *
+ * Example @font-face setup (add to your app's CSS):
+ *
+ * @font-face {
+ *   font-family: 'Inter';
+ *   src: url('/fonts/Inter-Variable.woff2') format('woff2');
+ *   font-weight: 100 900;
+ *   font-display: swap;
+ * }
+ *
+ * If fonts are not loaded, the system will fall back to:
+ * - Sans: Segoe UI, system-ui, sans-serif
+ * - Serif: Georgia, Times New Roman, serif
+ * - Mono: Consolas, monospace
+ */
