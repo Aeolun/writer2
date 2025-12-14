@@ -41,3 +41,18 @@ stories/*.json
 audio
 
 **/.claude/settings.local.json
+
+# Database files
+*.db
+*.db-journal
+**/prisma/backups/
+
+# Build artifacts
+**/dist/
+
+# Large artifacts
+*.tar.gz
+
+# Bundle analysis
+bundle-stats.json
+bundle-analysis.html
