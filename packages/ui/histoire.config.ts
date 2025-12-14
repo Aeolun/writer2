@@ -28,6 +28,14 @@ export default defineConfig({
         id: 'components',
         title: 'Components',
       },
+      {
+        id: 'layout',
+        title: 'Layout',
+      },
+      {
+        id: 'editor',
+        title: 'Editor',
+      },
     ],
   },
 })

@@ -1,0 +1,156 @@
+import { Component, createMemo, createSignal } from 'solid-js'
+import { SceneEditor } from '@writer/ui'
+import type { Paragraph } from '@story/shared'
+import type { EditorScene, EditorCharacter } from '@writer/ui'
+import { messagesStore } from '../stores/messagesStore'
+import { charactersStore } from '../stores/charactersStore'
+import { nodeStore } from '../stores/nodeStore'
+import { generateMessageId } from '../utils/id'
+import { getCharacterDisplayName } from '../utils/character'
+
+interface SceneEditorWrapperProps {
+  messageId: string
+  onParagraphsUpdate?: (paragraphs: Paragraph[]) => void  // Called when paragraphs change (doesn't save, just notifies parent)
+}
+
+/**
+ * Wrapper component that connects the @writer/editor SceneEditor
+ * to the Story app's stores and state management
+ *
+ * Displays paragraphs for a SINGLE message
+ */
+export const SceneEditorWrapper: Component<SceneEditorWrapperProps> = (props) => {
+  const [selectedParagraphId, setSelectedParagraphId] = createSignal<string | null>(null)
+
+  // Get the message
+  const message = createMemo(() => {
+    return messagesStore.messages.find(m => m.id === props.messageId)
+  })
+
+  // Get the scene node (if the message belongs to a scene)
+  const scene = createMemo(() => {
+    const msg = message()
+    if (!msg?.sceneId) return null
+    // nodeStore.nodes is a Record<string, Node>, not an array
+    const node = nodeStore.nodes[msg.sceneId]
+    return node?.type === 'scene' ? node : null
+  })
+
+  // Get paragraphs from this specific message (initial state)
+  const initialParagraphs = createMemo((): Paragraph[] => {
+    const msg = message()
+    return (msg?.paragraphs || []) as Paragraph[]
+  })
+
+  // Track current paragraph state (can be modified by editor)
+  const [currentParagraphs, setCurrentParagraphs] = createSignal<Paragraph[]>(initialParagraphs())
+
+  // Convert characters to editor format (Record<string, EditorCharacter>)
+  const editorCharacters = createMemo((): Record<string, EditorCharacter> => {
+    const chars: Record<string, EditorCharacter> = {}
+    charactersStore.characters.forEach((char) => {
+      chars[char.id] = {
+        id: char.id,
+        firstName: char.firstName || 'Unknown',
+        lastName: char.lastName || undefined,
+        summary: char.description || undefined,
+      }
+    })
+    return chars
+  })
+
+  // Convert scene to editor format (using message as the "scene")
+  const editorScene = createMemo((): EditorScene => {
+    const s = scene()
+    return {
+      id: props.messageId, // Use message ID as scene ID
+      paragraphs: currentParagraphs(),  // Use current (editable) state
+      protagonistId: s?.viewpointCharacterId || undefined,
+      characterIds: s?.activeCharacterIds || [],
+      perspective: (s?.perspective?.toLowerCase() as 'first' | 'third') || undefined,
+    }
+  })
+
+  // Callbacks
+  const handleParagraphsChange = (paragraphs: Paragraph[]) => {
+    console.log('[SceneEditorWrapper] Paragraphs changed:', paragraphs.length)
+    // Update local state (doesn't save yet!)
+    setCurrentParagraphs(paragraphs)
+    // Notify parent component (Message.tsx) of the change
+    props.onParagraphsUpdate?.(paragraphs)
+  }
+
+  const handleParagraphCreate = (paragraph: Omit<Paragraph, 'id'>, afterId?: string): string => {
+    const newId = generateMessageId()
+    console.log('[SceneEditorWrapper] Creating paragraph:', newId, afterId)
+    // TODO: Create message in messagesStore
+    return newId
+  }
+
+  const handleParagraphDelete = (paragraphId: string) => {
+    console.log('[SceneEditorWrapper] Deleting paragraph:', paragraphId)
+    // TODO: Delete message from messagesStore
+  }
+
+  const handleParagraphUpdate = (paragraphId: string, data: Partial<Paragraph>) => {
+    console.log('[SceneEditorWrapper] Updating paragraph:', paragraphId, data)
+    // TODO: Update message in messagesStore
+  }
+
+  const handleParagraphMoveUp = (paragraphId: string) => {
+    console.log('[SceneEditorWrapper] Moving paragraph up:', paragraphId)
+    // TODO: Reorder messages
+  }
+
+  const handleParagraphMoveDown = (paragraphId: string) => {
+    console.log('[SceneEditorWrapper] Moving paragraph down:', paragraphId)
+    // TODO: Reorder messages
+  }
+
+  const handleSelectedParagraphChange = (paragraphId: string) => {
+    setSelectedParagraphId(paragraphId)
+  }
+
+  const handleViewpointChange = (characterId: string | null) => {
+    console.log('[SceneEditorWrapper] Viewpoint changed:', characterId)
+    // TODO: Update scene node's viewpointCharacterId
+  }
+
+  const handleActiveCharactersChange = (characterIds: string[]) => {
+    console.log('[SceneEditorWrapper] Active characters changed:', characterIds)
+    // TODO: Update scene node's activeCharacterIds
+  }
+
+  const handleGoalChange = (goal: string | null) => {
+    console.log('[SceneEditorWrapper] Goal changed:', goal)
+    // TODO: Update scene node's goal
+  }
+
+  return (
+    <SceneEditor
+      scene={editorScene()}
+      characters={editorCharacters()}
+      locations={{}} // Empty record for now
+      sceneId={props.messageId}
+
+      // Callbacks
+      onParagraphsChange={handleParagraphsChange}
+      onParagraphCreate={handleParagraphCreate}
+      // Note: The SceneEditor also calls onParagraphsChange which updates our parent
+      onParagraphDelete={handleParagraphDelete}
+      onParagraphUpdate={handleParagraphUpdate}
+      onParagraphMoveUp={handleParagraphMoveUp}
+      onParagraphMoveDown={handleParagraphMoveDown}
+      onSelectedParagraphChange={handleSelectedParagraphChange}
+      onViewpointChange={handleViewpointChange}
+      onActiveCharactersChange={handleActiveCharactersChange}
+      onGoalChange={handleGoalChange}
+
+      // AI not connected yet
+      onAiHelp={async () => {}}
+      onAiRewrite={async () => {}}
+      onAiTranslate={async () => {}}
+      onAiBetween={async () => {}}
+    />
+  )
+}

@@ -10,6 +10,10 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./theme": {
+      "import": "./dist/theme/index.js",
+      "types": "./dist/theme/index.d.ts"
+    },
     "./styles": "./dist/styles.css"
   },
   "files": [
@@ -28,12 +32,24 @@
     "@vanilla-extract/css": "^1.17.1",
     "@vanilla-extract/dynamic": "^2.1.2",
     "@vanilla-extract/recipes": "^0.5.5",
-    "colord": "^2.9.3"
+    "colord": "^2.9.3",
+    "diff": "^8.0.2",
+    "prosemirror-commands": "^1.7.1",
+    "prosemirror-history": "^1.4.1",
+    "prosemirror-inputrules": "^1.5.0",
+    "prosemirror-keymap": "^1.2.3",
+    "prosemirror-model": "^1.25.2",
+    "prosemirror-schema-basic": "^1.2.4",
+    "prosemirror-state": "^1.4.3",
+    "prosemirror-view": "^1.40.0",
+    "short-uuid": "^4.2.2"
   },
   "peerDependencies": {
-    "solid-js": "^1.9.0"
+    "solid-js": "^1.9.0",
+    "@story/shared": "workspace:*"
   },
   "devDependencies": {
+    "@story/shared": "workspace:*",
     "@vanilla-extract/vite-plugin": "^4.0.20",
     "histoire": "^0.17.17",
     "histoire-plugin-solid": "workspace:^",

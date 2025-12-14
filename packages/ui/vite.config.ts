@@ -10,9 +10,11 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        'theme/index': resolve(__dirname, 'src/theme/tokens-only.ts'),
+      },
       formats: ['es'],
-      fileName: 'index',
     },
     rollupOptions: {
       external: ['solid-js', 'solid-js/web', 'solid-js/store'],
