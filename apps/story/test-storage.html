@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Storage Interface Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #1e3a1e;
+            border: 1px solid #4caf50;
+        }
+        .fail {
+            background: #3a1e1e;
+            border: 1px solid #f44336;
+        }
+        button {
+            margin: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background: #2d2d2d;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Storage Interface Test</h1>
+    
+    <div>
+        <button onclick="runTests()">Run Tests</button>
+        <button onclick="clearAll()">Clear All Storage</button>
+        <button onclick="checkMigration()">Check Migration Status</button>
+        <button onclick="confirmMigration()">Confirm Migration & Cleanup</button>
+    </div>
+    
+    <div id="output"></div>
+
+    <script type="module">
+        import { storage } from './src/utils/storage/index.js';
+        
+        const output = document.getElementById('output');
+        
+        function log(message, isError = false) {
+            const div = document.createElement('div');
+            div.textContent = message;
+            div.className = 'test-result ' + (isError ? 'fail' : 'pass');
+            output.appendChild(div);
+        }
+        
+        function clearOutput() {
+            output.innerHTML = '';
+        }
+        
+        window.runTests = async function() {
+            clearOutput();
+            log('Starting storage interface tests...');
+            
+            try {
+                // Test 1: Basic set/get
+                log('Test 1: Basic set/get');
+                await storage.set('test-key', { data: 'test value' });
+                const value = await storage.get('test-key');
+                if (value?.data === 'test value') {
+                    log('✓ Basic set/get works');
+                } else {
+                    log('✗ Basic set/get failed', true);
+                }
+                
+                // Test 2: Large data
+                log('\nTest 2: Large data storage');
+                const largeData = {
+                    messages: Array(1000).fill(null).map((_, i) => ({
+                        id: `msg-${i}`,
+                        content: 'This is a test message with some content to make it larger. '.repeat(10),
+                        timestamp: new Date()
+                    }))
+                };
+                await storage.set('test-large', largeData);
+                const retrieved = await storage.get('test-large');
+                if (retrieved?.messages?.length === 1000) {
+                    log('✓ Large data storage works');
+                } else {
+                    log('✗ Large data storage failed', true);
+                }
+                
+                // Test 3: Remove
+                log('\nTest 3: Remove functionality');
+                await storage.remove('test-key');
+                const removed = await storage.get('test-key');
+                if (removed === null) {
+                    log('✓ Remove works');
+                } else {
+                    log('✗ Remove failed', true);
+                }
+                
+                // Test 4: Storage info
+                log('\nTest 4: Storage info');
+                const info = await storage.getStorageInfo();
+                log(`✓ Storage info: ${JSON.stringify(info, null, 2)}`);
+                
+                // Test 5: Keys functionality
+                log('\nTest 5: Get keys');
+                const keys = await storage.getKeys();
+                log(`✓ Found ${keys.length} keys in IndexedDB`);
+                
+                // Cleanup
+                await storage.remove('test-large');
+                
+                log('\n✅ All tests completed!');
+                
+            } catch (error) {
+                log(`\n❌ Test failed with error: ${error.message}`, true);
+                console.error(error);
+            }
+        };
+        
+        window.clearAll = async function() {
+            clearOutput();
+            if (confirm('Are you sure you want to clear all storage?')) {
+                try {
+                    await storage.clearIndexedDB();
+                    localStorage.clear();
+                    log('✓ All storage cleared');
+                } catch (error) {
+                    log('✗ Failed to clear storage: ' + error.message, true);
+                }
+            }
+        };
+        
+        window.checkMigration = async function() {
+            clearOutput();
+            const status = storage.getMigrationStatus();
+            
+            log('Migration Status:');
+            log(`  Migrated: ${status.migrated ? '✓' : '✗'}`, !status.migrated);
+            log(`  Cleaned up: ${status.cleanedUp ? '✓' : '✗'}`, !status.cleanedUp);
+            
+            if (status.info) {
+                log('\nMigration Info:');
+                log(`  Date: ${new Date(status.info.date).toLocaleString()}`);
+                log(`  Keys migrated: ${status.info.migratedCount}/${status.info.keysToMigrate}`);
+                if (status.info.errors.length > 0) {
+                    log(`  Errors: ${status.info.errors.join(', ')}`, true);
+                }
+            }
+            
+            // Check what's in localStorage
+            log('\nLocalStorage contents:');
+            const localKeys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                localKeys.push(key);
+                const value = localStorage.getItem(key);
+                log(`  ${key}: ${value ? value.substring(0, 100) + '...' : 'null'}`);
+            }
+            
+            // Check IndexedDB
+            try {
+                const indexedKeys = await storage.getKeys();
+                log(`\nIndexedDB contains ${indexedKeys.length} keys`);
+                if (indexedKeys.length > 0) {
+                    log('Sample keys:');
+                    indexedKeys.slice(0, 5).forEach(key => {
+                        log(`  ${key}`);
+                    });
+                }
+            } catch (error) {
+                log('\nFailed to check IndexedDB keys', true);
+            }
+        };
+        
+        window.confirmMigration = async function() {
+            clearOutput();
+            log('Confirming migration and cleaning up localStorage...');
+            
+            try {
+                const result = await storage.cleanupAfterMigration();
+                if (result.success) {
+                    log(`✓ ${result.message}`);
+                } else {
+                    log(`✗ ${result.message}`, true);
+                }
+            } catch (error) {
+                log(`✗ Cleanup failed: ${error}`, true);
+            }
+        };
+        
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            log('Storage test page loaded. Click "Run Tests" to begin.');
+        });
+    </script>
+</body>
+</html>

@@ -535,74 +535,88 @@ export const SceneEditor = (props: { sceneId: string }) => {
             "Mod-i": italic,
             Enter: (state, dispatch) => {
               if (!dispatch) return false;
-              
+
               const { $head, $anchor } = state.selection;
               if (!$head.sameParent($anchor)) return false;
-              
-              const currentParagraphId = getParagraphIdAtPos(state.doc, $head.pos);
+
+              const currentParagraphId = getParagraphIdAtPos(
+                state.doc,
+                $head.pos,
+              );
               if (!currentParagraphId) return false;
-              
+
               // Get the current paragraph node and its position
-              const paragraphRange = getParagraphRange(state.doc, currentParagraphId);
+              const paragraphRange = getParagraphRange(
+                state.doc,
+                currentParagraphId,
+              );
               if (!paragraphRange) return false;
-              
+
               const resolvedPos = state.doc.resolve($head.pos);
-              const currentParagraphNode = state.doc.nodeAt(paragraphRange.from);
+              const currentParagraphNode = state.doc.nodeAt(
+                paragraphRange.from,
+              );
               if (!currentParagraphNode) return false;
-              
+
               // Calculate position within the paragraph (excluding the paragraph node itself)
               const posInParagraph = $head.pos - paragraphRange.from - 1;
-              
+
               // Get text before and after cursor
               const fullText = currentParagraphNode.textContent;
               const textBefore = fullText.slice(0, posInParagraph);
               const textAfter = fullText.slice(posInParagraph);
-              
+
               // Create new paragraph ID for the split
               const newParagraphId = shortUUID.generate();
-              
+
               // Start transaction
               const tr = state.tr;
-              
+
               // If we're at the end of the paragraph, just create a new empty paragraph after
               if (textAfter === "") {
                 // Insert a new empty paragraph after the current one
                 const newParagraph = state.schema.nodes.paragraph.create(
                   { id: newParagraphId },
-                  []
+                  [],
                 );
                 tr.insert(paragraphRange.to, newParagraph);
-                
+
                 // Move cursor to the new paragraph
-                tr.setSelection(TextSelection.create(tr.doc, paragraphRange.to + 1));
+                tr.setSelection(
+                  TextSelection.create(tr.doc, paragraphRange.to + 1),
+                );
               } else {
                 // We need to split the paragraph
                 // First, update the current paragraph to only have the text before cursor
                 const beforeParagraph = state.schema.nodes.paragraph.create(
                   currentParagraphNode.attrs,
-                  textBefore ? [state.schema.text(textBefore)] : []
+                  textBefore ? [state.schema.text(textBefore)] : [],
                 );
-                
+
                 // Create the new paragraph with text after cursor
                 const afterParagraph = state.schema.nodes.paragraph.create(
                   { id: newParagraphId },
-                  textAfter ? [state.schema.text(textAfter)] : []
+                  textAfter ? [state.schema.text(textAfter)] : [],
                 );
-                
+
                 // Replace the current paragraph with both new paragraphs
-                tr.replaceWith(
-                  paragraphRange.from,
-                  paragraphRange.to,
-                  [beforeParagraph, afterParagraph]
-                );
-                
+                tr.replaceWith(paragraphRange.from, paragraphRange.to, [
+                  beforeParagraph,
+                  afterParagraph,
+                ]);
+
                 // Position cursor at start of new paragraph
-                tr.setSelection(TextSelection.create(tr.doc, paragraphRange.from + beforeParagraph.nodeSize + 1));
+                tr.setSelection(
+                  TextSelection.create(
+                    tr.doc,
+                    paragraphRange.from + beforeParagraph.nodeSize + 1,
+                  ),
+                );
               }
-              
+
               // Dispatch the transaction
               dispatch(tr);
-              
+
               // The dispatchTransaction handler will sync the new paragraph to the store
               return true;
             },
@@ -676,54 +690,123 @@ export const SceneEditor = (props: { sceneId: string }) => {
               }
               return true;
             },
-            Backspace: (state, dispatch) => {
+            Delete: (state, dispatch) => {
               if (!dispatch) return false;
               
-              const { $head, empty } = state.selection;
+              // Let ProseMirror handle all delete operations by default
+              return false;
+            },
+            Backspace: (state, dispatch) => {
+              if (!dispatch) return false;
+
+              const { $from, $to, empty } = state.selection;
               
+              // Check if we have a full paragraph selection
+              let isFullParagraphSelected = false;
+              if (!empty) {
+                // Get the paragraph boundaries
+                const $pos = state.doc.resolve($from.pos);
+                const paragraph = $pos.node();
+                if (paragraph && paragraph.type.name === 'paragraph') {
+                  const paragraphStart = $pos.before();
+                  const paragraphEnd = paragraphStart + paragraph.nodeSize;
+                  
+                  // Check if selection spans the entire paragraph content
+                  isFullParagraphSelected = 
+                    $from.pos <= paragraphStart + 1 && 
+                    $to.pos >= paragraphEnd - 1;
+                }
+              }
+              
+              // Log current paragraph ID before any action
+              const currentParagraphId = getParagraphIdAtPos(
+                state.doc,
+                $from.pos,
+              );
+              console.log('Backspace pressed in paragraph:', {
+                paragraphId: currentParagraphId,
+                empty,
+                selectionFrom: $from.pos,
+                selectionTo: $to.pos,
+                isFullParagraphSelected,
+                selectionDirection: $from.pos < $to.pos ? 'forward' : 'backward'
+              });
+              
+              // If full paragraph is selected, handle it specially
+              if (isFullParagraphSelected) {
+                const paragraphRange = getParagraphRange(state.doc, currentParagraphId);
+                if (paragraphRange) {
+                  // Just clear the paragraph content, don't let ProseMirror create a new one
+                  const tr = state.tr;
+                  // Delete content but keep the paragraph node
+                  tr.delete(paragraphRange.from + 1, paragraphRange.to - 1);
+                  dispatch(tr);
+                  return true; // Prevent default behavior
+                }
+              }
+
               // Only handle backspace at the beginning of a paragraph
-              if (empty && $head.parentOffset === 0) {
-                const currentParagraphId = getParagraphIdAtPos(state.doc, $head.pos);
+              if (empty && $from.parentOffset === 0) {
+                const currentParagraphId = getParagraphIdAtPos(
+                  state.doc,
+                  $from.pos,
+                );
                 if (!currentParagraphId) return false;
-                
+
                 const currentScene = scene();
                 if (!currentScene) return false;
-                
+
                 const paragraphIndex = currentScene.paragraphs.findIndex(
-                  p => p.id === currentParagraphId
+                  (p) => p.id === currentParagraphId,
                 );
-                
-                // If this is the first paragraph, do nothing
-                if (paragraphIndex <= 0) return true;
-                
+
                 // Get the current paragraph node to check if it's empty
-                const paragraphRange = getParagraphRange(state.doc, currentParagraphId);
+                const paragraphRange = getParagraphRange(
+                  state.doc,
+                  currentParagraphId,
+                );
                 if (!paragraphRange) return false;
-                
+
                 const paragraphNode = state.doc.nodeAt(paragraphRange.from);
                 if (!paragraphNode) return false;
-                
-                // If the paragraph is empty, delete it
+
+                // If this is the first paragraph
+                if (paragraphIndex <= 0) {
+                  // Only prevent default if paragraph is empty (nothing to merge with)
+                  if (paragraphNode.textContent === "") {
+                    return true; // Prevent backspace on empty first paragraph
+                  }
+                  // Otherwise let default handle it (deleting content)
+                  return false;
+                }
+
+                // If the paragraph is empty, delete it and merge with previous
                 if (paragraphNode.textContent === "") {
-                  const previousParagraphId = currentScene.paragraphs[paragraphIndex - 1].id;
-                  const previousRange = getParagraphRange(state.doc, previousParagraphId);
+                  const previousParagraphId =
+                    currentScene.paragraphs[paragraphIndex - 1].id;
+                  const previousRange = getParagraphRange(
+                    state.doc,
+                    previousParagraphId,
+                  );
                   if (!previousRange) return false;
-                  
+
                   // Delete the empty paragraph
                   const tr = state.tr;
                   tr.delete(paragraphRange.from, paragraphRange.to);
-                  
+
                   // Move cursor to end of previous paragraph
-                  tr.setSelection(TextSelection.create(tr.doc, previousRange.to - 1));
+                  tr.setSelection(
+                    TextSelection.create(tr.doc, previousRange.to - 1),
+                  );
                   dispatch(tr);
-                  
+
                   return true;
                 }
-                
+
                 // Otherwise, let ProseMirror handle the paragraph merge
                 return false;
               }
-              
+
               return false; // Let default backspace handle normal deletion
             },
           }),
@@ -831,41 +914,120 @@ export const SceneEditor = (props: { sceneId: string }) => {
       view = new EditorView(editorNode, {
         state,
         dispatchTransaction(transaction) {
+          console.log('Transaction:', {
+            docChanged: transaction.docChanged,
+            steps: transaction.steps.length,
+            stepTypes: transaction.steps.map(s => s.toJSON().stepType)
+          });
+          
           const newState = view!.state.apply(transaction);
           view!.updateState(newState);
 
           if (transaction.docChanged) {
             // Set flag to prevent external updates while we're updating from editor
             isInternalUpdate = true;
+            
+            // Debug logging for deletion
+            const oldParaIds = [];
+            state.doc.descendants((node, pos) => {
+              if (node.type.name === "paragraph" && node.attrs.id) {
+                oldParaIds.push(node.attrs.id);
+              }
+            });
+            
+            const newParaIds = [];
+            newState.doc.descendants((node, pos) => {
+              if (node.type.name === "paragraph" && node.attrs.id) {
+                newParaIds.push(node.attrs.id);
+              }
+            });
+            
+            if (oldParaIds.length !== newParaIds.length || 
+                !oldParaIds.every((id, i) => id === newParaIds[i])) {
+              console.log('Paragraph IDs changed:', {
+                before: oldParaIds,
+                after: newParaIds,
+                added: newParaIds.filter(id => !oldParaIds.includes(id)),
+                removed: oldParaIds.filter(id => !newParaIds.includes(id))
+              });
+            }
 
             // Convert document back to paragraphs and update store
             const { paragraphs, changedIds } = docToSceneParagraphs(
               newState.doc,
               lastKnownParagraphs(),
             );
+            
+            // Debug: Log when we have selection deletion
+            if (!state.selection.empty && transaction.selection.empty) {
+              console.log('Selection deleted', {
+                oldParagraphs: lastKnownParagraphs().length,
+                newParagraphs: paragraphs.length,
+                paragraphs: paragraphs.map(p => ({ id: p.id, text: p.text }))
+              });
+            }
 
             // First, check if there are any new paragraphs in the document that aren't in the store
             const currentScene = scene();
             let newParagraphIds: string[] = [];
-            
+
             if (currentScene) {
-              const storeIds = new Set(currentScene.paragraphs.map(p => p.id));
-              const docIds = new Set(paragraphs.map(p => p.id));
-              
+              const storeIds = new Set(
+                currentScene.paragraphs.map((p) => p.id),
+              );
+              const docIds = new Set(paragraphs.map((p) => p.id));
+
               // Find paragraphs that exist in the document but not in the store
-              newParagraphIds = Array.from(docIds).filter(id => !storeIds.has(id));
-              
+              newParagraphIds = Array.from(docIds).filter(
+                (id) => !storeIds.has(id),
+              );
+
               // Add new paragraphs to the store
               for (const newId of newParagraphIds) {
-                const newParagraph = paragraphs.find(p => p.id === newId);
+                const newParagraph = paragraphs.find((p) => p.id === newId);
                 if (newParagraph) {
-                  const paragraphIndex = paragraphs.findIndex(p => p.id === newId);
-                  let afterId: string | undefined;
+                  const paragraphIndex = paragraphs.findIndex(
+                    (p) => p.id === newId,
+                  );
                   
+                  // Check if this is a duplicate of an emptied paragraph
+                  let isDuplicate = false;
+                  if (paragraphIndex > 0) {
+                    const prevParagraph = paragraphs[paragraphIndex - 1];
+                    const prevStoreP = currentScene.paragraphs.find(p => p.id === prevParagraph.id);
+                    
+                    // If previous paragraph just became empty and new paragraph has similar content
+                    // as what the previous paragraph had, this is a duplicate
+                    if (prevParagraph.text === '' && prevStoreP && 
+                        typeof prevStoreP.text === 'string' && prevStoreP.text.trim() !== '' &&
+                        newParagraph.text.includes(prevStoreP.text.substring(0, 50))) {
+                      isDuplicate = true;
+                      console.log('Preventing duplicate paragraph creation - removing the empty one instead');
+                      
+                      // Remove the empty paragraph from the document
+                      const emptyParagraphRange = getParagraphRange(newState.doc, prevParagraph.id);
+                      if (emptyParagraphRange) {
+                        const tr = newState.tr;
+                        tr.delete(emptyParagraphRange.from, emptyParagraphRange.to);
+                        
+                        // Apply the transaction to remove the empty paragraph
+                        setTimeout(() => {
+                          if (view) {
+                            view.dispatch(tr);
+                          }
+                        }, 0);
+                      }
+                      
+                      continue; // Skip creating this paragraph
+                    }
+                  }
+                  
+                  let afterId: string | undefined;
+
                   if (paragraphIndex > 0) {
                     afterId = paragraphs[paragraphIndex - 1].id;
                   }
-                  
+
                   createSceneParagraph(
                     props.sceneId,
                     {
@@ -876,14 +1038,15 @@ export const SceneEditor = (props: { sceneId: string }) => {
                       extra: newParagraph.extra,
                       extraLoading: newParagraph.extraLoading,
                     },
-                    afterId
+                    afterId,
                   );
-                  
                 }
               }
-              
+
               // Find paragraphs that were removed from the document
-              const removedIds = Array.from(storeIds).filter(id => !docIds.has(id));
+              const removedIds = Array.from(storeIds).filter(
+                (id) => !docIds.has(id),
+              );
               for (const removedId of removedIds) {
                 removeSceneParagraph(props.sceneId, removedId);
               }
@@ -899,6 +1062,19 @@ export const SceneEditor = (props: { sceneId: string }) => {
                 );
 
                 if (existsInStore) {
+                  // Check if paragraph became empty and there's a new paragraph after it
+                  const paragraphIndex = paragraphs.findIndex(p => p.id === paragraphId);
+                  const nextParagraph = paragraphs[paragraphIndex + 1];
+                  
+                  if (paragraph.text === '' && nextParagraph && newParagraphIds.includes(nextParagraph.id)) {
+                    // This might be the duplicate paragraph issue
+                    console.log('Detected potential duplicate paragraph scenario', {
+                      emptyParagraphId: paragraphId,
+                      newParagraphId: nextParagraph.id,
+                      newParagraphText: nextParagraph.text
+                    });
+                  }
+                  
                   // Update existing paragraph
                   updateSceneParagraphData(props.sceneId, paragraphId, {
                     text: paragraph.text,
@@ -912,22 +1088,6 @@ export const SceneEditor = (props: { sceneId: string }) => {
             // Reset flag after a short delay to allow store updates to complete
             setTimeout(() => {
               isInternalUpdate = false;
-              
-              // If we added new paragraphs, force a full refresh to update nodeViews
-              if (newParagraphIds.length > 0 && view) {
-                const updatedScene = scene();
-                if (updatedScene) {
-                  const newDoc = sceneParagraphsToDoc(updatedScene.paragraphs);
-                  const newState = EditorState.create({
-                    doc: newDoc,
-                    schema: contentSchema,
-                    plugins: view.state.plugins,
-                    selection: view.state.selection
-                  });
-                  view.updateState(newState);
-                  setLastKnownParagraphs(updatedScene.paragraphs);
-                }
-              }
             }, 50);
           }
 
@@ -948,29 +1108,60 @@ export const SceneEditor = (props: { sceneId: string }) => {
       setLastKnownParagraphs(currentScene.paragraphs);
     } else {
       // Update existing view if paragraphs changed externally (not from editor input)
-      if (!isInternalUpdate) {
-        const currentParagraphs = currentScene.paragraphs;
-        const lastParagraphs = lastKnownParagraphs();
+      const currentParagraphs = currentScene.paragraphs;
+      const lastParagraphs = lastKnownParagraphs();
 
-        // Check if document structure changed (text content, not suggestion fields)
-        const structureChanged =
-          JSON.stringify(
-            currentParagraphs.map((p) => ({ id: p.id, text: p.text })),
-          ) !==
-          JSON.stringify(
-            lastParagraphs.map((p) => ({ id: p.id, text: p.text })),
-          );
+      // Check if document structure changed (text content or paragraph count)
+      const paragraphsChanged =
+        currentParagraphs.length !== lastParagraphs.length ||
+        JSON.stringify(
+          currentParagraphs.map((p) => ({ id: p.id, text: p.text })),
+        ) !==
+        JSON.stringify(
+          lastParagraphs.map((p) => ({ id: p.id, text: p.text })),
+        );
 
-        if (structureChanged) {
-          const newDoc = sceneParagraphsToDoc(currentParagraphs);
-          const newState = EditorState.create({
-            doc: newDoc,
-            schema: contentSchema,
-            plugins: view.state.plugins,
-          });
-          view.updateState(newState);
-          setLastKnownParagraphs(currentParagraphs);
-        }
+      // Always update if we're not in an internal update and paragraphs changed
+      if (paragraphsChanged && !isInternalUpdate) {
+        console.log("Scene editor: Syncing editor with store changes", {
+          isInternalUpdate,
+          currentCount: currentParagraphs.length,
+          lastCount: lastParagraphs.length,
+        });
+        
+        const newDoc = sceneParagraphsToDoc(currentParagraphs);
+        const newState = EditorState.create({
+          doc: newDoc,
+          schema: contentSchema,
+          plugins: view.state.plugins,
+          selection: view.state.selection,
+        });
+        view.updateState(newState);
+        setLastKnownParagraphs(currentParagraphs);
+      } else if (paragraphsChanged && isInternalUpdate) {
+        // If paragraphs changed but we're in internal update, it might be external changes
+        // Schedule a check after internal update completes
+        setTimeout(() => {
+          if (!isInternalUpdate) {
+            const latestParagraphs = scene()?.paragraphs || [];
+            const currentLastKnown = lastKnownParagraphs();
+            
+            if (latestParagraphs.length !== currentLastKnown.length ||
+                JSON.stringify(latestParagraphs.map(p => ({ id: p.id, text: p.text }))) !==
+                JSON.stringify(currentLastKnown.map(p => ({ id: p.id, text: p.text })))) {
+              console.log("Scene editor: Delayed sync after internal update");
+              const newDoc = sceneParagraphsToDoc(latestParagraphs);
+              const newState = EditorState.create({
+                doc: newDoc,
+                schema: contentSchema,
+                plugins: view.state.plugins,
+                selection: view.state.selection,
+              });
+              view.updateState(newState);
+              setLastKnownParagraphs(latestParagraphs);
+            }
+          }
+        }, 200);
       }
     }
   });

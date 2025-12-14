@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  backend:
+    image: aeolun/story-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: story-backend
+    ports:
+      - "3001:3001"
+    volumes:
+      # Mount the database directory - SQLite database will be stored here
+      - ./data:/app/data
+      # Mount the backup directory
+      - ./backups:/app/backups
+      # Mount migrations for potential runtime migrations
+      - ./backend/prisma/migrations:/app/prisma/migrations:ro
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/stories.db
+      - PORT=3001
+      - CORS_ORIGIN=*  # Allow all origins in Docker, can be restricted
+      # Backup configuration
+      - ENABLE_BACKUPS=true
+      - BACKUP_DIR=/app/backups
+      - BACKUP_RETENTION_HOURLY=24  # Keep 24 hourly backups
+      - BACKUP_RETENTION_DAILY=7    # Keep 7 daily backups
+      - BACKUP_RETENTION_WEEKLY=4   # Keep 4 weekly backups
+    networks:
+      - story-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    image: aeolun/story-frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: story-frontend
+    ports:
+      - "80:80"
+    environment:
+      # This can be overridden at runtime
+      - BACKEND_URL=http://backend:3001
+    depends_on:
+      - backend
+    networks:
+      - story-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  story-network:
+    driver: bridge
+
+volumes:
+  story-data:
+    driver: local

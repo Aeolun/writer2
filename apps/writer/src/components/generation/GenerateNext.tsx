@@ -32,7 +32,6 @@ import { ContextNodeFinder } from "../shared/ContextNodeFinder.tsx";
 export const GenerateNext = () => {
   const [generatingNext, setGeneratingNext] = createSignal<boolean>(false);
   const [generatingOptions, setGeneratingOptions] = createSignal<boolean>(false);
-  const [paragraphCount, setParagraphCount] = createSignal<number>(1);
   const [validGenerationId, setValidGenerationId] = createSignal<string | null>(
     null,
   );
@@ -41,10 +40,14 @@ export const GenerateNext = () => {
   const [showContextSelector, setShowContextSelector] = createSignal<boolean>(false);
   const [generatedOptions, setGeneratedOptions] = createSignal<string[]>([]);
 
+  const paragraphCount = () => currentScene()?.paragraphsToGenerate ?? 1;
+
   const debouncedGenerateContext = debounce(() => {
     console.log('generating context')
     generateContext(currentScene()?.id ?? "", {
-      instruction: `Write ${paragraphCount() === 1
+      instruction: `Write ${paragraphCount() === -1
+        ? "as many paragraphs as necessary"
+        : paragraphCount() === 1
         ? "a paragraph"
         : `${paragraphCount()} paragraphs`
         } for the next scene in which _EVERYTHING_ between the <scene_content> and </scene_content> tags happens. Text contained between '(' and ')' is extra information, but not part of the content. Do not output any other text than the paragraphs:\n\n<scene_content>\n${currentScene()?.generateNextText}\n</scene_content>`
@@ -99,15 +102,20 @@ export const GenerateNext = () => {
             <select
               class="select select-bordered select-sm"
               value={paragraphCount()}
-              onChange={(e) =>
-                setParagraphCount(Number.parseInt(e.target.value))
-              }
+              onChange={(e) => {
+                const scene = currentScene();
+                if (!scene) return;
+                updateSceneData(scene.id, {
+                  paragraphsToGenerate: Number.parseInt(e.target.value),
+                });
+              }}
             >
               <For each={[1, 2, 3, 4, 5]}>
                 {(num) => <option value={num}>{num}</option>}
               </For>
+              <option value={-1}>Unlimited</option>
             </select>
-            paragraphs
+            {paragraphCount() === -1 ? "" : "paragraphs"}
           </label>
         </div>
 
@@ -265,7 +273,9 @@ export const GenerateNext = () => {
                 if (!scene) return;
 
                 const contextData = await generatePrompt(scene.id, {
-                  instruction: `Write ${paragraphCount() === 1
+                  instruction: `Write ${paragraphCount() === -1
+                    ? "as many paragraphs as necessary"
+                    : paragraphCount() === 1
                     ? "a paragraph"
                     : `${paragraphCount()} paragraphs`
                     } for the next scene in which _EVERYTHING_ between the <scene_content> and </scene_content> tags happens. Text contained between '(' and ')' is extra information, but not part of the content. Do not output any other text than the paragraphs:\n\n<scene_content>\n${scene.generateNextText}\n</scene_content>`
@@ -292,6 +302,14 @@ export const GenerateNext = () => {
                     comments: [],
                   });
                 }
+                
+                // Force the editor to resync after a brief delay
+                setTimeout(() => {
+                  // Trigger a small update to force the editor to check for changes
+                  updateSceneData(scene.id, {
+                    modifiedAt: Date.now(),
+                  });
+                }, 100);
               };
               generate()
                 .catch((error) => {

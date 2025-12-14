@@ -1,0 +1,56 @@
+import { settingsStore } from '../stores/settingsStore'
+import { LLMClientFactory, LLMProvider, LLMMessage } from './llm'
+
+// Dedicated client for analysis tasks (scene analysis, entity detection, etc.)
+// Uses a smaller, faster model when available
+export const generateAnalysis = async (prompt: string): Promise<string> => {
+  const provider = settingsStore.provider as LLMProvider
+  const model = settingsStore.analysisModel || settingsStore.model || getDefaultAnalysisModel(provider)
+  
+  if (!model) {
+    throw new Error('No model selected for analysis')
+  }
+  
+  console.log(`[Analysis] Using ${provider} with model: ${model}`)
+  
+  const client = LLMClientFactory.getClient(provider)
+  
+  try {
+    const messages: LLMMessage[] = [{ role: 'user', content: prompt }]
+    
+    let result = ''
+    for await (const chunk of client.generate({
+      model,
+      messages,
+      stream: true,
+      temperature: 0.3, // Lower temperature for more consistent analysis
+      max_tokens: 2048 // Limit tokens for analysis tasks
+    })) {
+      if (chunk.response) {
+        result += chunk.response
+      }
+      if (chunk.done) break
+    }
+    
+    return result.trim()
+  } catch (error) {
+    console.error(`[Analysis] Error with ${provider}:`, error)
+    throw error
+  }
+}
+
+function getDefaultAnalysisModel(provider: LLMProvider): string {
+  switch (provider) {
+    case 'ollama':
+      // Prefer smaller, faster models for analysis
+      return 'llama3.2:latest'
+    case 'anthropic':
+      // Use Haiku for analysis - fast and cost-effective
+      return 'claude-3-5-haiku-20241022'
+    case 'openrouter':
+      // Use a fast, cheap model for analysis
+      return 'mistralai/mistral-7b-instruct'
+    default:
+      return ''
+  }
+}

@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    image: aeolun/story-backend:latest
+    container_name: story-backend
+    ports:
+      - "3001:3001"
+    volumes:
+      # Mount the database directory - SQLite database will be stored here
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/stories.db
+      - PORT=3001
+      # Configure CORS - set to your frontend URL in production
+      - CORS_ORIGIN=*  # Change this to your frontend URL, e.g., https://yourdomain.com
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    image: aeolun/story-frontend:latest
+    container_name: story-frontend
+    ports:
+      - "80:80"
+    environment:
+      # Configure the backend URL - can be external URL
+      - BACKEND_URL=http://localhost:3001  # Change this to your backend URL
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

@@ -1,0 +1,323 @@
+import { createSignal } from 'solid-js'
+import { Message } from '../types/core'
+import { messagesStore } from '../stores/messagesStore'
+import { settingsStore } from '../stores/settingsStore'
+import { cacheStore } from '../stores/cacheStore'
+import { generateSummaryPrompt, generateParagraphSummaryPrompt, generateCompactionPrompt } from '../utils/storyUtils'
+import { LLMClientFactory, LLMMessage, LLMProvider } from '../utils/llm'
+
+export const useOllama = () => {
+  const [isGenerating, setIsGenerating] = createSignal(false)
+  const [abortController, setAbortController] = createSignal<AbortController | null>(null)
+
+  const getClient = () => {
+    const provider = settingsStore.provider as LLMProvider
+    return LLMClientFactory.getClient(provider)
+  }
+
+  const updateTokenMetrics = (messageId: string, usage: any) => {
+    if (!usage) return
+    
+    const { prompt_tokens, completion_tokens, total_tokens, cache_creation_input_tokens, cache_read_input_tokens } = usage
+    
+    // Update message with token counts
+    if (prompt_tokens) messagesStore.setPromptTokens(messageId, prompt_tokens)
+    if (total_tokens) messagesStore.setTotalTokens(messageId, total_tokens)
+    if (cache_creation_input_tokens) messagesStore.setCacheCreationTokens(messageId, cache_creation_input_tokens)
+    if (cache_read_input_tokens) messagesStore.setCacheReadTokens(messageId, cache_read_input_tokens)
+    
+    // Update global cache tracking
+    if (cache_creation_input_tokens || cache_read_input_tokens) {
+      (window as any).lastCacheCreationTokens = cache_creation_input_tokens || 0;
+      (window as any).lastCacheReadTokens = cache_read_input_tokens || 0;
+      
+      const cachePoint = {
+        messageId,
+        timestamp: Date.now(),
+        cacheCreationTokens: cache_creation_input_tokens || 0,
+        cacheReadTokens: cache_read_input_tokens || 0,
+        lastActivity: Date.now()
+      }
+      cacheStore.updateCachePoint(cachePoint)
+    }
+  }
+
+  const generateResponse = async (promptOrMessages: string | LLMMessage[], assistantMessageId: string, shouldSummarize = false) => {
+    const model = settingsStore.model
+    const provider = settingsStore.provider as LLMProvider
+    
+    if (!model) {
+      console.error('No model selected')
+      messagesStore.updateMessageContent(assistantMessageId, 'Error: No model selected. Please select a model in settings.')
+      return
+    }
+
+    setIsGenerating(true)
+    const controller = new AbortController()
+    setAbortController(controller)
+
+    const client = getClient()
+
+    try {
+      const messages: LLMMessage[] = typeof promptOrMessages === 'string' 
+        ? [{ role: 'user', content: promptOrMessages }]
+        : promptOrMessages
+
+      console.log(`[${provider}] Generating response with model:`, model)
+
+      const startTime = Date.now()
+      let fullContent = ''
+      let tokenCount = 0
+      let lastUsage: any = null
+
+      const isStoryOrQuery = messages.length > 2
+
+      for await (const chunk of client.generate({ 
+        model, 
+        messages, 
+        stream: true,
+        temperature: settingsStore.temperature,
+        providerOptions: provider === 'ollama' ? {
+          num_ctx: settingsStore.contextSize,
+          repeat_penalty: 1.1,
+          repeat_last_n: 256
+        } : undefined
+      })) {
+        if (controller.signal.aborted) break
+        
+        if (chunk.response) {
+          fullContent += chunk.response
+          messagesStore.updateMessageContent(assistantMessageId, fullContent)
+          tokenCount++
+        }
+        
+        // Store usage info for final update
+        if (chunk.usage) {
+          lastUsage = chunk.usage
+        }
+        
+        if (chunk.done) {
+          const duration = (Date.now() - startTime) / 1000
+          const tokensPerSecond = Math.round(tokenCount / duration)
+          messagesStore.setTokensPerSecond(assistantMessageId, tokensPerSecond)
+          
+          // Update token metrics
+          updateTokenMetrics(assistantMessageId, lastUsage)
+          
+          console.log(`[${provider}] Generation complete:`, {
+            model,
+            duration: `${duration}s`,
+            tokensPerSecond,
+            totalTokens: lastUsage?.total_tokens
+          })
+          break
+        }
+      }
+
+      // Auto-summarization for story messages
+      if (shouldSummarize && settingsStore.enableSummarization && isStoryOrQuery) {
+        const finalContent = messagesStore.messages.find(m => m.id === assistantMessageId)?.content || ''
+        const wordCount = finalContent.split(/\s+/).length
+        const sentenceCount = finalContent.split(/[.!?]+/).filter(s => s.trim()).length
+        
+        if ((settingsStore.autoSummarizeThreshold === 'always') ||
+            (settingsStore.autoSummarizeThreshold === '200words' && wordCount > 200) ||
+            (settingsStore.autoSummarizeThreshold === '500words' && wordCount > 500) ||
+            (settingsStore.autoSummarizeThreshold === '1000words' && wordCount > 1000) ||
+            (settingsStore.autoSummarizeThreshold === '5sentences' && sentenceCount > 5) ||
+            (settingsStore.autoSummarizeThreshold === '10sentences' && sentenceCount > 10)) {
+          
+          console.log(`Auto-summarizing message (${wordCount} words, ${sentenceCount} sentences)`)
+          messagesStore.setSummarizing(assistantMessageId, true)
+          
+          try {
+            const summary = await generateSummary(finalContent)
+            messagesStore.setSummary(assistantMessageId, summary)
+            
+            if (settingsStore.generateParagraphSummary) {
+              const paragraphSummary = await generateParagraphSummary(finalContent)
+              messagesStore.setParagraphSummary(assistantMessageId, paragraphSummary)
+            }
+          } catch (error) {
+            console.error('Auto-summarization failed:', error)
+          } finally {
+            messagesStore.setSummarizing(assistantMessageId, false)
+          }
+        }
+      }
+
+    } catch (error: any) {
+      if (!controller.signal.aborted) {
+        console.error(`[${provider}] Generation error:`, error)
+        const errorMessage = error.message || 'An error occurred during generation'
+        messagesStore.updateMessageContent(assistantMessageId, `Error: ${errorMessage}`)
+      }
+    } finally {
+      setIsGenerating(false)
+      setAbortController(null)
+    }
+  }
+
+  const generateSummary = async (content: string): Promise<string> => {
+    const client = getClient()
+    const model = settingsStore.model || 'llama3.2'
+    
+    try {
+      const prompt = generateSummaryPrompt(content)
+      const messages: LLMMessage[] = [{ role: 'user', content: prompt }]
+      
+      let summary = ''
+      for await (const chunk of client.generate({ 
+        model, 
+        messages, 
+        stream: true,
+        temperature: 0.5 // Lower temperature for more consistent summaries
+      })) {
+        if (chunk.response) {
+          summary += chunk.response
+        }
+        if (chunk.done) break
+      }
+      
+      return summary.trim()
+    } catch (error) {
+      console.error('Summary generation failed:', error)
+      throw error
+    }
+  }
+
+  const generateParagraphSummary = async (content: string): Promise<string> => {
+    const client = getClient()
+    const model = settingsStore.model || 'llama3.2'
+    
+    try {
+      const prompt = generateParagraphSummaryPrompt(content)
+      const messages: LLMMessage[] = [{ role: 'user', content: prompt }]
+      
+      let summary = ''
+      for await (const chunk of client.generate({ 
+        model, 
+        messages, 
+        stream: true,
+        temperature: 0.7
+      })) {
+        if (chunk.response) {
+          summary += chunk.response
+        }
+        if (chunk.done) break
+      }
+      
+      return summary.trim()
+    } catch (error) {
+      console.error('Paragraph summary generation failed:', error)
+      throw error
+    }
+  }
+
+  const generateCompactionSummary = async (contents: string[]): Promise<string> => {
+    const client = getClient()
+    const model = settingsStore.model || 'llama3.2'
+    
+    try {
+      const prompt = generateCompactionPrompt(contents)
+      const messages: LLMMessage[] = [{ role: 'user', content: prompt }]
+      
+      let summary = ''
+      for await (const chunk of client.generate({ 
+        model, 
+        messages, 
+        stream: true,
+        temperature: 0.5
+      })) {
+        if (chunk.response) {
+          summary += chunk.response
+        }
+        if (chunk.done) break
+      }
+      
+      return summary.trim()
+    } catch (error) {
+      console.error('Compaction summary generation failed:', error)
+      throw error
+    }
+  }
+
+  const abortGeneration = () => {
+    const controller = abortController()
+    if (controller) {
+      controller.abort()
+      setIsGenerating(false)
+      console.log('Generation aborted by user')
+    }
+  }
+
+  const checkIfOllamaIsBusy = async (): Promise<boolean> => {
+    if (settingsStore.provider !== 'ollama') return false
+    
+    try {
+      const response = await fetch(`${settingsStore.ollamaHost}/api/ps`)
+      if (!response.ok) return false
+      
+      const data = await response.json()
+      return data.models && data.models.length > 0
+    } catch (error) {
+      return false
+    }
+  }
+
+  const pingCache = async () => {
+    const provider = settingsStore.provider as LLMProvider
+    if (provider !== 'anthropic' && provider !== 'openrouter') return
+    
+    const cachesToPing = cacheStore.getCachesNeedingPing()
+    if (cachesToPing.length === 0) return
+    
+    console.log(`Pinging ${cachesToPing.length} caches to keep them alive`)
+    
+    for (const cache of cachesToPing) {
+      try {
+        const client = getClient()
+        const messages: LLMMessage[] = [
+          { 
+            role: 'system', 
+            content: 'You are a helpful assistant.',
+            cache_control: { type: 'ephemeral' }
+          },
+          { 
+            role: 'user', 
+            content: 'Reply with exactly: "Cache refreshed"' 
+          }
+        ]
+        
+        let response = ''
+        for await (const chunk of client.generate({
+          model: settingsStore.model || 'claude-3-5-haiku-20241022',
+          messages,
+          stream: true,
+          temperature: 0
+        })) {
+          if (chunk.response) response += chunk.response
+          if (chunk.done && chunk.usage) {
+            updateTokenMetrics(cache.messageId, chunk.usage)
+            break
+          }
+        }
+        
+        console.log(`Cache ping successful for message ${cache.messageId}: ${response.trim()}`)
+      } catch (error) {
+        console.error(`Failed to ping cache for message ${cache.messageId}:`, error)
+      }
+    }
+  }
+
+  return {
+    generateResponse,
+    generateSummary,
+    generateParagraphSummary,
+    generateCompactionSummary,
+    abortGeneration,
+    isGenerating,
+    checkIfOllamaIsBusy,
+    pingCache
+  }
+}

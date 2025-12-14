@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test ID Preservation</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        .test {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #444;
+        }
+        .success { color: #66aa66; }
+        .error { color: #aa6666; }
+        pre {
+            background: #2a2a2a;
+            padding: 10px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Message ID Preservation</h1>
+    
+    <button onclick="runTest()">Run Test</button>
+    
+    <div id="results"></div>
+
+    <script>
+        async function runTest() {
+            const results = document.getElementById('results');
+            results.innerHTML = '';
+            
+            function log(msg, type = 'info') {
+                const div = document.createElement('div');
+                div.className = `test ${type}`;
+                div.textContent = msg;
+                results.appendChild(div);
+            }
+            
+            // Test data with specific IDs
+            const testMessages = [
+                { id: 'original-id-1', role: 'assistant', content: 'Message 1', timestamp: new Date() },
+                { id: 'original-id-2', role: 'assistant', content: 'Message 2', timestamp: new Date() },
+                { id: 'compacted-123', role: 'assistant', content: 'Compacted', timestamp: new Date(), 
+                  isCompacted: true, compactedMessageIds: ['original-id-1', 'original-id-2'] }
+            ];
+            
+            const storyData = {
+                name: 'ID Preservation Test',
+                messages: testMessages,
+                characters: [],
+                contextItems: [],
+                input: '',
+                storySetting: 'Test'
+            };
+            
+            try {
+                // Create story
+                log('Creating story with custom message IDs...');
+                const createResp = await fetch('http://localhost:3001/api/stories', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(storyData)
+                });
+                
+                if (!createResp.ok) throw new Error('Failed to create story');
+                
+                const created = await createResp.json();
+                log(`Story created with ID: ${created.id}`, 'success');
+                
+                // Check IDs
+                log('\nChecking message IDs:');
+                created.messages.forEach((msg, i) => {
+                    const original = testMessages[i];
+                    if (msg.id === original.id) {
+                        log(`✓ Message ${i+1}: ID preserved (${msg.id})`, 'success');
+                    } else {
+                        log(`✗ Message ${i+1}: ID changed from ${original.id} to ${msg.id}`, 'error');
+                    }
+                });
+                
+                // Check compacted references
+                const compactedMsg = created.messages.find(m => m.isCompacted);
+                if (compactedMsg && compactedMsg.compactedMessageIds) {
+                    log('\nChecking compacted message references:');
+                    const allIds = created.messages.map(m => m.id);
+                    compactedMsg.compactedMessageIds.forEach(id => {
+                        if (allIds.includes(id)) {
+                            log(`✓ Compacted ID ${id} exists in messages`, 'success');
+                        } else {
+                            log(`✗ Compacted ID ${id} NOT FOUND in messages!`, 'error');
+                        }
+                    });
+                }
+                
+                // Display full response
+                const pre = document.createElement('pre');
+                pre.textContent = JSON.stringify(created, null, 2);
+                results.appendChild(pre);
+                
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

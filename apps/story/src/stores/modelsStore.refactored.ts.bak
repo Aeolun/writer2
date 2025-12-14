@@ -1,0 +1,66 @@
+import { createStore } from 'solid-js/store'
+import { Model } from '../types/core'
+import { settingsStore } from './settingsStore'
+import { LLMClientFactory, LLMProvider } from '../utils/llm'
+
+const [modelsState, setModelsState] = createStore({
+  availableModels: [] as Model[],
+  isLoadingModels: false,
+})
+
+export const modelsStore = {
+  // Getters
+  get availableModels() { return modelsState.availableModels },
+  get isLoadingModels() { return modelsState.isLoadingModels },
+
+  // Actions
+  setAvailableModels: (models: Model[]) => setModelsState('availableModels', models),
+  setIsLoadingModels: (loading: boolean) => setModelsState('isLoadingModels', loading),
+
+  fetchModels: async (_ollamaHost: string) => {
+    setModelsState('isLoadingModels', true)
+    try {
+      const provider = settingsStore.provider as LLMProvider
+      const client = LLMClientFactory.getClient(provider)
+      
+      console.log(`Fetching models from ${provider}...`)
+      const { models } = await client.list()
+      
+      // Convert LLMModel to Model format for backward compatibility
+      const convertedModels: Model[] = models.map(m => ({
+        name: m.name,
+        size: m.size || 0,
+        digest: m.digest || '',
+        modified_at: m.modified_at || new Date().toISOString(),
+        context_length: m.context_length,
+        pricing: m.pricing
+      }))
+      
+      setModelsState('availableModels', convertedModels)
+      console.log(`Loaded ${convertedModels.length} models from ${provider}`)
+      
+      // Auto-select first model if none selected
+      if (!settingsStore.model && convertedModels.length > 0) {
+        // For OpenRouter/Anthropic, prefer certain models
+        if (provider === 'anthropic') {
+          const preferredModel = convertedModels.find(m => m.name.includes('haiku')) || convertedModels[0]
+          settingsStore.setModel(preferredModel.name)
+        } else if (provider === 'openrouter') {
+          const preferredModel = convertedModels.find(m => 
+            m.name.includes('mistral') || 
+            m.name.includes('llama') || 
+            m.name.includes('claude')
+          ) || convertedModels[0]
+          settingsStore.setModel(preferredModel.name)
+        } else {
+          settingsStore.setModel(convertedModels[0].name)
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch models:', error)
+      setModelsState('availableModels', [])
+    } finally {
+      setModelsState('isLoadingModels', false)
+    }
+  },
+}

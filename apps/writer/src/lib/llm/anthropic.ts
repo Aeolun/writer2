@@ -1,4 +1,4 @@
-import { Anthropic as AnthropicAPI } from "@anthropic-ai/sdk";
+import { Anthropic as AnthropicAPI, Beta } from "@anthropic-ai/sdk";
 import { instructions } from "../ai-instructions.ts";
 import type { LlmInterface } from "./llm-interface";
 import { settingsState } from "../stores/settings.ts";
@@ -56,7 +56,45 @@ export class Anthropic implements LlmInterface {
     if (!this.api) {
       throw new Error("Not initialized yet");
     }
-    const result = await this.api.messages.create({
+
+    const messages = Array.isArray(text)
+      ? text.map((t) =>
+          t.canCache
+            ? {
+                role: "user",
+                content: [
+                  {
+                    type: "text",
+                    text: t.text,
+                    cache_control: { type: "ephemeral", ttl: "1h" },
+                  },
+                ],
+              }
+            : {
+                role: "user",
+                content: [
+                  {
+                    type: "text",
+                    text: t.text,
+                  },
+                ],
+              },
+        )
+      : [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text,
+              },
+            ],
+          },
+        ];
+
+    console.log("messages", messages);
+
+    const result = await this.api.beta.messages.create({
       system: options?.additionalInstructions
         ? [
             {
@@ -74,43 +112,10 @@ export class Anthropic implements LlmInterface {
               text: instructions[kind],
             },
           ],
-      messages: Array.isArray(text)
-        ? text.map((t) =>
-            t.canCache
-              ? {
-                  role: "user",
-                  content: [
-                    {
-                      type: "text",
-                      text: t.text,
-                      cache_control: { type: "ephemeral" },
-                    },
-                  ],
-                }
-              : {
-                  role: "user",
-                  content: [
-                    {
-                      type: "text",
-                      text: t.text,
-                    },
-                  ],
-                },
-          )
-        : [
-            {
-              role: "user",
-              content: [
-                {
-                  type: "text",
-                  text,
-                },
-              ],
-            },
-          ],
+      messages: messages,
       max_tokens: 3000,
       temperature: 1.0,
-
+      betas: ["extended-cache-ttl-2025-04-11"],
       model: this.model ?? "",
     });
 

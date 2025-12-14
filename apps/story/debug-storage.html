@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Storage Data</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        pre {
+            background: #2d2d2d;
+            padding: 10px;
+            border-radius: 4px;
+            overflow: auto;
+        }
+        .section {
+            margin: 20px 0;
+        }
+        h2 {
+            color: #90caf9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug Storage Data</h1>
+    
+    <div class="section">
+        <h2>Current Story (localStorage)</h2>
+        <pre id="current-story"></pre>
+    </div>
+    
+    <div class="section">
+        <h2>Story Index</h2>
+        <pre id="story-index"></pre>
+    </div>
+    
+    <div class="section">
+        <h2>Sample Saved Stories</h2>
+        <div id="saved-stories"></div>
+    </div>
+
+    <script type="module">
+        import { storage } from './src/utils/storage/index.js';
+        
+        async function debugStorage() {
+            // Current story from localStorage
+            const currentStory = localStorage.getItem('story-current');
+            document.getElementById('current-story').textContent = currentStory ? 
+                JSON.stringify(JSON.parse(currentStory), null, 2) : 'No current story';
+            
+            // Story index
+            try {
+                const index = await storage.get('story-index');
+                document.getElementById('story-index').textContent = index ? 
+                    JSON.stringify(index, null, 2) : 'No story index';
+                
+                // Load a few saved stories
+                if (index && Array.isArray(index)) {
+                    const storiesDiv = document.getElementById('saved-stories');
+                    
+                    for (let i = 0; i < Math.min(3, index.length); i++) {
+                        const storyMeta = index[i];
+                        const story = await storage.get(`story-saved-${storyMeta.id}`);
+                        
+                        const pre = document.createElement('pre');
+                        pre.textContent = `Story: ${storyMeta.name} (ID: ${storyMeta.id})\n` +
+                            `Storage Mode: ${storyMeta.storageMode}\n` +
+                            `Has serverId: ${storyMeta.serverId ? 'Yes - ' + storyMeta.serverId : 'No'}\n` +
+                            `Full data: ${story ? JSON.stringify(story, null, 2).substring(0, 500) + '...' : 'Not found'}`;
+                        
+                        storiesDiv.appendChild(pre);
+                    }
+                }
+            } catch (error) {
+                document.getElementById('story-index').textContent = 'Error loading: ' + error;
+            }
+        }
+        
+        debugStorage();
+    </script>
+</body>
+</html>

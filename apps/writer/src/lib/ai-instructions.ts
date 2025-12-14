@@ -739,13 +739,13 @@ Keep queries focused and specific. Limit to 3-5 most important queries.
 Do not include any other text in the output - just the JSON object.`,
 
   snowflake_extract_location: `Extract a location from the scene content. The location should be a physical place where the scene takes place.
-    
+
     Return a JSON object with the following structure:
     {
       "name": "A short, descriptive name for the location",
       "description": "A detailed description of the location, including its physical characteristics, atmosphere, and any notable features"
     }
-    
+
     Example output:
     {
       "name": "The Rusty Anchor Tavern",
@@ -833,30 +833,7 @@ Your task is to write content that:
 
 Output only the generated paragraphs, with no additional text or formatting.`,
 
-  snowflake_convert_perspective: `You are a writing assistant. Convert the provided text from third-person perspective to first-person perspective.
-
-OUTPUT FORMAT:
-You MUST output the ENTIRE text as one complete piece, from beginning to end. Do not output:
-- Just the modified sections
-- Explanations of changes
-- Notes or comments
-- Anything except the complete converted text
-
-Key requirements:
-- Change all third-person pronouns to first-person pronouns
-- Adjust verbs and tenses accordingly
-- Maintain the same events, descriptions, and dialogue
-- Keep the same tone and writing style
-- Preserve all character names and references
-- Keep dialogue from other characters unchanged
-
-Example changes:
-- "She walked" becomes "I walked"
-- "Sarah felt" becomes "I felt"
-- "Her heart raced" becomes "My heart raced"
-- "She wondered if Tom" becomes "I wondered if Tom"
-
-CRITICAL: Your response must contain ONLY the complete converted text. Do not include any other text, explanations, or formatting.`,
+  snowflake_convert_perspective: `You are a writing assistant. Rewrite the provided text to a first-person present perspective.`,
   rag_queries: ragQueriesInstruction,
   generate_options: generateOptionsInstruction,
 };

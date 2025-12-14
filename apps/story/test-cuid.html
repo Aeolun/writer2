@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test CUID Generation</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .id { background: #f0f0f0; padding: 5px; margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>Test CUID Generation</h1>
+    <button onclick="testCuid()">Generate 10 IDs</button>
+    <div id="results"></div>
+    
+    <script type="module">
+        import { createId } from 'https://cdn.jsdelivr.net/npm/@paralleldrive/cuid2@2/dist/index.min.js';
+        
+        window.testCuid = function() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<h2>Generated IDs:</h2>';
+            
+            const ids = new Set();
+            for (let i = 0; i < 10; i++) {
+                const id = createId();
+                ids.add(id);
+                const div = document.createElement('div');
+                div.className = 'id';
+                div.textContent = `ID ${i+1}: ${id} (length: ${id.length})`;
+                results.appendChild(div);
+            }
+            
+            const uniqueDiv = document.createElement('div');
+            uniqueDiv.style.marginTop = '20px';
+            uniqueDiv.innerHTML = `<strong>All IDs unique: ${ids.size === 10 ? '✅ Yes' : '❌ No'}</strong>`;
+            results.appendChild(uniqueDiv);
+            
+            // Test pattern
+            const pattern = /^[a-z0-9]+$/;
+            const allMatch = [...ids].every(id => pattern.test(id));
+            const patternDiv = document.createElement('div');
+            patternDiv.innerHTML = `<strong>All IDs match cuid pattern: ${allMatch ? '✅ Yes' : '❌ No'}</strong>`;
+            results.appendChild(patternDiv);
+        }
+    </script>
+</body>
+</html>

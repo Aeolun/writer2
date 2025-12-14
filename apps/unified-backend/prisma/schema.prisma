@@ -1,0 +1,759 @@
+// Unified Schema - Writer2 + Story Project
+// Database: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum SavedType {
+  FAVORITE
+  FOLLOW
+  READ_LATER
+}
+
+enum StoryStatus {
+  COMPLETED
+  ONGOING
+  HIATUS
+}
+
+enum StoryType {
+  FANFICTION
+  ORIGINAL
+}
+
+enum PublishingPlatform {
+  ROYAL_ROAD
+}
+
+enum PublishingStatus {
+  DRAFT
+  PUBLISHED
+  FAILED
+}
+
+enum ParagraphCommentType {
+  COMMENT
+  SUGGESTION
+}
+
+enum Perspective {
+  FIRST
+  THIRD
+}
+
+enum ParagraphState {
+  AI
+  DRAFT
+  REVISE
+  FINAL
+  SDT // Show Don't Tell
+}
+
+// ============================================================================
+// USER & AUTH
+// ============================================================================
+
+model User {
+  id                Int                @id @default(autoincrement())
+  email             String             @unique
+  username          String             @unique
+  passwordHash      String             // scrypt hash with salt (format: "salt:hash")
+  role              String             @default("user")
+  avatarUrl         String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  // Relations
+  ownedStories      Story[]
+  bookShelfStories  BookShelfStory[]
+  paragraphComments ParagraphComment[]
+  files             File[]
+  sessions          Session[]
+  storyReadStatuses StoryReadStatus[]
+
+  @@index([email])
+  @@index([username])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([token])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model BookShelfStory {
+  id        Int       @id @default(autoincrement())
+  name      String    @default("")
+  ownerId   Int
+  owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  storyId   String
+  story     Story     @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  kind      SavedType
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// ============================================================================
+// STORY CORE
+// ============================================================================
+
+model Story {
+  id                     String            @id @default(cuid())
+  name                   String            @default("")
+  summary                String?           @db.Text
+  ownerId                Int
+  owner                  User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  importedFromId         String?           @unique // Original story ID from Writer/Story backend migration
+  royalRoadId            Int?              @unique
+  published              Boolean           @default(false)
+  status                 StoryStatus       @default(ONGOING)
+  type                   StoryType         @default(ORIGINAL)
+  wordsPerWeek           Int?
+  spellingLevel          Int?              @default(3)
+  chapters               Int?
+  firstChapterReleasedAt DateTime?
+  lastChapterReleasedAt  DateTime?
+  coverArtFileId         String?
+  coverArtFile           File?             @relation("StoryCoverArt", fields: [coverArtFileId], references: [id], onDelete: SetNull)
+  coverColor             String            @default("#000000")
+  coverTextColor         String            @default("#FFFFFF")
+  coverFontFamily        String            @default("Georgia")
+  defaultPerspective     Perspective?      @default(THIRD)
+  defaultProtagonistId   String?
+  defaultProtagonist     Character?        @relation("DefaultProtagonist", fields: [defaultProtagonistId], references: [id], onDelete: SetNull)
+  sortOrder              Int               @default(0)
+  pages                  Int?
+
+  // Timeline support (from Story Project)
+  timelineStartTime      Int?              // Minutes from epoch (negative = BBY, positive = ABY)
+  timelineEndTime        Int?
+  timelineGranularity    String            @default("hour") // 'hour' | 'day'
+
+  // Calendar support (from Story Project)
+  defaultCalendarId      String?
+  defaultCalendar        Calendar?         @relation("DefaultCalendar", fields: [defaultCalendarId], references: [id], onDelete: SetNull)
+
+  // Branching support (from Story Project)
+  branchChoices          Json?             // Record<branchMessageId, selectedOptionId>
+
+  // LLM settings (from Story Project)
+  provider               String            @default("ollama") // 'ollama' | 'openrouter' | 'anthropic' | 'openai'
+  model                  String?
+
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+
+  // Relations
+  books                  Book[]
+  files                  File[]
+  storyReadStatuses      StoryReadStatus[]
+  storyTags              StoryTag[]
+  characters             Character[]
+  contextItems           ContextItem[]     // Replaces Location + PlotPoint
+  calendars              Calendar[]        @relation("StoryCalendars")
+  maps                   Map[]
+  mediaAttachments       MediaAttachment[]
+  bookShelfStories       BookShelfStory[]
+
+  @@index([ownerId])
+}
+
+model Tag {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  storyTags StoryTag[]
+}
+
+model StoryTag {
+  id        String   @id @default(cuid())
+  storyId   String
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  tagId     String
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([storyId, tagId])
+}
+
+model StoryReadStatus {
+  id                String    @id @default(cuid())
+  storyId           String
+  story             Story     @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  userId            Int
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastChapterId     String?
+  lastChapter       Chapter?  @relation(fields: [lastChapterId], references: [id], onDelete: SetNull)
+  lastChapterReadAt DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+// ============================================================================
+// STORY HIERARCHY
+// ============================================================================
+
+model Book {
+  id             String   @id @default(cuid())
+  name           String   @default("")
+  summary        String?  @db.Text
+  storyId        String
+  story          Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  coverArtFileId String?
+  coverArtFile   File?    @relation("BookCoverArt", fields: [coverArtFileId], references: [id], onDelete: SetNull)
+  spineArtFileId String?
+  spineArtFile   File?    @relation("BookSpineArt", fields: [spineArtFileId], references: [id], onDelete: SetNull)
+  pages          Int?
+  sortOrder      Int
+  nodeType       String   @default("story") // "story" | "non-story" | "context"
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  arcs           Arc[]
+
+  @@index([storyId])
+}
+
+model Arc {
+  id        String    @id @default(cuid())
+  name      String    @default("")
+  summary   String?   @db.Text
+  bookId    String
+  book      Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  sortOrder Int
+  nodeType  String    @default("story") // "story" | "non-story" | "context"
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  chapters  Chapter[]
+
+  @@index([bookId])
+}
+
+model Chapter {
+  id               String              @id @default(cuid())
+  name             String              @default("")
+  summary          String?             @db.Text
+  arcId            String
+  arc              Arc                 @relation(fields: [arcId], references: [id], onDelete: Cascade)
+  publishedOn      DateTime?
+  sortOrder        Int
+  royalRoadId      Int?
+  nodeType         String              @default("story") // "story" | "non-story" | "context"
+
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  scenes           Scene[]
+  publishingStatus ChapterPublishing[]
+  storyReadStatus  StoryReadStatus[]
+
+  @@index([arcId])
+}
+
+model Scene {
+  id                    String      @id @default(cuid())
+  name                  String      @default("")
+  summary               String?     @db.Text
+  chapterId             String
+  chapter               Chapter     @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  sortOrder             Int
+
+  // POV & Context (Scene is the POV/context boundary)
+  perspective           Perspective?     // FIRST/THIRD person
+  viewpointCharacterId  String?          // POV character
+  activeCharacterIds    Json?            // JSON array of active character IDs
+  activeContextItemIds  Json?            // JSON array of active context item IDs
+  goal                  String?     @db.Text  // Scene goal for generation
+  storyTime             Int?             // When this scene occurs in timeline
+
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  messages              Message[]
+  mediaLinks            MediaSceneLink[]
+
+  @@index([chapterId])
+}
+
+// ============================================================================
+// MESSAGES & CONTENT
+// ============================================================================
+
+model Message {
+  id                      String           @id @default(cuid())
+  sceneId                 String
+  scene                   Scene            @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  sortOrder               Int
+  instruction             String?          @db.Text  // Generation instruction for this message
+  script                  String?          @db.Text  // JavaScript to execute
+
+  // Current active revision (denormalized for easy querying)
+  currentMessageRevisionId String?
+  currentMessageRevision   MessageRevision? @relation("CurrentRevision", fields: [currentMessageRevisionId], references: [id], onDelete: SetNull)
+
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  messageRevisions        MessageRevision[] @relation("AllRevisions")
+
+  @@index([sceneId])
+}
+
+model MessageRevision {
+  id                  String    @id @default(cuid())
+  messageId           String
+  message             Message   @relation("AllRevisions", fields: [messageId], references: [id], onDelete: Cascade)
+  version             Int       // 1, 2, 3, etc.
+  versionType         String    @default("initial") // initial, regeneration, edit, rewrite, cli_edit
+
+  // AI generation metadata
+  model               String?   // LLM model used
+  tokensPerSecond     Float?
+  totalTokens         Int?
+  promptTokens        Int?
+  cacheCreationTokens Int?
+  cacheReadTokens     Int?
+  think               String?   @db.Text
+  showThink           Boolean   @default(false)
+
+  createdAt           DateTime  @default(now())
+
+  paragraphs          Paragraph[]
+  currentRevisionFor  Message[] @relation("CurrentRevision")
+
+  @@index([messageId])
+  @@unique([messageId, version])
+}
+
+model Paragraph {
+  id                        String              @id @default(cuid())
+  messageRevisionId         String
+  messageRevision           MessageRevision     @relation(fields: [messageRevisionId], references: [id], onDelete: Cascade)
+  sortOrder                 Int
+
+  // Current active revision (denormalized for easy querying)
+  currentParagraphRevisionId String?
+  currentParagraphRevision   ParagraphRevision?  @relation("CurrentRevision", fields: [currentParagraphRevisionId], references: [id], onDelete: SetNull)
+
+  createdAt                 DateTime            @default(now())
+  updatedAt                 DateTime            @updatedAt
+
+  paragraphRevisions        ParagraphRevision[] @relation("AllRevisions")
+
+  @@index([messageRevisionId])
+}
+
+model ParagraphRevision {
+  id                  String               @id @default(cuid())
+  paragraphId         String
+  paragraph           Paragraph            @relation("AllRevisions", fields: [paragraphId], references: [id], onDelete: Cascade)
+  body                String               @db.Text
+  contentSchema       String?              @db.Text // Store original content schema as JSON
+  version             Int                  @default(1)
+  state               ParagraphState?      // AI, DRAFT, REVISE, FINAL, SDT
+  plotPointActions    Json?
+  inventoryActions    Json?
+
+  createdAt           DateTime             @default(now())
+
+  paragraphComments   ParagraphComment[]
+  embeddings          ParagraphEmbedding[]
+  currentRevisionFor  Paragraph[]          @relation("CurrentRevision")
+
+  @@index([paragraphId])
+  @@unique([paragraphId, version])
+}
+
+model ParagraphComment {
+  id                  Int                  @id @default(autoincrement())
+  paragraphRevisionId String
+  paragraphRevision   ParagraphRevision    @relation(fields: [paragraphRevisionId], references: [id], onDelete: Cascade)
+  ownerId             Int
+  owner               User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  body                String
+  type                ParagraphCommentType @default(COMMENT)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+}
+
+model ParagraphEmbedding {
+  id                  String            @id @default(cuid())
+  paragraphRevisionId String
+  paragraphRevision   ParagraphRevision @relation(fields: [paragraphRevisionId], references: [id], onDelete: Cascade)
+  paragraphIndex      Int
+  content             String            @db.Text
+  embedding           Bytes             // Vector stored as binary
+  model               String
+  dimension           Int
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([paragraphRevisionId, paragraphIndex])
+  @@index([paragraphRevisionId])
+}
+
+// ============================================================================
+// PUBLISHING
+// ============================================================================
+
+model ChapterPublishing {
+  id           String             @id @default(cuid())
+  chapterId    String
+  chapter      Chapter            @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  platform     PublishingPlatform
+  status       PublishingStatus   @default(DRAFT)
+  platformId   String?
+  publishedAt  DateTime?
+  lastAttempt  DateTime?
+  errorMessage String?            @db.Text
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@unique([chapterId, platform])
+  @@unique([platform, platformId])
+}
+
+// ============================================================================
+// STORY ELEMENTS
+// ============================================================================
+
+model Character {
+  id                         String                   @id @default(cuid())
+  storyId                    String
+  story                      Story                    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  pictureFileId              String?
+  pictureFile                File?                    @relation("CharacterPicture", fields: [pictureFileId], references: [id], onDelete: SetNull)
+  firstName                  String
+  middleName                 String?
+  lastName                   String?
+  nickname                   String?
+  description                String?                  @db.Text // Primary field for AI generation (dynamic template)
+
+  // Optional metadata fields (from Writer - for character sheets/organization, not AI generation)
+  background                 String?                  @db.Text
+  personality                String?                  @db.Text
+  personalityQuirks          String?                  @db.Text
+  likes                      String?                  @db.Text
+  dislikes                   String?                  @db.Text
+  age                        String?
+  gender                     String?
+  sexualOrientation          String?
+  height                     Int?
+  hairColor                  String?
+  eyeColor                   String?
+  distinguishingFeatures     String?                  @db.Text
+  writingStyle               String?                  @db.Text
+  isMainCharacter            Boolean                  @default(true)
+  laterVersionOfId           String?
+  laterVersionOf             Character?               @relation("CharacterVersion", fields: [laterVersionOfId], references: [id], onDelete: SetNull)
+  previousVersion            Character[]              @relation("CharacterVersion")
+  significantActions         Json?
+
+  // Timeline support (from Story Project)
+  birthdate                  Int?                     // Birth date in story time
+
+  createdAt                  DateTime                 @default(now())
+  updatedAt                  DateTime                 @updatedAt
+
+  defaultProtagonistForStory Story[]                  @relation("DefaultProtagonist")
+  inventory                  Item[]
+
+  @@index([storyId])
+}
+
+model ContextItem {
+  id          String   @id @default(cuid())
+  storyId     String
+  story       Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  type        String   // 'theme' | 'location' | 'plot'
+  name        String
+  description String   @db.Text
+  isGlobal    Boolean  @default(false) // Whether active in all chapters
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([storyId])
+  @@index([storyId, type])
+}
+
+model Item {
+  id          String   @id @default(cuid())
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  amount      Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([characterId, name])
+  @@index([characterId])
+}
+
+// ============================================================================
+// SCENE RELATIONSHIPS
+// ============================================================================
+// FILES
+// ============================================================================
+
+model File {
+  id        String   @id @default(cuid())
+  ownerId   Int
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  storyId   String?
+  story     Story?   @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  localPath String?
+  path      String   @unique
+  sha256    String   @default("")
+  width     Int?
+  height    Int?
+  bytes     Int?
+  mimeType  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  storyCoverArt    Story[]     @relation("StoryCoverArt")
+  bookCoverArt     Book[]      @relation("BookCoverArt")
+  bookSpineArt     Book[]      @relation("BookSpineArt")
+  characterPicture Character[] @relation("CharacterPicture")
+}
+
+// ============================================================================
+// CALENDAR SYSTEM (from Story Project)
+// ============================================================================
+
+model Calendar {
+  id        String   @id @default(cuid())
+  storyId   String
+  story     Story    @relation("StoryCalendars", fields: [storyId], references: [id], onDelete: Cascade)
+  name      String   // Calendar name (extracted from config for easier access)
+  config    Json     // CalendarConfig as JSONB
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  defaultForStories Story[] @relation("DefaultCalendar")
+
+  @@index([storyId])
+}
+
+// ============================================================================
+// MAP SYSTEM (from Story Project)
+// ============================================================================
+
+model Map {
+  id          String      @id @default(cuid())
+  storyId     String
+  story       Story       @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  name        String
+  fileId      String?
+  borderColor String?
+  landmarks   Landmark[]
+  pawns       Pawn[]
+  paths       Path[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([storyId])
+}
+
+model Landmark {
+  id              String          @id @default(cuid())
+  mapId           String
+  map             Map             @relation(fields: [mapId], references: [id], onDelete: Cascade)
+  x               Float
+  y               Float
+  name            String
+  description     String          @db.Text
+  type            String          @default("system") // "system" | "station" | "nebula" | "junction"
+  population      String?
+  industry        String?         // "farming" | "political" | "industry" | "trade" | "mining"
+  color           String?
+  size            String?         // "small" | "medium" | "large"
+  region          String?
+  sector          String?
+  planetaryBodies String?
+  states          LandmarkState[]
+
+  @@unique([mapId, id])
+  @@index([mapId])
+}
+
+model LandmarkState {
+  id          String   @id @default(cuid())
+  storyId     String
+  mapId       String
+  landmarkId  String
+  landmark    Landmark @relation(fields: [mapId, landmarkId], references: [mapId, id], onDelete: Cascade)
+  storyTime   Int?     // When this state change occurs (minutes from 0 BBY)
+  field       String
+  value       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([mapId, landmarkId, storyTime, field])
+  @@index([storyId, storyTime])
+  @@index([mapId, landmarkId])
+}
+
+model Pawn {
+  id               String         @id @default(cuid())
+  mapId            String
+  map              Map            @relation(fields: [mapId], references: [id], onDelete: Cascade)
+  name             String
+  description      String?        @db.Text
+  designation      String?
+  speed            Float          @default(1.0)
+  defaultX         Float
+  defaultY         Float
+  color            String?
+  size             String?
+  movements        PawnMovement[]
+
+  @@unique([mapId, id])
+  @@index([mapId])
+}
+
+model PawnMovement {
+  id             String   @id @default(cuid())
+  storyId        String
+  mapId          String
+  pawnId         String
+  pawn           Pawn     @relation(fields: [mapId, pawnId], references: [mapId, id], onDelete: Cascade)
+  startStoryTime Int
+  endStoryTime   Int
+  startX         Float
+  startY         Float
+  endX           Float
+  endY           Float
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([storyId])
+  @@index([mapId, pawnId])
+  @@index([startStoryTime])
+  @@index([endStoryTime])
+}
+
+model Path {
+  id              String        @id @default(cuid())
+  mapId           String
+  map             Map           @relation(fields: [mapId], references: [id], onDelete: Cascade)
+  speedMultiplier Float         @default(10.0)
+  segments        PathSegment[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([mapId])
+}
+
+model PathSegment {
+  id              String   @id @default(cuid())
+  pathId          String
+  path            Path     @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  mapId           String
+  order           Int
+  startX          Float
+  startY          Float
+  endX            Float
+  endY            Float
+  startLandmarkId String?
+  endLandmarkId   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([pathId])
+  @@index([mapId])
+  @@index([startLandmarkId])
+  @@index([endLandmarkId])
+}
+
+// ============================================================================
+// MEDIA ATTACHMENTS (generic replacement for video/episodes)
+// ============================================================================
+
+model MediaAttachment {
+  id          String   @id @default(cuid())
+  storyId     String
+  story       Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  name        String
+  description String?  @db.Text
+  mediaType   String   // 'video' | 'audio' | 'image-sequence' | 'custom'
+  duration    Float?   // Duration in seconds (if applicable)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  frames      MediaFrame[]
+  segments    MediaSegment[]
+  sceneLinks  MediaSceneLink[]
+
+  @@index([storyId])
+}
+
+model MediaFrame {
+  id                String          @id @default(cuid())
+  mediaAttachmentId String
+  mediaAttachment   MediaAttachment @relation(fields: [mediaAttachmentId], references: [id], onDelete: Cascade)
+  frameNumber       Int
+  timestamp         Float           // Timestamp in seconds
+  imageUrl          String          // User-provided publicly accessible URL
+  description       String?         @db.Text
+  createdAt         DateTime        @default(now())
+
+  @@unique([mediaAttachmentId, frameNumber])
+  @@index([mediaAttachmentId])
+  @@index([timestamp])
+}
+
+model MediaSegment {
+  id                String          @id @default(cuid())
+  mediaAttachmentId String
+  mediaAttachment   MediaAttachment @relation(fields: [mediaAttachmentId], references: [id], onDelete: Cascade)
+  segmentIndex      Int
+  startTime         Float           // Start timestamp in seconds
+  endTime           Float           // End timestamp in seconds
+  text              String          @db.Text // Transcript text for this segment
+  speaker           String?         // Speaker identification (if available)
+  videoUrl          String?         // Optional video segment URL
+  createdAt         DateTime        @default(now())
+
+  @@unique([mediaAttachmentId, segmentIndex])
+  @@index([mediaAttachmentId])
+  @@index([startTime])
+}
+
+model MediaSceneLink {
+  id                String          @id @default(cuid())
+  mediaAttachmentId String
+  mediaAttachment   MediaAttachment @relation(fields: [mediaAttachmentId], references: [id], onDelete: Cascade)
+  sceneId           String
+  scene             Scene           @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  startTime         Float?          // Optional: specific start time in media
+  endTime           Float?          // Optional: specific end time in media
+  notes             String?         @db.Text
+  createdAt         DateTime        @default(now())
+
+  @@unique([mediaAttachmentId, sceneId])
+  @@index([mediaAttachmentId])
+  @@index([sceneId])
+}

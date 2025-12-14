@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  backend:
+    image: aeolun/story-backend:latest
+    restart: unless-stopped
+    volumes:
+      # Mount database - set DATA_PATH in Portainer environment
+      - ${DATA_PATH:-/srv/docker/story/data}:/app/data
+      # Mount backup directory
+      - ${BACKUP_PATH:-/srv/docker/story/backups}:/app/backups
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/stories.db
+      - PORT=3001
+      - CORS_ORIGIN=https://${DOMAIN:-story.example.com}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      # Backup configuration
+      - ENABLE_BACKUPS=${ENABLE_BACKUPS:-true}
+      - BACKUP_DIR=/app/backups
+      - BACKUP_RETENTION_HOURLY=${BACKUP_RETENTION_HOURLY:-24}
+      - BACKUP_RETENTION_DAILY=${BACKUP_RETENTION_DAILY:-7}
+      - BACKUP_RETENTION_WEEKLY=${BACKUP_RETENTION_WEEKLY:-4}
+    networks:
+      - caddy
+    labels:
+      # Caddy labels for automatic HTTPS
+      caddy: ${API_DOMAIN:-api.story.example.com}
+      caddy.reverse_proxy: "{{upstreams 3001}}"
+      # CORS is handled by the backend, no need to add headers here
+
+  frontend:
+    image: aeolun/story-frontend:latest
+    restart: unless-stopped
+    environment:
+      - BACKEND_URL=https://${API_DOMAIN:-api.story.example.com}
+    networks:
+      - caddy
+    depends_on:
+      - backend
+    labels:
+      # Caddy labels for automatic HTTPS
+      caddy: ${DOMAIN:-story.example.com}
+      caddy.reverse_proxy: "{{upstreams 80}}"
+      caddy.encode: gzip
+      caddy.header.X-Frame-Options: DENY
+      caddy.header.X-Content-Type-Options: nosniff
+
+networks:
+  caddy:
+    external: true

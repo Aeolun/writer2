@@ -187,6 +187,7 @@ const sceneSchema = treeDataSchema.extend({
   referredCharacterIds: z.array(z.string()).optional(),
   locationId: z.string().optional(),
   selectedContextNodes: z.array(z.string()).optional(),
+  paragraphsToGenerate: z.number().default(1),
   highlights: z
     .array(
       z.object({
@@ -233,13 +234,13 @@ export type Node = z.infer<typeof baseNodeSchema> & {
   children?: Node[];
 };
 
-// @ts-expect-error: not sure why
 const treeSchema: z.ZodType<Node> = baseNodeSchema.extend({
   children: z.lazy(() => treeSchema.array().optional()),
 });
 
 export const languageSchema = z.object({
   languages: z.record(
+    z.string(),
     z.object({
       id: z.string(),
       summary: z.string(),
@@ -316,16 +317,16 @@ export const storySchema = z.object({
   modifiedTime: z.number(),
   lastPublishTime: z.number().optional(),
   settings: storySettingsSchema.optional(),
-  uploadedFiles: z.record(uploadedFileSchema).optional(),
-  item: z.record(itemSchema).optional(),
+  uploadedFiles: z.record(z.string(), uploadedFileSchema).optional(),
+  item: z.record(z.string(), itemSchema).optional(),
   structure: z.array(treeSchema),
-  chapter: z.record(chapterSchema),
-  book: z.record(bookSchema),
-  arc: z.record(arcSchema),
-  characters: z.record(characterSchema),
-  locations: z.record(locationSchema),
-  plotPoints: z.record(plotPointSchema),
-  scene: z.record(sceneSchema),
+  chapter: z.record(z.string(), chapterSchema),
+  book: z.record(z.string(), bookSchema),
+  arc: z.record(z.string(), arcSchema),
+  characters: z.record(z.string(), characterSchema),
+  locations: z.record(z.string(), locationSchema),
+  plotPoints: z.record(z.string(), plotPointSchema),
+  scene: z.record(z.string(), sceneSchema),
   oneliner: z.string().optional(),
 });
 export type Story = z.infer<typeof storySchema>;

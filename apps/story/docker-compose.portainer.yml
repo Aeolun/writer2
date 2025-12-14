@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  story-backend:
+    image: aeolun/story-backend:latest
+    container_name: story-backend
+    restart: unless-stopped
+    volumes:
+      # Mount the database directory from host
+      # Adjust the host path as needed for your server
+      - /path/to/your/data:/app/data
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/stories.db
+      - PORT=3001
+      # Configure CORS to allow your frontend domain
+      - CORS_ORIGIN=https://story.yourdomain.com
+      # Optional: Add your API keys here or configure in Portainer
+      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+    networks:
+      - caddy
+      - story-internal
+    labels:
+      # Caddy configuration for backend API
+      caddy: api.story.yourdomain.com
+      caddy.reverse_proxy: "{{upstreams 3001}}"
+      # Optional: Add basic auth for API protection
+      # caddy.basicauth: /*
+      # caddy.basicauth.username: ${API_USERNAME}
+      # caddy.basicauth.username.password: ${API_PASSWORD_HASH}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  story-frontend:
+    image: aeolun/story-frontend:latest
+    container_name: story-frontend
+    restart: unless-stopped
+    environment:
+      # Point to the backend's public URL
+      - BACKEND_URL=https://api.story.yourdomain.com
+    networks:
+      - caddy
+      - story-internal
+    depends_on:
+      - story-backend
+    labels:
+      # Caddy configuration for frontend
+      caddy: story.yourdomain.com
+      caddy.reverse_proxy: "{{upstreams 80}}"
+      # Optional: Add security headers
+      caddy.header.X-Frame-Options: DENY
+      caddy.header.X-Content-Type-Options: nosniff
+      caddy.header.X-XSS-Protection: "1; mode=block"
+      # Optional: Enable compression
+      caddy.encode: gzip
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  # External network for Caddy reverse proxy
+  caddy:
+    external: true
+  # Internal network for service communication
+  story-internal:
+    driver: bridge
+
+# Optional: Define volumes if you want Portainer to manage them
+# volumes:
+#   story-data:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: /path/to/your/data

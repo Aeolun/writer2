@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Compaction Persistence</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #444;
+            background: #2a2a2a;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            background: #3a3a3a;
+        }
+        .compacted {
+            background: #4a3a3a;
+            border: 1px solid #aa6666;
+        }
+        .hidden {
+            opacity: 0.5;
+            background: #3a3a4a;
+        }
+        button {
+            margin: 5px;
+            padding: 5px 10px;
+            background: #4a4a4a;
+            color: #e0e0e0;
+            border: 1px solid #666;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #5a5a5a;
+        }
+        .success {
+            color: #66aa66;
+        }
+        .error {
+            color: #aa6666;
+        }
+        pre {
+            background: #1a1a1a;
+            padding: 10px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Compaction Persistence</h1>
+    
+    <div class="section">
+        <h2>Test Steps:</h2>
+        <button onclick="createTestStory()">1. Create Test Story with Compacted Messages</button>
+        <button onclick="saveToServer()">2. Save to Server</button>
+        <button onclick="loadFromServer()">3. Load from Server</button>
+        <button onclick="verifyCompaction()">4. Verify Compaction State</button>
+    </div>
+
+    <div class="section">
+        <h2>Current Story State:</h2>
+        <div id="storyState"></div>
+    </div>
+
+    <div class="section">
+        <h2>Server Response:</h2>
+        <pre id="serverResponse"></pre>
+    </div>
+
+    <div class="section">
+        <h2>Test Results:</h2>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let testStoryId = null;
+        let originalMessages = null;
+        let savedMessages = null;
+        let loadedMessages = null;
+
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            results.appendChild(div);
+        }
+
+        function displayMessages(messages, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (!messages) {
+                container.innerHTML = '<em>No messages</em>';
+                return;
+            }
+
+            const compactedIds = new Set();
+            messages.forEach(msg => {
+                if (msg.isCompacted && msg.compactedMessageIds) {
+                    msg.compactedMessageIds.forEach(id => compactedIds.add(id));
+                }
+            });
+
+            container.innerHTML = `
+                <div>Total messages: ${messages.length}</div>
+                <div>Compacted messages: ${messages.filter(m => m.isCompacted).length}</div>
+                <div>Hidden messages: ${compactedIds.size}</div>
+                <div>Visible messages: ${messages.filter(m => !compactedIds.has(m.id)).length}</div>
+                <hr>
+            `;
+
+            messages.forEach((msg, index) => {
+                const div = document.createElement('div');
+                div.className = 'message';
+                if (msg.isCompacted) {
+                    div.className += ' compacted';
+                }
+                if (compactedIds.has(msg.id)) {
+                    div.className += ' hidden';
+                }
+                
+                div.innerHTML = `
+                    <strong>Message ${index + 1} (ID: ${msg.id})</strong><br>
+                    Role: ${msg.role}<br>
+                    Content: ${msg.content.substring(0, 100)}${msg.content.length > 100 ? '...' : ''}<br>
+                    ${msg.instruction ? `Instruction: ${msg.instruction}<br>` : ''}
+                    ${msg.isCompacted ? `<strong>COMPACTED - Contains IDs: ${msg.compactedMessageIds.join(', ')}</strong><br>` : ''}
+                    ${compactedIds.has(msg.id) ? '<strong>HIDDEN (part of compaction)</strong>' : ''}
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        async function createTestStory() {
+            log('Creating test story with compacted messages...');
+            
+            // Create test messages
+            originalMessages = [
+                {
+                    id: 'msg-1',
+                    role: 'assistant',
+                    content: 'This is the first message that will be compacted.',
+                    instruction: 'Write the first message',
+                    timestamp: new Date(Date.now() - 5000),
+                    isQuery: false
+                },
+                {
+                    id: 'msg-2',
+                    role: 'assistant',
+                    content: 'This is the second message that will be compacted.',
+                    instruction: 'Write the second message',
+                    timestamp: new Date(Date.now() - 4000),
+                    isQuery: false
+                },
+                {
+                    id: 'msg-3',
+                    role: 'assistant',
+                    content: 'This is the third message that will be compacted.',
+                    instruction: 'Write the third message',
+                    timestamp: new Date(Date.now() - 3000),
+                    isQuery: false
+                },
+                {
+                    id: 'compacted-test-123',
+                    role: 'assistant',
+                    content: 'This is a compacted summary of messages 1-3.',
+                    instruction: 'Compacted 3 messages',
+                    timestamp: new Date(Date.now() - 2000),
+                    isCompacted: true,
+                    compactedMessageIds: ['msg-1', 'msg-2', 'msg-3'],
+                    isQuery: false
+                },
+                {
+                    id: 'msg-4',
+                    role: 'assistant',
+                    content: 'This is a regular message after compaction.',
+                    instruction: 'Write a new message',
+                    timestamp: new Date(Date.now() - 1000),
+                    isQuery: false
+                }
+            ];
+
+            displayMessages(originalMessages, 'storyState');
+            log('Test story created with 5 messages (3 compacted into 1)', 'success');
+        }
+
+        async function saveToServer() {
+            if (!originalMessages) {
+                log('Please create test story first!', 'error');
+                return;
+            }
+
+            log('Saving story to server...');
+            
+            const storyData = {
+                name: `Compaction Test ${new Date().toLocaleString()}`,
+                messages: originalMessages,
+                characters: [],
+                contextItems: [],
+                input: '',
+                storySetting: 'Test story for compaction persistence'
+            };
+
+            try {
+                const response = await fetch('http://localhost:3001/api/stories', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(storyData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}`);
+                }
+
+                const savedStory = await response.json();
+                testStoryId = savedStory.id;
+                savedMessages = savedStory.messages;
+
+                document.getElementById('serverResponse').textContent = JSON.stringify(savedStory, null, 2);
+                log(`Story saved to server with ID: ${testStoryId}`, 'success');
+                log(`Server returned ${savedMessages.length} messages`, 'success');
+                
+                // Verify all messages were saved
+                if (savedMessages.length === originalMessages.length) {
+                    log('✓ All messages were saved to server', 'success');
+                } else {
+                    log(`✗ Message count mismatch! Expected ${originalMessages.length}, got ${savedMessages.length}`, 'error');
+                }
+
+                // Check for compacted message
+                const compactedMsg = savedMessages.find(m => m.isCompacted);
+                if (compactedMsg) {
+                    log(`✓ Compacted message found with IDs: ${compactedMsg.compactedMessageIds}`, 'success');
+                } else {
+                    log('✗ No compacted message found in saved data!', 'error');
+                }
+
+            } catch (error) {
+                log(`Error saving to server: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+
+        async function loadFromServer() {
+            if (!testStoryId) {
+                log('Please save to server first!', 'error');
+                return;
+            }
+
+            log(`Loading story ${testStoryId} from server...`);
+
+            try {
+                const response = await fetch(`http://localhost:3001/api/stories/${testStoryId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}`);
+                }
+
+                const loadedStory = await response.json();
+                loadedMessages = loadedStory.messages;
+
+                document.getElementById('serverResponse').textContent = JSON.stringify(loadedStory, null, 2);
+                displayMessages(loadedMessages, 'storyState');
+                
+                log(`Story loaded from server`, 'success');
+                log(`Server returned ${loadedMessages.length} messages`, 'success');
+
+            } catch (error) {
+                log(`Error loading from server: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+
+        async function verifyCompaction() {
+            if (!loadedMessages) {
+                log('Please load from server first!', 'error');
+                return;
+            }
+
+            log('Verifying compaction state...');
+
+            // Check message count
+            if (loadedMessages.length === originalMessages.length) {
+                log(`✓ Message count correct: ${loadedMessages.length}`, 'success');
+            } else {
+                log(`✗ Message count mismatch! Expected ${originalMessages.length}, got ${loadedMessages.length}`, 'error');
+            }
+
+            // Check for compacted message
+            const compactedMsg = loadedMessages.find(m => m.isCompacted);
+            if (compactedMsg) {
+                log(`✓ Compacted message found`, 'success');
+                
+                if (compactedMsg.compactedMessageIds && compactedMsg.compactedMessageIds.length === 3) {
+                    log(`✓ Compacted message has correct IDs: ${compactedMsg.compactedMessageIds}`, 'success');
+                } else {
+                    log(`✗ Compacted message IDs incorrect: ${compactedMsg.compactedMessageIds}`, 'error');
+                }
+            } else {
+                log('✗ No compacted message found!', 'error');
+            }
+
+            // Check that original messages are still present
+            const foundIds = new Set(loadedMessages.map(m => m.id));
+            const missingIds = originalMessages.filter(m => !foundIds.has(m.id)).map(m => m.id);
+            
+            if (missingIds.length === 0) {
+                log('✓ All original messages are present', 'success');
+            } else {
+                log(`✗ Missing messages: ${missingIds.join(', ')}`, 'error');
+            }
+
+            // Calculate visibility
+            const compactedIds = new Set();
+            loadedMessages.forEach(msg => {
+                if (msg.isCompacted && msg.compactedMessageIds) {
+                    msg.compactedMessageIds.forEach(id => compactedIds.add(id));
+                }
+            });
+            const visibleCount = loadedMessages.filter(m => !compactedIds.has(m.id)).length;
+            
+            log(`Visibility: ${visibleCount} messages visible, ${compactedIds.size} hidden by compaction`, 'info');
+            
+            if (visibleCount === 2) { // Should be the compacted message + msg-4
+                log('✓ Correct number of visible messages', 'success');
+            } else {
+                log(`✗ Expected 2 visible messages, got ${visibleCount}`, 'error');
+            }
+
+            log('Verification complete!', 'success');
+        }
+    </script>
+</body>
+</html>

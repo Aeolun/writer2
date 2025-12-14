@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>localStorage Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        pre { background: #f0f0f0; padding: 10px; overflow-x: auto; }
+        button { margin: 10px 0; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h2>localStorage Contents for localhost:3003</h2>
+    <button onclick="checkStorage()">Refresh</button>
+    <button onclick="clearMessages()">Clear Messages</button>
+    <button onclick="clearAll()">Clear All</button>
+    
+    <h3>story-messages:</h3>
+    <pre id="messages">Loading...</pre>
+    
+    <h3>story-input:</h3>
+    <pre id="input">Loading...</pre>
+    
+    <h3>All Keys:</h3>
+    <pre id="keys">Loading...</pre>
+    
+    <script>
+        function checkStorage() {
+            // Get messages
+            const messages = localStorage.getItem('story-messages');
+            document.getElementById('messages').textContent = messages ? 
+                JSON.stringify(JSON.parse(messages), null, 2) : 'No messages found';
+            
+            // Get input
+            const input = localStorage.getItem('story-input');
+            document.getElementById('input').textContent = input || 'No input found';
+            
+            // Get all keys
+            const keys = Object.keys(localStorage).sort();
+            document.getElementById('keys').textContent = keys.join('\n') || 'No keys found';
+        }
+        
+        function clearMessages() {
+            localStorage.removeItem('story-messages');
+            localStorage.removeItem('story-input');
+            checkStorage();
+        }
+        
+        function clearAll() {
+            if (confirm('Clear all localStorage?')) {
+                localStorage.clear();
+                checkStorage();
+            }
+        }
+        
+        // Check on load
+        checkStorage();
+        
+        // Auto-refresh every 2 seconds
+        setInterval(checkStorage, 2000);
+    </script>
+</body>
+</html>

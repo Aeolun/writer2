@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "writer": {
+      "type": "stdio",
+      "command": "/home/bart/Projects/writer2/apps/mcp-server/dist/mcp-server",
+      "args": [],
+      "env": {}
+    }
+  }
+}

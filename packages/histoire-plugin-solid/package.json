@@ -1,0 +1,60 @@
+{
+  "name": "histoire-plugin-solid",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Histoire plugin for SolidJS support",
+  "author": {
+    "name": "Bart Riepe"
+  },
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/aeolun/writer2.git",
+    "type": "git",
+    "directory": "packages/histoire-plugin-solid"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "default": "./dist/client/index.js"
+    },
+    "./collect": {
+      "types": "./dist/collect/index.d.ts",
+      "default": "./dist/collect/index.js"
+    },
+    ".": {
+      "types": "./dist/index.node.d.ts",
+      "node": "./dist/index.node.js",
+      "default": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.node.d.ts",
+  "scripts": {
+    "build": "rimraf dist && vite build && tsc -d -P tsconfig.build.json",
+    "watch": "vite build --watch"
+  },
+  "peerDependencies": {
+    "histoire": "^0.17.0",
+    "solid-js": "^1.6.0"
+  },
+  "dependencies": {
+    "@biomejs/js-api": "^4.0.0",
+    "@biomejs/wasm-bundler": "^2.3.8",
+    "@histoire/shared": "^0.17.17",
+    "@histoire/vendors": "^0.17.17",
+    "prettier": "^3.7.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "histoire": "^0.17.17",
+    "rimraf": "^5.0.0",
+    "solid-js": "^1.9.9",
+    "typescript": "^5.8.3",
+    "vite": "^5.4.0",
+    "vite-plugin-solid": "^2.10.0"
+  }
+}
