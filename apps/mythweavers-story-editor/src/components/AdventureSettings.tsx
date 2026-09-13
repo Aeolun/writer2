@@ -16,6 +16,7 @@ export interface AdventureSettingsValues {
   livingWorldEnabled: boolean
   conditionTrackingEnabled: boolean
   unboundedLengthEnabled: boolean
+  storyTimeEnabled: boolean
 }
 
 /**
@@ -33,6 +34,7 @@ export const ADVENTURE_SETTING_DEFAULTS: AdventureSettingsValues = {
   livingWorldEnabled: true,
   conditionTrackingEnabled: false,
   unboundedLengthEnabled: false,
+  storyTimeEnabled: true,
 }
 
 interface SettingDescriptor {
@@ -147,6 +149,19 @@ const ADVENTURE_SETTINGS: SettingDescriptor[] = [
       'longer has their sword, or is too spent to sprint. Independent of ' +
       'living world: it tracks the protagonist even when the cast / plot ' +
       'subsystem is off. Costs one extra cheap model call per turn.',
+  },
+  {
+    key: 'storyTimeEnabled',
+    label: 'Track story time (clock under each turn)',
+    hint:
+      'When on, a short background pass after each turn works out when the ' +
+      'scene happens in the story world and shows it as a 🕒 line under the ' +
+      'turn. That estimate is also fed into every writer prompt, so the ' +
+      'clock keeps advancing instead of the model re-inventing the time of ' +
+      'day each turn. Costs one extra cheap model call per turn. When off, ' +
+      'the pass is skipped entirely, the 🕒 lines are hidden, and no time is ' +
+      'sent to the writer. Times already estimated for older turns are kept, ' +
+      'so switching it back on brings them back.',
   },
 ]
 

@@ -6,6 +6,7 @@ import {
   CONTINUE_STORY_INSTRUCTION,
   RESOLUTION_INSTRUCTION,
   WORLD_STEP_INSTRUCTION,
+  type BuildNarrativeOptions,
   buildConditionsMessages,
   buildDirectorMessages,
   buildPartnerActionMessages,
@@ -651,38 +652,120 @@ describe('narrative prompts carry the current story time', () => {
       .map((m) => m.content)
       .join('\n\n')
 
-  it('injects the latest known story time into the resolution prompt', () => {
-    const text = systemText(buildResolutionMessages(timedTurns, 'A coastal town.', 'I knock.', undefined))
-    expect(text).toContain('[STORY TIME')
-    expect(text).toContain('Third Bell, Frostwane 12')
-    expect(text).not.toContain('First Bell, Frostwane 12')
+  // Every pass that carries a `[STORY TIME]` block takes its options bag last,
+  // behind a long list of positional args this suite doesn't care about. One
+  // wrapper per pass keeps the assertions below readable — and keeps a
+  // misplaced `options` argument impossible to miss, since a value dropped into
+  // the wrong slot either fails to typecheck or flips one of the assertions.
+  const passes = (turns: AdventureTurn[], options: BuildNarrativeOptions) => ({
+    resolution: systemText(
+      buildResolutionMessages(
+        turns,
+        'A coastal town.',
+        'I knock.',
+        undefined, // steering
+        undefined, // turn directive
+        undefined, // compactions
+        undefined, // world bible
+        undefined, // live world state
+        undefined, // conditions
+        undefined, // storyline brief
+        undefined, // director brief
+        undefined, // partner action
+        undefined, // protagonist description
+        undefined, // deuteragonist description
+        undefined, // party split
+        options,
+      ),
+    ),
+    worldStep: systemText(
+      buildWorldStepMessages(
+        turns,
+        'A coastal town.',
+        undefined, // turn directive
+        undefined, // compactions
+        undefined, // world bible
+        undefined, // live world state
+        undefined, // conditions
+        undefined, // storyline brief
+        undefined, // director brief
+        undefined, // protagonist description
+        undefined, // deuteragonist description
+        'world-step',
+        options,
+      ),
+    ),
+    revision: systemText(
+      buildRevisionMessages(
+        turns,
+        'A coastal town.',
+        'I knock.',
+        'The original.',
+        '1. X.',
+        undefined, // steering
+        'resolution',
+        undefined, // turn directive
+        undefined, // compactions
+        undefined, // world bible
+        undefined, // live world state
+        undefined, // conditions
+        options,
+      ),
+    ),
+    director: systemText(
+      buildDirectorMessages(
+        turns,
+        'A coastal town.',
+        'I knock.',
+        undefined, // steering
+        'resolution',
+        undefined, // turn directive
+        undefined, // compactions
+        undefined, // world bible
+        undefined, // live world state
+        undefined, // conditions
+        undefined, // storyline brief
+        options,
+      ),
+    ),
+    partnerAction: systemText(
+      buildPartnerActionMessages(
+        turns,
+        'A coastal town.',
+        'I knock.',
+        'Lyra, a quick-witted rogue.',
+        undefined, // compactions
+        undefined, // world bible
+        undefined, // live world state
+        undefined, // conditions
+        options,
+      ),
+    ),
+  })
+
+  it('injects the latest known story time into every pass', () => {
+    const rendered = passes(timedTurns, {})
+    for (const text of Object.values(rendered)) {
+      expect(text).toContain('[STORY TIME')
+      expect(text).toContain('Third Bell, Frostwane 12')
+      expect(text).not.toContain('First Bell, Frostwane 12')
+    }
   })
 
   it('omits the block when no turn has an estimated story time', () => {
-    const text = systemText(buildResolutionMessages([], 'A coastal town.', null, undefined))
-    expect(text).not.toContain('[STORY TIME')
+    const rendered = passes([], {})
+    for (const text of Object.values(rendered)) {
+      expect(text).not.toContain('[STORY TIME')
+    }
   })
 
-  it('carries the story time into the director, world-step, partner-action and revision prompts', () => {
-    expect(
-      systemText(buildDirectorMessages(timedTurns, 'A coastal town.', 'I knock.', undefined, 'resolution')),
-    ).toContain('Third Bell, Frostwane 12')
-    expect(systemText(buildWorldStepMessages(timedTurns, 'A coastal town.'))).toContain('Third Bell, Frostwane 12')
-    expect(
-      systemText(buildPartnerActionMessages(timedTurns, 'A coastal town.', 'I knock.', 'Lyra, a quick-witted rogue.')),
-    ).toContain('Third Bell, Frostwane 12')
-    expect(
-      systemText(
-        buildRevisionMessages(
-          timedTurns,
-          'A coastal town.',
-          'I knock.',
-          'The original.',
-          '1. X.',
-          undefined,
-          'resolution',
-        ),
-      ),
-    ).toContain('Third Bell, Frostwane 12')
+  // The per-adventure toggle defaults to on (`undefined` ⇒ inject), so a caller
+  // that never touches `options` keeps the old behaviour; `false` must elide the
+  // block from every pass that would otherwise carry it.
+  it('omits the block from every pass when story time is switched off', () => {
+    const rendered = passes(timedTurns, { storyTimeEnabled: false })
+    for (const text of Object.values(rendered)) {
+      expect(text).not.toContain('[STORY TIME')
+    }
   })
 })

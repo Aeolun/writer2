@@ -62,6 +62,19 @@ interface AdventureState {
    * director's beat budget is deliberately left bounded. Defaults to false.
    */
   unboundedLengthEnabled: boolean
+  /**
+   * When true (default), a background pass after each turn estimates when
+   * that turn happens in the story world and stores it on the turn. The
+   * estimate is rendered as the 🕒 line under the turn and injected into
+   * every writer prompt (`[STORY TIME]`), so the clock advances continuously
+   * instead of the model re-inventing the time of day each turn.
+   *
+   * When false, the pass is skipped entirely — one fewer model call per
+   * turn — the 🕒 line is hidden, and `[STORY TIME]` is elided from every
+   * prompt. Estimates already stored on older turns are deliberately kept,
+   * so switching it back on restores them rather than losing the history.
+   */
+  storyTimeEnabled: boolean
 
   // Living world state
   characters: Record<string, CharacterCard>
@@ -212,6 +225,7 @@ const [state, setState] = createStore<AdventureState>({
   livingWorldEnabled: true,
   conditionTrackingEnabled: false,
   unboundedLengthEnabled: false,
+  storyTimeEnabled: true,
 
   characters: {},
   plotPoints: {},
@@ -310,6 +324,9 @@ export const adventureStore = {
   },
   get unboundedLengthEnabled() {
     return state.unboundedLengthEnabled
+  },
+  get storyTimeEnabled() {
+    return state.storyTimeEnabled
   },
   get characters() {
     return state.characters
@@ -483,6 +500,9 @@ export const adventureStore = {
   },
   setUnboundedLengthEnabled(v: boolean) {
     setState('unboundedLengthEnabled', v)
+  },
+  setStoryTimeEnabled(v: boolean) {
+    setState('storyTimeEnabled', v)
   },
 
   // --- Living world state CRUD ---
@@ -757,6 +777,7 @@ export const adventureStore = {
       livingWorldEnabled: state.livingWorldEnabled,
       conditionTrackingEnabled: state.conditionTrackingEnabled,
       unboundedLengthEnabled: state.unboundedLengthEnabled,
+      storyTimeEnabled: state.storyTimeEnabled,
       gateApprovalEnabled: state.gateApprovalEnabled,
       partySplit: state.partySplit || undefined,
       characters: { ...state.characters },
@@ -823,6 +844,7 @@ export const adventureStore = {
         livingWorldEnabled: saved?.livingWorldEnabled ?? true,
         conditionTrackingEnabled: saved?.conditionTrackingEnabled ?? false,
         unboundedLengthEnabled: saved?.unboundedLengthEnabled ?? false,
+        storyTimeEnabled: saved?.storyTimeEnabled ?? true,
         gateApprovalEnabled: saved?.gateApprovalEnabled ?? false,
         pendingGateBrief: null,
         pendingGateKind: null,
@@ -891,6 +913,7 @@ export const adventureStore = {
         livingWorldEnabled: true,
         conditionTrackingEnabled: false,
         unboundedLengthEnabled: false,
+        storyTimeEnabled: true,
         gateApprovalEnabled: false,
         pendingGateBrief: null,
         pendingGateKind: null,

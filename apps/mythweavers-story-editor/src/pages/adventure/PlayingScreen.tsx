@@ -475,14 +475,18 @@ function renderTurn(index: number, engine: ReturnType<typeof useEngine>) {
         />
       </Show>
 
-      <Show when={adventureStore.storyTimeAnalyzingIndex !== index ? turn().storyTime : undefined}>
-        {(storyTime) => <div class={styles.storyTimeRow}>🕒 {formatStoryTimeLabel(storyTime())}</div>}
-      </Show>
-      <Show when={adventureStore.storyTimeAnalyzingIndex === index}>
-        <div class={styles.storyTimeRow}>🕒 Estimating story time…</div>
-      </Show>
-      <Show when={!turn().storyTime && adventureStore.storyTimeFailedIndexes.includes(index)}>
-        <div class={styles.storyTimeRow}>🕒 Story time unavailable</div>
+      {/* Story time — hidden wholesale while the per-adventure toggle is off,
+          including estimates left on turns from before it was switched off. */}
+      <Show when={adventureStore.storyTimeEnabled}>
+        <Show when={adventureStore.storyTimeAnalyzingIndex !== index ? turn().storyTime : undefined}>
+          {(storyTime) => <div class={styles.storyTimeRow}>🕒 {formatStoryTimeLabel(storyTime())}</div>}
+        </Show>
+        <Show when={adventureStore.storyTimeAnalyzingIndex === index}>
+          <div class={styles.storyTimeRow}>🕒 Estimating story time…</div>
+        </Show>
+        <Show when={!turn().storyTime && adventureStore.storyTimeFailedIndexes.includes(index)}>
+          <div class={styles.storyTimeRow}>🕒 Story time unavailable</div>
+        </Show>
       </Show>
 
       {/* Director brief — present when the two-model flow ran for this

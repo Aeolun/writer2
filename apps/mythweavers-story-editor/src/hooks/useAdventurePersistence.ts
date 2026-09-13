@@ -348,6 +348,16 @@ export interface PersistedState {
    */
   unboundedLengthEnabled?: boolean
   /**
+   * When true (default), a background pass estimates the in-world time of
+   * each turn as it finalizes, stores it on the turn (`AdventureTurn.storyTime`),
+   * renders it as the 🕒 line under the turn, and injects the latest known
+   * value into every writer prompt as a `[STORY TIME]` block. When false,
+   * the pass is skipped (one fewer model call per turn), the 🕒 line is
+   * hidden, and the block is elided from every prompt. Estimates already
+   * stored on older turns are kept, so re-enabling restores them.
+   */
+  storyTimeEnabled?: boolean
+  /**
    * Model-maintained ledger of physical state for the protagonist +
    * on-page named characters. One concise line per character,
    * protagonist first. Regenerated each turn by the conditions pass;

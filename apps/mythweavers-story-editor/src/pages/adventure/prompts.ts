@@ -307,6 +307,15 @@ export interface BuildNarrativeOptions {
    * that direction.
    */
   unboundedLength?: boolean;
+  /**
+   * When explicitly `false`, no `[STORY TIME]` block is appended to the
+   * prompt (per-adventure `adventureStore.storyTimeEnabled`); the value is
+   * derived from `turns` via `latestStoryTime`. Defaults to enabled — the
+   * polarity differs from `unboundedLength` because this flag mirrors a
+   * feature that is on by default, so `undefined` keeps the historical
+   * behaviour of injecting whatever estimate the newest turn carries.
+   */
+  storyTimeEnabled?: boolean;
 }
 
 /**
@@ -791,6 +800,21 @@ function appendStoryTime(messages: LLMMessage[], currentTime?: string): void {
 }
 
 /**
+ * `appendStoryTime` with the per-adventure toggle applied: the block is
+ * skipped outright when `options.storyTimeEnabled` is `false`, so a
+ * switched-off adventure never shows the writer a time the user has stopped
+ * tracking.
+ */
+function appendStoryTimeForTurns(
+  messages: LLMMessage[],
+  turns: AdventureTurn[],
+  options: BuildNarrativeOptions,
+): void {
+  if (options.storyTimeEnabled === false) return;
+  appendStoryTime(messages, latestStoryTime(turns));
+}
+
+/**
  * Append a system message with the synthesized global storyline, if any.
  *
  * NOTE: Currently NOT called by the resolution / world-step / revision
@@ -1079,11 +1103,12 @@ export function buildPartnerActionMessages(
   worldBible?: string,
   liveWorldState?: LiveWorldState,
   conditions?: string,
+  options: BuildNarrativeOptions = {},
 ): LLMMessage[] {
   const deutName = extractName(deuteragonistInput, "the deuteragonist");
   const messages = buildSharedHistory(turns, compactions, settingDescription, worldBible);
 
-  appendStoryTime(messages, latestStoryTime(turns));
+  appendStoryTimeForTurns(messages, turns, options);
   appendLiveWorldState(messages, liveWorldState);
   appendConditions(messages, conditions);
 
@@ -1138,7 +1163,7 @@ export function buildResolutionMessages(
     worldBible,
   );
 
-  appendStoryTime(messages, latestStoryTime(turns));
+  appendStoryTimeForTurns(messages, turns, options);
 
   const isOpeningTurn = turns.length === 0 && playerAction === null;
 
@@ -1282,6 +1307,12 @@ export function buildDirectorMessages(
   liveWorldState?: LiveWorldState,
   conditions?: string,
   storylineBrief?: string,
+  /**
+   * Only `storyTimeEnabled` is read here — `unboundedLength` is deliberately
+   * ignored: the director's beat budget stays bounded even when the writer's
+   * paragraph budget is unlocked.
+   */
+  options: BuildNarrativeOptions = {},
 ): LLMMessage[] {
   const messages = buildSharedHistory(
     turns,
@@ -1290,7 +1321,7 @@ export function buildDirectorMessages(
     worldBible,
   );
 
-  appendStoryTime(messages, latestStoryTime(turns));
+  appendStoryTimeForTurns(messages, turns, options);
   appendLiveWorldState(messages, liveWorldState);
   appendConditions(messages, conditions);
   appendStorylineBrief(messages, storylineBrief);
@@ -1389,7 +1420,7 @@ export function buildWorldStepMessages(
     worldBible,
   );
 
-  appendStoryTime(messages, latestStoryTime(turns));
+  appendStoryTimeForTurns(messages, turns, options);
 
   // Live protagonist & deuteragonist descriptions — always injected.
   {
@@ -1497,7 +1528,7 @@ export function buildRevisionMessages(
     worldBible,
   );
 
-  appendStoryTime(messages, latestStoryTime(turns));
+  appendStoryTimeForTurns(messages, turns, options);
   appendLiveWorldState(messages, liveWorldState);
   appendConditions(messages, conditions);
 

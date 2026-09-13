@@ -208,17 +208,20 @@ export function createAdventureEngine(
   }
 
   /**
-   * Prompt-shape options common to the three writer builders (resolution,
-   * world-step/continue, revision). Same chokepoint idea as
-   * `liveWorldStateForPrompt()` — one place that reads the store, so the
-   * builders stay pure and testable.
+   * Prompt-shape options common to the writer builders (resolution,
+   * world-step/continue, revision) and, now, the director and partner-action
+   * passes. Same chokepoint idea as `liveWorldStateForPrompt()` — one place
+   * that reads the store, so the builders stay pure and testable.
    *
-   * Deliberately NOT passed to `buildDirectorMessages`: the director's beat
-   * budget stays bounded even when the writer is unbounded, since the beat
-   * list is a plan rather than a length target.
+   * The director reads only `storyTimeEnabled` from this bag; it ignores
+   * `unboundedLength`, since its beat budget stays bounded even when the
+   * writer's paragraph budget is unlocked.
    */
   function narrativeOptions(): BuildNarrativeOptions {
-    return { unboundedLength: adventureStore.unboundedLengthEnabled }
+    return {
+      unboundedLength: adventureStore.unboundedLengthEnabled,
+      storyTimeEnabled: adventureStore.storyTimeEnabled,
+    }
   }
 
   /**
@@ -256,6 +259,7 @@ export function createAdventureEngine(
       liveWorldStateForPrompt(),
       conditionsForPrompt(),
       storylineBrief,
+      narrativeOptions(),
     )
 
     let accumulated = ''
@@ -366,6 +370,7 @@ export function createAdventureEngine(
    * quality of the protagonist's action in pass 1.
    */
   async function analyzeTurnStoryTime(index: number): Promise<void> {
+    if (!adventureStore.storyTimeEnabled) return
     const target = adventureStore.turns[index]
     if (!target) return
     const previousCurrentTime = previousStoryTime(adventureStore.turns, index)
@@ -403,11 +408,34 @@ export function createAdventureEngine(
   }
 
   async function reanalyzeStoryTimeFrom(startIndex: number): Promise<void> {
+    // Guarded here rather than only in `analyzeTurnStoryTime`: this also
+    // *invalidates* the existing estimates, which must not happen while the
+    // feature is switched off (the stored times are what re-enabling restores).
+    if (!adventureStore.storyTimeEnabled) return
     adventureStore.invalidateStoryTimeFrom(startIndex)
     persist()
     for (let index = startIndex; index < adventureStore.turns.length; index++) {
       await analyzeTurnStoryTime(index)
     }
+  }
+
+  /**
+   * Run a story-time reanalysis pass with the usual generating-state
+   * bracketing, for the handlers that trigger one as a side effect of a user
+   * edit (narrative edit, world bible, setting). Skipped — bracketing
+   * included — while story-time estimation is off, so those edits don't
+   * flicker the generating indicator for a pass that isn't going to run.
+   */
+  function runStoryTimeReanalysis(startIndex: number): void {
+    if (!adventureStore.storyTimeEnabled) return
+    adventureStore.setIsGenerating(true)
+    abortController = new AbortController()
+    reanalyzeStoryTimeFrom(startIndex)
+      .catch((error) => console.warn('[StoryTime] Reanalysis failed:', error))
+      .finally(() => {
+        adventureStore.setIsGenerating(false)
+        abortController = null
+      })
   }
 
   async function runAutoTurn(mode: 'world-step' | 'continue') {
@@ -504,6 +532,7 @@ export function createAdventureEngine(
       adventureStore.worldBible,
       liveWorldStateForPrompt(),
       conditionsForPrompt(),
+      narrativeOptions(),
     )
 
     let accumulated = ''
@@ -1743,26 +1772,12 @@ export function createAdventureEngine(
     const index = adventureStore.turns.length - 1
     adventureStore.updateLastTurn({ [field]: newNarrative })
     persist()
-    adventureStore.setIsGenerating(true)
-    abortController = new AbortController()
-    reanalyzeStoryTimeFrom(index)
-      .catch((error) => console.warn('[StoryTime] Reanalysis failed:', error))
-      .finally(() => {
-        adventureStore.setIsGenerating(false)
-        abortController = null
-      })
+    runStoryTimeReanalysis(index)
   }
 
   function reanalyzeAllStoryTime() {
     if (adventureStore.turns.length === 0 || adventureStore.isGenerating) return
-    adventureStore.setIsGenerating(true)
-    abortController = new AbortController()
-    reanalyzeStoryTimeFrom(0)
-      .catch((error) => console.warn('[StoryTime] Reanalysis failed:', error))
-      .finally(() => {
-        adventureStore.setIsGenerating(false)
-        abortController = null
-      })
+    runStoryTimeReanalysis(0)
   }
 
   function handleWorldBibleChange(newWorldBible: string) {

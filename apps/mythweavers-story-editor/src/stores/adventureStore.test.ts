@@ -67,6 +67,25 @@ describe('adventure turn metadata persistence', () => {
   })
 })
 
+describe('adventure story-time toggle persistence', () => {
+  it('defaults to enabled for a brand-new adventure', () => {
+    adventureStore.reset()
+    expect(adventureStore.storyTimeEnabled).toBe(true)
+    expect(adventureStore.buildSnapshot().storyTimeEnabled).toBe(true)
+  })
+
+  it('defaults to enabled when loading state saved before the toggle existed', () => {
+    adventureStore.initialize(baseState)
+    expect(adventureStore.storyTimeEnabled).toBe(true)
+  })
+
+  it('round-trips a switched-off toggle through the snapshot', () => {
+    adventureStore.initialize({ ...baseState, storyTimeEnabled: false })
+    expect(adventureStore.storyTimeEnabled).toBe(false)
+    expect(adventureStore.buildSnapshot().storyTimeEnabled).toBe(false)
+  })
+})
+
 describe('adventure start prompt persistence', () => {
   it('round-trips the separate start prompt through snapshots', () => {
     adventureStore.initialize(baseState)
