@@ -313,14 +313,17 @@ export function calculateActivePath(
     const currentNode = nodesInOrder[currentNodeIndex]
     const nodeMessages = messagesByNode.get(currentNode.id) || []
 
-    // Only scene nodes have messages
+    // Mark every visited node as active — container nodes (book, arc,
+    // chapter) and scenes whose messages haven't been lazy-loaded yet
+    // are still on the active path; we just can't inspect their branch
+    // messages until they're fetched.
+    activeNodeIds.add(currentNode.id)
+
+    // Only scene nodes with loaded messages need branch processing
     if (currentNode.type !== 'scene' || nodeMessages.length === 0) {
       currentNodeIndex++
       continue
     }
-
-    // Mark node as active
-    activeNodeIds.add(currentNode.id)
 
     // Process messages in this node starting from currentMessageIndex
     while (currentMessageIndex < nodeMessages.length) {

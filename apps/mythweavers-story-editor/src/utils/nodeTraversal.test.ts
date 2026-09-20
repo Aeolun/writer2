@@ -55,7 +55,7 @@ describe('calculateActivePath', () => {
 
       const { activeNodeIds } = calculateActivePath(messages, nodes, activatingChoice, 'scene-3')
 
-      expect([...activeNodeIds].sort()).toEqual(['scene-1', 'scene-2', 'scene-3'])
+      expect([...activeNodeIds].sort()).toEqual(['book', 'scene-1', 'scene-2', 'scene-3'])
     })
 
     it('does NOT let a downstream unselected branch truncate the active path (the reported bug)', () => {
@@ -71,7 +71,7 @@ describe('calculateActivePath', () => {
 
       const { activeNodeIds } = calculateActivePath(messages, nodes, activatingChoice, 'scene-3')
 
-      for (const id of ['scene-1', 'scene-2', 'scene-3']) {
+      for (const id of ['book', 'scene-1', 'scene-2', 'scene-3']) {
         expect(activeNodeIds.has(id)).toBe(true)
       }
     })
@@ -85,6 +85,7 @@ describe('calculateActivePath', () => {
 
       const { activeNodeIds } = calculateActivePath(messages, nodes, activatingChoice, 'scene-3')
 
+      expect(activeNodeIds.has('book')).toBe(true)
       expect(activeNodeIds.has('scene-1')).toBe(true)
       expect(activeNodeIds.has('scene-3')).toBe(true)
     })
@@ -99,8 +100,10 @@ describe('calculateActivePath', () => {
 
       const { activeNodeIds } = calculateActivePath(messages, nodes, activatingChoice)
 
+      expect(activeNodeIds.has('book')).toBe(true)
       expect(activeNodeIds.has('scene-1')).toBe(true)
-      expect(activeNodeIds.has('scene-3')).toBe(false)
+      expect(activeNodeIds.has('scene-2')).toBe(true) // visited before branch stops walk
+      expect(activeNodeIds.has('scene-3')).toBe(false) // never reached
     })
   })
 })
